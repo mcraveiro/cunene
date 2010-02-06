@@ -1,0 +1,224 @@
+Bongo NEWS file listing user-visible changes.
+
+Copyright (C) 2007, 2009  Daniel Brockman
+See the end of the file for licensing conditions.
+
+July 13, 2009
+
+ * Bongo now forces VLC to exit after finishing a track.
+
+ * `C-u RET' on a section header now starts playing
+   the section.  To set the backend, use `C-u C-u RET'.
+
+May 21, 2007
+
+ * New key bindings `S-<up>' and `S-<down>' (each with `M-'
+   and `C-M-' variants) change the volume.
+
+ * New key bindings `S-<right>' and `S-<left>' (with `M-'
+   and `C-M-' variants) fast-forward and rewind.
+
+ * The `f' and `b' keys have been switched with `F' and `B'.
+   Now use `f' or `b' to seek just one second.  (This lets
+   you seek N seconds using `<N> f' or `<N> b'.)
+
+ * The <TAB> (`bongo-toggle-collapsed') command has been
+   moved to `$' to make room for a future <TAB> command.
+
+ * New command `H' (`bongo-list-buffers') brings up a list
+   of all Bongo buffers to ease switching between them.
+
+ * Giving a prefix argument to `h' (`bongo-switch-buffers')
+   now makes Bongo prompt for the buffer to switch to.
+
+ * Now <mouse-3> in Bongo buffers always brings up a context
+   menu (it used to do it on object lines only).
+
+ * Files with `.bongo' extensions are now treated as either
+   playlists or libraries according to the value of the user
+   option `bongo-prefer-library-buffers'.
+
+ * Switching to a Bongo mode from a non-fundamental,
+   non-Bongo mode now requires confirmation.
+
+ * New minor mode `bongo-dired-library-mode' lets you use
+   any Dired buffer as a Bongo library.  The mode is enabled
+   automatically by the `d' (`bongo-dired-line') command.
+
+May 15, 2007
+
+ * The `tree-from-tabs.rb' script has a new command line
+   option, `--hardlinks', which tells it to create hardlinks
+   instead of symbolic links.
+
+May 11, 2007
+
+ * There is now a volume control mode line button.  Click it
+   to open the volume control interface (as `v' would), or
+   use your mouse wheel on it to adjust the volume directly.
+
+   You should update the `volume' library to get the most
+   out of this feature.  Mouse support was recently added.
+
+May 6, 2007
+
+ * The keys `f' and `b' are now bound to seeking commands,
+   to go with the newly-introduced `F', `B', `M-F', etc.
+
+   The old `f' command (`bongo-flush-playlist') has been
+   moved to `~' (played tracks are "backups", in a sense).
+
+ * The command `C-c TAB' now sits on `C-c C-e' instead,
+   because of the symmetry with `C-c C-a'.
+
+April 28, 2007
+
+ * The keys `F', `B', `M-F', `M-B', `C-M-F' and `C-M-B' are
+   now bound to immediate seeking commands, which provide
+   quicker ways of seeking (you no longer have to use `s').
+
+   The old `F' command has been moved to `R' (for "reset").
+
+ * Inline playback progress is now disabled by default,
+   because it slowed down seeking.  To turn it back on,
+   customize `bongo-display-inline-playback-progress'.
+
+ * Left-clicking the arrow buttons in the mode line now
+   fast-forwards or rewinds instead of switching tracks ---
+   to switch tracks, use the right mouse button (`mouse-3').
+
+ * The arrow buttons will now only appear during playback
+   (leaving just the play button when playback is stopped).
+
+   To pick your own set of mode line buttons, customize the
+   variable `bongo-mode-line-indicator-format'.
+
+April 27, 2007
+
+ * The keys in seek mode have changed a little.  It used to
+   be that `f' and `b' each sought one second, while `M-f'
+   and `M-b' sought ten seconds.  Here are the new keys:
+
+    - One second: `C-f', `C-b', `F', `B'
+    - Three seconds: `f', `b', `<left>', `<right>'
+    - Ten seconds: `M-f', `M-b', `M-<left>', `M-<right>'
+    - One minute: `C-M-f', `C-M-b'
+
+   Some other keys in this keymap changed as well, but I
+   don't think any of it is worth mentioning.
+
+April 26, 2007
+
+ * Playback progress is now shown directly in the playlist
+   buffer using the `bongo-elapsed-track-part' face (which
+   by default looks like the `bongo-played-track' face).
+
+ * Track lengths are now displayed in playlist buffers.
+   You may want to customize `bongo-track-length-column' or
+   (to disable this feature) `bongo-display-track-lengths'.
+
+   [This feature is still rather experimental and probably
+   does not work the way we will ultimately want it to.]
+
+April 11, 2007
+
+ * There is a new binding for playing stuff: `g'.  It plays
+   the next N tracks, given a prefix argument N, or the
+   tracks in the region, if the region is active, or the
+   marked tracks, if any, or the track at point otherwise.
+
+   The `RET' command is unchanged; it still plays the track
+   under point, or the next N tracks with a prefix argument.
+   (Note that `RET' never plays, e.g., all marked tracks.)
+
+April 10, 2007
+
+ * You may now bring up a context menu of useful commands by
+   right-clicking a track line or section header.  Try it!
+
+April 9, 2007
+
+ * Bongo now displays any metadata provided by streaming
+   media servers (such as what's currently being played).
+   This is enabled by default but only available for VLC.
+
+April 5, 2007
+
+ * Bongo Sprinkle mode now sets `bongo-mark-played-tracks',
+   and the default value is now `nil' (it used to be `t').
+   Enabling Sprinkle mode sets it to `t' buffer-locally.
+
+ * Stopping a track being played using `C-c C-s' will now
+   not mark it as played; but `C-c C-n' and `C-c C-p' will.
+
+April 4, 2007
+
+ * The new Bongo Sprinkle mode is an alternative to random
+   playback, based on the idea of automatically _enqueuing_
+   random tracks instead of playing tracks in random order.
+   To try it, run `M-x bongo-sprinkle-mode' in a playlist.
+
+ * The various commands beginning with `i' are no longer
+   bound to any keys.  Instead, there is a general `i'
+   command for inserting files and directories, and another
+   command `I' for inserting special things.  Unfortunately,
+   this currently includes URIs (use `I u RET').
+
+ * Commands that operate on the marked tracks now kill the
+   current marking after using it.  Use `* y' to restore the
+   last marking, or `* k' to manually kill the current one.
+   Killing a marking discards the previously killed one ---
+   in the future, there might be a stack of killed markings.
+
+   The handy command `* *' toggles between some marking and
+   the blank marking by killing or yanking as appropriate.
+   Thus, `% m Dylan RET e * *' enqueues all tracks matching
+   the string "Dylan" and then restores the marking of them.
+   Typing `* *' another time gets rid of the marking again.
+
+March 18, 2007
+
+ * You can now specify which backend to use for individual
+   tracks using `M-x bongo-set-backend-for-track'.
+
+February 25, 2007
+
+ * The `M' command is gone.  Use `- m' instead.  (To do it
+   many times, `- m C-x z z z ...' is handy.)
+
+ * The `g' command is gone.  Use `M-x bongo-redisplay'.
+
+February 12, 2007
+
+ * Bongo is now able to display various kinds of icons.
+   It ships with a set of icons from the GNOME project.
+   See the following variables and their containing groups:
+
+     - `bongo-display-track-icons'
+     - `bongo-display-header-icons'
+     - `bongo-track-mark-icon-file-name'
+
+February 8, 2007
+
+ * All backends now support pausing.  Non-interactive backend
+   players are paused and resumed using SIGSTOP and SIGCONT.
+   In particular, this means that pausing and resuming is now
+   available for ogg123, speexdec, TiMidity and MikMod.
+
+------------------------------------------------------------
+This file is part of Bongo.
+
+Bongo is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+Bongo is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public
+License along with Bongo (see the file `COPYING'); if not,
+write to the Free Software Foundation, 51 Franklin Street,
+Fifth Floor, Boston, MA 02110-1301, USA.
