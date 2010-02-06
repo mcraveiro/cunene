@@ -16,4 +16,4 @@
 ;; along with cunene.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; Cedet code completion tools
-(load-file "~/emacs/personal/cedet/common/cedet.el")
+(load-file (concat dotfiles-dir "/other/cedet/common/cedet.el"))
