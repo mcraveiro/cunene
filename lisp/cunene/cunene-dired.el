@@ -15,25 +15,25 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with cunene.  If not, see <http://www.gnu.org/licenses/>.
 
+;; Use a single dired buffer
+(require 'dired-single)
+
 ;; Dired switches
 (setq dired-listing-switches "-lX")
 (setq list-directory-brief-switches "-CF")
 
+(defun my-dired-init ()
+  "Bunch of stuff to run for dired, either immediately or when it's loaded."
+  ;; <add other stuff here>
+  (define-key dired-mode-map [return] 'dired-single-buffer)
+  (define-key dired-mode-map [mouse-1] 'dired-single-buffer-mouse)
+  (define-key dired-mode-map "^"
+    (function
+     (lambda nil (interactive) (dired-single-buffer "..")))))
+
 ;; if dired's already loaded, then the keymap will be bound
-;; (if (boundp 'dired-mode-map)
-;;     ;; we're good to go; just add our bindings
-;;     (my-dired-init)
-;;   ;; it's not loaded yet, so add our bindings to the load-hook
-;;   (add-hook 'dired-load-hook 'my-dired-init))
-
-;; (require 'dired-single)
-
-;; Dired: FIXME
-;; (defun my-dired-init ()
-;;   "Bunch of stuff to run for dired, either immediately or when it's loaded."
-;;   ;; <add other stuff here>
-;;   (define-key dired-mode-map [return] 'joc-dired-single-buffer)
-;;   (define-key dired-mode-map [mouse-1] 'joc-dired-single-buffer-mouse)
-;;   (define-key dired-mode-map "^"
-;;     (function
-;;      (lambda nil (interactive) (joc-dired-single-buffer "..")))))
+(if (boundp 'dired-mode-map)
+    ;; we're good to go; just add our bindings
+    (my-dired-init)
+  ;; it's not loaded yet, so add our bindings to the load-hook
+  (add-hook 'dired-load-hook 'my-dired-init))

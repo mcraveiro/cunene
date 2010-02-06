@@ -20,5 +20,3 @@
   (set-frame-parameter nil 'fullscreen
                        (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 
-;; Go into full screen mode
-(fullscreen)
