@@ -20,7 +20,6 @@
 
 ;; Emacs code browser
 (require 'ecb)
-(require 'ecb-autoloads)
 
 ;; Version
 (setq ecb-options-version "2.40")
