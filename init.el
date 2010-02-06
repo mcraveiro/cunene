@@ -103,5 +103,6 @@
   (load (concat cunene-dir (car cunene-files)))
   (setq cunene-files (cdr cunene-files)))
 
-;; Make sure fortune is the last thing to execute
+;; Make sure fortune and fullscreen are the last thing to execute
 (fortune)
+(fullscreen)
