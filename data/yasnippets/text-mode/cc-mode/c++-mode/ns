@@ -1,0 +1,5 @@
+#name : namespace ... { }
+# --
+namespace ${1:Name} {
+    $0
+} // ${1:$(yas/substr text "[^: ]*")}

@@ -1,0 +1,11 @@
+#name : prop (...) { ... }
+# --
+/**
+ * @brief $0
+ */
+/*@{*/
+$2 $1() const { return(_$1); }
+void $1(const $2& value) { _$1 = value; }
+/*@}*/
+
+$2 _$1;

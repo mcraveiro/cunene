@@ -1,0 +1,2041 @@
+%
+;; Functional programming is like describing your problem to a
+;; mathematician.  Imperative programming is like giving instructions to
+;; an idiot.
+;; -- arcus, #scheme on Freenode
+%
+;; In all the ways that matter, Perl is by *far* the most CL-like
+;; language I've ever used - far closer to it than Scheme or Python,
+;; which are basically written by the kind of people who would rather
+;; spend their time in some kind of monastry flagellating themselves for
+;; crimes against Computer Science.
+;; -- Tim Bradshaw, c.l.l
+%
+;; Parentheses?  What parentheses? I haven't noticed any parentheses
+;; since my first month of Lisp programming.  I like to ask people who
+;; complain about parentheses in Lisp if they are bothered by all the
+;; spaces between words in a newspaper...
+;; -- Kenny Tilton
+%
+;; I am reminded of Gregor Kiczales at ILC 2003 [the International Lisp
+;; Conference] displaying some AspectJ to a silent crowd, pausing, then
+;; plaintively adding, "When I show that to Java programmers they stand
+;; up and cheer."
+;; -- Kenny Tilton
+%
+;; It is cruel to compare the Lisp machine with a bunch of PERL
+;; hacks. Especially when you know that the Lisp machine pioneered things
+;; like generic networking (which nowbody has - even nowadays),
+;; distributed objects, has been used to control all kinds of devices
+;; (from capture boards to massively parrallel computers like the
+;; connection machine), had stuff like remote 3d graphics rendering a
+;; decade ago, and all this was actually implemented in Lisp in a sane
+;; way (not glued together).
+;; -- Rainer Joswig
+%
+;; > What's so great about the lambda calculus?
+
+;; In a profession plagued by, "when all you have is a hammer, everything
+;; looks like a nail," we get really excited when someone is able to come
+;; along and prove that everything really *is* a nail if lambda is the
+;; hammer.
+;; -- brlewis@my-deja.com
+%
+;; You're posting to a Scheme group. Around here, arguing that Java is
+;; better than C++ is like arguing that grasshoppers taste better than
+;; tree bark.
+;; -- Thant Tessman  in comp.lang.scheme
+%
+;; One can think in Lisp and still realize that actually writing programs
+;; in it has no future. (One sometimes cries.)
+;; -- Jamie Zawinski
+%
+;; Some people, when confronted with a problem, think "I know, I'll use
+;; regular expressions."  Now they have two problems.
+;; -- Jamie Zawinski
+%
+;; > Best job interview question I've heard: "So, do you have
+;; > 15 years of experience with Java?"
+;; "No, it just seems like 15 years...."
+;; -- Geoff Lane
+%
+;; Science is like sex: sometimes something useful comes out, but that's
+;; not why we're doing it.
+;; -- Richard Feynman
+%
+;; Please say this was followed by a very serious discussion on Right and
+;; Wrong involving a blow torch, 220V, a cobra and three East Germans
+;; named Georg...
+;; -- Robert Uhl
+%
+;; You can drag any rat out of the sewer and teach it to get some work done in
+;; Perl, but you cannot teach it serious programming.
+;; -- Erik Naggum
+%
+;; When the revolution comes, we'll need a longer wall.
+;; -- Tom De Mulder
+%
+;; Get with the program, jeffrey.  No one is 'wrong' on Usenet.  They are
+;; either 100% totally correct, or they are 'a lying, scum sucking weasel.'
+;; There is no in-between.
+;; -- Garrett Johnson
+%
+;; The thing that gets me is that one of the arguments that landed
+;; Robert Morris, author of "the internet worm" in jail was all
+;; the sysadmins' time his prank cost.  Yet the author of sendmail
+;; is still walking around free without even a U (for Unixery)
+;; branded on his forehead.
+;; -- Nicolas Pioch
+%
+;; First time I've gotten a programming job that required a drug test.
+;; I was worried they were going to say 'you don't have enough LSD in
+;; your system to do Unix programming'.
+;; -- Paul Tomblin
+%
+;; An Emacs reference mug is what I want.  It would hold ten gallons of coffee.
+;; -- Steve VanDevender
+%
+;; Compared to system administration, being cursed forever is a step up.
+;; -- Paul Tomko
+%
+;; LISP - She is an aging beatnik, who lives in a rural commune with her
+;; hippie cousins SMALLTALK and FORTH. students) who have visited the
+;; farmhouse, enthusiastically praise the natural food, and perpetual
+;; love-ins that take place there.  Others criticize the long cooking
+;; times, and the abnormal sexual postures (prefix and postfix). Although
+;; these women seldom have full-time jobs, when they do work, their
+;; employers praise them for their imagination, but usually not for their
+;; efficiency.
+;; -- Programming Languages are like Women
+;;    (http://www.columbia.edu/~sss31/rainbow/prog.lang.html)
+%
+;; Learning Lisp is like climbing Mount Everest. Like Everest, once you
+;; get up there you can say, "I am at the highest point on the whole
+;; Earth!" But then you look around and realize that the only people up
+;; there with you are crazed hermits, enigmatic sherpas, and a lot of
+;; rich white tourists. Let's consider just the economic dimension here:
+;; the hermits are up there because they hate capitalism and have gone a
+;; bit funny. The sherpas are up there earning minimum wage because they
+;; love the mountain. And the rich white tourists? They're up there
+;; because they're already rich enough to afford to go, or because they
+;; know they'll be able to leverage the experience in their consulting
+;; gigs to make more money later.
+;; -- Chalain (http://weblog.raganwald.com/2006/12/lisp-is-not-last-word.html)
+%
+;; Anyone could learn Lisp in one day, except that if they already knew
+;; Fortran, it would take three days.
+;; --Marvin Minsky
+%
+;; The more of an IT flavor the job descriptions had, the less dangerous
+;; was the company. The safest kind were the ones that wanted Oracle
+;; experience. You never had to worry about those. You were also safe if
+;; they said they wanted C++ or Java developers. If they wanted Perl or
+;; Python programmers, that would be a bit frightening. If I had ever
+;; seen a job posting looking for Lisp hackers, I would have been really
+;; worried.
+;; --Paul Graham
+%
+;; Historically, languages designed for other people to use have been
+;; bad: Cobol, PL/I, Pascal, Ada, C++. The good languages have been those
+;; that were designed for their own creators: C, Perl, Smalltalk, Lisp.
+;; --Paul Graham
+%
+;; APL is like a diamond. It has a beautiful crystal structure; all of
+;; its parts are related in a uniform and elegant way. But if you try to
+;; extend this structure in any way - even by adding another diamond -
+;; you get an ugly kludge. LISP, on the other hand, is like a ball of
+;; mud. You can add any amount of mud to it and it still looks like a
+;; ball of mud.
+;; --Joel Moses
+%
+;; The best way to have a good idea is to have a lot of
+;; ideas and throw the bad ones away.
+;; -- Linus Pauling
+%
+;; The amazing thing is, back when I was a C++ programmer, I thought that
+;; [Design Patterns] was SUCH a great book.  And I guess it was, in a
+;; way: it made it possible to use C++ and get something done.  In the
+;; long run, of course, that may have been a disservice...
+;; -- Alain Picard
+%
+;; Lisp nearing the age of 50 is the most modern language out
+;; there. GC, dynamic, reflective, the best OO model extant including
+;; GFs, procedural macros, and the only thing old-fashioned about it
+;; is that it is compiled and fast.
+;; -- Kenny Tilton, comp.lang.python
+%
+;; Any differences between Common Lisp and Scheme pale in contrast to
+;; differences between Lisp and Java, C, etc.  It's like arguing over
+;; Guinness or Murphy's when everyone else is drinking Bud and Miller.
+;; -- Joe Marshall, comp.lang.lightweight
+%
+;; The essence of Lisp: executable pseudo-code.
+;; -- Joe Marshall, comp.lang.lisp
+%
+;; If you decide to go with the same tools and technology as everyone
+;; else, you make sure that you won't fail any worse than they
+;; do. However, you also ensure that you won't succeed any better.
+;; -- James Robertson
+%
+;; Knowing the syntax of Java does not make someone a software engineer.
+;; -- John Knight
+%
+;; Anyone could learn Lisp in one day, except that if they already knew
+;; Fortran, it would take three days.
+;; -- Marvin Minsky
+%
+;; There are undoubtedly a lot of very intelligent people writing Java,
+;; better programmers than I will ever be. I just wish I knew why.
+;; -- Steve Holden
+%
+;; High thoughts must have a high language.
+;; -- Aristophanes
+%
+;; Like the creators of sitcoms or junk food or package tours, Java's
+;; designers were consciously designing a product for people not as smart
+;; as them.
+;; --Paul Graham
+%
+;; Arguing that Java is better than C++ is like arguing that grasshoppers
+;; taste better than tree bark.
+;; -- Thant Tessman
+%
+;; Java, the best argument for Smalltalk since C++.
+;; -- Frank Winkler
+%
+;; Claiming Java is easier than C++ is like saying that K2 is shorter
+;; than Everest.
+;; --Larry O'Brien
+%
+;; C++ is history repeated as tragedy. Java is history repeated as farce.
+;; -- Scott McKay
+%
+;; LISP is like a ball of mud. You can add any amount of mud to it and it
+;; still looks like a ball of mud.
+;; -- Joel Moses
+%
+;; Java is, in many ways, C++--.
+;; -- Michael Feldman
+%
+;; Historically, languages designed for other people to use have been
+;; bad: Cobol, PL/I, Pascal, Ada, C++. The good languages have been those
+;; that were designed for their own creators: C, Perl, Smalltalk, Lisp.
+;; --Paul Graham
+%
+;; Of all the great programmers I can think of, I know of only one who
+;; would voluntarily program in Java. And of all the great programmers I
+;; can think of who don't work for Sun, on Java, I know of zero.
+;; --Paul Graham
+%
+;; I fear the the new object-oriented systems may suffer the fate of
+;; LISP, in that they can do many things, but the complexity of the class
+;; hierarchies may cause them to collapse under their own weight.
+;; --Bill Joy
+%
+;; If Java had true garbage collection, most programs would delete
+;; themselves upon execution.
+;; -- Robert Sewell
+%
+;; Lisp has all the visual appeal of oatmeal with fingernail clippings
+;; mixed in.
+;; -- Larry Wall
+%
+;; [In Python] The easy things are easy, the harder things are
+;; progressively harder, and you tend not to notice the
+;; inconsistencies. Lisp has the philosophy of making fewer compromises:
+;; of providing a very powerful and totally consistent core. This can
+;; make Lisp harder to learn because you operate at a higher level of
+;; abstraction right from the start...
+;; -- Peter Norvig in "Python for Lisp Programmers"
+%
+;; If you give someone Fortran, he has Fortran. If you give someone Lisp,
+;; he has any language he pleases.
+;; -- Guy Steele
+%
+;; When Lisp is outlawed, only outlaws will have Lisp.
+;; -- Peter Seibel on c.l.l.
+%
+;; The big bang way only works for god, everybody else has to use evolution.
+;; -- David Moon
+;; From one of the "dynamic languages wizards" panels - see
+;; http://www.ai.mit.edu/projects/dynlangs/wizards-panels.html
+%
+;; We are born naked, wet, and hungry. Then things get worse.
+;; --Sam Steingold
+%
+;; Some computer languages simply amplify the kind of thinking that you
+;; already do. Some computer languages teach you fundamentally new ways
+;; of looking at problems. Python is like Lisp in that it tends to teach
+;; you new ways of thinking about problems to broaden your mental
+;; horizons.
+;; -- Eric Raymond
+%
+;; Dalinian: Lisp. Java. Which one sounds sexier?
+
+;; RevAaron: Definitely Lisp. Lisp conjures up images of hippy coders,
+;; drugs, sex, and rock & roll. Late nights at Berkeley, coding in Lisp
+;; fueled by LSD. Java evokes a vision of a stereotypical nerd, with no
+;; life or social skills.
+;; -- usenet
+%
+;; The best swordsman in the world doesn't need to fear the second best
+;; swordsman in the world; no, the person for him to be afraid of is some
+;; ignorant antagonist who has never had a sword in his hand before; he
+;; doesn't do the thing he ought to do, and so the expert isn't prepared
+;; for him; he does the thing he ought not to do and often it catches the
+;; expert out and ends him on the spot.
+;; -- Mark Twain
+%
+;; ... What is actually happening, I am afraid, is that we all tell each
+;; other and ourselves that software engineering techniques should be
+;; improved considerably, because there is a crisis. But there are a few
+;; boundary conditions which apparently have to be satisfied. I will list
+;; them for you:
+
+;;   1. We may not change our thinking habits.
+;;   2. We may not change our programming tools.
+;;   3. We may not change our hardware.
+;;   4. We may not change our tasks.
+;;   5. We may not change the organisational set-up in which the work has
+;;      to be done.
+
+;; Now under these five immutable boundary conditions, we have to try to
+;; improve matters. This is utterly ridiculous. Thank you.
+;; (Applause.)
+;; -- E. Dijkstra, Conference on Software Engineering, 1968. (as seen in
+;; _The Anatomy of Lisp_'s introduction to Interactive Programming.)
+%
+;; Unfortunately, no one can be told what Lisp is. You have to see it for
+;; yourself.
+;; -- Bill Clementson (adapted from Morpheus's comment to Neo in The Matrix)
+%
+;; "Not as clumsy or random as a C++ or Java.
+;;  An elegant weapon for a more civilized time."
+;; -- unknown
+%
+;; I would rather write programs to help me write programs than write programs.
+;; -- Written on the wall of a Stanford University graduate student office
+;; (from Robert W. Floyd's 1978 ACM Turing Award Lecture "Paradigms of
+;; Programming")
+%
+;; I have seen things you people wouldn't believe: a
+;; Racal Norsk on fire in the basement at the University of Oslo.  a
+;; Symbolics 3600 dropped on the floor while moving the
+;; comp.sci. department.  Lisp classes given without any course credits.
+;; All these moments will be lost in time, like Teco.  Time to go for
+;; Java.
+;; -- Bjorn Remseth, who posted this in c.l.l. 2003-04-09
+%
+;; The "tears in the rain" line is my favorite in that movie, so I might
+;; have said:
+;;
+;;  like Teco in line noise.
+;; -- Kent Pitman
+%
+;; An ideal world is left as an excercise to the reader.
+;; -- Paul Graham, On Lisp 8.1
+%
+;; Q: What is the difference between Java and .NET?
+;; A: Java was paved with good intentions.
+;; -- Steven Haflich on c.l.l.
+%
+;; The Art of the Metaobject Protocol is the best book written in computing in ten years.
+;; Java and C++ make you think that the new ideas are like the old ones.
+;; Java is the most distressing thing to hit computing since MS-DOS.
+;; -- Alan Kay (at OOPSLA97 - http://www.cc.gatech.edu/fac/mark.guzdial/squeak/oopsla.html)
+%
+;; If God used a programming language, it would be Lisp.
+;; Programming in Lisp is like playing with the primordial forces of the
+;; universe.  It feels like lightning between your fingertips. No other
+;; language even feels close.
+;; -- Glenn Ehrlich
+%
+;; Tell them that Lisp is what Obi-Wan-Kenobi has told
+;; Luke Skywalker about his Light-Saber: People despise it
+;; as some  curiousity from a forgotten era that is still used
+;; only by old farts from an esoteric sect, but in fact is
+;; radically effective and elegant. And then use The Force.
+;; -- Reinhard Gantar
+%
+;; It would not be too unfair to any language to refer to Java as a
+;; stripped down Lisp or Smalltalk with a C syntax.
+;; -- Ken Anderson
+%
+;; Question: "Why are languages like C , C#, and Java so prevalent?"
+;; Dave Ungar: "Why do people smoke tobacco?
+;; -- http://www.smalltalkconsulting.com/html/OOPSLA2003d4.html
+%
+;; Java: the elegant simplicity of C++ and the blazing speed of Smalltalk.
+;; -- unknown
+%
+;; "If programming in C is like marching, programming in Lisp is like dancing".
+;; Too true. To which it might be added that C++ is like walking on hot coals...
+;; --http://homepage.mac.com/robmyers/weblog/C663792881/E1775578896/index.html
+%
+;; C - A language which combines the flexibility of
+;; assembly language with the power of assembly language."
+%
+;; I have stopped reading Stephen King novels.  Now I just read C code
+;; instead.
+;; -- Richard A. O'Keefe
+%
+;; The last good thing written in C was Franz Schubert's Symphony number 9.
+;; -- Erwin Dieterich
+%
+;; Being really good at C++ is like being really good at using rocks to
+;; sharpen sticks.
+;; -- Thant Tessman
+%
+;; "So, when you typed in the date, it exploded into a sheet of blue
+;; flame and burned the entire admin wing to the ground? Yes, that's a
+;; known bug. We'll be fixing it in the next release. Until then, try not
+;; to use European date format, and keep an extinguisher handy."
+;; -- slam@pobox.com (Tequila Rapide)
+%
+;; Think of C++ as an object-oriented assembly language.
+;; -- Bruce Hoult (bruce@hoult.actrix.gen.nz)
+%
+;; When C++ is your hammer, everything looks like a thumb
+;; -- Latest seen from Steven M. Haflich, in c.l.l
+%
+;; /* I'd just like to take this moment to point out that C has all
+;;    the expressive power of two dixie cups and a string.
+;;  */
+;; -- Jamie Zawinski in the XKeyCaps source
+%
+;; ... it's just that in C++ and the like, you don't trust _anybody_,
+;; and in CLOS you basically trust everybody.  the practical result
+;; is that thieves and bums use C++ and nice people use CLOS.
+;; -- Erik Naggum
+%
+;; A novice was trying to fix a broken lisp machine by turning the power
+;; off and on.  Knight, seeing what the student was doing spoke sternly,
+;; "You cannot fix a machine by just power-cycling it with no understanding
+;; of what is going wrong."  Knight turned the machine off and on.  The
+;; machine worked.
+%
+;; A LISP programmer knows the value of everything, but the cost of nothing.
+;; -- Alan Perlis
+%
+;; A year spent in artificial intelligence is enough to make one believe in God.
+;; -- Alan Perlis
+%
+;; In the days when Sussman was a novice Minsky once came to him as he sat
+;; hacking at the PDP-6.
+;; "What are you doing?", asked Minsky.
+;; I am training a randomly wired neural net to play Tic-Tac-Toe."
+;; "Why is the net wired randomly?", inquired Minsky.
+;; "I do not want it to have any preconceptions of how to play".
+;; At this Minsky shut his eyes, and Sussman asked his teacher "Why do you
+;; close your eyes?"
+;; "So that the room will be empty."
+;; At that moment, Sussman was enlightened.
+%
+;; No, I'm not interested in developing a powerful brain.  All I'm after is
+;; just a mediocre brain, something like the president of American Telephone
+;; and Telegraph Company.
+;; -- Alan Turing on the possibilities of a thinking machine, 1943.
+%
+;; ***** Special AI Seminar (abstract)
+;; It has been widely recognized that AI programs require expert knowledge
+;; in order to perform well in complex domains.  But knowledge alone is not
+;; sufficient for some applications; wisdom is needed as well.  Accordingly,
+;; we have developed a new approach to artificial intelligence which we call
+;; "wisdom engineering".  As a test of our ideas, we have written IMMANUEL, a
+;; wisdom based system for the task domain of western philosophical thought.
+;; IMMANUEL was supplied initially with 200 wisdom units which contained wisdom
+;; about such elementary concepts as mind, matter, being, nothingness, and so
+;; forth.  IMMANUEL was then allowed to run freely, guided by the heuristic
+;; rules contained in its heterarchically organized meta wisdom base.  IMMANUEL
+;; succeeded in rediscovering most of the important philosophical ideas developed
+;; in western culture over the course of the last 25 centuries, including those
+;; underlying Plato's theory of government, Kant's metaphysics, Nietzsche's theory
+;; of value, and Husserl's phenomenology.  In this seminar, we will describe
+;; IMMANUEL's achievements and internal architecture.  We will also briefly
+;; discuss our recent efforts to apply wisdom engineering to oil exploration.
+%
+;; One man's constant is another man's variable.
+;; -- Alan Perlis
+%
+;; Every program is a part of some other program and rarely fits.
+;; -- Alan Perlis
+%
+;; It is better to have 100 functions operate on one data structure than 10
+;; functions on 10 data structures.
+;; -- Alan Perlis
+%
+;; Artificial intelligence, like fusion power, has been ten years away for the
+;; last 30 years.
+;; -- Conrad Stack
+%
+;; If you have a procedure with ten parameters, you probably missed some.
+;; -- Alan J. Perlis
+%
+;; It is impossible to sharpen a pencil with a blunt axe.  It is equally vain to
+;; try to do it with ten blunt axes instead.
+;; -- Edsger W. Dijkstra
+%
+;; Of course, unless one has a theory, one cannot expect much help from a
+;; computer unless _it_ has a theory)...
+;; -- Marvin Minsky
+%
+;; Oh, boy, virtual memory! Now I'm gonna make myself a really *big* RAMdisk!
+%
+;; The human race will decree from time to time: "There is something at which
+;; it is absolutely forbidden to laugh."
+;; -- Nietzche on Common Lisp
+%
+;; The question of whether a computer can think is no more interesting than the
+;; question of whether a submarine can swim.
+;; -- Edsger W. Dijkstra
+%
+;; The meta-Turing test counts a thing as intelligent if it seeks to apply
+;; Turing tests to objects of its own creation.
+%
+;; Smith's Test for Artificial Life:
+;; When animal-rights activists and right-to-life protesters are marching outside
+;; your laboratory, then you know you've definitely made progress in your
+;; artificial life research.
+;; -- Donald A. Smith
+%
+;; You shouldn't anthropomorphize computers; they don't like it.
+%
+;; recursion, n:
+;;         See recursion.
+%
+;; To iterate is human; to recurse, divine.
+%
+;; "If you were plowing a field, which would you rather use?  Two strong oxen
+;;  or 1024 chickens?"
+;; -- Seymour Cray
+%
+;; This program posts news to billions of machines throughout the galaxy.  Your
+;; message will cost the net enough to bankrupt your entire planet.  As a result
+;; your species will be sold into slavery.  Be sure you know what you are doing.
+;; Are you absolutely sure you want to do this? [yn] y
+%
+;; Philosophy:  unintelligible answers to insoluble problems.
+%
+;; As far as the laws of mathematics refer to reality, they are not certain;
+;; and as far as they are certain, they do not refer to reality.
+;; -- Albert Einstein.
+%
+;; Sex is the mathematics urge sublimated.
+;; -- M. C. Reed.
+%
+;; The Three Laws of Thermodynamics:
+;;    1) You can't win.
+;;    2) You can't break even.
+;;    3) You can't even get out of the game.
+%
+;; ((LAMBDA (X) (X X)) (LAMBDA (X) (X X)))
+%
+;; I'm sure that nobody here would dream of misusing the Arpanet.
+;; It's as unthinkable as fornication, or smoking pot.
+;; -- RMS
+%
+;; Any programmer who fails to comply with the standard naming, formatting,
+;; or commenting conventions should be shot.  If it so happens that it is
+;; inconvenient to shoot him, then he is to be politely requested to recode
+;; his program in adherence to the above standard.
+;; -- Michael Spier, Digital Equipment Corporation
+%
+;; What to do if you find yourself stuck in a crack in the ground underneath a
+;; giant boulder you can't move with no hope of rescue:
+;;     Consider how lucky you are that Life has been good to you so far.
+;;     Alternatively, if Life hasn't been good to you so far, which, given
+;;     your current circumstances seems more likely, consider how lucky you
+;;     are that it won't be troubling you much longer.
+;; -- The Hitchhiker's Guide to the Galaxy
+%
+;; "Have you ever seen anything like that before?"
+;; "Not while I've been in a legal state of mind."
+%
+;; Time is an illusion,
+;; Lunchtime doubly so.
+%
+;; Don't panic.
+;; -- The Hitchhiker's Guide to the Galaxy
+%
+;; There is a theory which states that if ever anyone discovers exactly what
+;; the universe is for and why it is here, it will instantly disappear and be
+;; replaced by something even more bizarrely inexplicable.
+;; There is another theory which states that this has already happened....
+%
+;; REALITY is an illusion that stays put.
+;; REALITY is a mescaline deficiency.
+;; REALITY is a policy phased out early in the Eisenhower administration.
+;; REALITY is a bug in your ontology.
+%
+;; ...as a robotics designer once told me, you don't really appreciate how
+;; smart a moron is until you try to design a robot...
+;; -- Jerry Pournelle
+%
+;; I'm not sure it is of as much general concern as, say, coke-machines.
+;; -- Marvin Minsky (out of context), on the subject of death.
+%
+;; No matter how much money you spend, you can't make a racehorse out of a
+;; pig.  You can, however, make an awfully fast pig.
+;; -- An old saying about program efficiency
+%
+;; We have no need to punish Pascal programmers.  Pascal programming, like
+;; chastity, is its own punishment.  The only way I could imagine to make
+;; their wretched state any worse would be to make them use Ada.
+;; -- Scott Fahlman
+%
+;; The problem with the current Lisp Machine system is that nothing ever calls
+;; anything anymore.
+;; -- KMP
+%
+;; "A statement is either correct or incorrect.  To be *very* incorrect is
+;;  like being *very* dead ... "
+;; -- Herbert F. Spirer
+;;                    Professor of Information Management
+;;                    University of Conn.
+;;                    (DATAMATION Letters, Sept. 1, 1984)
+%
+;; "... psychologists sometimes refer to perception as controlled
+;;  hallucination ..."
+;; -- B. K. P. Horn
+;;                    6.866/6.801 Lecture
+%
+;; Bawden is misinformed.  Common Lisp has no philosophy.  We are held
+;; together only by a shared disgust for all the alternatives.
+;; -- Scott Fahlman, explaining why Common Lisp is the way it is....
+%
+;; Well, it's assembly language, you know.  You don't want to have too much
+;; taste...
+;; -- Dave Moon
+%
+;; Jeez, got me.  Unix is sorta like Heroin, It feels good for about 5 minutes
+;; a day and horrible the rest of the time.
+;; -- Jim O'Dell
+%
+;; If all the economists in the world were laid end to end, it would probably
+;; be a good thing.
+%
+;; If you eat a live frog in the morning, nothing worse will happen to either
+;; of you for the rest of the day.
+%
+;; Implementing systems is 95% boredom and 5% sheer terror.
+%
+;; Let me control a planet's oxygen supply and I don't care who makes the
+;; laws.
+%
+;; There is no TRUTH.
+;; There is no REALITY.
+;; There is no CONSISTANCY.
+;; There are no absolute statements.
+;; I'm probably wrong.
+%
+;; Non-determinism means never having to say you're wrong.
+%
+;; It has every known bug fix to everything.
+;; -- KLH (out of context)
+%
+;; The Three Laws of Thermodynamics:
+;;    1) You can't win, only lose or break even.
+;;    2) You can only break even at absolute zero.
+;;    3) You can't get to absolute zero.
+%
+;; When I first started taking these drugs, it was the government and the CIA
+;; who gave them to us.  You want to know why I believe in God?  That's why.
+;; God has a sense of humor.  God says "Americans are really seized up in
+;; their lower bowels, needing something to ooze them up."  God thought, "let
+;; the CIA give it to them."  When you get that feeling something's laughing,
+;; that's God.
+;; -- Ken Kesey
+%
+;; ;;;  Nobody except a qualified mail wizard should ever modify	     ;;;
+;; ;;;  this file.  You are -not- a mail wizard just because you	     ;;;
+;; ;;;  know how to read your mail.  Fuck with this file, and I'll	     ;;;
+;; ;;;  cut your balls off.  -Alan					     ;;;
+%
+;; I really only meant to point out how nice InterOp was for someone who
+;; doesn't have the weight of the Pentagon behind him.  I really don't imagine
+;; that the Air Force will ever be able to operate like a small, competitive
+;; enterprise like GM or IBM.
+;; -- Kent England
+%
+;; Let's start preparing for the future.  Now's a good time, since it's
+;; already here.
+;; -- David L. Andre
+%
+;; I die.  My replacement reads my uncommented code and deletes a
+;; fragment he doesn't understand.  Eventually the subroutine is sold to
+;; the government, and the bug causes nuclear missles to be launched by
+;; accident.  The other side retaliates, and all die.  O the
+;; embarrassment.
+%
+;; Functions delay binding; data structures induce binding.
+;; Moral: Structure data late in the programming process.
+;; -- Alan Perlis
+%
+;; Everything should be built top-down, except the first time.
+;; -- Alan Perlis
+%
+;; A language that doesn't affect the way you think about programming,
+;; is not worth knowing.
+;; -- Alan Perlis
+%
+;; Optimization hinders evolution.
+;; -- Alan Perlis
+%
+;; A good system can't have a weak command language.
+;; -- Alan Perlis
+%
+;; For systems, the analogue of a face-lift is to add to the control graph an
+;; edge that creates a cycle, not just an additional node.
+;; -- Alan Perlis
+%
+;; A LISP programmer knows the value of everything, but the cost of nothing.
+;; -- Alan Perlis
+%
+;; When we write programs that "learn", it turns out that we do
+;; and they don't.
+;; -- Alan Perlis
+%
+;; You think you know when you can learn, are more sure when you can write,
+;; even more when you can teach, but certain when you can program.
+;; -- Alan Perlis
+%
+;; Real Programmers are surprised when the odometers in their cars don't
+;; turn from 99999 to A0000.
+%
+;; It is considered artful to append many messages on a subject, leaving
+;; only the most inflammatory lines from each, and reply to all in one
+;; swift blow.  The choice of lines to support your argument can make or
+;; break your case.
+;; -- from the Symbolics Guidelines for Sending Mail
+%
+;; Replying to one's own message is a rarely-exposed technique for
+;; switching positions once you have thought about something only after
+;; sending mail.
+;; -- from the Symbolics Guidelines for Sending Mail
+%
+;; If you have nothing to say on a subject, replying with a line such as,
+;; "I agree with this." puts you in the TO:'s for all future messages, and
+;; establishes you as "one who really cares", if not an actual expert, on
+;; the topic at hand.
+;; -- from the Symbolics Guidelines for Sending Mail
+%
+;; Never hit someone head on, always sideswipe.  Never say, "Foo's last
+;; patch was brain-damaged", but rather, "While fixing the miscellaneous
+;; bugs in 243.xyz [foo's patch], I found...."
+;; -- from the Symbolics Guidelines for Sending Mail
+%
+;; Referring to undocumented private communications allows one to claim
+;; virtually anything: "we discussed this idea in our working group last
+;; year, and concluded that it was totally brain-damaged".
+;; -- from the Symbolics Guidelines for Sending Mail
+%
+;; Trivialize a user's bug report by pointing out that it was fixed
+;; independently long ago in a system that hasn't been released yet.
+;; -- from the Symbolics Guidelines for Sending Mail
+%
+;; Send messages calling for fonts not available to the
+;; recipient(s).  This can (in the case of Zmail) totally disable
+;; the user's machine and mail system for up to a whole day in some
+;; circumstances.
+;; -- from the Symbolics Guidelines for Sending Mail
+%
+;; SIGTHTBABW: a signal sent from Unix to its programmers at random
+;; intervals to make them remember that There Has To Be A Better Way.
+;; -- Erik Naggum
+%
+;; Save the environment.  Create a closure today.
+;; -- Cormac Flanagan
+%
+;; CLOS isn't the solution to everything.  Common Lisp (which includes
+;; CLOS) is the solution to everthing ;)
+;; -- Kelley Edward Murray (kem@franz.com)
+%
+;; If you like, consider me to just be saying that when you add a tiny
+;; conceptual amount of theoretical complexity going from a Lisp1 to a
+;; Lisp2, you get a tiny theoretical speedup...
+;; -- Kent M. Pitman
+%
+;; People in the Algol/Fortran world complained for years that they
+;; didn't understand what possible use function closures would have in
+;; efficient programming of the future. Then the `object oriented
+;; programming' revolution happened, and now everyone programs using
+;; function closures, except that they still refuse to to call them that.
+;; -- Henry Baker
+%
+;; Just because we Lisp programmers are better than
+;; everyone else is no excuse for us to be arrogant.  ;-)
+;; -- Erann Gat
+%
+;; General recursion is the `go to' of functional programming.
+;; -- Erik Meijer
+%
+;; On two occasions I have been asked [by members of Parliament!], `Pray,
+;; Mr.Babbage, if you put into the machine wrong figures, will the right
+;; answers come out?'  I am not able rightly to apprehend the kind of
+;; confusion of ideas that could provoke such a question.
+;; -- Charles Babbage
+%
+;; If a `religion' is defined to be a system of ideas that contains
+;; unprovable statements, then Godel taught us that mathematics is not
+;; only a religion, it is the only religion that can prove itself to be
+;; one.
+;; -- John Barrow
+%
+;; Functions compute; macros translate.
+;; -- Dave Moon
+%
+;; Much of [Scheme's] power comes from its simplicity ... "The fox knows
+;; many things, but the hedgehog knows one great thing."  Scheme is a
+;; hedgehog.
+;; -- PC Scheme Tutorial, viii (Texas Instruments)
+%
+;; The effort of using machines to mimic the human mind has always struck
+;; me as rather silly. I would rather use them to mimic something better
+;; -- Edsger Dijkstra
+%
+;; I bet the human brain is a kluge.
+;; -- Marvin Minsky
+%
+;; There's no sense in being precise, when you don't even know what
+;; you're talking about.
+;; -- John von Neumann
+%
+;; As I've gained more experience with Perl it strikes me that it resembles
+;; Lisp in many ways, albeit Lisp as channeled by an awk script on acid.
+;; -- Tim Moore (on comp.lang.lisp)
+%
+;; "If it has syntax, it isn't user friendly."
+;; -- Sam Steingold
+%
+;; "If someone asks me who I am, and if I'm among ordinary people, I tell them
+;; I'm a computer hacker.  If I'm among computer people I tell them I'm a
+;; Unix hacker.  If I'm among Unix people I tell them I'm a Linux hacker.  And
+;; if I'm among Linux people I tell them I'm a Lisp hacker.  It's nice to be
+;; different."
+;; -- James A. Crippen
+%
+;; The problem with Lisp is that it makes you so damned smug.
+;; -- Jesse Bowman
+%
+;; Universe, n.:
+;;         The problem.
+%
+;; Einstein argued that there must be simplified explanations of nature, because
+;; God is not capricious or arbitrary.  No such faith comforts the software
+;; engineer.
+;; -- Fred Brooks
+%
+;; lottery, n.:
+;; 	A tax on people who are bad at mathematics.
+%
+;; As in certain cults it is possible to kill a process if you know its true name.
+;; -- Ken Thompson and Dennis M. Ritchie
+%
+;; After a time, you may find that "having" is not so pleasing a thing,
+;; after all, as "wanting."  It is not logical, but it is often true.
+;; -- Spock, "Amok Time", stardate 3372.7
+%
+;; It appears that after his death, Albert Einstein found himself
+;; working as the doorkeeper at the Pearly Gates.  One slow day, he
+;; found that he had time to chat with the new entrants.  To the first one
+;; he asked, "What's your IQ?"  The new arrival replied, "190".  They
+;; discussed Einstein's theory of relativity for hours.  When the second
+;; new arrival came, Einstein once again inquired as to the newcomer's
+;; IQ.  The answer this time came "120".  To which Einstein replied, "Tell
+;; me, how did the Cubs do this year?" and they proceeded to talk for half
+;; an hour or so.  To the final arrival, Einstein once again posed the
+;; question, "What's your IQ?".  Upon receiving the answer "70",
+;; Einstein smiled and replied, "Got a minute to tell me about VMS 4.0?"
+%
+;; "It's down.  It's hosed.  It's a mutex and you're excluded."
+;; -- Jason Guild
+%
+;; How should I know if it works? That's what beta testers are for. I only
+;; coded it.
+;; -- Linus Torvalds
+%
+;; The memory management on the PowerPC can be used to frighten small children.
+;; -- Linus Torvalds
+%
+;; Moore's Constant:
+;;         Everybody sets out to do something, and everybody
+;;         does something, but no one does what he sets out to do.
+%
+;; The Briggs-Chase Law of Program Development:
+;;         To determine how long it will take to write and debug a
+;;         program, take your best estimate, multiply that by two, add
+;;         one, and convert to the next higher units.
+%
+;; GENERAL KNOWLEDGE
+;; Describe the Universe.  Give three examples.
+%
+;; Applying computer technology is simply finding the right wrench to pound in
+;; the correct screw.
+%
+;; The graduate with a Science degree asks, "Why does it work?"
+;; The graduate with an Engineering degree asks, "How does it work?"
+;; The graduate with an Accounting degree asks, "How much will it cost?"
+;; The graduate with a Liberal Arts degree asks, "Do you want fries with
+;; that?"
+%
+;; We should be careful to get out of an experience only the wisdom that is
+;; in it-and stop there; lest we be like the cat that sits down on a hot
+;; stove-lid.  She will never sit down on a hot stove-lid again-and that is
+;; well; but also she will never sit down on a cold one anymore.
+;; -- Mark Twain (Samuel Langhorne Clemens, 1835-1910)
+%
+;; The Lord's Prayer is 66 words, the Gettysburg Address is 286 words, there are
+;; 1,322 words in the Declaration of Independence, but government regulations on
+;; the sale of cabbage total 26,911 words.
+;; -- From an article on the growth of federal regulations
+;;            in the Oct. 24th issue of National Review
+%
+;; There's an old story about the person who wished his computer were as easy to
+;; use as his telephone.  That wish has come true, since I no longer know how to
+;; use my telephone.
+;; -- Bjarne Stroustrup
+%
+;; The number you have dialed is imaginary.  Please divide by 0 and try again.
+%
+;; When cryptography is outlawed, bayl bhgynjf jvyy unir cevinpl.
+%
+;; Some mornings, it's just not worth chewing through the leather straps.
+;; -- Emo Phillips
+%
+;; Writing about music is like dancing about architecture.
+%
+;; Experience is that marvelous thing that enables you recognize a mistake when
+;; you make it again.
+;; -- F. P. Jones
+%
+;; Human beings, who are almost unique in having the ability to learn from the
+;; experience of others, are also remarkable for their apparent disinclination to
+;; do so.
+;; -- Douglas Adams, _Last Chance to See_
+%
+;; No man ever steps in the same river twice, for it's not the same river and he's
+;; not the same man.
+;; -- Heraclitas
+%
+;; In a survey taken several years ago, all incoming freshman at MIT were asked if
+;; they expected to graduate in the top half of their class. Ninety-seven percent
+;; responded that they did.
+%
+;; The mind is not a vessel to be filled but a fire to be kindled.
+;; -- Plutarch
+%
+;; It's hard to make a program foolproof because fools are so ingenious.
+%
+;; A young man wrote to Mozart and said:
+;; Q: "Herr Mozart, I am thinking of writing symphonies. Can you give me any
+;;    suggestions as to how to get started?"
+;; A: "A symphony is a very complex musical form, perhaps you should begin with
+;;    some simple lieder and work your way up to a symphony."
+;; Q: "But Herr Mozart, you were writing symphonies when you were 8 years old."
+;; A: "But I never asked anybody how."
+%
+;; DECIMATE
+;; "Of course it originated with the Romans!  Who else would need a word that
+;; means 'kill every tenth person'?"
+;; -- Loren Wiseman
+%
+;; "If that makes any sense to you, you have a big problem."
+;; -- C. Durance, Computer Science 234
+%
+;; In any case, the TM [Turing Machine] and the lambda calculus were the first
+;; programming languages.  And the lambda calculus is perhaps the simplest
+;; comprehensible language which is Turing complete.  (Yeah, yeah,
+;; combinators are a simpler language.  But I defy you to understand
+;; what's going on.)
+;; -- John Prevost
+;;                    in a discussion on comp.lang.functional
+%
+;; All parts should go together without forcing.  You must remember that the parts
+;; you are reassembling were disassembled by you.  Therefore, if you can't get
+;; them together again, there must be a reason.  By all means, do not use a hammer.
+;; -- IBM maintenance manual, 1925
+%
+;; "The reluctance to put away childish things may be a requirement of genius."
+;; -- Rebecca Pepper Sinkler
+%
+;; "Wow, that's not just spaghetti code, that's linguini code."
+;; -- James A. Crippen
+;;                    (referring to GCC's Labels as Values and initializing
+;;                    a static array of pointers to labels which serve as
+;;                    a jump table for computed gotos via array indexing)
+%
+;; Human cardiac catheterization was introduced by Werner Forssman in 1929.
+;; Ignoring his department chief, and tying his assistant to an operating
+;; table to prevent her interference, he placed a ureteral catheter into
+;; a vein in his arm, advanced it to the right atrium [of his heart], and
+;; walked upstairs to the x-ray department where he took the confirmatory
+;; x-ray film.  In 1956, Dr. Forssman was awarded the Nobel Prize.
+%
+;; "Like DNA, such a language [Lisp] does not go out of style."
+;; -- Paul Graham, ANSI Common Lisp
+%
+;; [It is] best to confuse only one issue at a time.
+;; -- K&R
+%
+;; Documentation is the castor oil of programming.
+;; Managers know it must be good because the programmers hate it so much.
+%
+;; New systems generate new problems.
+%
+;; Every man takes the limits of his own field of vision for the limits
+;; of the world.
+;; -- Schopenhauer
+%
+;; "Memory is like an orgasm. It's a lot better if you don't have to fake it."
+;; -- Seymour Cray
+%
+;; For every complex problem there is an answer that is clear, simple, and
+;; wrong.
+;; -- H. L. Mencken
+%
+;; "A fractal is by definition a set for which the Hausdorff Besicovitch
+;;  dimension strictly exceeds the topological dimension."
+;; -- Mandelbrot, _The Fractal Geometry of Nature_
+%
+;; "A distributed system is one in which the failure of a computer you didn't
+;;  even know existed can render your own computer unusable."
+;; -- Leslie Lamport (CACM, June 1992)
+%
+;; "As an adolescent I aspired to lasting fame, I craved factual certainty, and
+;; I thirsted for a meaningful vision of human life - so I became a scientist.
+;; This is like becoming an archbishop so you can meet girls."
+;; -- Matt Cartmill
+%
+;; I really didn't foresee the Internet. But then, neither did the computer
+;; industry. Not that that tells us very much of course - the computer
+;; industry didn't even foresee that the century was going to end.
+;; -- Douglas Adams
+%
+;; Every now and then, when your life gets complicated and the weasels start
+;; closing in, the only cure is to load up on heinous chemicals and then
+;; drive like a bastard from Hollywood to Las Vegas ... with the music at
+;; top volume and at least a pint of ether.
+;; -- Hunter S. Thompson, "Fear and Loathing in Las Vegas"
+%
+;; Matter cannot be created or destroyed, nor can it be returned without a receipt.
+%
+;; To those accustomed to the precise, structured methods of conventional
+;; system development, exploratory development techniques may seem messy,
+;; inelegant, and unsatisfying.  But it's a question of congruence:
+;; precision and flexibility may be just as disfunctional in novel,
+;; uncertain situations as sloppiness and vacillation are in familiar,
+;; well-defined ones.  Those who admire the massive, rigid bone structures
+;; of dinosaurs should remember that jellyfish still enjoy their very
+;; secure ecological niche.
+;; -- Beau Sheil, "Power Tools for Programmers"
+%
+;; The connection between the language in which we think/program and the problems
+;; and solutions we can imagine is very close.  For this reason restricting
+;; language features with the intent of eliminating programmer errors is at best
+;; dangerous.
+;; -- Bjarne Stroustrup
+%
+;; It took the computing power of three Commodore 64 computers to fly to
+;; the moon.
+;; It takes a 486/66MHz computer to run Windows 95.
+;; Anything wrong?
+%
+;; I can't understand why people are frightened of new ideas.  I'm frightened
+;; of the old ones.
+;; -- John Cage
+%
+;; If I want your opinion, I'll ask you to fill out the necessary form.
+%
+;; Analysis should always be secondary to a product.
+;; -- James A. Crippen
+%
+;; Mathematics deals exclusively with the relations of concepts
+;; to each other without consideration of their relation to experience.
+;; -- Albert Einstein
+%
+;; The world is filled with idiots, or, in the most charitable view,
+;; people whose thinking is impenetrable.
+;; -- John Morrison
+%
+;; Programs must be written for people to read, and only incidentally for
+;; machines to execute.
+;; -- Abelson & Sussman, SICP, preface to the first edition
+%
+;; Premature optimization is the root of all evil (or at least most of
+;; it) in programming.
+;; -- Donald Knuth (paraphrasing Hoare)
+%
+;; Lisp is a programmable programming language.
+;; -- John Foderaro, CACM, September 1991
+%
+;; One can even conjecture that Lisp owes its survival specifically to
+;; the fact that its programs are lists, which everyone, including me,
+;; has regarded as a disadvantage.
+;; -- John McCarthy, "Early History of Lisp"
+%
+;; Greenspun's Tenth Rule of Programming: any sufficiently complicated C
+;; or Fortran program contains an ad hoc informally-specified bug-ridden
+;; slow implementation of half of Common Lisp.
+;; -- Phil Greenspun
+;; "Including Common Lisp."
+;; -- Robert Morris
+%
+;; Lisp is worth learning for the profound enlightenment experience you
+;; will have when you finally get it; that experience will make you a
+;; better programmer for the rest of your days, even if you never
+;; actually use Lisp itself a lot.
+;; -- Eric Raymond, "How to Become a Hacker"
+%
+;; Lisp is a programmer amplifier.
+;; -- Martin Rodgers (first said by Chuck Moore about Forth)
+%
+;; Common Lisp, a happy amalgam of the features of previous Lisps
+;; -- Winston & Horn, Lisp
+%
+;; "The best writing is rewriting."
+;; -- E. B. White
+%
+;; Don't worry about what anybody else is going to do. The best way to
+;; predict the future is to invent it.
+;; -- Alan Kay
+%
+;; Dealing with failure is easy: Work hard to improve. Success is also
+;; easy to handle: You've solved the wrong problem. Work hard to improve.
+;; -- Alan Perlis
+%
+;; The only way to learn a new programming language is by writing
+;; programs in it.
+;; -- Kernighan and Ritchie
+%
+;; Lisp was far more powerful and flexible than any other language of its
+;; day; in fact, it is still a better design than most languages of
+;; today, twenty-five years later. Lisp freed ITS's hackers to think in
+;; unusual and creative ways. It was a major factor in their successes,
+;; and remains one of hackerdom's favorite languages.
+;; -- Eric Raymond, in Open Sources on MIT's first OS, ITS
+%
+;; Common Lisp is politics, not art.
+;; -- Scott Fahlman
+%
+;; Lisp doesn't look any deader than usual to me.
+;; -- David Thornley, reply to a question older than most languages
+%
+;; Language designers are not intellectuals. They're not as interested in
+;; thinking as you might hope. They just want to get a language done and
+;; start using it.
+;; -- Dave Moon
+%
+;; Programming X-Windows is like trying to find the square root of pi using roman
+;; numerals.
+;; -- unknown
+%
+;; ...Please don't assume Lisp is only useful for Animation and Graphics,
+;; AI, Bioinformatics, B2B and E-Commerce, Data Mining, EDA/Semiconductor
+;; applications, Expert Systems, Finance, Intelligent Agents, Knowledge
+;; Management, Mechanical CAD, Modeling and Simulation, Natural Language,
+;; Optimization, Research, Risk Analysis, Scheduling, Telecom, and Web
+;; Authoring just because these are the only things they happened to
+;; list.
+;; -- Kent Pitman
+%
+;; Lisp is the red pill.
+;; -- John Fraser, comp.lang.lisp
+%
+;; Self-referencing
+;; Five, seven, five syllables
+;; This haiku contains
+%
+;; If we knew what it was we were doing, it would not be called
+;; research, would it?
+;; -- Albert Einstein
+%
+;; Thou Shalt Remember that If God had meant Man to program computers, He
+;; wouldn't have given him C.
+;; -- Philip Greenspun
+%
+;; Java is the SUV of programming tools.
+;; A project done in Java will cost 5 times as much, take twice as long,
+;; and be harder to maintain than a project done in a scripting language
+;; such as PHP or Perl.  People who are serious about getting the job
+;; done on time and under budget will use tools such as Visual Basic
+;; (controlled all the machines that decoded the human genome).  But the
+;; programmers and managers using Java will feel good about themselves
+;; because they are using a tool that, in theory, has a lot of power for
+;; handling problems of tremendous complexity.  Just like the suburbanite
+;; who drives his SUV to the 7-11 on a paved road but feels good because
+;; in theory he could climb a 45-degree dirt slope.  If a programmer is
+;; attacking a truly difficult problem he or she will generally have to
+;; use a language with systems programming and dynamic type extension
+;; capability, such as Lisp.
+;; -- Philip Greenspun
+%
+;; I had a second ephiphany for the week... Believing that Lisp circa
+;; 1982 plus some mid-1980s ML tricks thrown in is better than all of the
+;; new programming tools (C#, Java) that have been built since then is
+;; sort of like being a Holocaust denier.
+;; -- Philip Greenspun
+%
+;; "the greatest single programming language ever designed."
+;; -- Alan Kay (about Lisp)
+%
+;; Will write code that writes code that writes code that writes code for
+;; money.
+;; -- on comp.lang.lisp
+%
+;; Lisp is a language for doing what you've been told is impossible.
+;; -- Kent Pitman
+%
+;; Programmers who lock onto a design decision and cling to it in the face of
+;; contradictory new information - well, that's almost everyone in my
+;; experience, so I better not say what I think of them or people will start
+;; saying bad things about me on c.l.l.
+;; -- Ken Tilton
+%
+;; > Actually, I believe that Aikido, Jazz and Lisp are different appearances
+;; > of the same thing.
+%
+;; Yes, the Tao. /Everything/ is a different appearance of the tao.
+;; -- Ken Tilton
+%
+;; That absolutely terrifies the herd-following, lockstep-marching,
+;; mainstream-saluting cowards that obediently dash out or online to
+;; scoop up books on The Latest Thing. They learn and use atrocities like
+;; Java, C++, XML, and even Python for the security it gives them and
+;; then sit there slaving away miserably, tediously, joylously paying off
+;; mortgages and supporting ungrateful teenagers who despise them, only
+;; to look out the double-sealed thermo-pane windows of their
+;; central-heated, sound-proofed, dead-bolted, suffocating little nests
+;; into the howling gale thinking "what do they know that I do not know?"
+;; when they see us under a lean-to hunched over our laptops to shield
+;; them from the rain laughing our asses off as we write great code
+;; between bong hits.... what was the question?
+;; -- Ken Tilton
+%
+;; Nonsense. You'll be using it for the GUI, not protein-folding.
+;; -- Ken Tilton (responding to a comment that LTK was slow because it
+;;    was based on TK)
+%
+;; Continuations certainly are clever, but if we learned anything from
+;; the rejection of the cover art for "Smell the Glove", it is that
+;; "there is a fine line between stupid... and clever".
+;; -- Ken Tilton
+%
+;; Ah, there's no place like academia for dispassionate, intellectually
+;; honest discussion of new ideas on their merits. Thank god for tenure
+;; giving your bold antagonist the protection they needed to shout down
+;; your iconoclastic..... hang on...
+;; -- Ken Tilton
+%
+;; Whoever objected must be in my killfile, ...
+;; -- Ken Tilton
+%
+;; From memory (but I think I have it right): "But Jesus said, Suffer
+;; captured variables, and forbid them not, to come unto thine macro
+;; bodies: for of such is are DSLs made."
+;; -- Ken Tilton
+;; Can I get an Amen?
+%
+;; Awareness of defect is the first step to recovery.
+;; -- Ken Tilton
+%
+;; You made a bad analogy (there are no good ones, but you found a new
+;; low) ...
+;; -- Ken Tilton
+%
+;; Yes, it is true that Kent Pitman was raised by a closet full of Lisp
+;; Machines, but the exception only proves the rule.
+;; -- Ken Tilton (in a postscript after positing that computer languages
+;;    are not learned in infancy)
+%
+;; I suggest you try bartender's school to support yourself, start
+;; programming for fun again.
+;; -- Ken Tilton (responding to a comment that 98%of anything to do with
+;;    computers was not interesting code)
+%
+;; You could add four lanes to my carpal tunnel and I still could not
+;; write all the code I am dying to write.
+;; -- Ken Tilton
+%
+;; Neutrality? I want to bury other languages, not have a gateway to them.
+;; -- Ken Tilton
+%
+;; La pensée ne doit jamais se soumettre, ni à un dogme, ni à
+;; un parti, ni à une passion, ni à un intérêt, ni à une idée
+;; préconçue, ni à quoi que ce soit, si ce n’est aux faits eux-mêmes,
+;; parce que, pour elle, se soumettre, ce serait cesser
+;; d’être.
+;; -- Henri Poincaré, University of Brussels (1909-11-19)
+%
+;; Debugging is twice as hard as writing the code in the first
+;; place. Therefore, if you write the code as cleverly as possible,
+;; you are, by definition, not smart enough to debug it.
+;; -- Brian Kernighan
+%
+;; When in doubt, optimize code for future maintainability and
+;; legibility. Hardware gets faster. Programmers don't.
+;; -- DG
+%
+;; Comments (and self-documenting code) should tell you "what" and
+;; "why", because the code is telling you "how".
+;; -- daVinci1980
+%
+;; When an author or thinker’s own published total output is exceeded
+;; in a single year by that of writers writing about his ideas, it is
+;; a fair assumption that there is a ‘bubble’ in his or her stock.
+;; --  Satyajit Das on Keynes
+%
+;; Never has so much money been transferred from so many to so few.
+;; -- Joseph Stiglitz
+%
+;; God is in Emacs.
+;; -- Lars-Gunnar
+%
+;; Walking on water and developing software from a specification are
+;; easy if both are frozen.
+;; -- Edward V Berard
+%
+;; Hofstadter's Law: It always takes longer than you expect, even when
+;; you take into account Hofstadter's Law.
+;; -- Hofstadter
+%
+;; The first 90% of the code accounts for the first 90% of the
+;; development time. The remaining 10% of the code accounts for the
+;; other 90% of the development time.
+;; -- Tom Cargill
+%
+;; I have always wished for my computer to be as easy to use as my
+;; telephone; my wish has come true because I can no longer figure out
+;; how to use my telephone.
+;; -- Bjarne Stroustrup
+%
+;; Linux is only free if your time has no value.
+;; -- Jamie Zawinski
+%
+;; We will encourage you to develop the three great virtues of a
+;; programmer: laziness, impatience, and hubris.
+;; -- Larry Wall
+%
+;; On two occasions I have been asked, ‘Pray, Mr. Babbage, if you put
+;; into the machine wrong figures, will the right answers come out?’ I
+;; am not able rightly to apprehend the kind of confusion of ideas
+;; that could provoke such a question.
+;; -- Charles Babbage
+%
+;; Programming today is a race between software engineers striving to
+;; build bigger and better idiot-proof programs, and the Universe
+;; trying to produce bigger and better idiots. So far, the Universe is
+;; winning.
+;; -- Rich Cook
+%
+;; I don’t care if it works on your machine! We are not shipping your
+;; machine!
+;; -- Ovidiu Platon
+%
+;; In theory, theory and practice are the same. In practice, they’re
+;; not.
+;; -- Yoggi Berra
+%
+;; Two things are infinite: the universe and human stupidity; and I’m
+;; not sure about the universe.
+;; -- Albert Einstein
+%
+;; There are two ways of constructing a software design; one way is to
+;; make it so simple that there are obviously no deficiencies, and the
+;; other way is to make it so complicated that there are no obvious
+;; deficiencies. The first method is far more difficult.”
+;; -- Tony Hoare
+%
+;; Fast, cheap, good: pick any two.
+;; -- Old engineering saying
+%
+;; Everything should be made as simple as possible, but no
+;; simpler.
+;; -- Albert Einstein
+%
+;; Optimism is an occupational hazard of programming: feedback is the
+;; treatment.
+;; -- Kent Beck
+%
+;; Those who don’t understand UNIX are condemned to reinvent it,
+;; poorly.”
+;; -- Henry Spencer
+%
+;; Weeks of coding can save you hours of planning.
+;; -- Unknown
+%
+;; XML is like violence - if it's not working for you, you're not
+;; using enough of it.
+;; -- in Slashdot
+%
+;; Every language has an optimization operator. In C++ that operator
+;; is ‘//’.
+;; -- Overheard at the O’Reilly’s Velocity Conference, June 2008
+%
+;; Theory is when you know something, but it doesn't work. Practice is
+;; when something works, but you don't know why. Programmers combine
+;; theory and practice: Nothing works and they don't know why.
+;; -- Heard from a Teacher
+%
+;; UNIX is basically a simple operating system, but you have to be a
+;; genius to understand the simplicity.
+;; -- Dennis Ritchie
+%
+;; "Computer science education cannot make anybody an expert
+;; programmer any more than studying brushes and pigment can make
+;; somebody an expert painter."
+;; -- Eric Raymond
+%
+;; To iterate is human, to recurse divine.
+;; -- Peter Deutsch
+%
+;; There's no test like production.
+;; -- Unknown
+%
+;; The generation of random numbers is too important to be left to
+;; chance.
+;; -- Robert R. Coveyou, Oak Ridge National Laboratory
+%
+;; Anyone who considers arithmetic methods of producing random digits
+;; is, of course, in a state of sin.
+;; -- John von Neumann
+%
+;; Better train people and risk they leave – than do nothing and risk
+;; they stay.
+;; -- Anonymous
+%
+;; How do we convince people that in programming simplicity and
+;; clarity —in short: what mathematicians call "elegance"— are not a
+;; dispensable luxury, but a crucial matter that decides between
+;; success and failure?
+;; -- Edsger W. Dijkstra
+%
+;; Nothing is more permanent than a temporary solution.
+;; -- Thomas' First Law
+%
+;; Java is a DSL to transform big Xml documents into long exception
+;; stack traces.
+;; -- Scott Bellware
+%
+;; Plan to throw one away; you will anyway.
+;; -- Fred Brooks
+%
+;; The programmer, like the poet, works only slightly removed from
+;; pure thought-stuff. He builds his castles in the air, from air,
+;; creating by exertion of the imagination. Few media of creation are
+;; so flexible, so easy to polish and rework, so readily capable of
+;; realizing grand conceptual structures.
+;; -- Fred Brooks
+%
+;; Programmers usually have good reasons for making bad decisions.
+;; -- Unknown
+%
+;; Software and cathedrals are much the same - first we build them,
+;; then we pray.
+;; -- Anonymous
+%
+;; Debugging is like farting - it's not so bad when it's your own
+;; code.
+;; -- Anonymous
+%
+;; Java: Write Once, Debug Everywhere
+;; -- Anonymous
+%
+;; All problems in computer science can be solved with another level
+;; of indirection.
+;; -- David Wheeler
+%
+;; Confidence, n.: The feeling you have before you understand the
+;; situation
+;; -- Anonymous
+%
+;; Good judgement is the result of experience ... Experience is the
+;; result of bad judgement.
+;; -- Fred Brooks
+%
+;; Man is the best computer we can put aboard a spacecraft...and the
+;; only one that can be mass produced with unskilled labour.
+;; -- Wernher von Braun
+%
+;; Before software can be reusable it first has to be usable.
+;; -- Anonymous
+%
+;; There are only two industries that refer to their customers as
+;; users: the computer industry and the drug trade.
+;; -- Anonymous
+%
+;; One programmer can do in one day what two programmers can do in
+;; two.
+;; -- Anonymous
+%
+;; Work expands so as to fill the time available for its completion.
+-- Parkinson's Law
+%
+;; Increasingly, people seem to misinterpret complexity as
+;; sophistication, which is baffling – the incomprehensible should
+;; cause suspicion rather than admiration.
+;; -- Niklaus Wirth
+%
+;; Beware of bugs in the above code; I have only proved it correct,
+;; not tried it.
+;; -- Donald Knuth
+%
+;; If you can't explain something to a six-year-old, you really don't
+;; understand it yourself.
+;; -- Albert Einstein
+%
+;; Never memorize what you can look up in books.
+;; -- Albert Einstein
+%
+;; It should work!
+;; -- A programmer's last words
+%
+;; Your code is both good and original. Unfortunately the parts that
+;; are good are not original, and the parts that are original are not
+;; good.
+;; -- Anonymous
+%
+;; Code never lies, comments sometimes do.
+;; -- Ron Jeffries
+%
+;; Any sufficiently advanced bug is indistinguishable from a feature.
+;; -- Rich Kulawiec
+%
+;; The sooner we start coding fewer frameworks and more programs the
+;; sooner we’ll become better programmers.
+;; -- Warped Java Guy Elementary Java Solutions
+%
+;; They have computers, and they may have other weapons of mass
+;; destruction.
+;; -- Janet Reno
+%
+;; They did not know it was impossible, so they did it!
+;; -- Mark Twain
+%
+;; Any sufficiently successful rigged demo is indistinguishable from
+;; advanced technology.
+;; -- Unknown
+%
+;; There are two major products that come out of Berkeley: LSD and
+;; UNIX. We don’t believe this to be a coincidence.
+;; -- Jeremy Anderson
+%
+;; Shipping is a feature.
+;; -- Richard Campbell.
+%
+;; A computer programmer is a device for turning coffee into bugs.
+;; -- Bram Moolenaar (paraphrasing Erdos)
+%
+;; Most software today is very much like an Egyptian pyramid with
+;; millions of bricks piled on top of each other, with no structural
+;; integrity, but just done by brute force and thousands of slaves.
+-- Alan Kay
+%
+;; Now I'm a pretty lazy person and am prepared to work quite hard in
+;; order to avoid work.
+;; -- Martin Fowle
+%
+;; If it doesn't work, it doesn't matter how fast it doesn't work.
+;; -- Mich Ravera
+%
+;; Le mieux est l'ennemi du bien.
+;; --Voltaire
+%
+;; I object to doing things that computers can do.
+;; -- Olin Shivers
+%
+;; Never attribute to malice that which can be adequately explained by
+;; stupidity.
+;; -- Hanlon's Razor
+%
+;; My other car is a cdr.
+;; -- Dan Hewett
+%
+;; I will, in fact, claim that the difference between a bad programmer
+;; and a good one is whether he considers his code or his data
+;; structures more important. Bad programmers worry about the
+;; code. Good programmers worry about data structures and their
+;; relationships.
+;; -- Linus Torvalds
+%
+;; You know you've achieved perfection in design, not when you have
+;; nothing more to add, but when you have nothing more to take away.
+;; -- Antoine de Saint-Exupéry in Wind, Sand and Stars
+%
+;; Software is like entropy. It is difficult to grasp, weighs nothing,
+;; and obeys the second law of thermodynamics; i.e. it always
+;; increases.
+;; -- Unknown
+%
+;; The behavior of any bureaucratic organization can best be
+;; understood by assuming that it is controlled by a secret cabal of
+;; its enemies.
+;; -- Robert Conquest's Second Law of Politics
+%
+;; Organizations which design systems are constrained to produce
+;; designs which are copies of the communication structures of these
+;; organizations.
+;; -- Conway's Law
+%
+;; The trouble with programmers is that you can never tell what a
+;; programmer is doing until it's too late.
+;; -- Seymour Cray
+%
+;; We can't solve problems by using the same kind of thinking we used
+;; when we created them.
+;; -- Albert Einstein
+%
+;; The first principle is that you must not fool yourself - and you
+;; are the easiest person to fool.
+;; -- Richard Feynman
+%
+;; There is not now, nor has there ever been, nor will there ever be,
+;; any programming language in which it is the least bit difficult to
+;; write bad code.
+;; -- Flon's Law
+%
+;; The unavoidable price of reliability is simplicity.
+;; -- C.A.R. Hoare
+%
+;; Let us change our traditional attitude to the construction of
+;; programs. Instead of imagining that our main task is to instruct a
+;; computer what to do, let us concentrate rather on explaining to
+;; human beings what we want a computer to do.
+;; -- Donald Knuth
+%
+;; A distributed system is one in which the failure of a computer you
+;; didn't even know existed can render your own computer unusable.
+;; -- Leslie Lamport
+%
+;; Correctness is clearly the prime quality. If a system does not do
+;; what it is supposed to do, then everything else about it matters
+;; little.
+;; -- Bertrand Meyer
+%
+;; Incorrect documentation is often worse than no documentation.
+;; -- Bertrand Meyer
+%
+;; Any fool can use a computer. Many do.
+;; -- Ted Nelson
+%
+;; The most amazing achievement of the computer software industry is
+;; its continuing cancellation of the steady and staggering gains made
+;; by the computer hardware industry.
+;; -- Henry Petroski
+%
+;; Technology is dominated by two types of people: Those who
+;; understand what they do not manage; Those who manage what they do
+;; not understand.
+;; -- Putt's Law
+%
+;; The trouble with the world is that the stupid are cocksure and the
+;; intelligent are full of doubt.
+;; -- Bertrand Russell
+%
+;; If the code and the comments disagree, then both are probably
+;; wrong.
+;; -- Norm Schryer
+%
+;; It is a painful thing to look at your own trouble amd know that you
+;; tyourself and no one esle has made it.
+;; -- Sophocles, Ajax
+%
+;; I can remember the exact instant when I realized that a large part
+;; of my life from then on was going to be spent in finding mistakes
+;; in my own programs.
+;; Maurice Wilkes discovers debugging, 1949
+%
+;; Software gets slower faster than hardware gets faster.
+;; -- Wirth's law
+%
+;; If you don't have time to fix it now, what on Earth makes you think
+;; you will have time to fix it later?
+;; -- Bob Manne
+%
+;; All programmers are optimists.
+;; -- Frederick Brooks, The Mythical Man-Month
+%
+;; Are you quite sure that all those bells and whistles, all those
+;; wonderful facilities of your so called powerful programming
+;; languages, belong to the solution set rather than the problem set?
+;; -- Edsger W. Dijkstra
+%
+;; C++ is more of a rube-goldberg type thing full of high-voltages,
+;; large chain-driven gears, sharp edges, exploding widgets, and spots
+;; to get your fingers crushed. And because of it's complexity many
+;; (if not most) of it's users don't know how it works, and can't tell
+;; ahead of time what's going to cause them to loose an arm.
+;; -- Grant Edwards
+%
+;; Good programmers know what to write. Great ones know what to
+;; rewrite (and reuse).
+;; -- Eric Raymond
+%
+;; If debugging is the process of removing software bugs, then
+;; programming must be the process of putting them in.
+;; Edsger Dijkstra
+%
+;; Singleton is a misconcept in OOP unless it's used as a misconcepted
+;; paradigm for application development.
+;; -- Unknown
+%
+;; If I have not seen as far as others, it is because giants were
+;; standing on my shoulders.
+;; -- Hal Abelson
+%
+;; The Knuth, the whole Knuth, and nothing but the Knuth, so help me
+;; Codd!
+;; -- Unknown
+%
+;; Our software isn't released, it escapes leaving a bloody trail of
+;; testers behind it.
+;; -- Unknown
+%
+;; Computers make it easier to do a lot of things, but most of the
+;; things they make it easier to do don't need to be done.
+;; -- Andy Rooney
+%
+;; When in doubt, leave it out.
+;; -- Joshua Bloch
+%
+;; Arrogance in computer science is measured in nano-Dijkstras.
+;; -- Alan Kay
+%
+;; Tout nouveau développement contient au moins un bug. Toute
+;; correction de bug est un nouveau développement.
+;; -- Unknown
+%
+;; The cheapest, fastest, and most reliable components are those that
+;; aren't there.
+;; -- Gordon Bell
+%
+;; We reject kings, presidents and voting. We believe in rough
+;; consensus and running code.
+; -- David Clark
+%
+;; Be conservative in what you send and liberal in what you accept.
+;; -- John Postel
+%
+;; When I have a specific goal in mind and a complicated piece of code
+;; to write, I spend my time making it happen rather than telling
+;; myself stories about it.
+;; -- Steve Yegge
+%
+;; This is important, and a little hard to understand. English is
+;; useful because it's a mess. Since English is a mess, it maps well
+;; onto the problem space, which is also a mess, which we call
+;; reality. Similarly, Perl was designed to be a mess (though in the
+;; nicest of possible ways).
+;; -- Larry Wall
+%
+;; Simplicity is the soul of efficiency.
+;; -- Austin Freeman
+(in The Eye of Osiris)
+%
+;; ... it is simplicity that is difficult to make.
+;; -- Bertholdt Brecht
+
+;; Unix was not designed to stop people from doing stupid things, because
+;; that would also stop them from doing clever things.
+;; -- Doug Gwyn
+%
+;; Please don't fall into the trap of believing that I am terribly
+;; dogmatical about [the goto statement]. I have the uncomfortable
+;; feeling that others are making a religion out of it, as if the
+;; conceptual problems of programming could be solved by a single trick,
+;; by a simple form of coding discipline!
+;; -- Edsger Dijkstra
+%
+;; The designer of a new kind of system must participate fully in the
+;; implementation.
+;; -- Donald E. Knuth
+%
+;; ... the designer of a new system must not only be the implementor and
+;; the first large-scale user; the designer should also write the first
+;; user manual. ... If I had not participated fully in all these
+;; activities, literally hundreds of improvements would never have been
+;; made, because I would never have thought of them or perceived why they
+;; were important.
+;; -- Donald E. Knuth
+%
+;; More good code has been written in languages denounced as bad than in
+;; languages proclaimed wonderful; -- much more.
+;; -- Bjarne Stroustrup (in The Design and Evolution of C++) (1994)
+%
+;; I have yet to see any problem, however complicated, which, when you
+;; looked at it in the right way, did not become still more complicated.
+;; -- Poul Anderson
+%
+;; ... with proper design, the features come cheaply. This approach is
+;; arduous, but continues to succeed.
+;; -- Dennis Ritchie
+%
+;; Simple things should be simple and complex things should be
+;; possible.
+;; -- Alan Kay
+%
+;; Premature optimization is the root of all evil in programming.
+;; -- C.A.R. Hoare
+%
+;; Bird-feeding, for human consumption and mnemonic purposes, is
+;; perfectly appropriate in comments, but should be kept out of
+;; protocols.
+;; -- John Klensin
+%
+;; The problem with using C++ ... is that there's already a strong
+;; tendency in the language to require you to know everything before you
+;; can do anything.
+;; -- Larry Wall
+%
+;; The key to performance is elegance, not battalions of special
+;; cases. The terrible temptation to tweak should be resisted unless the
+;; payoff is really noticeable.
+;; -- Jon Bentley and Doug McIlroy
+%
+;; It should be noted that no ethically-trained software engineer would
+;; ever consent to write a DestroyBaghdad procedure. Basic professional
+;; ethics would instead require him to write a DestroyCity procedure, to
+;; which Baghdad could be given as a parameter.
+;; -- Nathaniel S. Borenstein
+%
+;; The lyf so short, the craft so long to lerne.
+;; -- Geoffrey Chaucer
+%
+;; If you've been pounding nails with your forehead for years, it may
+;; feel strange the first time somebody hands you a hammer. But that
+;; doesn't mean that you should strap the hammer to a headband just to
+;; give your skull that old familiar jolt.
+;; -- Wayne Throop <throopw%sheol.uucp@dg-rtp.dg.com>
+%
+;; There are features that should not be used.
+;; there are concepts that should not be exploited.
+;; There are problems that should not be solved.
+;; There are programs that should not be written.
+;; -- Richard Harter <rh@smds.com>
+%
+;; Writing code ... is not an exercise in manliness.
+;; -- Mark Hahn <hahn@neurocog.lrdc.pitt.edu>
+%
+;; The trouble with the world is that the stupid are cocksure and the
+;; intelligent are full of doubt.
+;; -- Bertrand Russell
+%
+;; Luck is the residue of design.
+;; -- Branch Rickey
+%
+;; I think psychoanalyze-pinhead is the important lesson of GNU Emacs.
+;; -- Bennett Todd <bet@mordor.com>
+%
+;; It's hard to read through a book on the principles of magic without
+;; glancing at the cover periodically to make sure it isn't a book on
+;; software design.
+;; -- Bruce Tognazzini
+%
+;; A charlatan makes obscure what is clear; a thinker makes clear what
+;; is obscure.
+;; -- Hugh Kingsmill
+%
+;; Anybody who thinks a little 9,000-line program that's distributed free
+;; and can be cloned by anyone is going to affect anything we do at
+;; Microsoft has his head screwed on wrong.
+;; -- Bill Gates (regarding Java, shortly before Microsoft licensed Java
+;; and cancelled the Blackbird project)
+%
+;; The real tight interface is between the book and the reader; the
+;; world of the book is plugged right into your brain, never mind the
+;; [virtual reality] bodysuit.
+;; -- Bill McKibben (in The Age of Missing Information)
+%
+;; [ActiveX] will have no security, no reliability, and although the
+;; demos might be impressive, they are simply clothes with no emperor:
+;; it is a pretty face and no more.
+;; -- Carmine <carmine@mangione.com>
+%
+;; A language that doesn't have everything is actually easier to
+;; program in than some that do.
+;; -- Dennis Ritchie
+%
+;; A designer can mull over complicated designs for months. Then suddenly
+;; the simple, elegant, beautiful solution occurs to him. When it happens
+;; to you, it feels as if God is talking! And maybe He is.
+;; -- Leo Frankowski (in The Cross-Time Engineer)
+%
+;; Programming languages should be designed not by piling feature on top
+;; of feature, but by removing the weaknesses and restrictions that make
+;; additional features appear necessary.
+;; -- from Revised4 Report on the Algorithmic Language Scheme
+%
+;; Unformed people delight in the gaudy and in novelty.
+;; Cooked people delight in the ordinary.
+;; -- Erik Naggum
+%
+;; ... the cost of adding a feature isn't just the time it takes to code
+;; it. The cost also includes the addition of an obstacle to future
+;; expansion. ... The trick is to pick the features that don't fight each
+;; other.
+;; -- John Carmack
+%
+;; Although NT has lots of the cool stuff I discovered in UNIX, what it
+;; doesn't have is personalities.
+;; -- Rik Farrow
+%
+;; To keep large programs well structured, you either need superhuman
+;; will power, or proper language support for interfaces.
+;; -- Greg Nelson
+%
+;; One of the great skills in using any language is knowing what not to
+;; use, what not to say. ... There's that simplicity thing again.
+;; -- Ron Jeffries
+%
+;; The ideal engineer is a composite ... he is not a scientist, he is not
+;; a mathematician, he is not a sociologist, or a writer; but he may use
+;; the knowledge and techniques of any or all of these disciplines in
+;; solving engineering problems.
+;; -- N. W. Dougherty
+%
+;; When we use a language, we should commit ourselves to knowing it,
+;; being able to read it, and writing it idiomatically.
+;; -- Ron Jeffries (in Wiki:ReturnBooleanEvaluations)
+%
+;; Learning research tells us that the time lag from experiment to
+;; feedback is critical ...
+;; -- Kent Beck (in Wiki:IsExtremeProgrammingWacko)
+%
+;; If we spoke a different language, we would perceive a somewhat
+;; different world.
+;; -- Wittgenstein
+%
+;; One of the most dangerous (and evil) things ever injected into the
+;; project world is the notion of process maturity. Process maturity is
+;; for replicable manufacturing contexts. Projects are one-time
+;; shots. Replicability is never the primary issue on one-time
+;; shots. More evil than good has come from the notion that we should
+;; stick to the methodology. This is a recipe for non-adaptive death. I'd
+;; rather die by commission.
+;; -- David Schmaltz
+%
+;; Perilous to us all are the devices of an art deeper than we possess
+;; ourselves.
+;; -- J. R. R. Tolkien
+%
+;; We don't think of ourselves as being perfectionists, really. To us
+;; it's more about desperately trying to have it sound more or less OK.
+;; -- Donald Fagen
+%
+;; You think you know when you can learn, are more sure when you can
+;; write, even more when you can teach, but certain when you can program.
+;; -- Alan Perlis
+%
+;; The greatest obstacle to discovery is not ignorance, but the illusion
+;; of knowledge.
+;; -- Daniel Boorstin
+%
+;; Nothing in progression can rest on its original plan. We may as well
+;; think of rocking a grown man in the cradle of an infant.
+;; -- Edmund Burke
+%
+;; Inspiration comes from the act of writing.
+;; -- Steven Dunn
+%
+;; Design and programming are human activities; forget that and all is
+;; lost.
+;; -- Bjarne Stroustrup
+%
+;; ... as a slow-witted human being I have a very small head and I had
+;; better learn to live with it and to respect my limitations and give
+;; them full credit, rather than to try to ignore them, for the latter
+;; vain effort will be punished by failure.
+;; -- Edsger W. Dijkstra
+%
+;; Out of intense complexities, intense simplicities emerge.
+;; -- Winston Churchill
+%
+;; There is nothing permanent except change.
+;; -- Heraclitus
+%
+;; To a database person, every nail looks like a thumb. Or something
+;; like that.
+;; -- Jamie Zawinski
+%
+;; I don't know or trust Demeter.
+;; -- David Brady
+%
+;; Newton was a genius, but not because of the superior computational
+;; power of his brain. Newton's genius was, on the contrary, his ability
+;; to simplify, idealize, and streamline the world so that it became, in
+;; some measure, tractable to the brains of perfectly ordinary men.
+;; -- Gerald M. Weinberg
+%
+;; The skill of writing is to create a context in which other people can
+;; think.
+;; -- Edwin Schlossberg
+%
+;; If you like your remote messaging fat, dumb, and interoperable, you
+;; could also look into the SOAP libraries distributed with Ruby.
+;; -- Dave Thomas
+%
+;; Good engineering is not a matter of creativity or centering or
+;; grounding or inspiration or lateral thinking, as useful as those might
+;; be, but of decoding the clever, even witty, messages the solution
+;; space carves on the corpses of the ideas in which you believed with
+;; all your heart, and then building the road to the next message.
+;; -- Fred Hapgood
+%
+;; Java development without a little heresy would be a dull place, and a
+;; dangerous one.
+;; -- Bruce Tate
+%
+;; First you listen to the users; then you ignore them.
+;; -- Ken Arnold
+%
+;; The really important thing about Ajax is that it's tricked us into
+;; adopting a really powerful language when we wouldn't have chosen to do
+;; so on our own.
+;; -- Stuart Halloway
+%
+;; It would be well if engineering were less generally thought of, and
+;; even defined, as the art of constructing. In a certain important sense
+;; it is rather the art of not constructing: or, to define it rudely, but
+;; not inaptly, it is the art of doing well with one dollar, which any
+;; bungler can do with two after a fashion.
+;; -- Arthur Mellen Wellington
+%
+;; The hardest part of design ... is keeping features out.
+;; -- Donald Norman
+%
+;; Simplicity does not mean want or poverty. It does not mean the absence
+;; of any decor, or absolute nudity. It only means that the decor should
+;; belong intimately to the design proper, and that anything foreign to
+;; it should be taken away.
+;; -- Paul Jacques Grillo
+%
+;; Every task involves constraint,
+;; Solve the thing without complaint;
+;; There are magic links and chains
+;; Forged to loose our rigid brains.
+;; Structures, structures, though they bind,
+;; Strangely liberate the mind.
+;; -- James Falen
+%
+;; The big bang way only works for god, everybody else has to use
+;; evolution.
+;; -- David Moon (From one of the "dynamic languages wizards" panels)
+%
+;; When C++ is your hammer, everything looks like a thumb
+;; -- Steven M. Haflich in c.l.l
+%
+;; Back in my day, we programmed with a nine-volt battery and a
+;; steady hand!
+;; -- jwz
+%
+;; Avoid success at all costs.
+;; -- haskell moto
+%
+;; The key to Understanding complicated things is to know what not to
+;; look at, and what not to compute, and what not to think.
+;; -- Abelson & Sussman, SICP, preface to the first edition
+%
+;; PHP is a minor evil perpetrated and created by incompetent amateurs,
+;; whereas Perl is a great and insidious evil, perpetrated by skilled but
+;; perverted professionals.
+;; -- Jon Ribbens
+%

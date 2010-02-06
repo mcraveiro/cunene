@@ -1,0 +1,13 @@
+** commands
+
+C-u C-<SPC> - go back to previous mark
+M-x align-regexp - align around a symbol
+occur - local grep
+string-rectangle (C-x r t) and kill-rectangle (C-x r k)
+linum-mode: line numbers for all lines
+M-x re-builder: regular expression builder
+M-x delete-trailing-whitespace
+‘C-x r m’ – set a bookmark at the current location (e.g. in a file)
+‘C-x r b’ – jump to a bookmark
+‘C-x r l’ – list all of your bookmarks
+‘M-x bookmark-delete’ – delete a bookmark by name

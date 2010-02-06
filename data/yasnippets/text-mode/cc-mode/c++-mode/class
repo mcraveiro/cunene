@@ -1,0 +1,14 @@
+#name : class ... { ... }
+# --
+/**
+ * @brief $3
+ */
+class ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`} {
+public: // ctors, dtor
+    $1($2);
+    virtual ~$1();
+public:
+    $0
+private: // fields
+
+}; // ${1:$(yas/substr text "[^: ]*")}
