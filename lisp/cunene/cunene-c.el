@@ -36,7 +36,6 @@
           (lambda ()
             (c-set-offset 'innamespace 0)      ;; Do not indent namespaces.
             (c-toggle-hungry-state 1)          ;; use hungry delete.
-            (doxymacs-mode)
             (company-mode)
             (build-tab-stop-list tab-width)
             (setq c-basic-offset tab-width)
