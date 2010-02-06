@@ -104,4 +104,4 @@
   (setq cunene-files (cdr cunene-files)))
 
 ;; Make sure fortune is the last thing to execute
-;; (fortune)
+(fortune)
