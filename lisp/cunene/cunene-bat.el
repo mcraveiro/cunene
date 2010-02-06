@@ -17,6 +17,7 @@
 
 (autoload 'bat-mode "bat-mode" "DOS and WIndows BAT files" t)
 
+;; Extensions for bat mode
 (add-to-list 'auto-mode-alist '("\\.[bB][aA][tT]$" bat-mode))
 (add-to-list 'auto-mode-alist '("CONFIG\\." . bat-mode))
 (add-to-list 'auto-mode-alist '("AUTOEXEC\\." . bat-mode))

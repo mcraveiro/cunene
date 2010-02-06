@@ -18,25 +18,20 @@
 ;; Highlight current line.
 (require 'highline)
 
-(defun highline-mode-on () (highline-mode 1))
-
-;;
-;; Turn on local highlighting for list-buffers (C-x C-b)
-;;
-(defadvice list-buffers (after highlight-line activate)
-  (save-excursion
-    ;; FIXME: can we make this a list? add grep, find, find-dired
-    (set-buffer "*Buffer List*")
-    (highline-mode-on)))
-
 ;; Fonts
 (setq highline-face 'highlight)
 (setq highline-whole-line nil)
 
 ;; Turn on local highlighting for a bunch of modes
-(add-hook 'dired-after-readin-hook #'highline-mode-on)
-(add-hook 'ibuffer-hooks #'highline-mode-on)
-(add-hook 'grep-setup-hook #'highline-mode-on)
-(add-hook 'compilation-mode-hook #'highline-mode-on)
+(add-hook 'dired-after-readin-hook 'highline-on)
+(add-hook 'ibuffer-hooks #'highline-on)
+(add-hook 'grep-setup-hook #'highline-on)
+(add-hook 'compilation-mode-hook #'highline-on)
 ;; (add-hook 'log-view-hook #'highline-mode-on)
 ;; (add-hook 'find-dired-hook #'highline-mode-on)
+
+;; Turn on local highlighting for list-buffers
+(defadvice list-buffers (after highlight-line activate)
+  (save-excursion
+    (set-buffer "*Buffer List*")
+    (highline-on)))

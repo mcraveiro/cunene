@@ -32,7 +32,9 @@
 
 ;; List of customisation files
 ;; FIXME: use load directory.
-(setq cunene-files '("cunene-misc"
+(setq cunene-files '(
+                     "cunene-elpa"
+                     "cunene-misc"
                      "cunene-abbrev"
                      "cunene-ansi-color"
                      "cunene-anything"
@@ -57,11 +59,9 @@
                      "cunene-desktop-save"
                      "cunene-diff"
                      "cunene-dired"
-;;                     "cunene-doxymacs"
-;;                     "cunene-ecb"
+                     "cunene-ecb"
                      "cunene-ede"
                      "cunene-eiffel"
-                     "cunene-elpa"
                      "cunene-ffap"
                      "cunene-fixme"
                      "cunene-flyspell"
@@ -95,7 +95,8 @@
                      "cunene-visual-basic"
                      "cunene-w3m"
                      "cunene-whitespace"
-                     "cunene-yasnippet"))
+                     "cunene-yasnippet"
+))
 
 ;; Load the customisation files
 (while cunene-files
@@ -103,4 +104,4 @@
   (setq cunene-files (cdr cunene-files)))
 
 ;; Make sure fortune is the last thing to execute
-(fortune)
+;; (fortune)

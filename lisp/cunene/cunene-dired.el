@@ -15,9 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with cunene.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Turn on local highlighting
-(add-hook 'dired-after-readin-hook #'highline-mode-on)
-
 ;; Dired switches
 (setq dired-listing-switches "-lX")
 (setq list-directory-brief-switches "-CF")
