@@ -31,4 +31,4 @@
 
 ;; Compile command is different in lisp.
 (define-key lisp-mode-shared-map (kbd "C-c c")
-  'emacs-lisp-byte-compile-and-load)
+  'emacs-lisp-byte-compile)
