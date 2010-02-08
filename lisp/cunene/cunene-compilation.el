@@ -20,7 +20,8 @@
 
 ;; Make the compilation and grep windows smaller.
 (if (not window-system)
-    (setq compilation-window-height 8))
+    (setq compilation-window-height 8)
+  (setq compilation-window-height 14))
 
 ;; Scroll the compilation buffer automatically.
 (setq compilation-scroll-output t)

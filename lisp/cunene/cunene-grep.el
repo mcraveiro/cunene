@@ -15,5 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with cunene.  If not, see <http://www.gnu.org/licenses/>.
 
-(if (window-system)
-    (setq grep-window-height 14))
+(if (not window-system)
+    (setq grep-window-height 8)
+  (setq grep-window-height 14))
