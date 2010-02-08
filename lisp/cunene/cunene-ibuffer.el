@@ -24,16 +24,23 @@
                ("c++" (or
                        (mode . c++-mode)
                        (name . "^\\*compilation\\*$")))
-               ("dired" (mode . dired-mode))
-               ("emacs-lisp" (or
-                        (mode . emacs-lisp-mode)
-                        (name . "^\\*Compile-Log\\*$")))
-
-               ("magit" (name . "^\\*magit"))
-               ("emacs" (or
-                         (name . "^\\*Help\\*$")
-                         (name . "^\\*scratch\\*$")
-                         (name . "^\\*Messages\\*$")))
+               ("file management" (or
+                                   (mode . dired-mode)
+                                   (mode . shell-mode)))
+                ("emacs-lisp" (or
+                               (mode . emacs-lisp-mode)
+                               (name . "^\\*Compile-Log\\*$")))
+                ("magit" (name . "^\\*magit"))
+                ("emacs" (or
+                          (name . "^\\*Help\\*$")
+                          (name . "^\\*scratch\\*$")
+                          (name . "^\\*Messages\\*$")))
+                ("documentation" (or
+                                  (mode . Info-mode)
+                                  (mode . apropos-mode)
+                                  (mode . woman-mode)
+                                  (mode . help-mode)
+                                  (mode . Man-mode)))
 ))))
 
 (add-hook 'ibuffer-mode-hook
