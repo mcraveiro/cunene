@@ -106,6 +106,11 @@ Setting this to nil will make it do nothing, setting it to t will arrange things
   :group 'magit
   :type 'boolean)
 
+(defcustom magit-use-highlights nil
+  "Use highlights in diff buffer."
+  :group 'magit
+  :type 'boolean)
+
 (defface magit-header
   '((t))
   "Face for generic header lines.
@@ -816,7 +821,8 @@ Many Magit faces inherit from this one by default."
 
 (defun magit-highlight-section ()
   (let ((section (magit-current-section)))
-    (when (not (eq section magit-highlighted-section))
+    (when (and (not (eq section magit-highlighted-section))
+                    magit-use-highlights)
       (setq magit-highlighted-section section)
       (if (not magit-highlight-overlay)
 	  (let ((ov (make-overlay 1 1)))
