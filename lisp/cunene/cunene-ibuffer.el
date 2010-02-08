@@ -18,44 +18,44 @@
 ;; Clever buffer menu
 (require 'ibuffer)
 
-(setq ibuffer-formats '((mark modified read-only " " (name 30 30) " "
-                              (mode 16 16)  " " filename)
-                        (mark " " (name 16 -1) " " filename))
-      ibuffer-elide-long-columns t)
-(setq ibuffer-default-sorting-mode 'major-mode)
+;; (setq ibuffer-formats '((mark modified read-only " " (name 30 30) " "
+;;                               (mode 16 16)  " " filename)
+;;                         (mark " " (name 16 -1) " " filename))
+;;       ibuffer-elide-long-columns t)
+;; (setq ibuffer-default-sorting-mode 'major-mode)
 
-(defadvice ibuffer-update-title-and-summary (after remove-column-titles)
-  (save-excursion
-    (set-buffer "*Ibuffer*")
-    (toggle-read-only 0)
-    (goto-char 1)
-    (search-forward "-\n" nil t)
-    (delete-region 1 (point))
-    (let ((window-min-height 1))
-      ;; save a little screen estate
-      (shrink-window-if-larger-than-buffer))
-    (toggle-read-only)))
+;; (defadvice ibuffer-update-title-and-summary (after remove-column-titles)
+;;   (save-excursion
+;;     (set-buffer "*Ibuffer*")
+;;     (toggle-read-only 0)
+;;     (goto-char 1)
+;;     (search-forward "-\n" nil t)
+;;     (delete-region 1 (point))
+;;     (let ((window-min-height 1))
+;;       ;; save a little screen estate
+;;       (shrink-window-if-larger-than-buffer))
+;;     (toggle-read-only)))
 
-(ad-activate 'ibuffer-update-title-and-summary)
+;; (ad-activate 'ibuffer-update-title-and-summary)
 
-(define-ibuffer-sorter filename-or-dired
-  "Sort the buffers by their pathname."
-  (:description "filenames plus dired")
-  (string-lessp
-   (with-current-buffer (car a)
-     (or buffer-file-name
-         (if (eq major-mode 'dired-mode)
-             (expand-file-name dired-directory))
-         ;; so that all non pathnames are at the end
-         "~"))
-   (with-current-buffer (car b)
-     (or buffer-file-name
-         (if (eq major-mode 'dired-mode)
-             (expand-file-name dired-directory))
-         ;; so that all non pathnames are at the end
-         "~"))))
+;; (define-ibuffer-sorter filename-or-dired
+;;   "Sort the buffers by their pathname."
+;;   (:description "filenames plus dired")
+;;   (string-lessp
+;;    (with-current-buffer (car a)
+;;      (or buffer-file-name
+;;          (if (eq major-mode 'dired-mode)
+;;              (expand-file-name dired-directory))
+;;          ;; so that all non pathnames are at the end
+;;          "~"))
+;;    (with-current-buffer (car b)
+;;      (or buffer-file-name
+;;          (if (eq major-mode 'dired-mode)
+;;              (expand-file-name dired-directory))
+;;          ;; so that all non pathnames are at the end
+;;          "~"))))
 
-(define-key ibuffer-mode-map (kbd "s p") 'ibuffer-do-sort-by-filename-or-dired)
+;; (define-key ibuffer-mode-map (kbd "s p") 'ibuffer-do-sort-by-filename-or-dired)
 
-;; Interactive buffer
+;; Key bindings
 (global-set-key (kbd "<f5>") 'ibuffer)
