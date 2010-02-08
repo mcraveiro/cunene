@@ -24,14 +24,19 @@
                ("c++" (or
                        (mode . c++-mode)
                        (name . "^\\*compilation\\*$")))
+               ("sql" (or
+                       (mode . sql-mode)
+                       (name . "^\\*SQL")))
                ("file management" (or
                                    (mode . dired-mode)
+                                   (mode . grep-mode)
                                    (mode . shell-mode)))
                 ("emacs-lisp" (or
                                (mode . emacs-lisp-mode)
                                (name . "^\\*Compile-Log\\*$")))
                 ("magit" (name . "^\\*magit"))
                 ("emacs" (or
+                          (name . "^\\*Completions\\*$")
                           (name . "^\\*Help\\*$")
                           (name . "^\\*scratch\\*$")
                           (name . "^\\*Messages\\*$")))
