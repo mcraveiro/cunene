@@ -106,3 +106,4 @@
 ;; Make sure fortune and fullscreen are the last thing to execute
 (fortune)
 (fullscreen)
+(message "Cunene v0.0.1 - Emacs configuration done.")
