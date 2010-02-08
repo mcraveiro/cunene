@@ -26,5 +26,8 @@
 ;; Scroll the compilation buffer automatically.
 (setq compilation-scroll-output t)
 
-;; Compile
+;; Key bindings
 (global-set-key (kbd "C-c c") 'compile)
+
+;; Only go to error messages
+(setq compilation-skip-threshold 2)
