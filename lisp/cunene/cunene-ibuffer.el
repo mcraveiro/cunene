@@ -18,6 +18,28 @@
 ;; Clever buffer menu
 (require 'ibuffer)
 
+;; group buffers
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("c++" (or
+                       (mode . c++-mode)
+                       (name . "^\\*compilation\\*$")))
+               ("dired" (mode . dired-mode))
+               ("emacs-lisp" (or
+                        (mode . emacs-lisp-mode)
+                        (name . "^\\*Compile-Log\\*$")))
+
+               ("magit" (name . "^\\*magit"))
+               ("emacs" (or
+                         (name . "^\\*Help\\*$")
+                         (name . "^\\*scratch\\*$")
+                         (name . "^\\*Messages\\*$")))
+))))
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
+
 ;; (setq ibuffer-formats '((mark modified read-only " " (name 30 30) " "
 ;;                               (mode 16 16)  " " filename)
 ;;                         (mark " " (name 16 -1) " " filename))
