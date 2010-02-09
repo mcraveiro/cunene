@@ -40,6 +40,7 @@
                           (name . "^\\*Help\\*$")
                           (name . "^\\*scratch\\*$")
                           (name . "^\\*Messages\\*$")))
+                ("web" (name . "^\\*w3m"))
                 ("documentation" (or
                                   (mode . Info-mode)
                                   (mode . apropos-mode)
