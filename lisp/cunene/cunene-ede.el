@@ -18,7 +18,12 @@
 ;; Enable Emacs Development Environment project management features
 (global-ede-mode 1)
 
-;; Risk project
+
+;;
+;; Projects
+;;
+
+;; Risk
 (ede-cpp-root-project "Risk"
                       :name "Risk Project"
                       :file "~/code/kitanda/risk/CMakeLists.txt"
@@ -27,7 +32,7 @@
                       :spp-table '(("isUnix" . "")
                                    ("BOOST_TEST_DYN_LINK" . "")))
 
-;; Turbo project
+;; Turbo
 (ede-cpp-root-project "Turbo"
                       :name "Turbo Project"
                       :file "~/code/kitanda/turbo/CMakeLists.txt"
@@ -35,11 +40,19 @@
                       :spp-table '(("isUnix" . "")
                                    ("BOOST_TEST_DYN_LINK" . "")))
 
-;; Trading project
+;; Trading
 (ede-cpp-root-project "Trading"
                       :name "Trading Project"
                       :file "~/code/kitanda/trading/CMakeLists.txt"
                       :include-path '("/cpp/include")
                       :system-include-path '("~/code/kitanda/turbo/include")
+                      :spp-table '(("isUnix" . "")
+                                   ("BOOST_TEST_DYN_LINK" . "")))
+
+;; Quantlib
+(ede-cpp-root-project "Turbo"
+                      :name "Turbo Project"
+                      :file "/home/marco/code/ql/trunk/QuantLib/Makefile.am"
+                      :include-path '("/cpp/include")
                       :spp-table '(("isUnix" . "")
                                    ("BOOST_TEST_DYN_LINK" . "")))
