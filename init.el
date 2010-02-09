@@ -71,6 +71,7 @@
                      "cunene-highline"
                      "cunene-ibuffer"
                      "cunene-ido"
+                     "cunene-iedit"
                      "cunene-jira"
                      "cunene-lisp"
                      "cunene-magit"
