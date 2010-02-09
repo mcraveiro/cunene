@@ -17,7 +17,7 @@
 
 ;; Make FIXME stand out
 (setq fixme-modes
-      '(latex-mode makefile-mode c-mode emacs-lisp-mode sh-mode))
+      '(latex-mode makefile-mode c-mode emacs-lisp-mode sh-mode text-mode))
 (make-face 'font-lock-fixme-face)
 (mapc (lambda (mode)
         (font-lock-add-keywords
