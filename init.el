@@ -23,6 +23,8 @@
 
 ;; Top level data directory
 (setq datafiles-dir (concat toplevel-dir "data"))
+(if (not (file-accessible-directory-p datafiles-dir))
+    (make-directory datafiles-dir))
 
 ;; Directory for all of my customisations.
 (setq cunene-dir (concat dotfiles-dir "/cunene/"))
@@ -96,7 +98,7 @@
                      "cunene-uniquify"
                      "cunene-visual-basic"
                      "cunene-w3m"
-                     "cunene-winer"
+                     "cunene-winner"
                      "cunene-whitespace"
                      "cunene-yasnippet"
 ))

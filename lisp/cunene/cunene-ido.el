@@ -17,7 +17,11 @@
 
 ;; File to remember ido directories
 ;; FIXME: IDO doesn't seem to be using this file
-(setq ido-save-directory-list-file (concat datafiles-dir "/ido/ido.last"))
+(setq idofiles-dir (concat datafiles-dir "/ido"))
+(if (not (file-accessible-directory-p idofiles-dir))
+    (make-directory idofiles-dir))
+
+(setq ido-save-directory-list-file (concat idofiles-dir "/ido.last"))
 
 ;; Intelligent completion
 (require 'ido)

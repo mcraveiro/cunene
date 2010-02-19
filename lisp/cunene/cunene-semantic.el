@@ -17,6 +17,8 @@
 
 ;; Save semantic data in one place
 (setq semanticdb-default-save-directory (concat datafiles-dir "/semantic"))
+(if (not (file-accessible-directory-p semanticdb-default-save-directory))
+    (make-directory semanticdb-default-save-directory))
 
 ;; This enables coding tools such as intellisense mode decoration
 ;; mode, and stickyfunc mode plus enables which-func-mode, that shows

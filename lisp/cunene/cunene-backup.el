@@ -17,6 +17,8 @@
 
 ;; Backup directory
 (setq backup-dir (concat datafiles-dir "/backups/"))
+(if (not (file-accessible-directory-p backup-dir))
+    (make-directory backup-dir))
 
 ;; Move the backup files to a sensible place
 (setq backup-directory-alist `((".*" . ,backup-dir)))
