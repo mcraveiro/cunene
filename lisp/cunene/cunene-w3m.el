@@ -25,4 +25,16 @@
 (setq w3m-use-cookies t)
 
 ;; Web browsing
-(global-set-key (kbd "C-c w") 'w3m-goto-url)
+(global-set-key (kbd "C-c w") 'w3m-find-file)
+
+(setq w3m-default-display-inline-images t
+      w3m-default-save-directory (concat datafiles-dir "/browser/downloads")
+      ;; w3m-home-page "http://localhost/"
+      ;; w3m-init-file "~/.emacs.d/.emacs-w3m"
+      ;;       w3m-command-arguments
+      ;;       (nconc w3m-command-arguments
+      ;;             ;; '("-o" "http_proxy=http://webcache.prc.sun.com:8080/"))
+      ;;             ;; '("-o" "http_proxy=http://222.43.34.94:3128/"))
+      ;;             '("-o" "http_proxy="))
+      ;;       w3m-no-proxy-domains '(".edu.cn,166.111.,162.105.,net9.org"))
+      )
