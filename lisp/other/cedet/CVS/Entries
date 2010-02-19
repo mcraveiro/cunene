@@ -1,12 +1,3 @@
-/.cvsignore/1.1/Thu Mar 12 22:58:05 2009//
-/INSTALL/1.23/Tue Apr  7 00:41:51 2009//
-/Makefile.wwwinfo/1.3/Thu Oct  2 01:36:18 2003//
-/PRERELEASE_CHECKLIST/1.25/Sun Aug 30 17:02:05 2009//
-/USING_CEDET_FROM_CVS/1.2/Mon May 28 00:47:41 2007//
-/cedet-update-changelog.el/1.11/Sun Aug 30 16:35:42 2009//
-/cedet-update-version.el/1.4/Wed Feb  8 04:17:01 2006//
-/gettodos.sh/1.1/Tue Jun 17 16:21:07 2008//
-/testdist.sh/1.1/Fri Sep 18 00:57:12 2009//
 D/cogre////
 D/common////
 D/contrib////
@@ -18,6 +9,15 @@ D/speedbar////
 D/srecode////
 D/tests////
 D/www////
-/cedet-build.el/1.12/Wed Dec 30 15:26:03 2009//
-/cedet-ediff.el/1.2/Wed Dec 30 15:26:03 2009//
-/Makefile/1.25/Tue Feb  2 15:02:57 2010//
+/.cvsignore/1.1/Sat Feb  6 10:28:29 2010//
+/INSTALL/1.23/Sat Feb  6 10:28:28 2010//
+/Makefile/1.25/Sat Feb  6 10:28:27 2010//
+/Makefile.wwwinfo/1.3/Sat Feb  6 10:28:30 2010//
+/PRERELEASE_CHECKLIST/1.25/Sat Feb  6 10:28:29 2010//
+/USING_CEDET_FROM_CVS/1.2/Sat Feb  6 10:28:27 2010//
+/cedet-build.el/1.12/Sat Feb  6 10:28:27 2010//
+/cedet-ediff.el/1.2/Sat Feb  6 10:28:30 2010//
+/cedet-update-changelog.el/1.11/Sat Feb  6 10:28:27 2010//
+/cedet-update-version.el/1.4/Sat Feb  6 10:28:27 2010//
+/gettodos.sh/1.1/Sat Feb  6 10:28:29 2010//
+/testdist.sh/1.1/Sat Feb  6 10:28:28 2010//

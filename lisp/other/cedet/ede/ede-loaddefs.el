@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (autoconf-parameters-for-macro) "autoconf-edit"
-;;;;;;  "autoconf-edit.el" (19117 43876))
+;;;;;;  "autoconf-edit.el" (19309 17486))
 ;;; Generated autoloads from autoconf-edit.el
 
 (autoload 'autoconf-parameters-for-macro "autoconf-edit" "\
@@ -15,19 +15,11 @@ Returns a list of the arguments passed into MACRO as strings.
 
 ;;;***
 
-;;;### (autoloads (ede-adebug-project-root ede-adebug-project-parent
-;;;;;;  ede-adebug-project ede-target-parent ede-parent-project ede-load-project-file
-;;;;;;  ede-documentation-files ede-description ede-name project-make-dist
-;;;;;;  project-compile-target project-compile-project project-edit-file-target
-;;;;;;  ede-compile-target ede-remove-file global-ede-mode) "ede"
-;;;;;;  "ede.el" (19308 1308))
+;;;### (autoloads (ede-target-parent ede-parent-project ede-load-project-file
+;;;;;;  project-make-dist project-compile-target project-compile-project
+;;;;;;  project-edit-file-target ede-compile-target ede-remove-file
+;;;;;;  global-ede-mode) "ede" "ede.el" (19326 45462))
 ;;; Generated autoloads from ede.el
-
-(eieio-defclass-autoload 'ede-project-autoload 'nil "ede" "Class representing minimal knowledge set to run preliminary EDE functions.\nWhen more advanced functionality is needed from a project type, that projects\ntype is required and the load function used.")
-
-(eieio-defclass-autoload 'ede-target '(eieio-speedbar-directory-button) "ede" "A top level target to build.")
-
-(eieio-defclass-autoload 'ede-project '(ede-project-placeholder) "ede" "Top level EDE project specification.\nAll specific project types must derive from this project.")
 
 (defvar ede-projects nil "\
 A list of all active projects currently loaded in Emacs.")
@@ -74,23 +66,6 @@ Build a distribution for the project based on THIS project.
 
 \(fn (THIS ede-project))" nil nil)
 
-(autoload 'ede-name "ede" "\
-Return the name of THIS targt.
-
-\(fn (THIS ede-target))" nil nil)
-
-(autoload 'ede-description "ede" "\
-Return a description suitable for the minibuffer about THIS.
-
-\(fn (THIS ede-project))" nil nil)
-
-(autoload 'ede-documentation-files "ede" "\
-Return the documentation files for the current buffer.
-Not all buffers need documentations, so return nil if no applicable.
-Some projects may have multiple documentation files, so return a list.
-
-\(fn)" nil nil)
-
 (autoload 'ede-load-project-file "ede" "\
 Project file independent way to read a project in from DIR.
 Optional ROOTRETURN will return the root project for DIR.
@@ -111,19 +86,54 @@ could become slow in time.
 
 \(fn TARGET)" nil nil)
 
-(autoload 'ede-adebug-project "ede" "\
+;;;***
+
+;;;### (autoloads nil "ede-auto" "ede-auto.el" (19312 36827))
+;;; Generated autoloads from ede-auto.el
+
+(eieio-defclass-autoload 'ede-project-autoload 'nil "ede-auto" "Class representing minimal knowledge set to run preliminary EDE functions.\nWhen more advanced functionality is needed from a project type, that projects\ntype is required and the load function used.")
+
+;;;***
+
+;;;### (autoloads (ede-adebug-project-root ede-adebug-project-parent
+;;;;;;  ede-adebug-project ede-documentation-files ede-description
+;;;;;;  ede-name) "ede-base" "ede-base.el" (19312 41531))
+;;; Generated autoloads from ede-base.el
+
+(eieio-defclass-autoload 'ede-target '(eieio-speedbar-directory-button) "ede-base" "A target is a structure that describes a file set that produces something.\nTargets, as with 'Make', is an entity that will manage a file set \nand knows how to compile or otherwise transform those files into some\nother desired outcome.")
+
+(eieio-defclass-autoload 'ede-project '(ede-project-placeholder) "ede-base" "Top level EDE project specification.\nAll specific project types must derive from this project.")
+
+(autoload 'ede-name "ede-base" "\
+Return the name of THIS targt.
+
+\(fn (THIS ede-target))" nil nil)
+
+(autoload 'ede-description "ede-base" "\
+Return a description suitable for the minibuffer about THIS.
+
+\(fn (THIS ede-project))" nil nil)
+
+(autoload 'ede-documentation-files "ede-base" "\
+Return the documentation files for the current buffer.
+Not all buffers need documentations, so return nil if no applicable.
+Some projects may have multiple documentation files, so return a list.
+
+\(fn)" nil nil)
+
+(autoload 'ede-adebug-project "ede-base" "\
 Run adebug against the current ede project.
 Display the results as a debug list.
 
 \(fn)" t nil)
 
-(autoload 'ede-adebug-project-parent "ede" "\
+(autoload 'ede-adebug-project-parent "ede-base" "\
 Run adebug against the current ede parent project.
 Display the results as a debug list.
 
 \(fn)" t nil)
 
-(autoload 'ede-adebug-project-root "ede" "\
+(autoload 'ede-adebug-project-root "ede-base" "\
 Run adebug against the current ede parent project.
 Display the results as a debug list.
 
@@ -132,7 +142,7 @@ Display the results as a debug list.
 ;;;***
 
 ;;;### (autoloads (ede-cpp-root-load ede-cpp-root-project-root ede-cpp-root-project-file-for-dir)
-;;;;;;  "ede-cpp-root" "ede-cpp-root.el" (19139 61088))
+;;;;;;  "ede-cpp-root" "ede-cpp-root.el" (19309 17486))
 ;;; Generated autoloads from ede-cpp-root.el
 
 (autoload 'ede-cpp-root-project-file-for-dir "ede-cpp-root" "\
@@ -159,8 +169,44 @@ ROOTPROJ is nil, since there is only one project.
 
 ;;;***
 
+;;;### (autoloads (ede-project-sort-targets ede-customize-target
+;;;;;;  ede-customize-current-target ede-customize-project) "ede-custom"
+;;;;;;  "ede-custom.el" (19312 35075))
+;;; Generated autoloads from ede-custom.el
+
+(autoload 'ede-customize-project "ede-custom" "\
+Edit fields of the current project through EIEIO & Custom.
+Optional GROUP specifies the subgroup of slots to customize.
+
+\(fn &optional GROUP)" t nil)
+
+(defalias 'customize-project 'ede-customize-project)
+
+(autoload 'ede-customize-current-target "ede-custom" "\
+Edit fields of the current target through EIEIO & Custom.
+Optional argument OBJ is the target object to customize.
+Optional argument GROUP is the slot group to display.
+
+\(fn &optional GROUP)" t nil)
+
+(defalias 'customize-target 'ede-customize-current-target)
+
+(autoload 'ede-customize-target "ede-custom" "\
+Edit fields of the current target through EIEIO & Custom.
+Optional argument OBJ is the target object to customize.
+Optional argument GROUP is the slot group to display.
+
+\(fn OBJ GROUP)" nil nil)
+
+(autoload 'ede-project-sort-targets "ede-custom" "\
+Create a custom-like buffer for sorting targets of current project.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (ede-emacs-load ede-emacs-project-root) "ede-emacs"
-;;;;;;  "ede-emacs.el" (19259 28940))
+;;;;;;  "ede-emacs.el" (19309 17486))
 ;;; Generated autoloads from ede-emacs.el
 
 (autoload 'ede-emacs-project-root "ede-emacs" "\
@@ -182,8 +228,8 @@ ROOTPROJ is nil, since there is only one project.
 
 ;;;***
 
-;;;### (autoloads (ede-find-file) "ede-files" "ede-files.el" (19304
-;;;;;;  15871))
+;;;### (autoloads (ede-find-file) "ede-files" "ede-files.el" (19326
+;;;;;;  45462))
 ;;; Generated autoloads from ede-files.el
 
 (autoload 'ede-find-file "ede-files" "\
@@ -196,7 +242,7 @@ the current EDE project.
 ;;;***
 
 ;;;### (autoloads (ede-linux-load ede-linux-project-root) "ede-linux"
-;;;;;;  "ede-linux.el" (19159 60823))
+;;;;;;  "ede-linux.el" (19309 17486))
 ;;; Generated autoloads from ede-linux.el
 
 (autoload 'ede-linux-project-root "ede-linux" "\
@@ -219,7 +265,7 @@ ROOTPROJ is nil, since there is only one project.
 ;;;***
 
 ;;;### (autoloads (ede-enable-locate-on-project) "ede-locate" "ede-locate.el"
-;;;;;;  (19114 57548))
+;;;;;;  (19309 17486))
 ;;; Generated autoloads from ede-locate.el
 
 (autoload 'ede-enable-locate-on-project "ede-locate" "\
@@ -232,7 +278,7 @@ based on `ede-locate-setup-options'.
 ;;;***
 
 ;;;### (autoloads (ede-make-check-version) "ede-make" "ede-make.el"
-;;;;;;  (18872 24586))
+;;;;;;  (19309 17486))
 ;;; Generated autoloads from ede-make.el
 
 (autoload 'ede-make-check-version "ede-make" "\
@@ -247,7 +293,7 @@ If NOERROR is nil, then throw an error on failure.  Return t otherwise.
 ;;;***
 
 ;;;### (autoloads (ede-pmake-varname) "ede-pmake" "ede-pmake.el"
-;;;;;;  (19259 28942))
+;;;;;;  (19326 45462))
 ;;; Generated autoloads from ede-pmake.el
 
 (autoload 'ede-pmake-varname "ede-pmake" "\
@@ -258,7 +304,7 @@ Change .  to _ in the variable name.
 
 ;;;***
 
-;;;### (autoloads nil "ede-proj" "ede-proj.el" (19304 15871))
+;;;### (autoloads nil "ede-proj" "ede-proj.el" (19326 45462))
 ;;; Generated autoloads from ede-proj.el
 
 (add-to-list 'auto-mode-alist '("Project\\.ede$" . emacs-lisp-mode))
@@ -266,7 +312,7 @@ Change .  to _ in the variable name.
 ;;;***
 
 ;;;### (autoloads (ede-shell-buffer ede-shell-run-something) "ede-shell"
-;;;;;;  "ede-shell.el" (19160 52698))
+;;;;;;  "ede-shell.el" (19309 17486))
 ;;; Generated autoloads from ede-shell.el
 
 (autoload 'ede-shell-run-something "ede-shell" "\
@@ -283,7 +329,7 @@ Get the buffer for running shell commands for TARGET.
 ;;;***
 
 ;;;### (autoloads (ede-simple-load ede-simple-projectfile-for-dir)
-;;;;;;  "ede-simple" "ede-simple.el" (18853 53097))
+;;;;;;  "ede-simple" "ede-simple.el" (19309 17486))
 ;;; Generated autoloads from ede-simple.el
 
 (add-to-list 'ede-project-class-files (ede-project-autoload "simple-overlay" :name "Simple" :file 'ede-simple :proj-file 'ede-simple-projectfile-for-dir :load-type 'ede-simple-load :class-sym 'ede-simple-project) t)
@@ -307,7 +353,7 @@ ROOTPROJ is nil, since we will only create a single EDE project here.
 ;;;***
 
 ;;;### (autoloads (ede-srecode-insert ede-srecode-setup) "ede-srecode"
-;;;;;;  "ede-srecode.el" (18619 22854))
+;;;;;;  "ede-srecode.el" (19309 17486))
 ;;; Generated autoloads from ede-srecode.el
 
 (autoload 'ede-srecode-setup "ede-srecode" "\
@@ -326,8 +372,8 @@ Note: Just like `srecode-insert', but templates found in 'ede app.
 
 ;;;***
 
-;;;### (autoloads (ede-update-version) "ede-util" "ede-util.el" (17213
-;;;;;;  40281))
+;;;### (autoloads (ede-update-version) "ede-util" "ede-util.el" (19309
+;;;;;;  17486))
 ;;; Generated autoloads from ede-util.el
 
 (autoload 'ede-update-version "ede-util" "\
@@ -343,8 +389,8 @@ Argument NEWVERSION is the version number to use in the current project.
 ;;;;;;  "ede-proj-elisp.el" "ede-proj-info.el" "ede-proj-maven2.el"
 ;;;;;;  "ede-proj-misc.el" "ede-proj-obj.el" "ede-proj-prog.el" "ede-proj-scheme.el"
 ;;;;;;  "ede-proj-shared.el" "ede-proj-skel.el" "ede-source.el" "ede-speedbar.el"
-;;;;;;  "ede-system.el" "makefile-edit.el" "project-am.el") (19308
-;;;;;;  1386 934078))
+;;;;;;  "ede-system.el" "makefile-edit.el" "project-am.el") (19326
+;;;;;;  45775 384505))
 
 ;;;***
 

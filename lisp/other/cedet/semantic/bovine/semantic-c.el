@@ -3,7 +3,7 @@
 ;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: semantic-c.el,v 1.137 2010/01/29 03:10:21 zappo Exp $
+;; X-RCS: $Id: semantic-c.el,v 1.139 2010/02/19 02:23:27 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -341,7 +341,12 @@ Take the first interesting thing and convert it."
     (cond
      ((eq key 'number) (string-to-number value))
      ((eq key 'symbol) (semantic-c-evaluate-symbol-for-hideif value))
-     ((eq key 'string) value)
+     ((eq key 'string)
+      (if (string-match "^[0-9]+L?$" value)
+	  ;; If it matches a number expression, then
+	  ;; convert to a number.
+	  (string-to-number value)
+	value))
      (t (semantic-push-parser-warning
 	 (format "Unknown macro value. Token class = %s value = %s. " key value)
 	 0 0)
@@ -366,6 +371,14 @@ Pulls out the symbol list, and call `semantic-c-convert-spp-value-to-hideif-valu
 	  ;; Convert the macro to something we can return.
 	  (semantic-c-convert-spp-value-to-hideif-value spp-symbol stream))
 
+	 ;; Strings might need to be turned into numbers
+	 ((stringp stream)
+	  (if (string-match "^[0-9]+L?$" stream)
+	      ;; If it matches a number expression, then convert to a
+	      ;; number.
+	      (string-to-number stream)
+	    stream))
+
 	 ;; Just return the stream.  A user might have just stuck some
 	 ;; value in it directly.
 	 (t stream)
@@ -389,7 +402,7 @@ Pulls out the symbol list, and call `semantic-c-convert-spp-value-to-hideif-valu
 I think it just gets the value for some CPP variable VAR."
   (let ((val (semantic-c-evaluate-symbol-for-hideif
               (cond
-               ((stringp var)  var )
+               ((stringp var) var)
                ((symbolp var) (symbol-name var))
                (t "Unable to determine var")))))
     (if val
@@ -1085,8 +1098,29 @@ now.
 	 ;; of type "typedef".
 	 ;; Each elt of NAME is ( STARS NAME )
 	 (let ((vl nil)
-	       (names (semantic-tag-name tag)))
+	       (names (semantic-tag-name tag))
+	       (super (semantic-tag-get-attribute tag :superclasses))
+	       (addlast nil))
+
+	   (when (and (semantic-tag-of-type-p tag "typedef")
+		      (semantic-tag-of-class-p super 'type)
+		      (semantic-tag-type-members super))
+	     ;; This is a typedef of a real type.  Extract
+	     ;; the super class, and stick it into the tags list.
+	     (setq addlast super)
+
+	     ;; Clone super and remove the members.
+	     (setq super (semantic-tag-clone super))
+	     (semantic-tag-put-attribute super :members nil)
+
+	     ;; Add in props to the full superclass.
+	     (semantic--tag-copy-properties tag addlast)
+	     (semantic--tag-set-overlay addlast (semantic-tag-overlay tag))
+	     )
+
+	   
 	   (while names
+
 	     (setq vl (cons (semantic-tag-new-type
 			     (nth 1 (car names)) ; name
 			     "typedef"
@@ -1103,16 +1137,18 @@ now.
 			     ;; is expanded out as.  Just the
 			     ;; name shows up as a parent of this
 			     ;; typedef.
-			     :typedef
-			     (semantic-tag-get-attribute tag :superclasses)
+			     :typedef super
 			     ;;(semantic-tag-type-superclasses tag)
 			     :documentation
 			     (semantic-tag-docstring tag))
 			    vl))
 	     (semantic--tag-copy-properties tag (car vl))
-	     (semantic--tag-set-overlay (car vl)
-					(semantic-tag-overlay tag))
+	     (semantic--tag-set-overlay (car vl) (semantic-tag-overlay tag))
 	     (setq names (cdr names)))
+
+	   ;; Add typedef superclass last.
+	   (when addlast (setq vl (cons addlast vl)))
+
 	   vl))
 	((and (listp (car tag))
 	      (semantic-tag-of-class-p (car tag) 'variable))

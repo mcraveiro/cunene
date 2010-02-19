@@ -409,14 +409,14 @@ templates are compiled, including:
      templates will be mixed together.
 
 `priority'
-     The priority of a file indicates where it lies in the template
-     search order.  System templates default to large priority numbers.
-     User templates default to small priority numbers.  You can specify
-     the priority of your template to insert it anywhere in the
-     template search list.
+     The priority of a file is a number in a satring constant that
+     indicates where it lies in the template search order.  System
+     templates default to low priority numbers.  User templates default
+     to high priority numbers.  You can specify the priority of your
+     template to insert it anywhere in the template search list.
 
      If there are multiple templates with the same context and name, the
-     template with the lowest priority number will be used.
+     template with the highest priority number will be used.
 
      If multiple files have the same priority, then then sort order is
      unpredictable.  If no template names match, then it doesn't matter.
@@ -429,6 +429,23 @@ templates are compiled, including:
 
      The application with a particular name will access these templates
      from Lisp code.
+
+`project'
+     If a template file contains templates, or template overrides
+     specific to a set of files under a particular directory, then that
+     template file can specify a "project" that it belongs to.
+
+     Set the "project" special variable to a directory name.  Only files
+     under that directory will be able to access the templates in that
+     file.
+
+     Any template file that has a project specified will get have a
+     priority that is set between SRecode base templates, and user
+     defined templates.
+
+     Templates can be compiled via a project system, such as EDE.  EDE
+     loaded templates will get a PROJECT set automatically.
+
 
    If you want to insert the characters that belong to the variables
 `escape_start' or `escape_end', then place those into a variable.  For
@@ -796,6 +813,7 @@ the *note Template Argument Dictionary Entries:: section.
 * Compound Dictionary Values::	Complex dictionary values
 * Argument Resolution::	        Automatic template argument resolution
 * Creating new Arguments::      Create new arguments for use in templates
+* Querying a Dictionary::       Querying a dictionary for values.
 * Template Argument Dictionary Entries:: Catalog of arguments
 
 
@@ -893,7 +911,7 @@ methods:
      compound value.  The FUNCTION could be a fraction of some function
      symbol with a logical prefix excluded.
 
-   This method is for dumping out tables during debugging.
+   The next method is for dumping out tables during debugging.
 
  -- Function: srecode-dump cp &optional indent
      Display information about this compound value.
@@ -939,7 +957,7 @@ Template Argument Dictionary Entries::.
      anything learned to the dictionary DICT.
 
 
-File: srecode.info,  Node: Creating new Arguments,  Next: Template Argument Dictionary Entries,  Prev: Argument Resolution,  Up: Dictionaries
+File: srecode.info,  Node: Creating new Arguments,  Next: Querying a Dictionary,  Prev: Argument Resolution,  Up: Dictionaries
 
 6.5 Creating new Arguments
 ==========================
@@ -964,9 +982,28 @@ dictionary to fill in.  Inside your function, you can do whatever you
 want, but adding dictionary values is the right thing.
 
 
-File: srecode.info,  Node: Template Argument Dictionary Entries,  Prev: Creating new Arguments,  Up: Dictionaries
+File: srecode.info,  Node: Querying a Dictionary,  Next: Template Argument Dictionary Entries,  Prev: Creating new Arguments,  Up: Dictionaries
 
-6.6 Template Argument Dictionary Entries
+6.6 Querying a Dictionary
+=========================
+
+When creating a new argument, it may be useful to ask the dicitonary
+what entries are already set there, and conditionally create new
+entries based on those.
+
+   In this way, a template author can get additional logical through
+more advanced arguments.
+
+ -- Function: srecode-dictionary-lookup-name dict name
+     Return information about the current DICT's value for NAME.  DICT
+     is a dictionary, and NAME is a string that is the name of a symbol
+     in the dictionary.  This function derives values for some special
+     NAMEs, such as FIRST and 'LAST'.
+
+
+File: srecode.info,  Node: Template Argument Dictionary Entries,  Prev: Querying a Dictionary,  Up: Dictionaries
+
+6.7 Template Argument Dictionary Entries
 ========================================
 
 When a dictionary is initialized for a template, then the dictionary
@@ -992,24 +1029,24 @@ will be initialized with a predefined set of macro values.
 
 File: srecode.info,  Node: Base Arguments,  Next: Semantic Arguments,  Up: Template Argument Dictionary Entries
 
-6.6.1 Base Arguments
+6.7.1 Base Arguments
 --------------------
 
-6.6.1.1 Argument :indent
+6.7.1.1 Argument :indent
 ........................
 
 Supplies the `INDENT' macro.  When `INDENT' is non-nil, then each line
 is individually indented with `indent-according-to-mode' during macro
 processing.
 
-6.6.2 Argument :blank
+6.7.2 Argument :blank
 ---------------------
 
 Specifying this argument adds a special `:blank' handler at the
 beginning and end of the template.  This handler will insert `\n' if
 the insertion point is not on a line by itself.
 
-6.6.2.1 Argument :region
+6.7.2.1 Argument :region
 ........................
 
 If there is an active region via `transient-mark-mode', or
@@ -1022,7 +1059,7 @@ and that region of text will be "killed" from the current buffer.
 not be deleted.  In this way, you can safely use `:region' using
 templates in arbitrary output streams.
 
-6.6.2.2 Argument :user
+6.7.2.2 Argument :user
 ......................
 
 Sets up variables about the current user.
@@ -1042,7 +1079,7 @@ Sets up variables about the current user.
 `EMACSINITFILE'
      This Emacs sessions' init file.
 
-6.6.2.3 Argument :time
+6.7.2.3 Argument :time
 ......................
 
 Sets up variables with the current date and time.
@@ -1086,7 +1123,7 @@ Sets up variables with the current date and time.
 `TIME'
      The Locale supported time format (%X).
 
-6.6.2.4 Argument :file
+6.7.2.4 Argument :file
 ......................
 
 Sets up variables with details about the current file.
@@ -1113,7 +1150,7 @@ Sets up variables with details about the current file.
 `section RCS'
      Show the section RCS if there is a CVS or RCS directory here.
 
-6.6.2.5 Argument :system
+6.7.2.5 Argument :system
 ........................
 
 Sets up variables with computer system information.
@@ -1130,7 +1167,7 @@ Sets up variables with computer system information.
 `MAILHOST'
      The name of the machine Emacs derived mail "comes from".
 
-6.6.2.6 Argument :kill
+6.7.2.6 Argument :kill
 ......................
 
 `KILL'
@@ -1148,10 +1185,10 @@ Sets up variables with computer system information.
 
 File: srecode.info,  Node: Semantic Arguments,  Next: Language Arguments,  Prev: Base Arguments,  Up: Template Argument Dictionary Entries
 
-6.6.3 Semantic Arguments
+6.7.3 Semantic Arguments
 ------------------------
 
-6.6.3.1 Argument :tag
+6.7.3.1 Argument :tag
 .....................
 
 The :tag argument is filled in with information from Semantic.  The tag
@@ -1223,13 +1260,13 @@ structs.
 
 File: srecode.info,  Node: Language Arguments,  Prev: Semantic Arguments,  Up: Template Argument Dictionary Entries
 
-6.6.4 language Arguments
+6.7.4 language Arguments
 ------------------------
 
 Each language typically has its own argument.  These arguments can be
 used to fill in language specific values that will be useful.
 
-6.6.4.1 Argument :srt
+6.7.4.1 Argument :srt
 .....................
 
 Used for SRecoder template files.
@@ -1240,7 +1277,7 @@ Used for SRecoder template files.
 `ESCAPE_END'
      The characters used for an escape end
 
-6.6.4.2 Argument :cpp
+6.7.4.2 Argument :cpp
 .....................
 
 `HEADER'
@@ -1252,7 +1289,7 @@ Used for SRecoder template files.
 `FILENAME_SYMBOL'
      The current filename reformatted as a C friendly symbol.
 
-6.6.5 Argument :java
+6.7.5 Argument :java
 --------------------
 
 `FILENAME_AS_PACKAGE'
@@ -1263,7 +1300,7 @@ Used for SRecoder template files.
      Converts the filename into text that would be suitable as a
      class-name for the main class in the file.
 
-6.6.5.1 Argument :el
+6.7.5.1 Argument :el
 ....................
 
 Sets `PRENAME'.  This would be a common prefix from all the tags in the
@@ -1272,7 +1309,7 @@ current buffer.
    Most Emacs Lisp packages have some common prefix used in a way
 similar to namespaces in other languages.
 
-6.6.5.2 Argument :el-custom
+6.7.5.2 Argument :el-custom
 ...........................
 
 `GROUP'
@@ -1283,7 +1320,7 @@ similar to namespaces in other languages.
      The name of the Emacs Custom group that faces delcared with
      `defface' ought to use.
 
-6.6.5.3 Argument :texi
+6.7.5.3 Argument :texi
 ......................
 
 `LEVEL'
@@ -1293,7 +1330,7 @@ similar to namespaces in other languages.
      The next level down, so if `LEVEL' is `chapter', then `NEXTLEVEL'
      would be `section'.
 
-6.6.5.4 Argument :texitag
+6.7.5.4 Argument :texitag
 .........................
 
 The `:texitag' argument is like the `:tag' argument, except that
@@ -1651,42 +1688,44 @@ Node: String Values11976
 Node: Multi-string Values12405
 Node: Section Show13137
 Node: Special Variables13654
-Node: Automatic Loop Variables15606
-Node: Compound Variable Values16245
-Node: Templates16727
-Node: Template Section Dictionaries17605
-Node: Template Macros20092
-Node: Contexts23234
-Node: Prompts24276
-Node: Dictionaries26150
-Node: Create a Dictionary27021
-Ref: srecode-create-dictionary27230
-Node: Setting Dictionary Values27500
-Ref: srecode-dictionary-set-value27972
-Ref: srecode-dictionary-show-section28203
-Ref: srecode-dictionary-add-section-dictionary28380
-Node: Compound Dictionary Values29326
-Ref: srecode-dictionary-compound-value29795
-Ref: srecode-compound-toString30256
-Ref: srecode-dump30624
-Node: Argument Resolution31618
-Ref: srecode-resolve-arguments32088
-Node: Creating new Arguments32202
-Node: Template Argument Dictionary Entries33199
-Node: Base Arguments33826
-Node: Semantic Arguments37090
-Ref: srecode-semantic-selected-tag37728
-Node: Language Arguments39473
-Node: Developing Template Functions41562
-Ref: srecode-read-template-name44002
-Ref: srecode-table44381
-Ref: srecode-template-get-table44615
-Ref: srecode-insert-fcn45808
-Node: Template Naming Conventions45913
-Node: Inserting Tag Lists49568
-Ref: srecode-semantic-insert-tag50157
-Node: Application Writing51841
-Ref: srecode-load-tables-for-mode52770
-Node: Index53095
+Node: Automatic Loop Variables16305
+Node: Compound Variable Values16944
+Node: Templates17426
+Node: Template Section Dictionaries18304
+Node: Template Macros20791
+Node: Contexts23933
+Node: Prompts24975
+Node: Dictionaries26849
+Node: Create a Dictionary27786
+Ref: srecode-create-dictionary27995
+Node: Setting Dictionary Values28265
+Ref: srecode-dictionary-set-value28737
+Ref: srecode-dictionary-show-section28968
+Ref: srecode-dictionary-add-section-dictionary29145
+Node: Compound Dictionary Values30091
+Ref: srecode-dictionary-compound-value30560
+Ref: srecode-compound-toString31021
+Ref: srecode-dump31393
+Node: Argument Resolution32387
+Ref: srecode-resolve-arguments32857
+Node: Creating new Arguments32971
+Node: Querying a Dictionary33953
+Ref: srecode-dictionary-lookup-name34462
+Node: Template Argument Dictionary Entries34715
+Node: Base Arguments35341
+Node: Semantic Arguments38605
+Ref: srecode-semantic-selected-tag39243
+Node: Language Arguments40988
+Node: Developing Template Functions43077
+Ref: srecode-read-template-name45517
+Ref: srecode-table45896
+Ref: srecode-template-get-table46130
+Ref: srecode-insert-fcn47323
+Node: Template Naming Conventions47428
+Node: Inserting Tag Lists51083
+Ref: srecode-semantic-insert-tag51672
+Node: Application Writing53356
+Ref: srecode-load-tables-for-mode54285
+Node: Index54610
 
 End Tag Table
