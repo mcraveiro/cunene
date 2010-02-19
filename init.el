@@ -62,6 +62,7 @@
                      "cunene-ecb"
                      "cunene-ede"
                      "cunene-eiffel"
+                     "cunene-espresso"
                      "cunene-ffap"
                      "cunene-fixme"
                      "cunene-flyspell"
@@ -95,6 +96,7 @@
                      "cunene-uniquify"
                      "cunene-visual-basic"
                      "cunene-w3m"
+                     "cunene-winer"
                      "cunene-whitespace"
                      "cunene-yasnippet"
 ))

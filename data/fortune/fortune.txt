@@ -2039,3 +2039,7 @@
 ;; perverted professionals.
 ;; -- Jon Ribbens
 %
+;; We can solve any problem by introducing an extra level of
+;; indirection.
+;; -- Butler Lampson
+%

@@ -15,13 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with cunene.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Make FIXME stand out
-(setq fixme-modes
-      '(latex-mode makefile-mode c++-mode emacs-lisp-mode sh-mode text-mode))
-(make-face 'font-lock-fixme-face)
-(mapc (lambda (mode)
-        (font-lock-add-keywords
-         mode
-         '(("\\<\\(FIXME\\|TODO\\)" 1 'font-lock-fixme-face t))))
-      fixme-modes)
-(modify-face 'font-lock-fixme-face "Red" "Yellow" nil t nil t nil nil)
+(require 'winner)
+(setq winner-dont-bind-my-keys t) ;; default bindings conflict with org-mode
+
+(global-set-key (kbd "<C-s-left>") 'winner-undo)
+(global-set-key (kbd "<C-s-right>") 'winner-redo)
+(winner-mode t) ;; turn on the global minor mode

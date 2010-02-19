@@ -151,3 +151,6 @@ operator<<(LOG& log, const LEVEL& level) {
 }
 ** Sat Feb  6 22:55:30 2010 (test)
    test
+** Fri Feb 12 05:03:13 2010 (- use JSON for output with a single line per file on a << ca)
+   - use JSON for output with a single line per file on a << call; rely
+     on emacs/cmd line tools to indent; remove indent et al.
