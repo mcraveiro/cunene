@@ -34,7 +34,9 @@
                 ("emacs-lisp" (or
                                (mode . emacs-lisp-mode)
                                (name . "^\\*Compile-Log\\*$")))
-                ("magit" (name . "^\\*magit"))
+                ("version control" (or
+                                    (name . "^\\*vc-")
+                                    (name . "^\\*magit")))
                 ("emacs" (or
                           (name . "^\\*Completions\\*$")
                           (name . "^\\*Help\\*$")
