@@ -1,6 +1,7 @@
 data/autosave
 data/backups
 data/ido
+data/sql
 data/recentf
 data/savehist
 data/saveplace

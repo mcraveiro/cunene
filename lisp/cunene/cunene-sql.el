@@ -15,6 +15,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with init.el.  If not, see <http://www.gnu.org/licenses/>.
 
+;; directory for SQL data files
+(setq sql-datafiles-dir (concat datafiles-dir "/sql/"))
+(if (not (file-accessible-directory-p sql-datafiles-dir))
+    (make-directory sql-datafiles-dir))
+
 ;;
 ;; Create a sensible buffer name
 ;;
@@ -68,3 +73,18 @@
           (lambda ()
             (setq sql-alternate-buffer-name (sql-make-smart-buffer-name))
             (sql-rename-buffer)))
+
+(defun my-sql-save-history-hook ()
+  (let ((lval 'sql-input-ring-file-name)
+        (rval 'sql-product))
+    (if (symbol-value rval)
+        (let ((filename
+               (concat sql-datafiles-dir
+                       (symbol-name (symbol-value rval))
+                       "-history.sql")))
+          (set (make-local-variable lval) filename))
+      (error
+       (format "SQL history will not be saved because %s is nil"
+               (symbol-name rval))))))
+
+(add-hook 'sql-interactive-mode-hook 'my-sql-save-history-hook)
