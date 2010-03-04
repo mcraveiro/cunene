@@ -66,12 +66,29 @@
 ;; Make all "yes or no" prompts show "y or n" instead
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;;
+;; Tabs
+;;
+(defun build-tab-stop-list (width)
+  (let ((num-tab-stops (/ 80 width))
+        (counter 1)
+        (ls nil))
+    (while (<= counter num-tab-stops)
+      (setq ls (cons (* width counter) ls))
+      (setq counter (1+ counter)))
+    (nreverse ls)))
+
 ;; Spaces only for indentation
 (set-default 'indent-tabs-mode nil)
 
 ;; Tab size
+
 (setq tab-width 4)
+(setq-default tab-width 4)
+(setq default-tab-width 4)
 (setq standard-indent 4)
+(setq-default tab-stop-list (build-tab-stop-list tab-width))
+(setq tab-stop-list (build-tab-stop-list tab-width))
 
 ;; Seed the random-number generator
 (random t)
@@ -89,7 +106,7 @@
 ;;
 ;; (set-default-font "Inconsolata Bold 11")
 ;; (set-default-font "DejaVu Sans Mono Bold 10")
-(set-default-font "Monospace Bold 11")
+(set-frame-font "Monospace Bold 11")
 (set-cursor-color "wheat")
 (set-background-color "black")
 (set-foreground-color "wheat")

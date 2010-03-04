@@ -18,7 +18,7 @@
 (autoload 'cmake-mode "cmake-mode" "CMake mode." t)
 
 ;; Tab size in cmake mode.
-(setq cmake-tab-width 4)
+(setq cmake-tab-width tab-width)
 
 ;; Load cmake files with correct mode
 (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))

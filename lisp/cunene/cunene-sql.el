@@ -92,4 +92,9 @@
 ;; truncate lines for long tables
 (add-hook 'sql-interactive-mode-hook
           (function (lambda ()
-                      (setq truncate-lines t))))
+                      (setq truncate-lines t)
+                      (setq indent-tabs-mode t))))
+
+(add-hook 'sql-mode-hook
+          (function (lambda ()
+                      (define-key sql-mode-map "\t" 'tab-to-tab-stop))))

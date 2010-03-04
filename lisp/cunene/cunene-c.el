@@ -15,18 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with cunene.  If not, see <http://www.gnu.org/licenses/>.
 
-;;
-;; Tab stops
-;;
-(defun build-tab-stop-list (width)
-  (let ((num-tab-stops (/ 80 width))
-        (counter 1)
-        (ls nil))
-    (while (<= counter num-tab-stops)
-      (setq ls (cons (* width counter) ls))
-      (setq counter (1+ counter)))
-    (set (make-local-variable 'tab-stop-list) (nreverse ls))))
-
 ;; Default these extensions to c++ mode
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
@@ -37,7 +25,6 @@
             (c-set-offset 'innamespace 0)      ;; Do not indent namespaces.
             (c-toggle-hungry-state 1)          ;; use hungry delete.
             (company-mode)
-            (build-tab-stop-list tab-width)
             (setq c-basic-offset tab-width)
             (setq c-default-style "stroustrup")))
 

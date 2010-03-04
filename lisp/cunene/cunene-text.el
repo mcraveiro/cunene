@@ -19,4 +19,7 @@
 (setq default-major-mode 'text-mode)
 
 ;; Wrap text in text mode
-(add-hook 'text-mode-hook '(lambda () (auto-fill-mode 1)))
+(add-hook 'text-mode-hook
+          (function (lambda ()
+                      (auto-fill-mode 1)
+                      (define-key text-mode-map "\t" 'tab-to-tab-stop))))
