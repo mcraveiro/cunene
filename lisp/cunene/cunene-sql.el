@@ -88,3 +88,8 @@
                (symbol-name rval))))))
 
 (add-hook 'sql-interactive-mode-hook 'my-sql-save-history-hook)
+
+;; truncate lines for long tables
+(add-hook 'sql-interactive-mode-hook
+          (function (lambda ()
+                      (setq truncate-lines t))))
