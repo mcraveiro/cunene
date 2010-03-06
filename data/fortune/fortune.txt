@@ -2043,3 +2043,15 @@
 ;; indirection.
 ;; -- Butler Lampson
 %
+;; I wrote it in a big notebook in longhand, in pencil.  Six months
+;; later, after I had gone through the whole project, I started typing
+;; into the computer.  And did the debugging in March of '78 while I
+;; had started writing the program in October of '77.  The code for
+;; that is in the Stanford archives --- it's all in pencil --- and of
+;; course I would come back and change a subroutine as I learned what
+;; it should be.
+;; -- Knuth on Tex
+%
+;; It's the golden rule: those who have the gold, rule.
+;; -- Gerald Celente
+%
