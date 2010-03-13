@@ -23,36 +23,20 @@
 ;; Projects
 ;;
 
-;; ;; Risk
-;; (ede-cpp-root-project "Risk"
-;;                       :name "Risk Project"
-;;                       :file "~/code/kitanda/risk/CMakeLists.txt"
-;;                       :include-path '("/cpp/include")
-;;                       :system-include-path '("~/code/kitanda/turbo/cpp/include")
-;;                       :spp-table '(("isUnix" . "")
-;;                                    ("BOOST_TEST_DYN_LINK" . "")))
+;; Risk
+(ede-cpp-root-project "Kitanda"
+                      :name "Kitanda Project"
+                      :file "~/code/kitanda/CMakeLists.txt"
+                      :include-path '("/cpp/include" "/output/cpp/include")
+                      :system-include-path '("/usr/include/gtkmm-2.4"
+                                             "/usr/include/glibmm-2.4")
+                      :spp-table '(("isUnix" . "")
+                                   ("BOOST_TEST_DYN_LINK" . "")))
 
-;; ;; Turbo
-;; (ede-cpp-root-project "Turbo"
-;;                       :name "Turbo Project"
-;;                       :file "~/code/kitanda/turbo/CMakeLists.txt"
-;;                       :include-path '("/cpp/include")
-;;                       :spp-table '(("isUnix" . "")
-;;                                    ("BOOST_TEST_DYN_LINK" . "")))
-
-;; ;; Trading
-;; (ede-cpp-root-project "Trading"
-;;                       :name "Trading Project"
-;;                       :file "~/code/kitanda/trading/CMakeLists.txt"
-;;                       :include-path '("/cpp/include")
-;;                       :system-include-path '("~/code/kitanda/turbo/include")
-;;                       :spp-table '(("isUnix" . "")
-;;                                    ("BOOST_TEST_DYN_LINK" . "")))
-
-;; ;; Quantlib
-;; (ede-cpp-root-project "Turbo"
-;;                       :name "Turbo Project"
-;;                       :file "/home/marco/code/ql/trunk/QuantLib/Makefile.am"
-;;                       :include-path '("/cpp/include")
-;;                       :spp-table '(("isUnix" . "")
-;;                                    ("BOOST_TEST_DYN_LINK" . "")))
+;; Quantlib
+(ede-cpp-root-project "Turbo"
+                      :name "Turbo Project"
+                      :file "/home/marco/code/ql/trunk/QuantLib/Makefile.am"
+                      :include-path '("/cpp/include")
+                      :spp-table '(("isUnix" . "")
+                                   ("BOOST_TEST_DYN_LINK" . "")))
