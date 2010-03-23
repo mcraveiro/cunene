@@ -2059,3 +2059,11 @@
 ;; elegance of design.
 ;; -- Dennis Ritchie
 %
+;; What many people don’t understand about Linux development is that
+;; it’s truly a team effort:
+;; - Red Hat develops the kernel,
+;; - Novell develops the applications,
+;; - Debian does the packaging,
+;; - and Ubuntu takes the credit!
+;; -- Joke found on a bathroom stall at LinuxWorld Boston 2005
+%
