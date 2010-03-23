@@ -2055,3 +2055,7 @@
 ;; It's the golden rule: those who have the gold, rule.
 ;; -- Gerald Celente
 %
+;; Constraint has encouraged not only economy, but also a certain
+;; elegance of design.
+;; -- Dennis Ritchie
+%
