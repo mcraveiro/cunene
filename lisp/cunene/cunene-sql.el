@@ -33,7 +33,8 @@
                   (concat
                    (or (and (string-match "[0-9.]+" sql-server) sql-server)
                        (car (split-string sql-server "\\.")))
-                   "/")))))
+                   "/"))
+              sql-database)))
 
 ;;
 ;; Sample database connections
@@ -52,6 +53,13 @@
          (sql-user "marco")
          (sql-password "not_needed")
          (sql-database "sanzala")
+         (sql-port 5432))
+        (musseque-bohr
+         (sql-product 'postgres)
+         (sql-server "bohr")
+         (sql-user "marco")
+         (sql-password "not_needed")
+         (sql-database "musseque")
          (sql-port 5432))
         (pool-b
          (sql-product 'mysql)
@@ -74,6 +82,10 @@
 (defun sql-sanzala-bohr ()
   (interactive)
   (sql-connect-preset 'sanzala-bohr))
+
+(defun sql-musseque-bohr ()
+  (interactive)
+  (sql-connect-preset 'musseque-bohr))
 
 ;; Increase column width for SqlServer.
 (setq sql-ms-options (quote ("-w" "8000" "-n")))
