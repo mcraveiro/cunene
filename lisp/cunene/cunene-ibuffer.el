@@ -24,6 +24,7 @@
                ("c++" (or
                        (mode . c++-mode)
                        (name . "^\\*compilation\\*$")))
+               ("make" (mode . cmake-mode))
                ("sql" (or
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
