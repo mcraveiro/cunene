@@ -345,4 +345,5 @@ text (with prefix arg don't indent)."
 ;; Back to first character in line
 (global-set-key (kbd "M-n") 'back-to-indentation)
 
-
+;; windmove but using meta instead of shift
+(windmove-default-keybindings 'meta)
