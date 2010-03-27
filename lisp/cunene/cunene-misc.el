@@ -342,3 +342,7 @@ text (with prefix arg don't indent)."
 ;; Capitalize word
 (global-set-key (kbd "C-x C-p") 'capitalize-word)
 
+;; Back to first character in line
+(global-set-key (kbd "M-n") 'back-to-indentation)
+
+
