@@ -2067,3 +2067,9 @@
 ;; - and Ubuntu takes the credit!
 ;; -- Joke found on a bathroom stall at LinuxWorld Boston 2005
 %
+;; I’ve used emacs for many years now, but have never reached its
+;; maximum potential.
+;; -- Anon
+;; I think this is the motto of every emacs user.
+;; -- LathI
+%
