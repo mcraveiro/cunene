@@ -347,3 +347,11 @@ text (with prefix arg don't indent)."
 
 ;; windmove but using meta instead of shift
 (windmove-default-keybindings 'meta)
+
+;; confirm exit
+(global-set-key
+ (kbd "C-x C-c")
+ '(lambda ()
+    (interactive)
+    (if (y-or-n-p-with-timeout "Do you really want to exit Emacs ?" 4 nil)
+        (save-buffers-kill-emacs))))
