@@ -345,8 +345,15 @@ text (with prefix arg don't indent)."
 ;; Back to first character in line
 (global-set-key (kbd "M-n") 'back-to-indentation)
 
-;; windmove but using meta instead of shift
+;;
+;; wind/frame move
+;;
+(require 'windmove)
+(require 'framemove)
+
+;; use meta instead of shift
 (windmove-default-keybindings 'meta)
+(setq framemove-hook-into-windmove t)
 
 ;; confirm exit
 (global-set-key
