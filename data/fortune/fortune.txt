@@ -950,9 +950,10 @@
 ;; -- John Prevost
 ;;                    in a discussion on comp.lang.functional
 %
-;; All parts should go together without forcing.  You must remember that the parts
-;; you are reassembling were disassembled by you.  Therefore, if you can't get
-;; them together again, there must be a reason.  By all means, do not use a hammer.
+;; All parts should go together without forcing. You must remember
+;; that the parts you are reassembling were disassembled by you.
+;; Therefore, if you can't get them together again, there must be a
+;; reason. By all means, do not use a hammer.
 ;; -- IBM maintenance manual, 1925
 %
 ;; "The reluctance to put away childish things may be a requirement of genius."
