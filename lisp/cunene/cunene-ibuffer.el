@@ -24,21 +24,32 @@
                ("c++" (or
                        (mode . c++-mode)
                        (name . "^\\*compilation\\*$")))
+               ("csharp" (mode . csharp-mode))
                ("make" (mode . cmake-mode))
+               ("Text Templates" (name . ".tt$"))
+               ("XML" (mode . nxml-mode))
                ("sql" (or
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
-               ("file management" (or
-                                   (mode . dired-mode)
-                                   (mode . grep-mode)
-                                   (mode . shell-mode)))
-                ("emacs-lisp" (or
-                               (mode . emacs-lisp-mode)
-                               (name . "^\\*Compile-Log\\*$")))
-                ("version control" (or
-                                    (name . "^\\*vc-")
+               ("powershell" (or
+                              (mode . powershell-mode)
+                              (name . "^\\*PowerShell")))
+               ("shell" (or
+                         (name . "^\\*Shell Command Output\\*$")
+                         (mode . grep-mode)
+                         (mode . shell-mode)))
+               ("file management" (mode . dired-mode))
+               ("emacs-lisp" (or
+                              (mode . emacs-lisp-mode)
+                              (name . "^\\*Compile-Log\\*$")))
+               ("version control" (or
+                                    (name . "^\\*svn-")
+                                    (name . "^\\*vc")
+                                    (name . "^\\*cvs")
                                     (name . "^\\*magit")))
-                ("emacs" (or
+                ("system buffers" (or
+                          (name . "^\\*WoMan-Log\\*$")
+                          (name . "^\\*Apropos\\*$")
                           (name . "^\\*Completions\\*$")
                           (name . "^\\*Help\\*$")
                           (name . "^\\*scratch\\*$")

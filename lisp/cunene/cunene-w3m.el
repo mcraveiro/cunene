@@ -19,7 +19,13 @@
 (add-to-list 'load-path (concat dotfiles-dir "/other/emacs-w3m"))
 
 ;; Web browsing
-(require 'w3m-load)
+(require 'w3m)
+
+;; use regular keybindings
+(define-key w3m-mode-map [down] 'next-line)
+(define-key w3m-mode-map [up] 'previous-line)
+(define-key w3m-mode-map [right] 'forward-char)
+(define-key w3m-mode-map [left] 'backward-char)
 
 ;; Allow cookies
 (setq w3m-use-cookies t)

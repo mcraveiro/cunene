@@ -106,7 +106,7 @@
 ;;
 ;; (set-default-font "Inconsolata Bold 11")
 ;; (set-default-font "DejaVu Sans Mono Bold 10")
-(set-frame-font "Monospace Bold 11")
+(set-frame-font "Droid Sans Mono Bold 10")
 (set-cursor-color "wheat")
 (set-background-color "black")
 (set-foreground-color "wheat")
