@@ -27,7 +27,8 @@
 (ede-cpp-root-project "Kitanda"
                       :name "Kitanda Project"
                       :file "~/code/kitanda/CMakeLists.txt"
-                      :include-path '("/cpp/include" "/output/cpp/include")
+                      :include-path '("/code/cpp/include"
+                                      "/output/code/cpp/include")
                       :system-include-path '("/usr/include/gtkmm-2.4"
                                              "/usr/include/glibmm-2.4")
                       :spp-table '(("isUnix" . "")

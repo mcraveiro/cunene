@@ -61,6 +61,7 @@
                      "cunene-desktop-save"
                      "cunene-diff"
                      "cunene-dired"
+                     "cunene-delim-kill.el"
                      "cunene-ecb"
                      "cunene-ede"
                      "cunene-eiffel"
