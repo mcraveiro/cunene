@@ -1,10 +1,10 @@
 ;;; semanticdb-global.el --- Semantic database extensions for GLOBAL
 
-;;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2008, 2009 Eric M. Ludlam
+;;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: tags
-;; X-RCS: $Id: semanticdb-global.el,v 1.10 2009/09/29 01:32:34 zappo Exp $
+;; X-RCS: $Id: semanticdb-global.el,v 1.13 2010/03/27 14:12:12 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -45,7 +45,7 @@ This will add an instance of a GNU Global database to each buffer
 in a GNU Global supported hierarchy."
   (interactive
    (list (completing-read
-          "Emable in Mode: " obarray
+          "Enable in Mode: " obarray
           #'(lambda (s) (get s 'mode-local-symbol-table))
           t (symbol-name major-mode))))
 
@@ -64,7 +64,7 @@ in a GNU Global supported hierarchy."
   )
 
 (defun semanticdb-enable-gnu-global-hook ()
-  "Add support for GNU Global in the current buffer via semantic-init-hook.
+  "Add support for GNU Global in the current buffer via `semantic-init-hook'.
 MODE is the major mode to support."
   (semanticdb-enable-gnu-global-in-buffer t))
 
@@ -76,8 +76,8 @@ MODE is the major mode to support."
 
 (defun semanticdb-enable-gnu-global-in-buffer (&optional dont-err-if-not-available)
   "Enable a GNU Global database in the current buffer.
-Argument DONT-ERR-IF-NOT-AVAILABLE will throw an error if GNU Global
-is not available for this directory."
+When GNU Global is not available for this directory, display a message
+if optional DONT-ERR-IF-NOT-AVAILABLE is non-nil; else throw an error."
   (interactive "P")
   (if (cedet-gnu-global-root)
       (setq
@@ -91,7 +91,7 @@ is not available for this directory."
 	       '(omniscience))
        )
     (if dont-err-if-not-available
-	(message "No Global support in %s" default-directory)
+	nil; (message "No Global support in %s" default-directory)
       (error "No Global support in %s" default-directory))
     ))
 
@@ -103,7 +103,7 @@ is not available for this directory."
 
 (defmethod semanticdb-equivalent-mode ((table semanticdb-table-global) &optional buffer)
   "Return t, pretend that this table's mode is equivalent to BUFFER.
-Equivalent modes are specified by by `semantic-equivalent-major-modes'
+Equivalent modes are specified by the `semantic-equivalent-major-modes'
 local variable."
   ;; @todo - hack alert!
   t)
@@ -166,7 +166,7 @@ Return a list of tags."
 
 (defmethod semanticdb-find-tags-for-completion-method
   ((table semanticdb-table-global) prefix &optional tags)
-  "In TABLE, find all occurances of tags matching PREFIX.
+  "In TABLE, find all occurrences of tags matching PREFIX.
 Optional argument TAGS is a list of tags to search.
 Returns a table of all matching tags."
   (if tags (call-next-method)
@@ -193,7 +193,7 @@ Returns a table of all matching tags."
 (defmethod semanticdb-deep-find-tags-by-name-method
   ((table semanticdb-table-global) name &optional tags)
   "Find all tags name NAME in TABLE.
-Optional argument TAGS is a list of tags t
+Optional argument TAGS is a list of tags to search.
 Like `semanticdb-find-tags-by-name-method' for global."
   (semanticdb-find-tags-by-name-method table name tags))
 
@@ -206,7 +206,7 @@ Like `semanticdb-find-tags-by-name-method' for global."
 
 (defmethod semanticdb-deep-find-tags-for-completion-method
   ((table semanticdb-table-global) prefix &optional tags)
-  "In TABLE, find all occurances of tags matching PREFIX.
+  "In TABLE, find all occurrences of tags matching PREFIX.
 Optional argument TAGS is a list of tags to search.
 Like `semanticdb-find-tags-for-completion-method' for global."
   (semanticdb-find-tags-for-completion-method table prefix tags))

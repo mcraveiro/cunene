@@ -6,7 +6,7 @@
 ;; Author: David Ponce <david@dponce.com>
 ;; Maintainer: David Ponce <david@dponce.com>
 ;; Keywords: compatibility
-;; X-RCS: $Id: cedet-compat.el,v 1.7 2010/02/17 01:56:41 zappo Exp $
+;; X-RCS: $Id: cedet-compat.el,v 1.10 2010/04/09 01:12:18 zappo Exp $
 
 ;; This file is not part of Emacs
 
@@ -142,18 +142,37 @@ Copied verbatim from Emacs 23 CVS version subr.el."
 
 (when (not (fboundp 'find-coding-systems-region))
 ;; XEmacs does not currently have `find-coding-systems-region'. Here
-;; is a cheap emulation, which seems sufficient for CEDET's purposes.
-;; This implementation will always return a list containing a single
-;; element.
-;;;###autoload
-(defun find-coding-systems-region (start end)
-  "Return a list of possible coding systems in the region between
-START and END.
-
-In this implementation, the returned list will always consist of one
-element only!"
-  (list (coding-system-name (detect-coding-region start end))))
-)
+;; is an emulation, which seems sufficient for CEDET's purposes.
+  (defun find-coding-systems-region (begin end)
+    "Mimic Emacs' find-coding-system-region for XEmacs.
+Return a coding system between BEGIN and END."
+    (if (stringp begin)
+	(if (equal (charsets-in-string begin) '(ascii))
+	    '(undecided)
+	  (delete-if-not
+	   #'(lambda (coding-system)
+	       ;; Assume strings are always short enough that the
+	       ;; condition-case is not worth it.
+	       (query-coding-string begin coding-system t))
+	 
+	   (remove-duplicates
+	    (append
+	     (get-language-info current-language-environment 'coding-system)
+	     (mapcar #'coding-system-name (coding-system-list)))
+	    :test #'eq :from-end t)))
+      (if (equal (charsets-in-region begin end) '(ascii))
+	  '(undecided)
+	(delete-if-not
+	 #'(lambda (coding-system)
+	     (condition-case nil
+		 (query-coding-region begin end coding-system nil t t)
+	       (text-conversion-error)))
+	 (remove-duplicates
+	  (append
+	   (get-language-info current-language-environment 'coding-system)
+	   (mapcar #'coding-system-name (coding-system-list)))
+	  :test #'eq :from-end t)))))
+  )
 
 
 ;;;###autoload
@@ -175,6 +194,56 @@ Note: Doesn't work if this version is being loaded."
     ;; The implementation for the interpreter is basically trivial.
     (car (last body))))
 
+
+(if (not (fboundp 'called-interactively-p))
+    (defmacro cedet-called-interactively-p (&optional arg)
+      "Compat function.  Calls `interactive-p'"
+      '(interactive-p))
+  ;; Else, it is defined, but perhaps too old?
+  (condition-case nil
+      (progn
+	;; This condition case also prevents this from running twice.
+	(called-interactively-p nil)
+	;; An alias for the real deal.
+	(defalias 'cedet-called-interactively-p 'called-interactively-p))
+    (error
+     ;; Create a new one
+     (defmacro cedet-called-interactively-p (&optional arg)
+       "Revised from the built-in version to accept an optional arg."
+       (case (eval arg)
+	 (interactive '(interactive-p))
+	 ((any nil) '(called-interactively-p))))
+     )))
+
+
+;;; TESTS
+;;
+;;;###autoload
+(defun cedet-compat-utest ()
+  "Test compatability functions."
+  (interactive)
+  (when (not noninteractive)
+    ;; Interactive tests need to be called interactively.
+    (call-interactively 'cedet-utest-interactivep))
+  ;; Other...
+  )
+
+(defun cedet-utest-interactivep ()
+  "Test that `cedet-called-interactively-p' works."
+  (interactive)
+  (unless (cedet-called-interactively-p 'interactive)
+    (error "Failed interactive test"))
+  (unless (cedet-called-interactively-p 'any)
+    (error "Failed interactive any test"))
+  (cedet-utest-interactivep-subfcn)
+  (message "All CEDET called-interactively tests pass."))
+
+(defun cedet-utest-interactivep-subfcn ()
+  "Test that `cedet-called-interactively-p' works noninteractively."
+  (when (cedet-called-interactively-p 'interactive)
+    (error "Failed non-interactive test"))
+  (when (cedet-called-interactively-p 'any)
+    (error "Failed non-interactive any test")))
 
 (provide 'cedet-compat)
 

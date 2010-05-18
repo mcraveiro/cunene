@@ -3,7 +3,7 @@
 ;; Copyright (C) 2002, 2003 Vladimir G. Sekissov
 
 ;; Author: Marco Craveiro <marco@perlis>
-;; Created: 2009-10-20 15:43:14+0100
+;; Created: 2010-02-19 15:48:21+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

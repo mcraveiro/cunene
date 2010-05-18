@@ -66,7 +66,7 @@ File: cedet.info,  Node: Overview,  Next: Installation/Basic Configuration,  Pre
 1 Overview
 **********
 
-The CEDET collection is made up of several tools.  Each tool has it's
+The CEDET collection is made up of several tools.  Each tool has its
 own manual with details for that tool.
 
    At the core of the CEDET suite is EIEIO, which is an Implementation
@@ -93,7 +93,7 @@ Completion" feature.
    Another mid-level tool is SRecode or the Semantic Recoder.  SRecode
 is a template management system designed with the goal of providing a
 way to build code-generating applications that are easily modified or
-extended by users.  At it's core is a template authoring and insertion
+extended by users.  At its core is a template authoring and insertion
 system.  A minor mode provides a simple way to insert templates from
 the various template libraries.
 
@@ -588,7 +588,7 @@ can customize the preprocessor symbol map.
      Table of C Preprocessor keywords used by the Semantic C lexer.
      Each entry is a cons cell like this:   ( "KEYWORD" . "REPLACEMENT"
      ) Where KEYWORD is the macro that gets replaced in the lexical
-     phase, and REPLACEMENT is a string that is inserted in it's place.
+     phase, and REPLACEMENT is a string that is inserted in its place.
      Empty string implies that the lexical analyzer will discard
      KEYWORD when it is encountered.
 
@@ -1269,29 +1269,29 @@ Index
 Tag Table:
 Node: Top899
 Node: Overview1928
-Node: EIEIO4837
-Node: Semantic5848
-Node: SRecode7164
-Node: Speedbar7651
-Node: EDE8601
-Node: COGRE9925
-Node: Other Library Functions10460
-Node: Installation/Basic Configuration13056
-Node: JDEE Target15611
-Node: ECB Target16560
-Node: Project Management17283
-Node: Code Completion18618
-Node: Code Generation20242
-Node: C++ Features21011
-Ref: semantic-lex-c-preprocessor-symbol-map21639
-Ref: semantic-lex-c-preprocessor-symbol-file22992
-Ref: semantic-c-obey-conditional-section-parsing-flag23585
-Ref: semantic-lex-c-nested-namespace-ignore-second23832
-Node: GNU Global25821
-Node: ID Utils27857
-Node: CScope29379
-Node: Maintenance31531
-Node: GNU Free Documentation License31941
-Node: Index51664
+Node: EIEIO4835
+Node: Semantic5846
+Node: SRecode7162
+Node: Speedbar7649
+Node: EDE8599
+Node: COGRE9923
+Node: Other Library Functions10458
+Node: Installation/Basic Configuration13054
+Node: JDEE Target15609
+Node: ECB Target16558
+Node: Project Management17281
+Node: Code Completion18616
+Node: Code Generation20240
+Node: C++ Features21009
+Ref: semantic-lex-c-preprocessor-symbol-map21637
+Ref: semantic-lex-c-preprocessor-symbol-file22989
+Ref: semantic-c-obey-conditional-section-parsing-flag23582
+Ref: semantic-lex-c-nested-namespace-ignore-second23829
+Node: GNU Global25818
+Node: ID Utils27854
+Node: CScope29376
+Node: Maintenance31528
+Node: GNU Free Documentation License31938
+Node: Index51661
 
 End Tag Table

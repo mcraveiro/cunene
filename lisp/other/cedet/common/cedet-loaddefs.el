@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (cedet-update-autoloads) "cedet-autogen" "cedet-autogen.el"
-;;;;;;  (19309 17485))
+;;;;;;  (19355 33750))
 ;;; Generated autoloads from cedet-autogen.el
 
 (autoload 'cedet-update-autoloads "cedet-autogen" "\
@@ -20,18 +20,24 @@ exists.
 
 ;;;***
 
-;;;### (autoloads nil "cedet-compat" "cedet-compat.el" (19326 45461))
+;;;### (autoloads (cedet-compat-utest) "cedet-compat" "cedet-compat.el"
+;;;;;;  (19442 12536))
 ;;; Generated autoloads from cedet-compat.el
 
 (if (or (featurep 'xemacs) (inversion-test 'emacs "22.0")) (defalias 'cedet-split-string 'cedet-split-string-1) (defalias 'cedet-split-string 'split-string))
 
 (when (not (fboundp 'with-no-warnings)) (put 'with-no-warnings 'lisp-indent-function 0) (defun with-no-warnings (&rest body) "Copied from `with-no-warnings' in Emacs 23.\nLike `progn', but prevents compiler warnings in the body.\nNote: Doesn't work if this version is being loaded." (car (last body))))
 
+(autoload 'cedet-compat-utest "cedet-compat" "\
+Test compatability functions.
+
+\(fn)" t nil)
+
 ;;;***
 
 ;;;### (autoloads (cedet-cscope-version-check cedet-cscope-expand-filename
 ;;;;;;  cedet-cscope-search cedet-cscope-command) "cedet-cscope"
-;;;;;;  "cedet-cscope.el" (19309 17485))
+;;;;;;  "cedet-cscope.el" (19442 12536))
 ;;; Generated autoloads from cedet-cscope.el
 
 (defvar cedet-cscope-command "cscope" "\
@@ -67,7 +73,7 @@ return nil.
 
 ;;;***
 
-;;;### (autoloads nil "cedet-edebug" "cedet-edebug.el" (19309 17485))
+;;;### (autoloads nil "cedet-edebug" "cedet-edebug.el" (19355 33750))
 ;;; Generated autoloads from cedet-edebug.el
 
 (add-hook 'edebug-setup-hook (lambda nil (require 'cedet-edebug) (defalias 'edebug-prin1-to-string 'cedet-edebug-prin1-to-string) (define-key edebug-mode-map "A" 'data-debug-edebug-expr)))
@@ -77,7 +83,7 @@ return nil.
 ;;;***
 
 ;;;### (autoloads (cedet-files-utest) "cedet-files" "cedet-files.el"
-;;;;;;  (19309 17485))
+;;;;;;  (19442 12536))
 ;;; Generated autoloads from cedet-files.el
 
 (autoload 'cedet-files-utest "cedet-files" "\
@@ -90,7 +96,7 @@ Test out some file name conversions.
 ;;;### (autoloads (cedet-gnu-global-version-check cedet-gnu-global-root
 ;;;;;;  cedet-gnu-global-show-root cedet-gnu-global-expand-filename
 ;;;;;;  cedet-gnu-global-search cedet-global-command) "cedet-global"
-;;;;;;  "cedet-global.el" (19309 17485))
+;;;;;;  "cedet-global.el" (19442 12537))
 ;;; Generated autoloads from cedet-global.el
 
 (defvar cedet-global-command "global" "\
@@ -140,7 +146,7 @@ return nil.
 
 ;;;### (autoloads (cedet-graphviz-dot-version-check cedet-graphviz-neato-command
 ;;;;;;  cedet-graphviz-dot-command) "cedet-graphviz" "cedet-graphviz.el"
-;;;;;;  (19309 17485))
+;;;;;;  (19442 12537))
 ;;; Generated autoloads from cedet-graphviz.el
 
 (defvar cedet-graphviz-dot-command "dot" "\
@@ -165,7 +171,7 @@ return nil.
 
 ;;;### (autoloads (cedet-idutils-version-check cedet-idutils-expand-filename
 ;;;;;;  cedet-idutils-token-command cedet-idutils-file-command) "cedet-idutils"
-;;;;;;  "cedet-idutils.el" (19309 17485))
+;;;;;;  "cedet-idutils.el" (19442 12537))
 ;;; Generated autoloads from cedet-idutils.el
 
 (defvar cedet-idutils-file-command "fnid" "\
@@ -179,7 +185,7 @@ Command name for the ID Utils executable for searching for tokens.")
 (custom-autoload 'cedet-idutils-token-command "cedet-idutils" t)
 
 (autoload 'cedet-idutils-expand-filename "cedet-idutils" "\
-Expand the FILENAME with IDUtils.
+Expand the FILENAME with ID Utils.
 Return a filename relative to the default directory.
 
 \(fn FILENAME)" t nil)
@@ -194,8 +200,32 @@ return nil.
 
 ;;;***
 
+;;;### (autoloads (global-cedet-m3-minor-mode cedet-m3-minor-mode)
+;;;;;;  "cedet-m3" "cedet-m3.el" (19424 44590))
+;;; Generated autoloads from cedet-m3.el
+
+(autoload 'cedet-m3-minor-mode "cedet-m3" "\
+Toggle cedet-m3 minor mode, a mouse 3 context menu.
+With prefix argument ARG, turn on if positive, otherwise off.  The
+minor mode can be turned on only if semantic feature is available and
+the current buffer was set up for parsing.  Return non-nil if the
+minor mode is enabled.
+
+\\{cedet-m3-mode-map}
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'global-cedet-m3-minor-mode "cedet-m3" "\
+Toggle global use of cedet-m3 minor mode.
+If ARG is positive, enable, if it is negative, disable.
+If ARG is nil, then toggle.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads (cedet-utest-batch cedet-utest) "cedet-utests"
-;;;;;;  "cedet-utests.el" (19326 45461))
+;;;;;;  "cedet-utests.el" (19442 12537))
 ;;; Generated autoloads from cedet-utests.el
 
 (autoload 'cedet-utest "cedet-utests" "\
@@ -217,7 +247,7 @@ Run the CEDET unit test in BATCH mode.
 ;;;;;;  data-debug-insert-thing data-debug-insert-stuff-vector data-debug-insert-stuff-list
 ;;;;;;  data-debug-insert-widget-properties data-debug-insert-hash-table
 ;;;;;;  data-debug-insert-property-list) "data-debug" "data-debug.el"
-;;;;;;  (19309 17485))
+;;;;;;  (19442 12537))
 ;;; Generated autoloads from data-debug.el
 
 (autoload 'data-debug-insert-property-list "data-debug" "\
@@ -275,7 +305,7 @@ Data debug STUFF in a buffer named *NAME DDebug*.
 \(fn STUFF NAME)" nil nil)
 
 (autoload 'data-debug-edebug-expr "data-debug" "\
-Dump out the contets of some expression EXPR in edebug with ddebug.
+Dump out the contents of some expression EXPR in edebug with ddebug.
 
 \(fn EXPR)" t nil)
 
@@ -288,7 +318,7 @@ If the result is a list or vector, then use the data debugger to display it.
 
 ;;;***
 
-;;;### (autoloads (define-fame-channel) "fame" "fame.el" (19309 17485))
+;;;### (autoloads (define-fame-channel) "fame" "fame.el" (19355 33750))
 ;;; Generated autoloads from fame.el
 
 (autoload 'define-fame-channel "fame" "\
@@ -311,7 +341,7 @@ messages to CHANNEL.
 
 ;;;### (autoloads (inversion-upgrade-package inversion-add-to-load-path
 ;;;;;;  inversion-find-version inversion-require-emacs inversion-require)
-;;;;;;  "inversion" "inversion.el" (19309 17485))
+;;;;;;  "inversion" "inversion.el" (19355 33750))
 ;;; Generated autoloads from inversion.el
 
 (autoload 'inversion-require "inversion" "\
@@ -363,7 +393,7 @@ Try to upgrade PACKAGE in DIRECTORY is available.
 ;;;***
 
 ;;;### (autoloads (mode-local-read-function) "mode-local" "mode-local.el"
-;;;;;;  (19309 17485))
+;;;;;;  (19442 12537))
 ;;; Generated autoloads from mode-local.el
 
 (autoload 'mode-local-read-function "mode-local" "\
@@ -375,7 +405,7 @@ PROMPT, INITIAL, HIST, and DEFAULT are the same as for `completing-read'.
 ;;;***
 
 ;;;### (autoloads (pprint-function pprint pprint-to-string) "pprint"
-;;;;;;  "pprint.el" (19309 17485))
+;;;;;;  "pprint.el" (19355 33750))
 ;;; Generated autoloads from pprint.el
 
 (autoload 'pprint-to-string "pprint" "\
@@ -407,7 +437,7 @@ See a pretty-printed representation of FUNCTION-NAME.
 ;;;### (autoloads (pulse-line-hook-function pulse-toggle-integration-advice
 ;;;;;;  pulse-momentary-highlight-region pulse-momentary-highlight-one-line
 ;;;;;;  pulse-momentary-highlight-overlay pulse-test pulse) "pulse"
-;;;;;;  "pulse.el" (19309 17485))
+;;;;;;  "pulse.el" (19442 12537))
 ;;; Generated autoloads from pulse.el
 
 (autoload 'pulse "pulse" "\
@@ -470,7 +500,7 @@ Only pulses the line if `pulse-command-advice-flag' is non-nil.
 ;;;***
 
 ;;;### (autoloads nil nil ("cedet-load.el" "cedet.el" "ezimage.el"
-;;;;;;  "working.el") (19326 45718 528684))
+;;;;;;  "working.el") (19442 12860 66367))
 
 ;;;***
 

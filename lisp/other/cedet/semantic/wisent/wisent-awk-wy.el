@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2002 David Ponce
 
-;; Author: Marco Craveiro <marco@perlis>
-;; Created: 2009-10-20 15:42:57+0100
+;; Author: Marco Craveiro <marco@thompson>
+;; Created: 2010-05-18 07:23:48+0100
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

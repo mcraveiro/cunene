@@ -1,9 +1,9 @@
 ;;; ede-shell.el --- A shell controlled by EDE.
 ;;
-;; Copyright (C) 2009 Eric M. Ludlam
+;; Copyright (C) 2009, 2010 Eric M. Ludlam
 ;;
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: ede-shell.el,v 1.4 2009/10/16 19:47:38 zappo Exp $
+;; X-RCS: $Id: ede-shell.el,v 1.6 2010/03/15 13:40:54 xscript Exp $
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -29,6 +29,9 @@
 ;; Each thing that EDE wants to use will create a shell to interact with it.
 
 ;;; Code:
+
+(require 'ede)
+
 ;;;###autoload
 (defmethod ede-shell-run-something ((target ede-target) command)
   "Create a shell to run stuff for TARGET.
@@ -67,7 +70,7 @@ COMMAND is a text string representing the thing to be run."
 (defmethod ede-shell-buffer ((target ede-target))
   "Get the buffer for running shell commands for TARGET."
   (let ((name (ede-name target)))
-    (get-buffer-create (format "*EDE Shell %s" name))))
+    (get-buffer-create (format "*EDE Shell %s*" name))))
 
 (provide 'ede-shell)
 

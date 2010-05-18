@@ -3,7 +3,7 @@
 ;; Copyright (C) 2005 Joakim Verona, Eric Ludlam
 
 ;; Author: Marco Craveiro <marco@perlis>
-;; Created: 2009-10-20 15:43:07+0100
+;; Created: 2010-02-19 15:48:13+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

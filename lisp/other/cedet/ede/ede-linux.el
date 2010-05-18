@@ -1,9 +1,9 @@
 ;;; ede-linux.el --- Special project for Linux
 
-;; Copyright (C) 2008, 2009 Eric M. Ludlam
+;; Copyright (C) 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: ede-linux.el,v 1.5 2009/10/16 03:50:47 zappo Exp $
+;; X-RCS: $Id: ede-linux.el,v 1.7 2010/05/18 00:42:27 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -70,8 +70,7 @@ DIR is the directory to search from."
 (defun ede-linux-version (dir)
   "Find the Linux version for the Linux src in DIR."
   (let ((buff (get-buffer-create " *linux-query*")))
-    (save-excursion
-      (set-buffer buff)
+    (with-current-buffer buff
       (erase-buffer)
       (setq default-directory (file-name-as-directory dir))
       (insert-file-contents "Makefile" nil 0 512)
@@ -137,7 +136,7 @@ All directories need at least one target.")
 
 (defmethod initialize-instance ((this ede-linux-project)
 				&rest fields)
-  "Make sure the :file is fully expanded."
+  "Make sure the targets slot is bound."
   (call-next-method)
   (unless (slot-boundp this 'targets)
     (oset this :targets nil)))

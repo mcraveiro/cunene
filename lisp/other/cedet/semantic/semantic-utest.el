@@ -1,9 +1,9 @@
 ;;; semantic-utest.el --- Tests for semantic's parsing system.
 
-;;; Copyright (C) 2003, 2004, 2007, 2008, 2009 Eric M. Ludlam
+;;; Copyright (C) 2003, 2004, 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: semantic-utest.el,v 1.15 2010/02/09 00:21:12 scymtym Exp $
+;; X-RCS: $Id: semantic-utest.el,v 1.17 2010/04/18 21:44:04 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -233,6 +233,11 @@ def fun1(a,b,c):
 def fun2(a,b,c): #1
   return b
 
+def fun_yield():
+  yield
+  yield 1
+  yield 1, 2
+
 # Statements
 for x in y:
     print x
@@ -387,6 +392,8 @@ r, s, t = 1, 2, '3'
         (reparse-symbol function_parameters)
         (overlay 45 46 "tst.py"))))
      nil (overlay 32 65 "tst.py"))
+    ("fun_yield" function
+     nil nil nil)
 
     ;; Statements
     ("for"     code     nil nil nil)
@@ -720,6 +727,8 @@ Pre-fill the buffer with CONTENTS."
       (semantic-utest-last-invalid semantic-utest-C-name-contents '("fun2") "/\\*1\\*/" "/* Deleted this line */")
       (semantic-utest-verify-names semantic-utest-C-name-contents)
 
+      (semantic-sanity-check)
+
       (set-buffer-modified-p nil)
       ;; Clean up
       ;; (kill-buffer buff)
@@ -762,6 +771,8 @@ INSERTME is the text to be inserted after the deletion."
       ;;(message "Invalid tag test %s." testname)
       (semantic-utest-last-invalid name-contents names-removed killme insertme)
       (semantic-utest-verify-names name-contents)
+
+      (semantic-sanity-check)
 
       (set-buffer-modified-p nil)
       ;; Clean up

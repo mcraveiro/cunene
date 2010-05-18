@@ -1,9 +1,9 @@
 ;;; ede-locate.el --- Locate support
 
-;; Copyright (C) 2008, 2009 Eric M. Ludlam
+;; Copyright (C) 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: ede-locate.el,v 1.9 2009/09/11 23:44:12 zappo Exp $
+;; X-RCS: $Id: ede-locate.el,v 1.12 2010/04/09 01:36:33 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -35,7 +35,7 @@
 ;; projects are completely controlled by EDE, such sh the Project.ede
 ;; based projects.
 ;;
-;; For other projects, haveing a "quick hack" to support these location
+;; For other projects, having a "quick hack" to support these location
 ;; routines is handy.
 ;;
 ;; The baseclass `ede-locate-base' provides the abstract interface to
@@ -90,18 +90,18 @@ based on `ede-locate-setup-options'."
     (while (and opts (not ans))
       (when (ede-locate-ok-in-project (car opts) root)
 	;; If interactive, check with the user.
-	(when (or (not (interactive-p))
+	(when (or (not (cedet-called-interactively-p 'any))
 		  (y-or-n-p (format "Set project locator to %s? " (car opts))))
 	  (setq ans (car opts))))
       (setq opts (cdr opts)))
     ;; No match?  Always create the baseclass for the hashing tool.
     (when (not ans)
-      (when (interactive-p)
+      (when (cedet-called-interactively-p 'interactive)
 	(message "Setting locator to ede-locate-base"))
       (setq ans 'ede-locate-base))
     (oset proj locate-obj (make-instance ans "Loc" :root root))
-    (when (interactive-p)
-      (message "Satting locator to %s." ans))
+    (when (cedet-called-interactively-p 'interactive)
+      (message "Setting locator to %s" ans))
     ))
 
 ;;; LOCATE BASECLASS
@@ -146,9 +146,9 @@ based on `ede-locate-setup-options'."
 (defmethod ede-locate-file-in-project ((loc ede-locate-base)
 				       filesubstring
 				       )
-  "Locate with LOC occurances of FILESUBSTRING.
+  "Locate with LOC occurrences of FILESUBSTRING.
 Searches are done under the current root of the EDE project
-that crated this ede locat object."
+that created this EDE locate object."
   (let ((ans (ede-locate-file-in-project-impl loc filesubstring))
 	)
     (oset loc file filesubstring)
@@ -158,9 +158,9 @@ that crated this ede locat object."
 (defmethod ede-locate-file-in-project-impl ((loc ede-locate-base)
 					    filesubstring
 					    )
-  "Locate with LOC occurances of FILESUBSTRING.
+  "Locate with LOC occurrences of FILESUBSTRING.
 Searches are done under the current root of the EDE project
-that crated this ede locat object."
+that created this EDE locate object."
   nil
   )
 
@@ -184,9 +184,9 @@ configure the use of EDE locate.")
 
 (defmethod ede-locate-file-in-project-impl ((loc ede-locate-locate)
 					    filesubstring)
-  "Locate with LOC occurances of FILESUBSTRING under PROJECTROOT.
+  "Locate with LOC occurrences of FILESUBSTRING under PROJECTROOT.
 Searches are done under the current root of the EDE project
-that crated this ede locat object."
+that created this EDE locate object."
   ;; We want something like:
   ;;  /my/project/root*/filesubstring.c
   (let* ((searchstr (concat (directory-file-name (oref loc root))
@@ -194,16 +194,14 @@ that crated this ede locat object."
 	 (b (get-buffer-create "*LOCATE*"))
 	 (cd default-directory)
 	 )
-    (save-excursion
-      (set-buffer b)
+    (with-current-buffer b
       (setq default-directory cd)
       (erase-buffer))
     (require 'locate)
     (apply 'call-process locate-command
 	   nil b nil
 	   searchstr nil)
-    (save-excursion
-      (set-buffer b)
+    (with-current-buffer b
       (split-string (buffer-string) "\n" t))
     )
   )
@@ -242,9 +240,9 @@ variable `cedet-global-command'.")
 
 (defmethod ede-locate-file-in-project-impl ((loc ede-locate-global)
 					    filesubstring)
-  "Locate with LOC occurances of FILESUBSTRING under PROJECTROOT.
+  "Locate with LOC occurrences of FILESUBSTRING under PROJECTROOT.
 Searches are done under the current root of the EDE project
-that crated this ede locat object."
+that created this EDE locate object."
   (require 'cedet-global)
   (let ((default-directory (oref loc root)))
     (cedet-gnu-global-expand-filename filesubstring)))
@@ -280,9 +278,9 @@ file name searching variable `cedet-idutils-file-command'.")
 
 (defmethod ede-locate-file-in-project-impl ((loc ede-locate-idutils)
 					    filesubstring)
-  "Locate with LOC occurances of FILESUBSTRING under PROJECTROOT.
+  "Locate with LOC occurrences of FILESUBSTRING under PROJECTROOT.
 Searches are done under the current root of the EDE project
-that crated this ede locat object."
+that created this EDE locate object."
   (require 'cedet-idutils)
   (let ((default-directory (oref loc root)))
     (cedet-idutils-expand-filename filesubstring)))
@@ -316,9 +314,9 @@ file name searching variable `cedet-cscope-file-command'.")
 
 (defmethod ede-locate-file-in-project-impl ((loc ede-locate-cscope)
 					    filesubstring)
-  "Locate with LOC occurances of FILESUBSTRING under PROJECTROOT.
+  "Locate with LOC occurrences of FILESUBSTRING under PROJECTROOT.
 Searches are done under the current root of the EDE project
-that crated this ede locat object."
+that created this EDE locate object."
   (let ((default-directory (oref loc root)))
     (cedet-cscope-expand-filename filesubstring)))
 

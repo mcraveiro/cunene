@@ -1,10 +1,10 @@
 ;;; ede-pconf.el --- configure.ac maintenance for EDE
 
-;;  Copyright (C) 1998, 1999, 2000, 2005, 2008, 2009  Eric M. Ludlam
+;;  Copyright (C) 1998, 1999, 2000, 2005, 2008, 2009, 2010  Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: project
-;; RCS: $Id: ede-pconf.el,v 1.18 2009/10/15 03:31:52 zappo Exp $
+;; RCS: $Id: ede-pconf.el,v 1.20 2010/03/16 02:54:40 zappo Exp $
 
 ;; This software is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -110,25 +110,28 @@ don't do it.  A value of nil means to just do it.")
     (mapc 'ede-proj-configure-create-missing targs)
     ;; Verify that we have a make system.
     (if (or (not (ede-expand-filename (ede-toplevel this) "Makefile"))
-	    ;; Now is this one of our old Makefiles?
-	    (save-excursion
-	      (set-buffer (find-file-noselect
-			   (ede-expand-filename (ede-toplevel this)
-						"Makefile" t) t))
-	      (goto-char (point-min))
-	      ;; Here is the unique piece for our makefiles.
-	      (re-search-forward "For use with: make" nil t)))
-	(setq postcmd (concat postcmd "./configure;")))
+            ;; Now is this one of our old Makefiles?
+            (with-current-buffer
+                (find-file-noselect
+                 (ede-expand-filename (ede-toplevel this)
+                                      "Makefile" t) t)
+              (goto-char (point-min))
+              ;; Here is the unique piece for our makefiles.
+              (re-search-forward "For use with: make" nil t)))
+        (setq postcmd (concat postcmd "./configure;")))
     (if (not (string= "" postcmd))
 	(progn
 	  (compile postcmd)
 
 	  (while compilation-in-progress
 	    (accept-process-output)
-	    (sit-for 1))
+	    ;; If sit for indicates that input is waiting, then
+	    ;; read and discard whatever it is that is going on.
+	    (when (not (sit-for 1))
+	      (read-event nil nil .1)
+	      ))
 
-	  (save-excursion
-	    (set-buffer "*compilation*")
+	  (with-current-buffer "*compilation*"
 	    (goto-char (point-max))
 
 	    (when (not (string= mode-line-process ":exit [0]"))

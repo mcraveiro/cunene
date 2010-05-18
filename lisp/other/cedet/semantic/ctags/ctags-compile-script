@@ -4,4 +4,5 @@
 (add-to-list 'load-path "../../eieio/")
 (add-to-list 'load-path "../")
 (add-to-list 'load-path "../../common/")
+(load "cedet-compat")
 (setq debug-on-error t)

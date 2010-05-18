@@ -1,9 +1,9 @@
 ;;; semanticdb-typecache.el --- Manage Datatypes
 
-;; Copyright (C) 2007, 2008, 2009 Eric M. Ludlam
+;; Copyright (C) 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: semanticdb-typecache.el,v 1.41 2010/01/29 03:12:11 zappo Exp $
+;; X-RCS: $Id: semanticdb-typecache.el,v 1.46 2010/04/18 13:14:25 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -104,7 +104,7 @@ Said object must support `semantic-reset' methods.")
 	 )
     (object-add-to-list cache 'dependants dep)))
 
-(defun semanticdb-typecache-length(thing)
+(defun semanticdb-typecache-length (thing)
   "How long is THING?
 Debugging function."
   (cond ((semanticdb-typecache-child-p thing)
@@ -395,19 +395,23 @@ FIND-FILE-MATCH is non-nil to force all found tags to be loaded into a buffer.")
 (defun semanticdb-typecache-find-default (type &optional path find-file-match)
   "Default implementation of `semanticdb-typecache-find'.
 TYPE is the datatype to find.
-PATH is the search path.. which should be one table object.
+PATH is the search path, which should be one table object.
 If FIND-FILE-MATCH is non-nil, then force the file belonging to the
 found tag to be loaded."
-  (semanticdb-typecache-find-method (or path semanticdb-current-table)
-				    type find-file-match))
+  (if (not (and (featurep 'semanticdb) semanticdb-current-database))
+      nil ;; No DB, no search
+    (save-excursion
+      (semanticdb-typecache-find-method (or path semanticdb-current-table)
+					type find-file-match))))
 
 (defun semanticdb-typecache-find-by-name-helper (name table)
   "Find the tag with NAME in TABLE, which is from a typecache.
 If more than one tag has NAME in TABLE, we will prefer the tag that
 is of class 'type."
   (let* ((names (semantic-find-tags-by-name name table))
-	 (types (semantic-find-tags-by-class 'type names)))
-    (or (car-safe types) (car-safe names))))
+	 (nmerge (semanticdb-typecache-merge-streams names nil))
+	 (types (semantic-find-tags-by-class 'type nmerge)))
+    (or (car-safe types) (car-safe nmerge))))
 
 (defmethod semanticdb-typecache-find-method ((table semanticdb-abstract-table)
 					     type find-file-match)
@@ -551,8 +555,7 @@ If there isn't one, create it.
 ;;;###autoload
 (defun semanticdb-typecache-refresh-for-buffer (buffer)
   "Refresh the typecache for BUFFER."
-  (save-excursion
-    (set-buffer buffer)
+  (with-current-buffer buffer
     (let* ((tab semanticdb-current-table)
 	   ;(idx (semanticdb-get-table-index tab))
 	   (tc (semanticdb-get-typecache tab)))

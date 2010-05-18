@@ -71,7 +71,7 @@ CLASS represents what kind of tag this is.  Common CLASS values include
 `variable', `function', or `type'.  *note (semantic-appdev.info)Tag
 Basics::.
 
-ATTRIBUTES is a slot filled with langauge specific options for the tag.
+ATTRIBUTES is a slot filled with language specific options for the tag.
 Function arguments, return type, and other flags all are stored in
 attributes.  A language author fills in the ATTRIBUTES with the tag
 constructor, which is parser style dependant.
@@ -282,7 +282,7 @@ need to overload to make them work properly with your language.
      The analysis tool requires that the `semanticdb' tool is active,
      and that the searching methods are overloaded.  In addition,
      `semanticdb' system database could be written to provide symbols
-     from the global environment of your langauge.  *note
+     from the global environment of your language.  *note
      (semantic-appdev)System Databases::
 
      In addition, the analyzer requires that the `semantic-ctxt'
@@ -974,7 +974,7 @@ Typical structure for this file is:
      ;;; Overload methods
      ;;
      ;; OPTIONAL
-     ;; To allow your langauge to be fully supported by all the
+     ;; To allow your language to be fully supported by all the
      ;; applications that use semantic, it is important, but not necessary
      ;; to create implementations of overload methods.
      (define-mode-overload-implementation some-semantic-function foo-mode (tag)
@@ -1047,7 +1047,7 @@ You can create a special compounded tag in your rule, for example:
 and in your expand function, you would write:
 
      (defun my-tag-expand (tag)
-       "Expand tags for my langauge."
+       "Expand tags for my language."
        (when (semantic-tag-of-class-p tag 'compound-class)
           (remq nil
              (semantic-tag-get-attribute tag :value))))

@@ -1,9 +1,9 @@
 ;;; semantic-symref-filter.el --- Filter symbol reference hits for accuracy.
 ;;
-;; Copyright (C) 2009 Eric M. Ludlam
+;; Copyright (C) 2009, 2010 Eric M. Ludlam
 ;;
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: semantic-symref-filter.el,v 1.5 2009/09/11 18:53:39 zappo Exp $
+;; X-RCS: $Id: semantic-symref-filter.el,v 1.7 2010/04/09 01:56:49 zappo Exp $
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -56,10 +56,10 @@ Return non-nil for a match."
 ;;
 ;;;###autoload
 (defun semantic-symref-hits-in-region (target hookfcn start end)
-  "Find all occurances of the symbol TARGET that match TARGET the tag.
+  "Find all occurrences of the symbol TARGET that match TARGET the tag.
 For each match, call HOOKFCN.
 HOOKFCN takes three arguments that match
-`semantic-analyze-current-symbol's use of HOOKfCN.
+`semantic-analyze-current-symbol's use of HOOKFCN.
   ( START END PREFIX )
 
 Search occurs in the current buffer between START and END."
@@ -96,7 +96,7 @@ tag that contains point, and return that."
        target (lambda (start end prefix) (setq Lcount (1+ Lcount)))
        (semantic-tag-start tag)
        (semantic-tag-end tag))
-      (when (interactive-p)
+      (when (cedet-called-interactively-p)
 	(message "Found %d occurances of %s in %.2f seconds"
 		 Lcount (semantic-tag-name target)
 		 (semantic-elapsed-time start (current-time))))

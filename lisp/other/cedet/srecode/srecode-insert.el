@@ -3,7 +3,7 @@
 ;;; Copyright (C) 2005, 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: srecode-insert.el,v 1.34 2010/02/18 22:45:09 zappo Exp $
+;; X-RCS: $Id: srecode-insert.el,v 1.36 2010/03/26 22:18:07 xscript Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -32,6 +32,7 @@
 (require 'srecode-compile)
 (require 'srecode-find)
 (require 'srecode-dictionary)
+(require 'srecode-args)
 (eval-when-compile
   (require 'srecode-fields))
 
@@ -71,7 +72,7 @@ NOTE: The field feature does not yet work with XEmacs."
 
 ;;;###autoload
 (defun srecode-insert (template-name &rest dict-entries)
-  "Inesrt the template TEMPLATE-NAME into the current buffer at point.
+  "Insert the template TEMPLATE-NAME into the current buffer at point.
 DICT-ENTRIES are additional dictionary values to add."
   (interactive (list (srecode-read-template-name "Template Name: ")))
   (if (not (srecode-table))
@@ -195,7 +196,7 @@ Buffer based features related to change hooks is handled one level up."
 
 ;;; TEMPLATE ARGUMENTS
 ;;
-;; Some templates have arguments.  Each argument is assocaited with
+;; Some templates have arguments.  Each argument is associated with
 ;; a function that can resolve the inputs needed.
 (defun srecode-resolve-arguments (temp dict)
   "Resolve all the arguments needed by the template TEMP.
@@ -206,7 +207,7 @@ Apply anything learned to the dictionary DICT."
   "Resolve arguments in the argument list ARGS.
 ARGS is a list of symbols, such as :blank, or :file.
 Apply values to DICT.
-Optional argument TEMP is the template that is getting it's arguments resolved."
+Optional argument TEMP is the template that is getting its arguments resolved."
   (let ((fcn nil))
     (while args
       (setq fcn (intern-soft (concat "srecode-semantic-handle-"
@@ -342,14 +343,14 @@ occur in your template.")
    ((key :initform "\r"
 	 :allocation :class
 	 :documentation
-	 "The character represeinting this inserter style.
+	 "The character representing this inserter style.
 Can't be blank, or it might be used by regular variable insertion.")
     (where :initform 'begin
 	   :initarg :where
 	   :documentation
-	   "This should be 'begin or 'end, indicating where to insrt a CR.
+	   "This should be 'begin or 'end, indicating where to insert a CR.
 When set to 'begin, it will insert a CR if we are not at 'bol'.
-When set to 'end it will insert a CR if we are not at 'eol'")
+When set to 'end it will insert a CR if we are not at 'eol'.")
     ;; @TODO - Add slot and control for the number of blank
     ;;         lines before and after point.
    )
@@ -415,7 +416,7 @@ Arguments ESCAPE-START and ESCAPE-END are the current escape sequences in use."
 	:allocation :class
 	:documentation
 	"The character code used to identify inserters of this style."))
-  "Insert the value of a dictionary entry
+  "Insert the value of a dictionary entry.
 If there is no entry, insert nothing.")
 
 (defvar srecode-inserter-variable-current-dictionary nil
@@ -433,7 +434,7 @@ If SECONDNAME is nil, return VALUE."
 	    (let ((srecode-inserter-variable-current-dictionary dictionary))
 	      (funcall fcnpart value))
 	  ;; Else, warn.
-	  (error "Variable insertion second arg %s is not a function."
+	  (error "Variable insertion second arg %s is not a function"
 		 secondname)))
     value))
 
@@ -470,11 +471,11 @@ If SECONDNAME is nil, return VALUE."
 	)
        ;; Dictionaries... not allowed in this style
        ((srecode-dictionary-child-p val)
-	(error "Macro %s cannot insert a dictionary.  Use section macros instead."
+	(error "Macro %s cannot insert a dictionary - use section macros instead"
 	       name))
        ;; Other stuff... convert
        (t
-	(error "Macro %s cannot insert arbitrary data." name)
+	(error "Macro %s cannot insert arbitrary data" name)
 	;;(if (and val (not (stringp val)))
 	;;    (setq val (format "%S" val))))
 	))
@@ -501,7 +502,7 @@ If SECONDNAME is nil, return VALUE."
 	     :documentation
 	     "The function used to read in the text for this prompt.")
    )
-  "Insert the value of a dictionary entry
+  "Insert the value of a dictionary entry.
 If there is no entry, prompt the user for the value to use.
 The prompt text used is derived from the previous PROMPT command in the
 template file.")
@@ -634,8 +635,8 @@ Use DICTIONARY to resolve values."
 	"The character code used to identify inserters of this style.")
    )
   "Inserts the value of a dictionary variable with a specific width.
-The second argument specifies the width, and a pad, seperated by a colon.
-thus a specification of `10:left' will insert the value of A
+The second argument specifies the width, and a pad, separated by a colon.
+Thus a specification of `10:left' will insert the value of A
 to 10 characters, with spaces added to the left.  Use `right' for adding
 spaces to the right.")
 
@@ -663,7 +664,7 @@ By default, treat as a function name."
 	    (if (eq pad 'left)
 		(concat padchars value)
 	      (concat value padchars)))))
-    (error "Width not specified for variable/width inserter.")))
+    (error "Width not specified for variable/width inserter")))
 
 (defmethod srecode-inserter-prin-example :STATIC ((ins srecode-template-inserter-width)
 						  escape-start escape-end)
@@ -677,7 +678,7 @@ Arguments ESCAPE-START and ESCAPE-END are the current escape sequences in use."
   )
 
 (defvar srecode-template-inserter-point-override nil
-  "When non-nil, the point inserter will do this functin instead.")
+  "When non-nil, the point inserter will do this function instead.")
 
 (defclass srecode-template-inserter-point (srecode-template-inserter)
   ((key :initform ?^
@@ -785,7 +786,7 @@ Calls back to `srecode-insert-method-helper' for this class."
 	"The character code used to identify inserters of this style.")
    (template :initarg :template
 	     :documentation
-	     "A Template used to frame the codes from this inserter.")
+	     "A template used to frame the codes from this inserter.")
    )
   "Apply values from a sub-dictionary to a template section.
 The dictionary saved at the named dictionary entry will be
@@ -820,7 +821,7 @@ Return the remains of INPUT."
 	:documentation
 	"The character code used to identify inserters of this style.")
    )
-  "All template segments between the secion-start and section-end
+  "All template segments between the section-start and section-end
 are treated specially.")
 
 (defmethod srecode-insert-method ((sti srecode-template-inserter-section-end)
@@ -866,7 +867,7 @@ this template instance."
 	 )
     ;; If there was no template name, throw an error
     (if (not templatenamepart)
-	(error "Include macro %s needs a template name." (oref sti :object-name)))
+	(error "Include macro %s needs a template name" (oref sti :object-name)))
 
     ;; NOTE: We used to cache the template and not look it up a second time,
     ;; but changes in the template tables can change which template is
@@ -898,7 +899,7 @@ this template instance."
 	  (setq active (cdr active)))
 	(when (not tmpl)
 	  ;; If it wasn't in this context, look to see if it
-	  ;; defines it's own context
+	  ;; defines its own context
 	  (setq tmpl (srecode-template-get-table (srecode-table)
 						 templatenamepart)))
 	)
@@ -916,7 +917,7 @@ this template instance."
 				  dictionary)
   "Insert the STI inserter.
 Finds the template with this macro function part, and inserts it
-with the dictionaries found in the dictinary."
+with the dictionaries found in the dictionary."
   (srecode-insert-include-lookup sti dictionary)
   ;; Insert the template.
   ;; Our baseclass has a simple way to do this.
@@ -971,7 +972,7 @@ Arguments ESCAPE-START and ESCAPE-END are the current escape sequences in use."
   "Insert the template STI.
 This will first insert the include part via inheritance, then
 insert the section it wraps into the location in the included
-template where  a ^ inserter occurs."
+template where a ^ inserter occurs."
   ;; Step 1: Look up the included inserter
   (srecode-insert-include-lookup sti dictionary)
   ;; Step 2: Temporarilly override the point inserter.

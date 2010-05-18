@@ -13,13 +13,13 @@
 </p>
 
 <p>Slots in this table where a "?" appears indicates that it might
-   work, but no one has tried it.  If you use the listed langauge, try
+   work, but no one has tried it.  If you use the listed language, try
    out the feature
    and <a href="http://lists.sourceforge.net/lists/listinfo/cedet-devel">let
    me know</a>.
 </p>
 <table cellspacing="1" border="1" class="DATA"><tr class="DATA">
-    <th>Langauge</th>
+    <th>Language</th>
     <th>Grammar</th>
     <th>Basic<br>Overrides</th>
     <th>Project Support</th>
@@ -182,6 +182,15 @@
     <td>Yes</td>
 </tr><tr class="EVEN">
     <td>Born Shell</td>
+    <td>CTags</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+</tr><tr class="EVEN">
+    <td>Scala</td>
     <td>CTags</td>
     <td>-</td>
     <td>-</td>

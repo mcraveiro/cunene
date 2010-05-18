@@ -1,11 +1,12 @@
 ## Makefile --- Definition file for building CEDET
 ##
-## Copyright (C) 2003, 2004, 2005, 2007, 2008, 2009 by David Ponce
+## Copyright (C) 2005, 2007, 2008, 2009, 2010 by Eric M. Ludlam
+## Copyright (C) 2003, 2004  by David Ponce
 ##
 ## Author: David Ponce <david@dponce.com>
 ## Maintainer: CEDET developers <http://sf.net/projects/cedet>
 ## Created: 12 Sep 2003
-## X-RCS: $Id: Makefile,v 1.25 2009/08/08 21:48:32 zappo Exp $
+## X-RCS: $Id: Makefile,v 1.27 2010/04/23 00:04:39 zappo Exp $
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -43,7 +44,7 @@ $(CEDET_ELISP_PACKAGES) \
 tests
 
 ## Path to your Emacs
-EMACS=emacs
+EMACS?=emacs
 EMACSFLAGS=-batch --no-site-file
 
 ## Your shell (On Windows/Cygwin I recommend to use bash)

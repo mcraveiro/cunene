@@ -6,7 +6,7 @@
 ;; Maintainer: David Ponce <david@dponce.com>
 ;; Created: 10 Nov 2000
 ;; Keywords: syntax
-;; X-RCS: $Id: senator.el,v 1.144 2010/01/23 16:16:14 zappo Exp $
+;; X-RCS: $Id: senator.el,v 1.149 2010/04/20 00:41:58 zappo Exp $
 
 ;; This file is not part of Emacs
 
@@ -463,7 +463,7 @@ Uses `semanticdb' when available."
               (setq tagsa (semantic-analyze-possible-completions
                            ctxt))
             (error nil)))))
-    
+
     (if tagsa
         tagsa
       ;; If the analyzer fails, then go into boring completion
@@ -526,7 +526,7 @@ Ignore tags of classes in `senator-search-ignore-tag-classes'"
 (defvar senator-search-tag-filter-functions
   '(senator-search-default-tag-filter)
   "List of functions to be called to filter searched tags.
-Each function is passed a tag. If one of them returns nil, the tag is
+Each function is passed a tag.  If one of them returns nil, the tag is
 excluded from the search.")
 
 (defun senator-search (searcher text &optional bound noerror count)
@@ -1138,7 +1138,7 @@ REGEXP says which ring to use."
     (error "No previous search"))))
 
 (defun senator-nonincremental-search-forward (string)
-  "Search for STRING  nonincrementally."
+  "Search for STRING nonincrementally."
   (interactive "sSemantic search for string: ")
   (setq senator-last-search-type 'string)
   (if (equal string "")
@@ -1367,7 +1367,7 @@ is found, we can jump to it.
 Some tags such as includes have other reference features.")
 
 (defun semantic-up-reference-default (tag)
-  "Return a tag that is referredto by TAG.
+  "Return a tag that is referred to by TAG.
 Makes C/C++ language like assumptions."
   (cond ((semantic-tag-faux-p tag)
          ;; Faux tags should have a real tag in some other location.
@@ -1756,12 +1756,12 @@ minor mode entry."
 
 (senator-register-mode-menu-entry
  "Idle Symbol Highlight"
- '(semantic-idle-tag-highlight-mode
+ '(semantic-idle-local-symbol-highlight-mode
    :help "Highlight symbols matching symbol under point in idle time."
    )
- '(global-semantic-idle-tag-highlight-mode
+ '(global-semantic-idle-local-symbol-highlight-mode
    :help "Highlight symbols matching symbol under point in idle time in all buffers."
-   :save global-semantic-idle-tag-highlight-mode
+   :save global-semantic-idle-local-symbol-highlight-mode
    )
  )
 
@@ -1786,6 +1786,17 @@ minor mode entry."
  '(global-semantic-stickyfunc-mode
    :help "Automatically enable sticky function mode in all Semantic buffers."
    :save global-semantic-stickyfunc-mode
+   )
+ )
+
+(senator-register-mode-menu-entry
+ "Idle Breadcrumbs Display"
+ '(semantic-idle-breadcrumbs-mode
+   :help "Display breadcrumbs for the tag under point and its parents."
+   )
+ '(global-semantic-idle-breadcrumbs-mode
+   :help "Automatically enable sticky function mode in all Semantic buffers."
+   :save global-semantic-idle-breadcrumbs-mode
    )
  )
 
@@ -2445,7 +2456,7 @@ minor mode is enabled.
           (not senator-minor-mode)))
   (senator-minor-mode-setup)
   (run-hooks 'senator-minor-mode-hook)
-  (if (interactive-p)
+  (if (cedet-called-interactively-p)
       (message "Senator minor mode %sabled"
                (if senator-minor-mode "en" "dis")))
   (senator-mode-line-update)
@@ -2552,14 +2563,14 @@ Use semantic tags to navigate."
 (defadvice beginning-of-defun (around senator activate)
   "Move backward to the beginning of a defun.
 If semantic tags are available, use them to navigate."
-  (if (and senator-minor-mode (interactive-p))
+  (if (and senator-minor-mode (cedet-called-interactively-p))
       (senator-beginning-of-defun (ad-get-arg 0))
     ad-do-it))
 
 (defadvice end-of-defun (around senator activate)
   "Move forward to next end of defun.
 If semantic tags are available, use them to navigate."
-  (if (and senator-minor-mode (interactive-p))
+  (if (and senator-minor-mode (cedet-called-interactively-p))
       (senator-end-of-defun (ad-get-arg 0))
     ad-do-it))
 
@@ -2567,7 +2578,7 @@ If semantic tags are available, use them to navigate."
   "Make text outside current defun invisible.
 The defun visible is the one that contains point or follows point.
 If semantic tags are available, use them to navigate."
-  (if (and senator-minor-mode (interactive-p))
+  (if (and senator-minor-mode (cedet-called-interactively-p))
       (senator-narrow-to-defun)
     ad-do-it))
 
@@ -2575,7 +2586,7 @@ If semantic tags are available, use them to navigate."
   "Put mark at end of this defun, point at beginning.
 The defun marked is the one that contains point or follows point.
 If semantic tags are available, use them to navigate."
-  (if (and senator-minor-mode (interactive-p))
+  (if (and senator-minor-mode (cedet-called-interactively-p))
       (senator-mark-defun)
     ad-do-it))
 
@@ -2583,7 +2594,7 @@ If semantic tags are available, use them to navigate."
   "Put mark at end of this defun, point at beginning.
 The defun marked is the one that contains point or follows point.
 If semantic tags are available, use them to navigate."
-  (if (and senator-minor-mode (interactive-p))
+  (if (and senator-minor-mode (cedet-called-interactively-p))
       (senator-mark-defun)
     ad-do-it))
 
@@ -2637,8 +2648,9 @@ used by add log.")
     (when ft
       (ring-insert senator-tag-ring ft)
       (kill-ring-save (semantic-tag-start ft) (semantic-tag-end ft))
-      (when (interactive-p)
-        (message "Use C-y to yank text.  Use `senator-yank-tag' for prototype insert."))
+      (when (cedet-called-interactively-p)
+        (message "Use C-y to yank text.  \
+Use `senator-yank-tag' for prototype insert."))
       )
     ft))
 (semantic-alias-obsolete 'senator-copy-token 'senator-copy-tag)
@@ -2651,24 +2663,24 @@ the kill ring.  Retrieve that text with \\[yank]."
   (let ((ct (senator-copy-tag))) ;; this handles the reparse for us.
     (kill-region (semantic-tag-start ct)
                  (semantic-tag-end ct))
-    (when (interactive-p)
-      (message "Use C-y to yank text.  Use `senator-yank-tag' for prototype insert."))
+    (when (cedet-called-interactively-p)
+      (message "Use C-y to yank text.  \
+Use `senator-yank-tag' for prototype insert."))
     ))
 (semantic-alias-obsolete 'senator-kill-token 'senator-kill-tag)
 
 (defun senator-yank-tag ()
   "Yank a tag from the tag ring.
-The form the tag takes is differnet depending on where it is being
+The form the tag takes is different depending on where it is being
 yanked to."
   (interactive)
   (or (ring-empty-p senator-tag-ring)
       (let ((ft (ring-ref senator-tag-ring 0)))
           (semantic-foreign-tag-check ft)
           (semantic-insert-foreign-tag ft)
-          (when (interactive-p)
+          (when (cedet-called-interactively-p)
             (message "Use C-y to recover the yank the text of %s."
-                     (semantic-tag-name ft)))
-          )))
+                     (semantic-tag-name ft))))))
 (semantic-alias-obsolete 'senator-yank-token 'senator-yank-tag)
 
 (defun senator-copy-tag-to-register (register &optional kill-flag)
@@ -2690,7 +2702,7 @@ kill ring."
   "Insert contents of register REGISTER as a tag.
 If senator is not active, use the original mechanism."
   (let ((val (get-register (ad-get-arg 0))))
-    (if (and senator-minor-mode (interactive-p)
+    (if (and senator-minor-mode (cedet-called-interactively-p)
              (semantic-foreign-tag-p val))
         (semantic-insert-foreign-tag val)
       ad-do-it)))
@@ -2699,7 +2711,7 @@ If senator is not active, use the original mechanism."
   "Insert contents of register REGISTER as a tag.
 If senator is not active, use the original mechanism."
   (let ((val (get-register (ad-get-arg 0))))
-    (if (and senator-minor-mode (interactive-p)
+    (if (and senator-minor-mode (cedet-called-interactively-p)
              (semantic-foreign-tag-p val))
         (progn
           (switch-to-buffer (semantic-tag-buffer val))
@@ -2707,7 +2719,7 @@ If senator is not active, use the original mechanism."
       ad-do-it)))
 
 (defun senator-transpose-tags-up ()
-  "Transpose the current tag, and the preceeding tag."
+  "Transpose the current tag, and the preceding tag."
   (interactive)
   (senator-parse)
   (let* ((current-tag (semantic-current-tag))

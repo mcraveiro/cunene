@@ -1,13 +1,13 @@
 ;;; wisent.el --- GNU Bison for Emacs - Runtime
 
-;; Copyright (C) 2009 Eric M. Ludlam
+;; Copyright (C) 2009, 2010 Eric M. Ludlam
 ;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007 David Ponce
 
 ;; Author: David Ponce <david@dponce.com>
 ;; Maintainer: David Ponce <david@dponce.com>
 ;; Created: 30 January 2002
 ;; Keywords: syntax
-;; X-RCS: $Id: wisent.el,v 1.40 2009/09/11 18:51:36 zappo Exp $
+;; X-RCS: $Id: wisent.el,v 1.43 2010/04/09 02:07:37 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -141,7 +141,7 @@ POSITIONS are available."
   "Toggle whether to issue more messages while parsing."
   (interactive)
   (setq wisent-parse-verbose-flag (not wisent-parse-verbose-flag))
-  (when (interactive-p)
+  (when (cedet-called-interactively-p 'interactive)
     (message "More messages while parsing %sabled"
              (if wisent-parse-verbose-flag "en" "dis"))))
 
@@ -274,9 +274,9 @@ Return nil.
 Must be used in error recovery semantic actions.
 Optional argument BOUNDS is a pair (START . END) which indicates where
 the parenthesized block starts.  Typically the value of a `$regionN'
-variable, where `N' is the the Nth element of the current rule
-components that match the block beginning.  It defaults to the value
-of the `$region' variable."
+variable, where `N' is the Nth element of the current rule components
+that match the block beginning.  It defaults to the value of the
+`$region' variable."
   (let ((start (car (or bounds $region)))
         end input)
     (if (not (number-or-marker-p start))

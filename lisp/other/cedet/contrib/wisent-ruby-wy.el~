@@ -3,7 +3,7 @@
 ;;; Copyright (C) 2007 Daniel Debertin (debertin@gmail.com)
 
 ;; Author: Marco Craveiro <marco@perlis>
-;; Created: 2009-10-20 15:43:38+0100
+;; Created: 2010-02-19 15:48:48+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

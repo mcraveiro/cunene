@@ -1,15 +1,12 @@
 # This Makefile byte-compiles the ECB lisp files and generates online-help.
 
-# Copyright (C) 2000 - 2005 Jesper Nordenberg,
+# Copyright (C) 2000 - 2010 Jesper Nordenberg,
 #                           Klaus Berndl,
-#                           Kevin A. Burton,
 #                           Free Software Foundation, Inc.
 
 # Author: Jesper Nordenberg <mayhem@home.se>
 #         Klaus Berndl <klaus.berndl@sdm.de>
-#         Kevin A. Burton <burton@openprivacy.org>
 # Maintainer: Klaus Berndl <klaus.berndl@sdm.de>
-#             Kevin A. Burton <burton@openprivacy.org>
 # Keywords: browser, code, programming, tools
 # Created: 2001
 
@@ -26,7 +23,7 @@
 # GNU Emacs; see the file COPYING.  If not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-# $Id: Makefile,v 1.117 2009/11/23 09:56:56 berndl Exp $
+# $Id: Makefile,v 1.119 2010/02/22 16:33:42 berndl Exp $
 
 
 # ========================================================================
@@ -43,14 +40,18 @@ EMACS=emacs
 # In the following path-settings of this section use always FORWARD-SLASHES
 # as directory-separator even with MS Windows systems.
 
-# -------- Compiling ECB with the cedet-library 1.0 ----------------------
+# -------- Compiling ECB with the cedet-library ----------------------
 
-# cedet >= 1.0preX (contains a.o. semantic >= 2.0, eieio >= 0.18 and
-# speedbar >= 0.15). Set here the full path to the cedet-installation
-# directory. Set this to empty if you want to use that cedet which is
-# integrated into Emacs >= 23.2. For Emacs-versions < 23.2 you MUST set
-# this path!
+# cedet >= 1.0pre6 (contains a.o. semantic >= 2.0, eieio >= 0.18 and
+# speedbar >= 0.15).
+#
+# + If you use Emacs >= 23.2 and you want to use the integrated CEDET:
+#   Set this to empty (CEDET=)
+#
+# + If you use Emacs < 23.2 or if you want to use the author version of CEDET:
+#   Set this to the full path of your CEDET-installation.
 
+#CEDET=
 CEDET=c:/Programme/emacs-23.1/site-lisp/package-development/cedet
 
 # You can set here more load-paths to arbitrary packages if you want. But
@@ -61,7 +62,7 @@ LOADPATH=
 # - Call "make" to byte-compile the ECB. You can savely ignore the messages.
 # - Or call
 #
-#      make [EMACS="path/to/emacs"] [CEDET="path/to/cedet"]
+#      make [EMACS="path/to/emacs"] [CEDET="path/to/cedet" or empty]
 #
 #   if you want to set either different load-paths or Emacs-binary and
 #   you do not want edit the Makefile. Do not forget quoting the arguments
@@ -117,12 +118,11 @@ INSTALLINFO=/usr/bin/install-info
 # ========================================================================
 
 
-# $Id: Makefile,v 1.117 2009/11/23 09:56:56 berndl Exp $
+# $Id: Makefile,v 1.119 2010/02/22 16:33:42 berndl Exp $
 
 # For the ECB-maintainers: Change the version-number here and not
 # elsewhere!
 ecb_VERSION=2.41
-#ecb_VERSION=2.32
 
 include ecb-makedef.mk
 
@@ -132,6 +132,9 @@ ecb: $(ecb_LISP_EL)
 	@echo "(add-to-list 'load-path nil)" > ecb-compile-script
 	@if test ! -z "${CEDET}"; then\
 	   echo "(load-file \"$(CEDET)/common/cedet.el\")" >> ecb-compile-script; \
+	else \
+	   echo "(semantic-mode 1)" >> ecb-compile-script; \
+	   echo "(require 'semantic/bovine/el)" >> ecb-compile-script; \
 	fi
 	@if test ! -z "${LOADPATH}"; then\
 	   for loadpath in ${LOADPATH}; do \

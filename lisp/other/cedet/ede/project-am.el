@@ -5,7 +5,7 @@
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Version: 0.0.3
 ;; Keywords: project, make
-;; RCS: $Id: project-am.el,v 1.54 2010/02/08 23:48:48 zappo Exp $
+;; RCS: $Id: project-am.el,v 1.56 2010/03/15 13:40:54 xscript Exp $
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -394,6 +394,7 @@ Argument COMMAND is the command to use for compiling the target."
 	(cmd nil))
     (unwind-protect
 	(progn
+      (require 'ede-shell)
 	  (set-buffer tb)
 	  (setq default-directory dd)
 	  (setq cmd (read-from-minibuffer
@@ -951,7 +952,7 @@ Kill the Configure buffer if it was not already in a buffer."
 				(t acf))))
 	    (if (> (length outfiles) 1)
 		(setq configfiles outfiles)
-	      (setq configfiles (split-string (car outfiles) " " t)))
+	      (setq configfiles (split-string (car outfiles) "\\s-" t)))
 	    )
 	  ))
       )

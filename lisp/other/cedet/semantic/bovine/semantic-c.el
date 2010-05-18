@@ -3,7 +3,7 @@
 ;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: semantic-c.el,v 1.139 2010/02/19 02:23:27 zappo Exp $
+;; X-RCS: $Id: semantic-c.el,v 1.144 2010/04/09 01:54:03 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -73,7 +73,7 @@ This function does not do any hidden buffer changes."
 (defcustom-mode-local-semantic-dependency-system-include-path
   c-mode semantic-c-dependency-system-include-path
   '("/usr/include")
-  "The system include path used by the C langauge.")
+  "The system include path used by the C language.")
 
 (defcustom semantic-default-c-path nil
   "Default set of include paths for C code.
@@ -165,7 +165,7 @@ lexical analyzer, such as `symbol' or `string'.  The string in the
 second position is the text that makes up the replacement.  This is
 the way to have multiple lexical symbols in a replacement.  Using the
 first way to specify text like \"foo::bar\" would not work, because :
-is a sepearate lexical symbol.
+is a separate lexical symbol.
 
 A quick way to see what you would need to insert is to place a
 definition such as:
@@ -206,7 +206,7 @@ to store your global macros in a more natural way."
 
 ;;;###autoload
 (defcustom semantic-c-member-of-autocast 't
-  "Non-nil means classes with a '->' operator will cast to it's return type.
+  "Non-nil means classes with a '->' operator will cast to its return type.
 
 For Examples:
 
@@ -227,7 +227,7 @@ if `semantic-c-member-of-autocast' is nil :
 (define-lex-spp-macro-declaration-analyzer semantic-lex-cpp-define
   "A #define of a symbol with some value.
 Record the symbol in the semantic preprocessor.
-Return the the defined symbol as a special spp lex token."
+Return the defined symbol as a special spp lex token."
   "^\\s-*#\\s-*define\\s-+\\(\\(\\sw\\|\\s_\\)+\\)" 1
   (goto-char (match-end 0))
   (skip-chars-forward " \t")
@@ -263,7 +263,7 @@ Return the the defined symbol as a special spp lex token."
 (define-lex-spp-macro-undeclaration-analyzer semantic-lex-cpp-undef
   "A #undef of a symbol.
 Remove the symbol from the semantic preprocessor.
-Return the the defined symbol as a special spp lex token."
+Return the defined symbol as a special spp lex token."
   "^\\s-*#\\s-*undef\\s-+\\(\\(\\sw\\|\\s_\\)+\\)" 1)
 
 
@@ -618,7 +618,7 @@ It is really there, but if a majority of uses is to squeeze out
 the second namespace in use, then it should not be included.
 
 If you are having problems with smart completion and STL templates,
-it may that this is set incorrectly.  After changing the value
+it may be that this is set incorrectly.  After changing the value
 of this flag, you will need to delete any semanticdb cache files
 that may have been incorrectly parsed."
   :group 'semantic
@@ -795,7 +795,7 @@ Use semantic-cpp-lexer for parsing text inside a CPP macro."
 
 (define-mode-local-override semantic-parse-region c-mode
   (start end &optional nonterminal depth returnonerror)
-  "Calls 'semantic-parse-region-default', except in a macro expansion.
+  "Calls `semantic-parse-region-default', except in a macro expansion.
 MACRO expansion mode is handled through the nature of Emacs's non-lexical
 binding of variables.
 START, END, NONTERMINAL, DEPTH, and RETURNONERRORS are the same
@@ -857,7 +857,7 @@ as for the parent."
     ))
 
 (defvar semantic-c-parse-token-hack-depth 0
-  "Current depth of recursive calls to `semantic-c-parse-lexical-token'")
+  "Current depth of recursive calls to `semantic-c-parse-lexical-token'.")
 
 (defun semantic-c-parse-lexical-token (lexicaltoken nonterminal depth
 						    returnonerror)
@@ -880,8 +880,7 @@ the regular parser."
 	 )
     (if (> semantic-c-parse-token-hack-depth 5)
 	nil
-      (save-excursion
-	(set-buffer buf)
+      (with-current-buffer buf
 	(erase-buffer)
 	(when (not (eq major-mode mode))
 	  (save-match-data
@@ -891,7 +890,7 @@ the regular parser."
 		(funcall mode)
 	      (error
 	       (if (y-or-n-p
-		    (format "There was an error initializing %s in buffer \"%s\". Debug your hooks? "
+		    (format "There was an error initializing %s in buffer \"%s\".  Debug your hooks? "
 			    mode (buffer-name)))
 		   (semantic-c-debug-mode-init mode)
 		 (message "Macro parsing state may be broken...")
@@ -941,7 +940,7 @@ the regular parser."
 (defun semantic-c-debug-mode-init (mm)
   "Debug mode init for major mode MM after we're done parsing now."
   (interactive (list semantic-c-debug-mode-init-last-mode))
-  (if (interactive-p)
+  (if (cedet-called-interactively-p 'interactive)
       ;; Do the debug.
       (progn
 	(switch-to-buffer (get-buffer-create "*MODE HACK TEST*"))
@@ -959,9 +958,9 @@ the regular parser."
     (switch-to-buffer-other-window
      (get-buffer-create "*MODE HACK TEST*"))
     (erase-buffer)
-    (insert "A failure occured while parsing your buffers.
+    (insert "A failure occurred while parsing your buffers.
 
-The failure occured while attempting to initialize " (symbol-name mm) " in a
+The failure occurred while attempting to initialize " (symbol-name mm) " in a
 buffer not associated with a file.  To debug this problem, type
 
 M-x semantic-c-debug-mode-init
@@ -1109,13 +1108,19 @@ now.
 	     ;; the super class, and stick it into the tags list.
 	     (setq addlast super)
 
-	     ;; Clone super and remove the members.
+	     ;; Clone super and remove the members IFF super has a name.
+	     ;; Note: anonymous struct/enums that are typedef'd shouldn't
+	     ;; exist in the top level type list, so they will appear only
+	     ;; in the :typedef slot of the typedef.
 	     (setq super (semantic-tag-clone super))
-	     (semantic-tag-put-attribute super :members nil)
+	     (if (not (string= (semantic-tag-name super) ""))
+		 (semantic-tag-put-attribute super :members nil)
+	       (setq addlast nil))
 
 	     ;; Add in props to the full superclass.
-	     (semantic--tag-copy-properties tag addlast)
-	     (semantic--tag-set-overlay addlast (semantic-tag-overlay tag))
+	     (when addlast
+	       (semantic--tag-copy-properties tag addlast)
+	       (semantic--tag-set-overlay addlast (semantic-tag-overlay tag)))
 	     )
 
 	   
@@ -1168,7 +1173,7 @@ now.
   "At parse time, assign a class or struct name text here.
 It is picked up by `semantic-c-reconstitute-token' to determine
 if something is a constructor.  Value should be:
-  ( TYPENAME .  TYPEOFTYPE)
+  (TYPENAME .  TYPEOFTYPE)
 where typename is the name of the type, and typeoftype is \"class\"
 or \"struct\".")
 
@@ -1459,7 +1464,7 @@ Optional PARENT and COLOR as specified with
 
 (define-mode-local-override semantic-format-tag-uml-prototype
   c-mode (token &optional parent color)
-  "Return an uml string describing TOKEN for C and C++.
+  "Return an UML string describing TOKEN for C and C++.
 Optional PARENT and COLOR as specified with
 `semantic-abbreviate-tag-default'."
   ;; If we have special template things, append.
@@ -1525,8 +1530,8 @@ SPEC-LIST is the template specifier of the datatype instantiated."
     (semantic-c--instantiate-template tag (cdr def-list) (cdr spec-list))))
 
 (defun semantic-c--template-name-1 (spec-list)
-  "return a string used to compute template class name based on SPEC-LIST
-for ref<Foo,Bar> it will return 'Foo,Bar'."
+  "Return a string used to compute template class name.
+Based on SPEC-LIST, for ref<Foo,Bar> it will return 'Foo,Bar'."
   (when (car spec-list)
     (let* ((endpart (semantic-c--template-name-1 (cdr spec-list)))
 	   (separator (and endpart ",")))
@@ -1540,7 +1545,7 @@ return 'ref<Foo,Bar>'."
 	  "<" (semantic-c--template-name-1 (cdr spec-list)) ">"))
 
 (defun semantic-c-dereference-template (type scope &optional type-declaration)
-  "Dereference any template specifieres in TYPE within SCOPE.
+  "Dereference any template specifiers in TYPE within SCOPE.
 If TYPE is a template, return a TYPE copy with the templates types
 instantiated as specified in TYPE-DECLARATION."
   (when (semantic-tag-p type-declaration)
@@ -1581,7 +1586,7 @@ TYPE-DECLARATION is passed through."
 (defun semantic-c-dereference-namespace (type scope &optional type-declaration)
   "Dereference namespace which might hold an 'alias' for TYPE.
 Such an alias can be created through 'using' statements in a
-namespace declaration. This function checks the namespaces in
+namespace declaration.  This function checks the namespaces in
 SCOPE for such statements."
   (let ((scopetypes (oref scope scopetypes))
 	typename currentns tmp usingname result namespaces)
@@ -1718,7 +1723,7 @@ Handle typedef, template instantiation, and '->' operator."
     (list type type-declaration))
 
 (define-mode-local-override semantic-analyze-type-constants c-mode (type)
-  "When TYPE is a tag for an enum, return it's parts.
+  "When TYPE is a tag for an enum, return its parts.
 These are constants which are of type TYPE."
   (if (and (eq (semantic-tag-class type) 'type)
 	   (string= (semantic-tag-type type) "enum"))
@@ -1779,6 +1784,24 @@ DO NOT return the list of tags encompassing point."
     ;; Return the stuff
     tagreturn
     ))
+
+(define-mode-local-override semantic-ctxt-imported-packages c++-mode (&optional point)
+  "Return the list of using tag types in scope of POINT."
+  (when point (goto-char (point)))
+  (let ((tagsaroundpoint (semantic-find-tag-by-overlay))
+	(namereturn nil)
+	(tmp nil)
+	)
+    ;; Collect using statements from the top level.
+    (setq tmp (semantic-find-tags-by-class 'using (current-buffer)))
+    (dolist (T tmp) (setq namereturn (cons (semantic-tag-type T) namereturn)))
+    ;; Move through the tags around point looking for more using statements
+    (while (cdr tagsaroundpoint)  ; don't search the last one
+      (setq tmp (semantic-find-tags-by-class 'using (semantic-tag-components (car tagsaroundpoint))))
+      (dolist (T tmp) (setq namereturn (cons (semantic-tag-type T) namereturn)))
+      (setq tagsaroundpoint (cdr tagsaroundpoint))
+      )
+    namereturn))
 
 (define-mode-local-override semanticdb-expand-nested-tag c++-mode (tag)
   "Expand TAG if it has a fully qualified name.
@@ -1841,7 +1864,7 @@ For types with a :parent, create faux namespaces to put TAG into."
       (semantic-idle-summary-current-symbol-info-default))))
 
 (defvar-mode-local c-mode semantic-orphaned-member-metaparent-type "struct"
-  "When lost memberes are found in the class hierarchy generator, use a struct.")
+  "When lost members are found in the class hierarchy generator, use a struct.")
 
 (defvar-mode-local c-mode semantic-symbol->name-assoc-list
   '((type     . "Types")
@@ -1867,7 +1890,7 @@ For types with a :parent, create faux namespaces to put TAG into."
   "Separator characters between something of a given type, and a field.")
 
 (defvar-mode-local c-mode semantic-command-separation-character ";"
-  "Commen separation character for C")
+  "Command separation character for C")
 
 (defvar-mode-local c-mode senator-step-at-tag-classes '(function variable)
   "Tag classes where senator will stop at the end.")

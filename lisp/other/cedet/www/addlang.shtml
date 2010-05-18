@@ -398,6 +398,13 @@ M-x semantic-analyze-debug-assist
 </ul>
 </tt>
 
+<p>Once you get your first smart completion working, consider adding
+  a new test file to <tt>semantic/semantic-ia-utest.el</tt> and putting
+  your samples there.  Re-running these tests will ensure you do not
+  regress as you get more and more bits of the smart-completion engine
+  working.
+
+
 <p>
 <table width="100%" class="BAR">
 <tr><td><h3><font color="black">Step 6: Code Generation</font></h3></td></tr>
