@@ -3,7 +3,7 @@
 ;; Copyright (C) 2002, 2003, 2004, 2007 Richard Kim
 
 ;; Author: Marco Craveiro <marco@thompson>
-;; Created: 2010-05-18 07:24:12+0100
+;; Created: 2010-05-18 21:19:42+0100
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 
