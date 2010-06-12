@@ -15,6 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with cunene.  If not, see <http://www.gnu.org/licenses/>.
 
+;; Add magit to load path.
+(add-to-list 'load-path (concat dotfiles-dir "/other/magit"))
+
 ;; Cating for git
 (setenv "PAGER" "cat")
 

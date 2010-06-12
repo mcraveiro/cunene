@@ -1,6 +1,12 @@
 (1
+ (rvm .
+      [(1 1)
+       nil "Emacs integration for rvm" single])
+ (elisp-depend .
+	       [(0 4 1)
+		nil "Parse depend libraries of elisp file." single])
  (perspective .
-	      [(1 0)
+	      [(1 1)
 	       nil "switch between named \"perspectives\" of the editor" single])
  (ruby-electric .
 		[(1 1)
@@ -241,7 +247,7 @@
 	[(0 96)
 	 nil "enhanced tags functionality for Java development" single])
  (eproject .
-	   [(0 3)
+	   [(0 4)
 	    nil "project workspaces for emacs" tar])
  (log4j-mode .
 	     [(1 3)
