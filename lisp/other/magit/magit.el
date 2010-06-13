@@ -224,7 +224,7 @@ Many Magit faces inherit from this one by default."
   '((((class color) (background light))
      :background "gray95")
     (((class color) (background dark))
-     :background "dim gray"))
+     :background "dark blue"))
   "Face for highlighting the current item."
   :group 'magit)
 
