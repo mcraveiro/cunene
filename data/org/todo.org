@@ -154,3 +154,5 @@ operator<<(LOG& log, const LEVEL& level) {
 ** Fri Feb 12 05:03:13 2010 (- use JSON for output with a single line per file on a << ca)
    - use JSON for output with a single line per file on a << call; rely
      on emacs/cmd line tools to indent; remove indent et al.
+** Fri Jun 18 16:25:20 2010 (- rename all static factories to create.)
+   - rename all static factories to create.

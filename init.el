@@ -42,6 +42,7 @@
                      "cunene-anything"
                      "cunene-ascii-table"
                      "cunene-auto-save"
+                     "cunene-autopair"
                      "cunene-backup"
                      "cunene-bat"
                      "cunene-bm"
