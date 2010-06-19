@@ -19,23 +19,12 @@
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
 
-(defconst my-c-lineup-maximum-indent 30)
-
-(defun my-c-lineup-arglist (langelem)
-  (let ((ret (c-lineup-arglist langelem)))
-    (if (< (elt ret 0) my-c-lineup-maximum-indent)
-        ret
-      (save-excursion
-        (goto-char (cdr langelem))
-        (vector (+ (current-column) 8))))))
-
-(defun my-indent-setup ()
-  (setcdr (assoc 'arglist-cont-nonempty c-offsets-alist)
-          '(c-lineup-gcc-asm-reg my-c-lineup-arglist)))
-
 ;; Hook
 (add-hook 'c-mode-common-hook
           (lambda ()
+            ;; indent function args properly
+            (c-set-offset 'arglist-intro '+)
+            (c-set-offset 'arglist-cont-nonempty '+)
             (c-set-offset 'innamespace 0)      ;; Do not indent namespaces.
             (c-toggle-hungry-state 1)          ;; use hungry delete.
             (company-mode)
