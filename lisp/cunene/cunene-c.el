@@ -19,6 +19,20 @@
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
 
+(defconst my-c-lineup-maximum-indent 30)
+
+(defun my-c-lineup-arglist (langelem)
+  (let ((ret (c-lineup-arglist langelem)))
+    (if (< (elt ret 0) my-c-lineup-maximum-indent)
+        ret
+      (save-excursion
+        (goto-char (cdr langelem))
+        (vector (+ (current-column) 8))))))
+
+(defun my-indent-setup ()
+  (setcdr (assoc 'arglist-cont-nonempty c-offsets-alist)
+          '(c-lineup-gcc-asm-reg my-c-lineup-arglist)))
+
 ;; Hook
 (add-hook 'c-mode-common-hook
           (lambda ()

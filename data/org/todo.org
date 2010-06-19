@@ -156,3 +156,12 @@ operator<<(LOG& log, const LEVEL& level) {
      on emacs/cmd line tools to indent; remove indent et al.
 ** Fri Jun 18 16:25:20 2010 (- rename all static factories to create.)
    - rename all static factories to create.
+** Sat Jun 19 10:02:32 2010 (- add typedefs to data exchanger)
+   - add typedefs to data exchanger
+   - check exception handling
+   
+   [[file:~/code/kitanda/code/cpp/src/specification/database_requirements.hpp::entities_type%20generate_entities%20const%20bool%20one][file:~/code/kitanda/code/cpp/src/specification/database_requirements.hpp::entities_type generate_entities const bool one]]
+** Sat Jun 19 10:16:21 2010 (use typedefs for vector in test_data requirements too.)
+   use typedefs for vector in test_data requirements too.
+   
+   [[file:~/code/kitanda/code/cpp/src/specification/test_data_requirements.cpp::std%20vector%20infinite_sequence%20value_type][file:~/code/kitanda/code/cpp/src/specification/test_data_requirements.cpp::std vector infinite_sequence value_type]]
