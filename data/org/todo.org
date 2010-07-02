@@ -1,0 +1,29 @@
+
+* 
+** Sun Jun 20 13:07:29 2010 (- move client.cpp / hpp to messaging)
+   - move client.cpp / hpp to messaging
+   - create a libmessaging.a
+   - link tombwa and luena to libmessaging
+   - change load currencies to create a client, service and run it
+   - create a call_back in currency_notebook that receives the new
+     currencies.
+   
+   
+   [[file:~/code/kitanda/code/cpp/src/tombwa/client.cpp::else]]
+** Mon Jun 21 08:15:48 2010 (the gui should have "creation druids":)
+   the gui should have "creation druids":
+   
+   - currency druid allows one to create all currencies, only majors,
+     by continent, etc
+   - customer druid: stock markets, american markets, etc.
+   - currency pair druid
+   
+   the gui should also have a data source management dialogue to
+   associate a currency pair with a data source.
+   
+   [[file:~/code/kitanda/code/cpp/src/messaging/CMakeLists.txt::set%20messaging_library%20messaging_validation][file:~/code/kitanda/code/cpp/src/messaging/CMakeLists.txt::set messaging_library messaging_validation]]
+** Tue Jun 22 23:49:27 2010 (my son the terrorist)
+   my son the terrorist
+   spike lee get on the bus
+   
+   [[file:~/code/kitanda/code/cpp/include/kitanda/messaging/header.hpp::const%20unsigned%20int%20archive_type_][file:~/code/kitanda/code/cpp/include/kitanda/messaging/header.hpp::const unsigned int archive_type_]]

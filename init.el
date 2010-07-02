@@ -79,6 +79,7 @@
                      "cunene-jira"
                      "cunene-js2"
                      "cunene-lisp"
+                     "cunene-kitanda"
                      "cunene-magit"
                      "cunene-mic-paren"
                      "cunene-moccur"
