@@ -27,3 +27,7 @@
    spike lee get on the bus
    
    [[file:~/code/kitanda/code/cpp/include/kitanda/messaging/header.hpp::const%20unsigned%20int%20archive_type_][file:~/code/kitanda/code/cpp/include/kitanda/messaging/header.hpp::const unsigned int archive_type_]]
+** Wed Jul  7 07:04:35 2010 (.emacs missing latest updates to kitanda mode.)
+   .emacs missing latest updates to kitanda mode.
+   
+   [[file:~/code/kitanda/code/cpp/include/kitanda/messaging/payload.hpp]]

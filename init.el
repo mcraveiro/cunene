@@ -84,6 +84,7 @@
                      "cunene-mic-paren"
                      "cunene-moccur"
                      "cunene-mpg123"
+                     "cunene-multi-term"
                      "cunene-nxml"
                      "cunene-org"
                      "cunene-powershell"
