@@ -17,10 +17,10 @@
 
 (require 'autopair)
 
-(add-hook 'c++-mode-hook
-          #'(lambda ()
-              (push '(?< . ?>)
-                    (getf autopair-extra-pairs :code))))
+;; (add-hook 'c++-mode-hook
+;;           #'(lambda ()
+;;               (push '(?< . ?>)
+;;                     (getf autopair-extra-pairs :code))))
 
 (put 'autopair-insert-opening 'delete-selection t)
 (put 'autopair-skip-close-maybe 'delete-selection t)

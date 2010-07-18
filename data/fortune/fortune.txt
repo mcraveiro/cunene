@@ -2078,3 +2078,7 @@
 ;; to fill the world with fools.
 ;; -- Herbert Spencer
 %
+;; the most important design issue is that Linux is supposed to be
+;; fun
+;; -- Linus Torvalds.
+%
