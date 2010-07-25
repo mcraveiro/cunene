@@ -17,3 +17,4 @@
 
 (autoload 'nxml-mode "nxml-mode" "NXML mode." t)
 (add-to-list 'auto-mode-alist '("\\.xml$" . nxml-mode))
+(setq nxml-child-indent tab-width)

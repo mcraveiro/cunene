@@ -111,6 +111,10 @@
 (set-background-color "black")
 (set-foreground-color "wheat")
 (set-face-foreground font-lock-comment-face "Plum")
+(add-to-list 'default-frame-alist '(frame-font . "Droid Sans Mono Bold 12"))
+(add-to-list 'default-frame-alist '(cursor-color . "wheat"))
+(add-to-list 'default-frame-alist '(foreground-color . "wheat"))
+(add-to-list 'default-frame-alist '(background-color . "black"))
 
 ;;
 ;; Syntax highlighting
