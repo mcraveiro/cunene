@@ -15,6 +15,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with init.el.  If not, see <http://www.gnu.org/licenses/>.
 
+(setq safe-local-variable-values (quote ((sql-product . postgres))))
+
 ;; directory for SQL data files
 (setq sql-datafiles-dir (concat datafiles-dir "/sql/"))
 (if (not (file-accessible-directory-p sql-datafiles-dir))
