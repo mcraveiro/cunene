@@ -33,11 +33,3 @@
                                              "/usr/include/glibmm-2.4")
                       :spp-table '(("isUnix" . "")
                                    ("BOOST_TEST_DYN_LINK" . "")))
-
-;; Quantlib
-;; (ede-cpp-root-project "Turbo"
-;;                       :name "Turbo Project"
-;;                       :file "/home/marco/code/ql/trunk/QuantLib/Makefile.am"
-;;                       :include-path '("/cpp/include")
-;;                       :spp-table '(("isUnix" . "")
-;;                                    ("BOOST_TEST_DYN_LINK" . "")))

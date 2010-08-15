@@ -63,6 +63,13 @@
          (sql-password "not_needed")
          (sql-database "musseque")
          (sql-port 5432))
+        (sanzala-thompson
+         (sql-product 'postgres)
+         (sql-server "thompson")
+         (sql-user "marco")
+         (sql-password "not_needed")
+         (sql-database "sanzala")
+         (sql-port 5432))
         (pool-b
          (sql-product 'mysql)
          (sql-server "1.2.3.4")
@@ -88,6 +95,10 @@
 (defun sql-musseque-bohr ()
   (interactive)
   (sql-connect-preset 'musseque-bohr))
+
+(defun sql-sanzala-thompson ()
+  (interactive)
+  (sql-connect-preset 'sanzala-thompson))
 
 ;; Increase column width for SqlServer.
 (setq sql-ms-options (quote ("-w" "8000" "-n")))
