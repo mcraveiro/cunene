@@ -65,6 +65,7 @@
                      "cunene-delim-kill.el"
                      "cunene-ecb"
                      "cunene-ede"
+                     "cunene-edef"
                      "cunene-eiffel"
                      "cunene-ffap"
                      "cunene-fixme"
