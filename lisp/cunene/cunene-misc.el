@@ -366,3 +366,10 @@ text (with prefix arg don't indent)."
     (interactive)
     (if (y-or-n-p-with-timeout "Do you really want to exit Emacs ?" 4 nil)
         (save-buffers-kill-emacs))))
+
+(defun insert-date()
+  "Insert a time-stamp according to locale's date and time format."
+  (interactive)
+  (insert (format-time-string "%a, %e %b %Y, %k:%M" (current-time))))
+
+(global-set-key "\C-cd" 'insert-date)
