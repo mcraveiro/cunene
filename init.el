@@ -82,6 +82,7 @@
                      "cunene-lisp"
                      "cunene-kitanda"
                      "cunene-magit"
+                     "cunene-mo-git-blame"
                      "cunene-mic-paren"
                      "cunene-moccur"
                      "cunene-mpg123"
