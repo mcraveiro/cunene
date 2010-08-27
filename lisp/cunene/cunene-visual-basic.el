@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2009  Marco Craveiro
 ;;
-;; init.el is free software; you can redistribute it and/or modify it
+;; Cunene is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
@@ -13,7 +13,7 @@
 ;; License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with init.el.  If not, see <http://www.gnu.org/licenses/>.
+;; along with Cunene.  If not, see <http://www.gnu.org/licenses/>.
 
 (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
 (add-to-list 'auto-mode-alist '("\\.\\(frm\\|bas\\|vb\\|cls\\|vbs\\|ctl\\)$" .
