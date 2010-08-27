@@ -95,6 +95,7 @@
                      "cunene-ruby"
                      "cunene-savehist"
                      "cunene-saveplace"
+                     "cunene-scratch.el"
                      "cunene-semantic"
                      "cunene-smooth-scrolling"
                      "cunene-sql"
