@@ -108,7 +108,8 @@
                      "cunene-winner"
                      "cunene-whitespace"
                      "cunene-yasnippet"
-))
+                     )
+      )
 
 ;; Load the customisation files
 (while cunene-files
