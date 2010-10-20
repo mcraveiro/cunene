@@ -26,6 +26,7 @@
                        (name . "^\\*compilation\\*$")))
                ("csharp" (mode . csharp-mode))
                ("make" (mode . cmake-mode))
+               ("ruby" (mode . ruby-mode))
                ("Text Templates" (name . ".tt$"))
                ("XML" (mode . nxml-mode))
                ("sql" (or
