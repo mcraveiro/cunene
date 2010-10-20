@@ -27,6 +27,7 @@
 
 ;; Show whitespaces on these modes
 (add-hook 'sql-mode-hook 'whitespace-mode)
+(add-hook 'ruby-mode-hook 'whitespace-mode)
 (add-hook 'diff-mode-hook 'whitespace-mode)
 (add-hook 'c-mode-common-hook 'whitespace-mode)
 (add-hook 'cmake-mode-hook 'whitespace-mode)
