@@ -55,6 +55,9 @@
                           (name . "^\\*Help\\*$")
                           (name . "^\\*scratch\\*$")
                           (name . "^\\*Messages\\*$")))
+                ("semantic" (or
+                             (mode . data-debug-mode)
+                             (name . "^\\*Lexer Output\\*$")))
                 ("web browsing" (name . "^\\*w3m"))
                 ("web development" (or
                                     (mode . html-mode)
