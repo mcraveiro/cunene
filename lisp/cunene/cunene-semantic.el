@@ -36,6 +36,22 @@
 
 ;; Enable SRecode (Template management) minor-mode.
 (global-srecode-minor-mode 1)
+(global-semantic-mru-bookmark-mode 1)
+(global-semantic-idle-completions-mode nil)
+(require 'semantic-decorate-include)
+
+;; gcc setup
+(require 'semantic-gcc)
+
+(setq-mode-local c-mode semanticdb-find-default-throttle
+                 '(project unloaded system recursive))
+(setq-mode-local c++-mode semanticdb-find-default-throttle
+                 '(project unloaded system recursive))
+
+(require 'eassist)
+
+;; smart complitions
+(require 'semantic-ia)
 
 ;; Additional include directories
 ;; (semantic-add-system-include "~/code/boost/boost" 'c++-mode)
