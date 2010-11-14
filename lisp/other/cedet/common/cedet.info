@@ -2,7 +2,7 @@ This is cedet.info, produced by makeinfo version 4.13 from cedet.texi.
 
 This manual documents CEDET, a collection of other tools.
 
-   Copyright (C) 2007, 2008, 2009 Eric M. Ludlam
+   Copyright (C) 2007, 2008, 2009, 2010 Eric M. Ludlam
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -14,7 +14,7 @@ This manual documents CEDET, a collection of other tools.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
-* CEDET: (cedet).	Collection of Emacs Development Environment Tools
+* CEDET: (cedet).       Collection of Emacs Development Environment Tools
 END-INFO-DIR-ENTRY
 
    This file documents CEDET.  _Collection of Emacs Development
@@ -56,7 +56,7 @@ the mailing list cedet-devel.net via the URL:
 * GNU Global::
 * ID Utils::
 * CScope::
-* Maintenance::	Maintaining your CEDET Data files
+* Maintenance:: Maintaining your CEDET Data files
 * GNU Free Documentation License::
 * Index::
 
@@ -116,7 +116,7 @@ as inversion, ezimage, pretty printing, and mode-local variables.
 
 * EIEIO::       Object system for Emacs.
 * Semantic::    Parser generator and tag management tool.
-* SRecode::	Semantic Recoder Template manager
+* SRecode::     Semantic Recoder Template manager
 * Speedbar::    File and tag explorer, plus more.
 * EDE::         Project Management tool.
 * COGRE::       Diagram editor for object design.
@@ -658,7 +658,7 @@ include path and will update all files when you use custom to do it.
 =============
 
 For large C or C++ programs, it is important to setup EDE for it.
-While EDE can be used to create makefiles and such using Automake, EDE
+While EDE can be used to create Makefiles or use Automake files, EDE
 also provides a way to merely describe a project so that tools like
 semantic can find your sources.
 
@@ -666,9 +666,15 @@ semantic can find your sources.
 the Linux Kernel, there are pre-existing EDE project types that will
 automatically detect these projects.
 
-   If EDE does not automatically detect your type of project, you may
-want to use the very simple `ede-cpp-root-project' type.  To use it,
-add this to your `.emacs' file, or other configuration:
+   If you use a generic project type, such as Make (using a Makefile),
+SCons, or CMake, you can use a *note Generic: (ede)Generic project.
+Generic projects allow some basic customization for C/C++.  Enable
+generic projects with `ede-enable-generic-projects'.
+
+   If the options there are insufficient, or if Generic projects can't
+identify your build system you will need to use the very simple
+`ede-cpp-root-project' type.  To use it, add this to your `.emacs'
+file, or other configuration:
 
      (global-ede-mode 1) ;; Enable EDE
      (ede-cpp-root-project "SOMENAME" :file "/dir/to/some/file")
@@ -850,10 +856,16 @@ Something like this can work in your `.emacs' file.
 11.3 semantic Database
 ======================
 
-@TODO
+semantic could use CScope as a back end for database searches, but this
+has not been implemented yet.
 
-   semantic can could use CScope as a back end for database searches,
-but this has not been implemented yet.
+     (semanticdb-enable-cscope-databases)
+
+   This will enable the use of cscope for all C and C++ buffers.
+
+   CScope will then be used for project-wide searches as a backup when
+pre-existing semantic database searches may not have parsed all your
+files.
 
 11.4 semantic
 =============
@@ -1267,31 +1279,31 @@ Index
 
 
 Tag Table:
-Node: Top899
-Node: Overview1928
-Node: EIEIO4835
-Node: Semantic5846
-Node: SRecode7162
-Node: Speedbar7649
-Node: EDE8599
-Node: COGRE9923
-Node: Other Library Functions10458
-Node: Installation/Basic Configuration13054
-Node: JDEE Target15609
-Node: ECB Target16558
-Node: Project Management17281
-Node: Code Completion18616
-Node: Code Generation20240
-Node: C++ Features21009
-Ref: semantic-lex-c-preprocessor-symbol-map21637
-Ref: semantic-lex-c-preprocessor-symbol-file22989
-Ref: semantic-c-obey-conditional-section-parsing-flag23582
-Ref: semantic-lex-c-nested-namespace-ignore-second23829
-Node: GNU Global25818
-Node: ID Utils27854
-Node: CScope29376
-Node: Maintenance31528
-Node: GNU Free Documentation License31938
-Node: Index51661
+Node: Top911
+Node: Overview1940
+Node: EIEIO4851
+Node: Semantic5862
+Node: SRecode7178
+Node: Speedbar7665
+Node: EDE8615
+Node: COGRE9939
+Node: Other Library Functions10474
+Node: Installation/Basic Configuration13070
+Node: JDEE Target15625
+Node: ECB Target16574
+Node: Project Management17297
+Node: Code Completion18632
+Node: Code Generation20256
+Node: C++ Features21025
+Ref: semantic-lex-c-preprocessor-symbol-map21653
+Ref: semantic-lex-c-preprocessor-symbol-file23005
+Ref: semantic-c-obey-conditional-section-parsing-flag23598
+Ref: semantic-lex-c-nested-namespace-ignore-second23845
+Node: GNU Global26129
+Node: ID Utils28165
+Node: CScope29687
+Node: Maintenance32082
+Node: GNU Free Documentation License32492
+Node: Index52215
 
 End Tag Table

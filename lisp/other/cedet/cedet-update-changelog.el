@@ -3,7 +3,7 @@
 ;;; Copyright (C) 2005, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: cedet-update-changelog.el,v 1.13 2010/02/20 22:57:09 zappo Exp $
+;; X-RCS: $Id: cedet-update-changelog.el,v 1.16 2010/08/22 16:38:28 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -35,15 +35,15 @@
 (require 'cedet)
 ;;; Code:
 
-(defvar cuc-my-machine-name (let ((sn (system-name)))
-			      ;; Only the first part of the name...
-			      (if (string-match "\\." sn)
-				  (concat
-				   (substring sn 0 (match-beginning 0))
-				   "\\("
-				   (substring sn (match-beginning 0))
-				   "\\)?")
-				sn))
+(defvar cuc-my-machine-name
+  (let* ((sn (system-name)))
+    (if (string-match "\\." sn)
+	(concat
+	 (substring sn 0 (match-beginning 0))
+	 "\\("
+	 (substring sn (match-beginning 0))
+	 "\\)?")
+      sn))
   "The name of the machine running this code as output by rcs2diff.")
 
 (defvar cuc-dirs
@@ -116,7 +116,7 @@ need to be transformed into the actual values."
     (goto-char (point-min))
     (while (re-search-forward (cuc-make-search-name "emacsman")
 			      nil t)
-      (replace-match "Richard Y. Kim <ryk@ap.com>" t t))
+      (replace-match "Richard Y. Kim <emacs18@gmail.com>" t t))
     ;; Klaus's Name
     (goto-char (point-min))
     (while (re-search-forward (cuc-make-search-name "berndl")
@@ -164,6 +164,12 @@ need to be transformed into the actual values."
     (while (re-search-forward (cuc-make-search-name "joakimv")
 			      nil t)
       (replace-match "Joakim Verona <joakim@verona.se>" t t))
+    
+    ;; Lluís
+    (goto-char (point-min))
+    (while (re-search-forward (cuc-make-search-name "xscript")
+			      nil t)
+      (replace-match "Lluís <xscript@users.sourceforge.net>" t t))
     
     ))
 

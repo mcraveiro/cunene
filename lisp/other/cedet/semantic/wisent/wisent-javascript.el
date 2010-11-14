@@ -1,10 +1,10 @@
 ;;; wisent-javascript.el --- javascript parser support
 
-;; Copyright (C) 2005 Eric M. Ludlam
+;; Copyright (C) 2005, 2010 Eric M. Ludlam
 
 ;; Author: Eric Ludlam <zappo@gnu.org>
 ;; Keywords: syntax
-;; X-RCS: $Id: wisent-javascript.el,v 1.3 2010/03/26 22:18:06 xscript Exp $
+;; X-RCS: $Id: wisent-javascript.el,v 1.4 2010/08/27 12:04:35 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -99,6 +99,10 @@ This function overrides `get-local-variables'."
 (add-hook 'javascript-mode-hook 'wisent-javascript-setup-parser)
 ;;;###autoload
 (add-hook 'ecmascript-mode-hook 'wisent-javascript-setup-parser)
+;;;###autoload
+(add-hook 'js-mode-hook 'wisent-javascript-setup-parser)
+;;;###autoload
+(add-hook 'js2-mode-hook 'wisent-javascript-setup-parser)
 
 (provide 'wisent-javascript-jv)
 

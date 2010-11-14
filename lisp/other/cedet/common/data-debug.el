@@ -3,7 +3,7 @@
 ;; Copyright (C) 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: data-debug.el,v 1.28 2010/04/11 14:00:57 zappo Exp $
+;; X-RCS: $Id: data-debug.el,v 1.30 2010/06/13 23:33:00 scymtym Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -431,8 +431,12 @@ PREBUTTONTEXT is some text between prefix and the stuff list button."
 
 (defun data-debug-insert-hash-table-button (hash-table prefix prebuttontext)
   "Insert HASH-TABLE as expandable button with recursive prefix PREFIX and PREBUTTONTEXT in front of the button text."
-  (let ((string (dd-propertize (format "%s" hash-table)
-			    'face 'font-lock-keyword-face)))
+  (let ((string (dd-propertize
+		 (format "#(hash-table count %d size %d test %s)"
+			 (hash-table-count hash-table)
+			 (hash-table-size hash-table)
+			 (hash-table-test hash-table))
+		 'face 'font-lock-keyword-face)))
     (insert (dd-propertize
 	     (concat prefix prebuttontext string)
 	     'ddebug        hash-table

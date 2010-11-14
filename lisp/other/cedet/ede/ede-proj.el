@@ -4,7 +4,7 @@
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: project, make
-;; RCS: $Id: ede-proj.el,v 1.69 2010/03/15 13:40:54 xscript Exp $
+;; RCS: $Id: ede-proj.el,v 1.72 2010/06/06 14:22:32 zappo Exp $
 
 ;; This software is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -536,7 +536,15 @@ Converts all symbols into the objects to be used."
 	    (if (ede-want-any-source-files-p (symbol-value (car st)) sources)
 		(let ((c (ede-proj-find-compiler avail (car st))))
 		  (if c (setq comp (cons c comp)))))
-	    (setq st (cdr st)))))
+	    (setq st (cdr st)))
+	  ;; Provide a good error msg.
+	  (unless comp
+	    (error "Could not find compiler match for source code extension \"%s\".
+You may need to add support for this type of file."
+		   (if sources
+		       (file-name-extension (car sources))
+		     "")))
+	  ))
       ;; Return the disovered compilers
       comp)))
 
@@ -570,7 +578,8 @@ Converts all symbols into the objects to be used."
 	    ;; the first that has no source type requirement.
 	    (while (and avail (not (eieio-instance-inheritor-slot-boundp (car avail) 'sourcetype)))
 	      (setq avail (cdr avail)))
-	    (setq link (cdr avail)))))
+	    (setq link (cdr avail)))
+	  ))
       ;; Return the disovered linkers
       link)))
 

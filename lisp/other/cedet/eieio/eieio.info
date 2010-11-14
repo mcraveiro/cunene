@@ -240,8 +240,12 @@ EIEIO a class has similar structure to that found in other OO languages.
 
      If two parents share the same slot name, the parent which appears
      in the SUPERCLASS-LIST first sets the tags for that slot.  If a
-     slot in the new class' slot list matches a parent, then the new
-     specifications for the child class override that of the parent.
+     slot in the new class' slot list matches a parent, then some of the
+     new specifications for the child class override that of the parent.
+
+     When overriding a slot, some slot attributes cannot be overriden
+     because they break basic OO rules.  You cannot override `:type' or
+     `:protection'.
 
      Whenever defclass is used to create a new class, two predicates are
      created for it.  The predicate names are `CLASS-NAME-p' and
@@ -265,8 +269,8 @@ EIEIO a class has similar structure to that found in other OO languages.
 * Menu:
 
 * Inheritance::         How to specify parents classes
-* Slot Options::	How to specify features of a slot.
-* Class Options::	How to specify features for this class.
+* Slot Options::        How to specify features of a slot.
+* Class Options::       How to specify features for this class.
 
 
 File: eieio.info,  Node: Inheritance,  Next: Slot Options,  Up: Building Classes
@@ -547,6 +551,11 @@ A Class can have class options.  EIEIO supports these class options.
     `:depth-first'
           Search for methods in the class hierarchy in a depth first
           order.
+
+    `:c3'
+          Searches for methods in in a learnarized way that most
+          closely matches what CLOS does when CLOS when a monotonic
+          class structure is defined.
 
      For more on method invocation order, *note Method Invocation::.
 
@@ -902,7 +911,36 @@ File: eieio.info,  Node: Method Invocation,  Next: Predicates,  Prev: Writing Me
 7 Method Invocation
 *******************
 
-TODO - writeme
+When classes are defined, you can specify the
+`:method-invocation-order'.  This is a feature specific to EIEIO.
+
+   This controls the order in which method resolution occurs for
+`:primary' methods in cases of multiple inheritance.  The order affects
+which method is called first in a tree, and if `call-next-method' is
+used, it controls the order in which the stack of methods are run.
+
+   The original EIEIO order turned out to be broken for multiple
+inheritance, but some programs depended on it.  As such this option was
+added when the default invocation order was fixed to something that
+made more sense in that case.
+
+   Valid values are:
+
+`:breadth-first'
+     Search for methods in the class hierarchy in breadth first order.
+     This is the default.
+
+`:depth-first'
+     Search for methods in the class hierarchy in a depth first order.
+
+`:c3'
+     Searches for methods in in a learnarized way that most closely
+     matches what CLOS does when CLOS when a monotonic class structure
+     is defined.
+
+     This is derived from the Dylan language documents by Kim Barrett
+     et al.: A Monotonic Superclass Linearization for Dylan Retrieved
+     from: http://192.220.96.201/dylan/linearization-oopsla96.html
 
 
 File: eieio.info,  Node: Predicates,  Next: Association Lists,  Prev: Method Invocation,  Up: Top
@@ -1785,8 +1823,8 @@ Function Index
 * class-children-fast:                   Predicates.           (line 80)
 * class-constructor:                     Predicates.           (line 39)
 * class-name:                            Predicates.           (line 27)
-* CLASS-NAME-child-p:                    Building Classes.     (line 44)
-* CLASS-NAME-p:                          Building Classes.     (line 41)
+* CLASS-NAME-child-p:                    Building Classes.     (line 48)
+* CLASS-NAME-p:                          Building Classes.     (line 45)
 * class-of:                              Predicates.           (line 56)
 * class-option:                          Predicates.           (line 32)
 * class-p:                               Predicates.           (line 16)
@@ -1874,59 +1912,59 @@ Node: Top859
 Node: Quick Start2572
 Node: Introduction5788
 Node: Building Classes7645
-Node: Inheritance10030
-Node: Slot Options12330
-Node: Class Options17805
-Node: Making New Objects20291
-Ref: make-instance21715
-Node: Accessing Slots22387
-Ref: oref23611
-Ref: oref-default23824
-Ref: slot-value24244
-Ref: set-slot-value24409
-Ref: object-add-to-list24866
-Ref: object-remove-from-list25258
-Ref: with-slots25507
-Node: Writing Methods26493
-Node: Generics27237
-Node: Methods28485
-Ref: call-next-method31472
-Ref: next-method-p31907
-Node: Static Methods32246
-Node: Method Invocation32910
-Node: Predicates33066
-Ref: find-class33467
-Ref: class-p33673
-Ref: slot-exists-p33793
-Ref: slot-boundp33876
-Node: Association Lists36798
-Ref: object-assoc37156
-Node: Customizing38125
-Node: Introspection40572
-Node: Base Classes41249
-Node: eieio-instance-inheritor41985
-Node: eieio-instance-tracker43252
-Node: eieio-singleton44709
-Node: eieio-persistent45137
-Node: eieio-named47034
-Node: eieio-speedbar47360
-Node: Browsing51193
-Node: Class Values51975
-Node: Documentation52474
-Node: Default Superclass54099
-Node: Initialization55238
-Node: Basic Methods56311
-Ref: clone56562
-Ref: object-print56880
-Node: Signal Handling58207
-Ref: slot-missing58699
-Ref: slot-unbound59390
-Ref: no-applicable-method60082
-Ref: no-next-method60447
-Node: Signals60815
-Node: Naming Conventions62432
-Node: CLOS compatibility63662
-Node: Wish List66532
-Node: Function Index67307
+Node: Inheritance10214
+Node: Slot Options12514
+Node: Class Options17989
+Node: Making New Objects20657
+Ref: make-instance22081
+Node: Accessing Slots22753
+Ref: oref23977
+Ref: oref-default24190
+Ref: slot-value24610
+Ref: set-slot-value24775
+Ref: object-add-to-list25232
+Ref: object-remove-from-list25624
+Ref: with-slots25873
+Node: Writing Methods26859
+Node: Generics27603
+Node: Methods28851
+Ref: call-next-method31838
+Ref: next-method-p32273
+Node: Static Methods32612
+Node: Method Invocation33276
+Node: Predicates34634
+Ref: find-class35035
+Ref: class-p35241
+Ref: slot-exists-p35361
+Ref: slot-boundp35444
+Node: Association Lists38366
+Ref: object-assoc38724
+Node: Customizing39693
+Node: Introspection42140
+Node: Base Classes42817
+Node: eieio-instance-inheritor43553
+Node: eieio-instance-tracker44820
+Node: eieio-singleton46277
+Node: eieio-persistent46705
+Node: eieio-named48602
+Node: eieio-speedbar48928
+Node: Browsing52761
+Node: Class Values53543
+Node: Documentation54042
+Node: Default Superclass55667
+Node: Initialization56806
+Node: Basic Methods57879
+Ref: clone58130
+Ref: object-print58448
+Node: Signal Handling59775
+Ref: slot-missing60267
+Ref: slot-unbound60958
+Ref: no-applicable-method61650
+Ref: no-next-method62015
+Node: Signals62383
+Node: Naming Conventions64000
+Node: CLOS compatibility65230
+Node: Wish List68100
+Node: Function Index68875
 
 End Tag Table

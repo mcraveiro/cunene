@@ -3,7 +3,7 @@
 ;; Copyright (C) 2010 Eric M. Ludlam
 ;;
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: ede-generic.el,v 1.2 2010/05/09 14:37:51 zappo Exp $
+;; X-RCS: $Id: ede-generic.el,v 1.5 2010/07/25 14:12:11 zappo Exp $
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -36,6 +36,12 @@
 ;; where having EDE support actually matters, with a single MISC to
 ;; represent anything else.
 ;;
+;; TOO MANY PROJECTS DETECTED:
+;;
+;; If enabling ede-generic support starts identifying too many
+;; projects, drop a file called `.ede-ignore' into any directory where
+;; you do not want a project to be.
+;;
 ;; Customization:
 ;;
 ;; Since these projects are all so increadibly generic, a user will
@@ -43,7 +49,34 @@
 ;; enable this without configuring the project objects directly (which
 ;; are auto-generated) a special ede-generic-confg object is defined to
 ;; hold the basics.  Generic projects will identify and use these
-;; config files. 
+;; config files.
+;;
+;; Adding support for new projects:
+;;
+;; To add support to EDE Generic for new project types is very quick.
+;; See the end of this file for examples such as CMake and SCons.
+;;
+;; Support consists of one class for your project, specifying the file
+;; name used by the project system you want to support.  It also
+;; should implement th method `ede-generic-setup-configuration' to
+;; prepopulate the configurable portion of the generic project with
+;; build details.
+;;
+;; Lastly, call `ede-generic-new-autoloader' to setup your project so
+;; EDE can use it.
+;;
+;; Adding support for new types of source code:
+;;
+;; Sources of different types are supported with a simple class which
+;; subclasses `ede-generic-target'.  The slots `shortname' and
+;; `extension' should be given new initial values.
+;;
+;; Optionally, any target method used by EDE can then be overriden.
+;; The ede-generic-target-c-cpp has some example methods setting up
+;; the pre-processor map and system include path.
+;;
+;; NOTE: It is not necessary to modify ede-generic.el to add any of
+;; the above described support features.
 
 (require 'ede)
 
@@ -108,7 +141,8 @@ ROOTPROJ is nil, since there is only one project."
     (setq this
 	  (funcall (oref alobj class-sym)
 		   (symbol-name (oref alobj class-sym))
-		   :name "Generic"
+		   :name (file-name-nondirectory
+			  (directory-file-name dir))
 		   :version "1.0"
 		   :directory (file-name-as-directory dir)
 		   :file (expand-file-name (oref alobj :proj-file)) ))
@@ -117,13 +151,18 @@ ROOTPROJ is nil, since there is only one project."
 
 ;;; Base Classes for the system
 (defclass ede-generic-target (ede-target)
-  ((extension :initform ""
+  ((shortname :initform ""
+	     :type string
+	     :allocation :class
+	     :documentation
+	     "Something prepended to the target name.")
+  (extension :initform ""
 	      :type string
 	      :allocation :class
 	      :documentation
 	      "Regular expression representing the extension used for this target.
 subclasses of this base target will override the default value.")
-   )
+  )
   "Baseclass for all targets belonging to the generic ede system."
   :abstract t)
 
@@ -180,28 +219,33 @@ The class allocated value is replace by different sub classes.")
 
 ;;; A list of different targets
 (defclass ede-generic-target-c-cpp (ede-generic-target)
-  ((extension :initform "\\([ch]\\(pp\\|xx\\|\\+\\+\\)?\\|cc\\|hh\\)"))
+  ((shortname :initform "C/C++")
+   (extension :initform "\\([ch]\\(pp\\|xx\\|\\+\\+\\)?\\|cc\\|hh\\|CC?\\)"))
   "EDE Generic Project target for C and C++ code.
 All directories need at least one target.")
 
 (defclass ede-generic-target-el (ede-generic-target)
-  ((extension :initform "el"))
+  ((shortname :initform "ELisp")
+   (extension :initform "el"))
   "EDE Generic Project target for Emacs Lisp code.
 All directories need at least one target.")
 
 (defclass ede-generic-target-fortran (ede-generic-target)
-  ((extension :initform "[fF]9[05]\\|[fF]\\|for"))
+  ((shortname :initform "Fortran")
+   (extension :initform "[fF]9[05]\\|[fF]\\|for"))
   "EDE Generic Project target for Fortran code.
 All directories need at least one target.")
 
 (defclass ede-generic-target-texi (ede-generic-target)
-  ((extension :initform "texi"))
+  ((shortname :initform "Texinfo")
+   (extension :initform "texi"))
   "EDE Generic Project target for texinfo code.
 All directories need at least one target.")
 
 ;; MISC must always be last since it will always match the file.
 (defclass ede-generic-target-misc (ede-generic-target)
-  ((extension :initform ""))
+  ((shortname :initform "Misc")
+   (extension :initform ""))
   "EDE Generic Project target for Misc files.
 All directories need at least one target.")
 
@@ -241,8 +285,7 @@ If one doesn't exist, create a new one for this directory."
     (when (not ans)
       (setq ans (make-instance 
 		 cls 
-		 :name (file-name-nondirectory
-			(directory-file-name dir))
+		 :name (oref cls shortname)
 		 :path dir
 		 :source nil))
       (object-add-to-list proj :targets ans)
@@ -310,21 +353,48 @@ the new configuration."
   "Commit all changes to the configuration to disk."
   (eieio-persistent-save config))
 
+;;; Creating Derived Projects:
+;;
+;; Derived projects need an autoloader so that EDE can find the
+;; different projects on disk.
+(defun ede-generic-new-autoloader (internal-name external-name
+						 projectfile class)
+  "Add a new EDE Autoload instance for identifying a generic project.
+INTERNAL-NAME is a long name that identifies thsi project type.
+EXTERNAL-NAME is a shorter human readable name to describe the project.
+PROJECTFILE is a file name that identifies a project of this type to EDE, such as 
+a Makefile, or SConstruct file.
+CLASS is the EIEIO class that is used to track this project.  It should subclass
+the class `ede-generic-project' project."
+  (add-to-list 'ede-project-class-files
+	       (ede-project-autoload internal-name
+				     :name external-name
+				     :file 'ede-generic
+				     :proj-file projectfile
+				     :load-type 'ede-generic-load
+				     :class-sym class
+				     :new-p nil)
+	       ;; Generics must go at the end, since more specific types
+	       ;; can create Makefiles also.
+	       t))
+
+;;;###autoload
+(defun ede-enable-generic-projects ()
+  "Enable generic project loaders."
+  (interactive)
+  (ede-generic-new-autoloader "edeproject-makefile" "Make"
+			      "Makefile" 'ede-generic-makefile-project)
+  (ede-generic-new-autoloader "edeproject-scons" "SCons"
+			      "SConstruct" 'ede-generic-scons-project)
+  (ede-generic-new-autoloader "edeproject-cmake" "CMake"
+			      "CMakeLists" 'ede-generic-cmake-project)
+  )
+
 
 ;;; SPECIFIC TYPES OF GENERIC BUILDS
 ;;
 
 ;;; MAKEFILE
-(add-to-list 'ede-project-class-files
-	     (ede-project-autoload "edeproject-makefile"
-				   :name "Make" :file 'ede-generic-make
-				   :proj-file "Makefile"
-				   :load-type 'ede-generic-load
-				   :class-sym 'ede-generic-makefile-project
-				   :new-p nil)
-	     ;; Generics must go at the end, since more specific types
-	     ;; can create Makefiles also.
-	     t)
 
 (defclass ede-generic-makefile-project (ede-generic-project)
   ((buildfile :initform "Makefile")
@@ -332,55 +402,33 @@ the new configuration."
   "Generic Project for makefiles.")
 
 (defmethod ede-generic-setup-configuration ((proj ede-generic-makefile-project) config)
-  "Default configuration setup method."
+  "Setup a configuration for Make."
   (oset config build-command "make -k")
   (oset config debug-command "gdb ")
   )
 
 
 ;;; SCONS
-(add-to-list 'ede-project-class-files
-	     (ede-project-autoload "edeproject-scons"
-				   :name "SCons" :file 'ede-generic-make
-				   :proj-file "SConstruct"
-				   :load-type 'ede-generic-load
-				   :class-sym 'ede-generic-scons-project
-				   :new-p nil)
-	     ;; Generics must go at the end, since more specific types
-	     ;; can create Scons also.
-	     t)
-
 (defclass ede-generic-scons-project (ede-generic-project)
   ((buildfile :initform "SConstruct")
    )
   "Generic Project for scons.")
 
 (defmethod ede-generic-setup-configuration ((proj ede-generic-scons-project) config)
-  "Default configuration setup method."
+  "Setup a configuration for SCONS."
   (oset config build-command "scons")
   (oset config debug-command "gdb ")
   )
 
 
 ;;; CMAKE
-(add-to-list 'ede-project-class-files
-	     (ede-project-autoload "edeproject-cmake"
-				   :name "CMake" :file 'ede-generic-make
-				   :proj-file "CMakeLists"
-				   :load-type 'ede-generic-load
-				   :class-sym 'ede-generic-cmake-project
-				   :new-p nil)
-	     ;; Generics must go at the end, since more specific types
-	     ;; can create Cmake also.
-	     t)
-
 (defclass ede-generic-cmake-project (ede-generic-project)
   ((buildfile :initform "CMakeLists")
    )
   "Generic Project for cmake.")
 
 (defmethod ede-generic-setup-configuration ((proj ede-generic-cmake-project) config)
-  "Default configuration setup method."
+  "Setup a configuration for CMake."
   (oset config build-command "cmake")
   (oset config debug-command "gdb ")
   )

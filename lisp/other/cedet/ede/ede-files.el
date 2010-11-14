@@ -3,7 +3,7 @@
 ;; Copyright (C) 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: ede-files.el,v 1.22 2010/03/26 22:18:01 xscript Exp $
+;; X-RCS: $Id: ede-files.el,v 1.25 2010/08/15 17:05:50 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -50,6 +50,12 @@ the current EDE project."
 	     file
 	     (ede-project-root-directory (ede-current-project))))
     (find-file fname)))
+
+(defun ede-flush-project-hash ()
+  "Flush the file locate hash for the current project."
+  (interactive)
+  (let* ((loc (ede-get-locator-object (ede-current-project))))
+    (ede-locate-flush-hash loc)))
 
 ;;; Placeholders for ROOT directory scanning on base objects
 ;;
@@ -237,27 +243,30 @@ Do this whenever a new project is created, as opposed to loaded."
 (defun ede-directory-project-p (dir &optional force)
   "Return a project description object if DIR has a project.
 Optional argument FORCE means to ignore a hash-hit of 'nomatch.
-This depends on an up to date `ede-project-class-files' variable."
-  (let* ((dirtest (expand-file-name dir))
-	 (match (ede-directory-project-from-hash dirtest)))
-    (cond
-     ((and (eq match 'nomatch) (not force))
-      nil)
-     ((and match (not (eq match 'nomatch)))
-      match)
-     (t
-      (let ((types ede-project-class-files)
-	    (ret nil))
-	;; Loop over all types, loading in the first type that we find.
-	(while (and types (not ret))
-	  (if (ede-dir-to-projectfile (car types) dirtest)
-	      (progn
-		;; We found one!  Require it now since we will need it.
-		(require (oref (car types) file))
-		(setq ret (car types))))
-	  (setq types (cdr types)))
-	(ede-directory-project-add-description-to-hash dirtest (or ret 'nomatch))
-	ret)))))
+This depends on an up to date `ede-project-class-files' variable.
+Any directory that contains the file .ede-ignore will allways
+return nil."
+  (when (not (file-exists-p (expand-file-name ".ede-ignore" dir)))
+    (let* ((dirtest (expand-file-name dir))
+	   (match (ede-directory-project-from-hash dirtest)))
+      (cond
+       ((and (eq match 'nomatch) (not force))
+	nil)
+       ((and match (not (eq match 'nomatch)))
+	match)
+       (t
+	(let ((types ede-project-class-files)
+	      (ret nil))
+	  ;; Loop over all types, loading in the first type that we find.
+	  (while (and types (not ret))
+	    (if (ede-dir-to-projectfile (car types) dirtest)
+		(progn
+		  ;; We found one!  Require it now since we will need it.
+		  (require (oref (car types) file))
+		  (setq ret (car types))))
+	    (setq types (cdr types)))
+	  (ede-directory-project-add-description-to-hash dirtest (or ret 'nomatch))
+	  ret))))))
 
 ;;; TOPLEVEL
 ;;
@@ -383,7 +392,8 @@ FILENAME should be just a filename which occurs in a directory controlled
 by this project.
 Optional argument FORCE forces the default filename to be provided even if it
 doesn't exist.
-If FORCE equals 'newfile, then the cache is ignored."
+If FORCE equals 'newfile, then the cache is ignored and a new file in THIS
+is return."
   (let* ((loc (ede-get-locator-object this))
 	 (ha (ede-locate-file-in-hash loc filename))
 	 (ans nil)
@@ -443,20 +453,35 @@ doesn't exist."
 	(proj (oref this subproj))
 	(found nil))
     ;; find it Locally.
-    (setq found
-	  (cond ((file-exists-p (expand-file-name filename path))
-		 (expand-file-name filename path))
-		((file-exists-p (expand-file-name  (concat "include/" filename) path))
-		 (expand-file-name (concat "include/" filename) path))
-		(t
-		 (while (and (not found) proj)
-		   (setq found (when (car proj)
-				 (ede-expand-filename (car proj) filename))
-			 proj (cdr proj)))
-		 found)))
+    (setq found (or (ede-expand-filename-local this filename)
+		    (ede-expand-filename-impl-via-subproj this filename)))
     ;; Use an external locate tool.
     (when (not found)
       (setq found (car (ede-locate-file-in-project loc filename))))
+    ;; Return it
+    found))
+
+(defmethod ede-expand-filename-local ((this ede-project) filename)
+  "Expand filename locally to project THIS with filesystem tests."
+  (let ((path (ede-project-root-directory this)))
+    (cond ((file-exists-p (expand-file-name filename path))
+	   (expand-file-name filename path))
+	  ((file-exists-p (expand-file-name  (concat "include/" filename) path))
+	   (expand-file-name (concat "include/" filename) path)))))
+
+(defmethod ede-expand-filename-impl-via-subproj ((this ede-project) filename)
+  "Return a fully qualified file name based on project THIS.
+FILENAME should be just a filename which occurs in a directory controlled
+by this project."
+  (let ((proj (list (ede-toplevel this)))
+	(found nil))
+    ;; find it Locally.
+    (while (and (not found) proj)
+      (let ((thisproj (car proj)))
+	(setq proj (append (cdr proj) (oref thisproj subproj)))
+	(setq found (when thisproj
+		      (ede-expand-filename-local thisproj filename)))
+	))
     ;; Return it
     found))
 

@@ -1111,7 +1111,7 @@ tag list *note Creating a display::.
 beginning, like this:
 
      (add-to-list 'speedbar-dynamic-tags-function-list
-     	     '(my-fetch-dynamic-tags  . my-insert-tag-list))
+                  '(my-fetch-dynamic-tags  . my-insert-tag-list))
 
  -- Variable: speedbar-dynamic-tags-function-list
      A list of functions which will return and insert a list of tags.
@@ -1298,10 +1298,10 @@ functions, such as:
    This function should then use the TEXT parameter to determine what
 to do.  For example:
 
-       (cond ((string-match "+" text)	;we have to expand this file
+       (cond ((string-match "+" text)        ;we have to expand this file
               ;; Expand stuff here
               )
-     	((string-match "-" text)	;we have to contract this node
+             ((string-match "-" text)        ;we have to contract this node
               ;; Contract stuff here
               ))
 
@@ -1313,13 +1313,13 @@ to do.  For example:
 
    Our sample would then look like this:
 
-       (cond ((string-match "+" text)	;we have to expand this file
+       (cond ((string-match "+" text)        ;we have to expand this file
               ;; Expand stuff here
-     	 (speedbar-change-expand-button-char ?-)
+              (speedbar-change-expand-button-char ?-)
               )
-     	((string-match "-" text)	;we have to contract this node
+             ((string-match "-" text)        ;we have to contract this node
               ;; Contract stuff here
-     	 (speedbar-change-expand-button-char ?+)
+              (speedbar-change-expand-button-char ?+)
               ))
 
    To expand text, the speedbar buffer needs to be writable.  The
@@ -1335,12 +1335,12 @@ using any mechanism you like.  Remember that the cursor will be on the
 expand button just clicked though.  As such, the code might look like
 this:
 
-       (cond ((string-match "+" text)	;we have to expand this file
+       (cond ((string-match "+" text)        ;we have to expand this file
               ;; Expand stuff here
-     	 (speedbar-change-expand-button-char ?-)
-     	 (speedbar-with-writable
-     	   (save-excursion
-     	     (end-of-line) (forward-char 1)
+              (speedbar-change-expand-button-char ?-)
+              (speedbar-with-writable
+                (save-excursion
+                  (end-of-line) (forward-char 1)
                   ;; Insert goodies here.
                 ))
               )
@@ -1357,19 +1357,19 @@ function to do the work:
 
    The end result would then look like this:
 
-       (cond ((string-match "+" text)	;we have to expand this file
+       (cond ((string-match "+" text)        ;we have to expand this file
               ;; Expand stuff here
-     	 (speedbar-change-expand-button-char ?-)
-     	 (speedbar-with-writable
-     	   (save-excursion
-     	     (end-of-line) (forward-char 1)
+              (speedbar-change-expand-button-char ?-)
+              (speedbar-with-writable
+                (save-excursion
+                  (end-of-line) (forward-char 1)
                   ;; Insert goodies here.
                 ))
               )
-     	((string-match "-" text)	;we have to contract this node
+             ((string-match "-" text)        ;we have to contract this node
               ;; Contract stuff here
-     	 (speedbar-change-expand-button-char ?+)
-     	 (speedbar-delete-subblock indent))
+              (speedbar-change-expand-button-char ?+)
+              (speedbar-delete-subblock indent))
               ))
 
    Expand buttons, unlike other speedbar operations can cause new data
@@ -1519,15 +1519,15 @@ Node: Minor Display Modes32348
 Node: Major Display Modes34339
 Ref: speedbar-stealthy-function-list39278
 Node: Tagging Extensions40187
-Ref: speedbar-dynamic-tags-function-list41672
-Node: Creating a display42452
-Node: Creating Buttons43617
-Node: Generic Tag Lists46258
-Node: Expand Buttons48521
-Ref: speedbar-change-expand-button-char49815
-Ref: speedbar-with-writable50544
-Ref: speedbar-delete-subblock51296
-Ref: speedbar-center-buffer-smartly52295
-Node: Index52481
+Ref: speedbar-dynamic-tags-function-list41679
+Node: Creating a display42459
+Node: Creating Buttons43624
+Node: Generic Tag Lists46265
+Node: Expand Buttons48528
+Ref: speedbar-change-expand-button-char49843
+Ref: speedbar-with-writable50607
+Ref: speedbar-delete-subblock51394
+Ref: speedbar-center-buffer-smartly52456
+Node: Index52642
 
 End Tag Table

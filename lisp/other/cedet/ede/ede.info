@@ -445,16 +445,105 @@ lookup for semantic, improving code completion performance.
 
 * Menu:
 
+* Generic::             Detect generic Make, SCons or CMake projects
+* Add Generic Support:: Support more build types with Generic projects
 * ede-cpp-root::        This project marks the root of a C/C++ code project.
-* ede-simple subclassing:: Create your own simple project.
-* ede-emacs::		A project for working with Emacs.
-* ede-linux::		A project for working with Linux kernels.
+* ede-emacs::           A project for working with Emacs.
+* ede-linux::           A project for working with Linux kernels.
 * Custom Locate::       Customizing how to locate files in a simple project
 
 
-File: ede.info,  Node: ede-cpp-root,  Next: ede-simple subclassing,  Up: Simple projects
+File: ede.info,  Node: Generic,  Next: Add Generic Support,  Up: Simple projects
 
-7.3.1 ede-cpp-root
+7.3.1 Generic Projects
+----------------------
+
+The Generic project system provides a way for EDE to identify a project
+based on the build system.  Simple aspects of how this project builds
+or interacts with semantic can be done via the Customize interface.
+
+   For C++ projects, even if the build system is supported by Generic,
+may want to use *note ede-cpp-root:: which has addtional options for
+C/C++.
+
+   Generic projects are new, and disabled by default to prevent possible
+conflicts with other types of projects, to enable them, use
+`ede-enable-generic-projects'.
+
+ -- Function: ede-enable-generic-projects
+     Enable generic project loaders.
+
+   When a generic project identifies your code, you can use:
+
+     M-x ede-customize-project
+
+   to create an customization buffer and edit any configuration items
+for your project.  It will save the configuration in `EDEConfig.el' at
+the root of your project.
+
+   Generic projects also support *note Building and Debugging:: for the
+different project types.
+
+
+File: ede.info,  Node: Add Generic Support,  Next: ede-cpp-root,  Prev: Generic,  Up: Simple projects
+
+7.3.2 Add Generic Support for new build systems
+-----------------------------------------------
+
+The Generic EDE project type can support almost any kind of build
+system.  To add support for a new build system using the Generic type
+is pretty easy.  Here is an example for supporting SCons:
+
+     ;;; SCONS
+     (defclass ede-generic-scons-project (ede-generic-project)
+       ((buildfile :initform "SConstruct")
+        )
+       "Generic Project for scons.")
+
+     (defmethod ede-generic-setup-configuration ((proj ede-generic-scons-project) config)
+       "Setup a configuration for SCONS."
+       (oset config build-command "scons")
+       (oset config debug-command "gdb ")
+       )
+
+   The first block of code creates a new class for the SCons project
+type.  It inherits from `ede-generic-project'.  The only configuration
+really needed is to specify the initial value for the `buildfile' slot.
+This is `SConstruct' for SCons, and is `Makefile' for supporting Make.
+
+   The second thing to do is implement a method for your build system
+that will setup the Configuration.  Each generic project gets a common
+Configuration object which contains details on how to work with the
+different kinds of Source code.  It also contains the build and debug
+commands which should be setup here.  These are the defaults.  A user
+of your generic project can customize the configuration and change
+these values later.
+
+   Once the class is created, it needs to be registered.  If you wish to
+permanently add this to ede-generic.el, then you would edit
+`ede-enable-generic-projects'.  If you write support just for you, you
+would add a line of code like this example from SCons.
+
+     (ede-generic-new-autoloader "edeproject-scons" "SCons"
+     			    "SConstruct" 'ede-generic-scons-project)
+
+   Adding a generic autoloader tells EDE how to identify, and
+automatically create your project.
+
+ -- Function: ede-generic-new-autoloader internal-name external-name
+          projectfile class
+     Add a new EDE Autoload instance for identifying a generic project.
+     INTERNAL-NAME is a long name that identifies thsi project type.
+     EXTERNAL-NAME is a shorter human readable name to describe the
+     project.  PROJECTFILE is a file name that identifies a project of
+     this type to EDE, such as a Makefile, or SConstruct file.  CLASS
+     is the EIEIO class that is used to track this project.  It should
+     subclass the class "ede-generic-project" project.
+
+
+File: ede.info,  Node: ede-cpp-root,  Next: ede-emacs,  Prev: Add Generic Support,  Up: Simple projects
+
+7.3.3 ede-cpp-root
 ------------------
 
 The `ede-cpp-root' project type will allow you to create a single
@@ -560,32 +649,22 @@ EDE how to load your project pattern
        )
 
      (add-to-list 'ede-project-class-files
-     	     (ede-project-autoload "cpp-root"
-     	      :name "CPP ROOT"
-     	      :file 'ede-cpp-root
-     	      :proj-file 'MY-FILE-FOR-DIR
+                  (ede-project-autoload "cpp-root"
+                   :name "CPP ROOT"
+                   :file 'ede-cpp-root
+                   :proj-file 'MY-FILE-FOR-DIR
                    :proj-root 'MY-ROOT-FCN
-     	      :load-type 'MY-LOAD
-     	      :class-sym 'ede-cpp-root)
-     	     t)
+                   :load-type 'MY-LOAD
+                   :class-sym 'ede-cpp-root)
+                  t)
 
    This example only creates an auto-loader, and does not create a new
 kind of project.
 
 
-File: ede.info,  Node: ede-simple subclassing,  Next: ede-emacs,  Prev: ede-cpp-root,  Up: Simple projects
+File: ede.info,  Node: ede-emacs,  Next: ede-linux,  Prev: ede-cpp-root,  Up: Simple projects
 
-7.3.2 ede-simple Subclassing
-----------------------------
-
-todo - Write some doc.
-
-   In the meantime look in the commentary of ede-simple.el
-
-
-File: ede.info,  Node: ede-emacs,  Next: ede-linux,  Prev: ede-simple subclassing,  Up: Simple projects
-
-7.3.3 ede-emacs
+7.3.4 ede-emacs
 ---------------
 
 The `ede-emacs' project will automatically identify an Emacs source
@@ -597,7 +676,7 @@ and has an optimized include file identification function.
 
 File: ede.info,  Node: ede-linux,  Next: Custom Locate,  Prev: ede-emacs,  Up: Simple projects
 
-7.3.4 ede-linux
+7.3.5 ede-linux
 ---------------
 
 The `ede-linux' project will automatically identify a Linux Kernel
@@ -609,7 +688,7 @@ parsing, and has an optimized include file identification function.
 
 File: ede.info,  Node: Custom Locate,  Prev: ede-linux,  Up: Simple projects
 
-7.3.5 Custom Locate
+7.3.6 Custom Locate
 -------------------
 
 The various simple project styles all have one major drawback, which is
@@ -760,27 +839,27 @@ projects into memory.
    Here is a high-level UML diagram for the EDE system created with
 COGRE..
 
-     +-----------------------+	 +-----------------------+
+     +-----------------------+        +-----------------------+
      |                       |        |ede-project-placeholder|
      |ede-project-class-files|        +-----------------------+
      |                       |        +-----------------------+
      +-----------------------+        +-----------------------+
-     	   /\ 				     ^
-     	   \/				    /_\
-     	    |				     |
-      +--------------------+		       +-----------+	     +----------+
+                /\                                ^
+                \/                               /_\
+                 |                                |
+      +--------------------+                +-----------+         +----------+
       |ede-project-autoload|                |ede-project|         |ede-target|
       +--------------------+<>--------------+-----------+<>-------+----------+
       +--------------------+                +-----------+         +----------+
       +--------------------+                +-----------+         +----------+
-     					     ^
-     					    /_\
-     					     |
-     		       +---------------------+-----------------+
-     		       |		     |		       |
-     		       |		     |		       |
-     		       |		     |		       |
-     	      +----------------+   +-------------------+  +---------+
+                                                  ^
+                                                 /_\
+                                                  |
+                            +---------------------+-----------------+
+                            |                     |                 |
+                            |                     |                 |
+                            |                     |                 |
+                   +----------------+   +-------------------+  +---------+
                    |ede-proj-project|   |project-am-makefile|  |ede-emacs|
                    +----------------+   +-------------------+  +---------+
                    +----------------+   +-------------------+  +---------+
@@ -830,6 +909,12 @@ expects it to return a file name or nil.  If the file exists, then this
 directory is assumed to be part of a project, and
 `ede-directory-project-p' returns the instance of
 `ede-project-autoload' that matched.
+
+   If the current directory contains the file `.ede-ignore' then that
+directory is automatically assumed to contain no projects, even if
+there is a matching pattern.  Use this type of file in a directory that
+may contain many other sub projects, but still has a Makefile of some
+sort.
 
    If the current directory is a project, then EDE scans upwards till
 it finds the top of the project.  It does this by calling
@@ -981,9 +1066,9 @@ object:
 
      (defvar ede-source-emacs
        (ede-sourcecode "ede-emacs-source"
-     		  :name "Emacs Lisp"
-     		  :sourcepattern "\\.el$"
-     		  :garbagepattern '("*.elc"))
+                       :name "Emacs Lisp"
+                       :sourcepattern "\\.el$"
+                       :garbagepattern '("*.elc"))
        "Emacs Lisp source code definition.")
 
    If you want to recycle parts of an existing sourcecode object, you
@@ -5202,73 +5287,76 @@ Node: Project types14359
 Node: Make and Automake projects15436
 Node: Automake direct projects16079
 Node: Simple projects16663
-Node: ede-cpp-root17719
-Node: ede-simple subclassing22470
-Node: ede-emacs22723
-Node: ede-linux23105
-Node: Custom Locate23487
-Node: Extending EDE24966
-Node: Development Overview26830
-Node: Detecting a Project30894
-Node: User interface methods33656
-Node: Base project methods34884
-Node: EDE proj-project36249
-Node: Sourcecode objects36941
-Node: Compiler and Linker objects38640
-Node: Project41136
-Node: ede-project-placeholder41531
-Node: ede-project43586
-Node: ede-cpp-root-project53084
-Node: ede-emacs-project58041
-Node: ede-linux-project59809
-Node: ede-maven-project61574
-Node: ede-simple-project63170
-Node: ede-simple-base-project64424
-Node: ede-proj-project64963
-Node: project-am-makefile71872
-Node: ede-step-project74005
-Node: Targets78639
-Node: ede-target79777
-Node: ede-cpp-root-target86234
-Node: ede-emacs-target-c87150
-Node: ede-emacs-target-el88012
-Node: ede-emacs-target-misc88685
-Node: ede-linux-target-c89366
-Node: ede-linux-target-misc90232
-Node: ede-maven-target-java90915
-Node: ede-maven-target-c91598
-Node: ede-maven-target-misc92269
-Node: ede-simple-target92950
-Node: ede-proj-target93612
-Node: ede-proj-target-makefile99888
-Node: semantic-ede-proj-target-grammar103304
-Node: ede-proj-target-makefile-objectcode105012
-Node: ede-proj-target-makefile-archive106884
-Node: ede-proj-target-makefile-program108322
-Node: ede-proj-target-makefile-shared-object110529
-Node: ede-proj-target-elisp112551
-Node: ede-proj-target-elisp-autoloads114761
-Node: ede-proj-target-makefile-miscelaneous118442
-Node: ede-proj-target-makefile-info119957
-Node: ede-proj-target-aux122680
-Node: ede-proj-target-scheme123585
-Node: project-am-target124635
-Node: project-am-objectcode126534
-Node: project-am-program127982
-Node: project-am-lib128986
-Node: project-am-header129883
-Node: project-am-header-noinst130871
-Node: project-am-header-inst131852
-Node: project-am-lisp132823
-Node: project-am-texinfo133878
-Node: project-am-man135365
-Node: Sourcecode136384
-Node: ede-sourcecode136602
-Node: Compilers139298
-Node: ede-compilation-program139749
-Node: ede-compiler143019
-Node: ede-object-compiler146157
-Node: semantic-ede-grammar-compiler-class148357
-Node: ede-linker150244
+Node: Generic17818
+Ref: ede-enable-generic-projects18515
+Node: Add Generic Support18913
+Ref: ede-generic-new-autoloader20996
+Node: ede-cpp-root21473
+Node: ede-emacs26288
+Node: ede-linux26660
+Node: Custom Locate27042
+Node: Extending EDE28521
+Node: Development Overview30385
+Node: Detecting a Project34788
+Node: User interface methods37836
+Node: Base project methods39064
+Node: EDE proj-project40429
+Node: Sourcecode objects41121
+Node: Compiler and Linker objects42862
+Node: Project45358
+Node: ede-project-placeholder45753
+Node: ede-project47808
+Node: ede-cpp-root-project57306
+Node: ede-emacs-project62263
+Node: ede-linux-project64031
+Node: ede-maven-project65796
+Node: ede-simple-project67392
+Node: ede-simple-base-project68646
+Node: ede-proj-project69185
+Node: project-am-makefile76094
+Node: ede-step-project78227
+Node: Targets82861
+Node: ede-target83999
+Node: ede-cpp-root-target90456
+Node: ede-emacs-target-c91372
+Node: ede-emacs-target-el92234
+Node: ede-emacs-target-misc92907
+Node: ede-linux-target-c93588
+Node: ede-linux-target-misc94454
+Node: ede-maven-target-java95137
+Node: ede-maven-target-c95820
+Node: ede-maven-target-misc96491
+Node: ede-simple-target97172
+Node: ede-proj-target97834
+Node: ede-proj-target-makefile104110
+Node: semantic-ede-proj-target-grammar107526
+Node: ede-proj-target-makefile-objectcode109234
+Node: ede-proj-target-makefile-archive111106
+Node: ede-proj-target-makefile-program112544
+Node: ede-proj-target-makefile-shared-object114751
+Node: ede-proj-target-elisp116773
+Node: ede-proj-target-elisp-autoloads118983
+Node: ede-proj-target-makefile-miscelaneous122664
+Node: ede-proj-target-makefile-info124179
+Node: ede-proj-target-aux126902
+Node: ede-proj-target-scheme127807
+Node: project-am-target128857
+Node: project-am-objectcode130756
+Node: project-am-program132204
+Node: project-am-lib133208
+Node: project-am-header134105
+Node: project-am-header-noinst135093
+Node: project-am-header-inst136074
+Node: project-am-lisp137045
+Node: project-am-texinfo138100
+Node: project-am-man139587
+Node: Sourcecode140606
+Node: ede-sourcecode140824
+Node: Compilers143520
+Node: ede-compilation-program143971
+Node: ede-compiler147241
+Node: ede-object-compiler150379
+Node: semantic-ede-grammar-compiler-class152579
+Node: ede-linker154466
 
 End Tag Table

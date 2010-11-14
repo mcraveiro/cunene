@@ -707,9 +707,9 @@ cursor.
 
      state 0
 
-         NUM	shift, and go to state 1
+         NUM shift, and go to state 1
 
-         exp	go to state 2
+         exp go to state 2
 
 State 0 corresponds to being at the very beginning of the parsing, in
 the initial rule, right before the start symbol (`exp').  When the
@@ -725,7 +725,7 @@ In the state 1...
 
          exp  ->  NUM .   (rule 5)
 
-         $default	reduce using rule 5 (exp)
+         $default    reduce using rule 5 (exp)
 
 the rule 5, `exp: NUM;', is completed.  Whatever the lookahead
 (`$default'), the parser will reduce it.  If it was coming from state
@@ -739,11 +739,11 @@ to state 2 (`exp: go to state 2').
          exp  ->  exp . '*' exp   (rule 3)
          exp  ->  exp . '/' exp   (rule 4)
 
-         $EOI	shift, and go to state 11
-         '+'	shift, and go to state 3
-         '-'	shift, and go to state 4
-         '*'	shift, and go to state 5
-         '/'	shift, and go to state 6
+         $EOI        shift, and go to state 11
+         '+' shift, and go to state 3
+         '-' shift, and go to state 4
+         '*' shift, and go to state 5
+         '/' shift, and go to state 6
 
 In state 2, the automaton can only shift a symbol.  For instance,
 because of the item `exp -> exp . '+' exp', if the lookahead if `+', it
@@ -754,9 +754,9 @@ to state 3, corresponding to the item `exp -> exp . '+' exp':
 
          exp  ->  exp '+' . exp   (rule 1)
 
-         NUM	shift, and go to state 1
+         NUM shift, and go to state 1
 
-         exp	go to state 7
+         exp go to state 7
 
 Since there is no default action, any other token than those listed
 above will trigger a parse error.
@@ -767,9 +767,9 @@ The interpretation of states 4 to 6 is straightforward:
 
          exp  ->  exp '-' . exp   (rule 2)
 
-         NUM	shift, and go to state 1
+         NUM shift, and go to state 1
 
-         exp	go to state 8
+         exp go to state 8
 
 
 
@@ -777,9 +777,9 @@ The interpretation of states 4 to 6 is straightforward:
 
          exp  ->  exp '*' . exp   (rule 3)
 
-         NUM	shift, and go to state 1
+         NUM shift, and go to state 1
 
-         exp	go to state 9
+         exp go to state 9
 
 
 
@@ -787,9 +787,9 @@ The interpretation of states 4 to 6 is straightforward:
 
          exp  ->  exp '/' . exp   (rule 4)
 
-         NUM	shift, and go to state 1
+         NUM shift, and go to state 1
 
-         exp	go to state 10
+         exp go to state 10
 
 As was announced in beginning of the report, `State 7 contains 1
 shift/reduce conflict.':
@@ -802,11 +802,11 @@ shift/reduce conflict.':
          exp  ->  exp . '*' exp   (rule 3)
          exp  ->  exp . '/' exp   (rule 4)
 
-         '*'	shift, and go to state 5
-         '/'	shift, and go to state 6
+         '*' shift, and go to state 5
+         '/' shift, and go to state 6
 
-         '/'	[reduce using rule 1 (exp)]
-         $default	reduce using rule 1 (exp)
+         '/' [reduce using rule 1 (exp)]
+         $default    reduce using rule 1 (exp)
 
 Indeed, there are two actions associated to the lookahead `/': either
 shifting (and going to state 6), or reducing rule 1.  The conflict
@@ -843,11 +843,11 @@ States 8 to 10 are similar:
          exp  ->  exp . '*' exp   (rule 3)
          exp  ->  exp . '/' exp   (rule 4)
 
-         '*'	shift, and go to state 5
-         '/'	shift, and go to state 6
+         '*' shift, and go to state 5
+         '/' shift, and go to state 6
 
-         '/'	[reduce using rule 2 (exp)]
-         $default	reduce using rule 2 (exp)
+         '/' [reduce using rule 2 (exp)]
+         $default    reduce using rule 2 (exp)
 
 
 
@@ -859,10 +859,10 @@ States 8 to 10 are similar:
          exp  ->  exp '*' exp .   (rule 3)
          exp  ->  exp . '/' exp   (rule 4)
 
-         '/'	shift, and go to state 6
+         '/' shift, and go to state 6
 
-         '/'	[reduce using rule 3 (exp)]
-         $default	reduce using rule 3 (exp)
+         '/' [reduce using rule 3 (exp)]
+         $default    reduce using rule 3 (exp)
 
 
 
@@ -874,16 +874,16 @@ States 8 to 10 are similar:
          exp  ->  exp . '/' exp   (rule 4)
          exp  ->  exp '/' exp .   (rule 4)
 
-         '+'	shift, and go to state 3
-         '-'	shift, and go to state 4
-         '*'	shift, and go to state 5
-         '/'	shift, and go to state 6
+         '+' shift, and go to state 3
+         '-' shift, and go to state 4
+         '*' shift, and go to state 5
+         '/' shift, and go to state 6
 
-         '+'	[reduce using rule 4 (exp)]
-         '-'	[reduce using rule 4 (exp)]
-         '*'	[reduce using rule 4 (exp)]
-         '/'	[reduce using rule 4 (exp)]
-         $default	reduce using rule 4 (exp)
+         '+' [reduce using rule 4 (exp)]
+         '-' [reduce using rule 4 (exp)]
+         '*' [reduce using rule 4 (exp)]
+         '/' [reduce using rule 4 (exp)]
+         $default    reduce using rule 4 (exp)
 
 Observe that state 10 contains conflicts due to the lack of precedence
 of `/' wrt `+', `-', and `*', but also because the associativity of `/'
@@ -894,13 +894,13 @@ Finally, the state 11 (plus 12) is named the "final state", or the
 
      state 11
 
-         $EOI	shift, and go to state 12
+         $EOI        shift, and go to state 12
 
 
 
      state 12
 
-         $default	accept
+         $default    accept
 
 The end of input is shifted `$EOI shift,' and the parser exits
 successfully (`go to state 12', that terminates).
@@ -2186,22 +2186,22 @@ Node: Compiling a grammar15730
 Node: Conflicts17825
 Node: Grammar Debugging19398
 Node: Understanding the automaton20754
-Node: Wisent Parsing30320
-Node: Writing a lexer32816
-Node: Actions goodies34416
-Node: Report errors35135
-Node: Error recovery36723
-Ref: wisent-skip-token41052
-Node: Debugging actions42226
-Node: Wisent Semantic44060
-Node: Grammar styles44895
-Node: Iterative style45430
-Node: Bison style47776
-Node: Mixed style49441
-Node: Start nonterminals52036
-Node: Useful functions54852
-Node: Wisent Lex55405
-Node: GNU Free Documentation License56823
-Node: Index76548
+Node: Wisent Parsing30352
+Node: Writing a lexer32848
+Node: Actions goodies34448
+Node: Report errors35167
+Node: Error recovery36755
+Ref: wisent-skip-token41084
+Node: Debugging actions42258
+Node: Wisent Semantic44092
+Node: Grammar styles44927
+Node: Iterative style45462
+Node: Bison style47808
+Node: Mixed style49473
+Node: Start nonterminals52068
+Node: Useful functions54884
+Node: Wisent Lex55437
+Node: GNU Free Documentation License56855
+Node: Index76580
 
 End Tag Table

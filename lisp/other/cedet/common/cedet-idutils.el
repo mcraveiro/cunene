@@ -3,7 +3,7 @@
 ;; Copyright (C) 2009, 2010 Eric M. Ludlam
 ;;
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: cedet-idutils.el,v 1.5 2010/04/09 02:22:34 zappo Exp $
+;; X-RCS: $Id: cedet-idutils.el,v 1.7 2010/07/24 23:59:09 zappo Exp $
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -39,6 +39,12 @@
 ;;;###autoload
 (defcustom cedet-idutils-token-command "lid"
   "Command name for the ID Utils executable for searching for tokens."
+  :type 'string
+  :group 'cedet)
+
+;;;###autoload
+(defcustom cedet-idutils-make-command "mkid"
+  "Command name for the ID Utils executable for creating token databases."
   :type 'string
   :group 'cedet)
 
@@ -100,6 +106,20 @@ Return the created buffer with with program output."
       (setq default-directory cd)
       (erase-buffer))
     (apply 'call-process cedet-idutils-token-command
+	   nil b nil
+	   flags)
+    b))
+
+(defun cedet-idutils-mkid-call (flags)
+  "Call ID Utils mkid with the list of FLAGS.
+Return the created buffer with with program output."
+  (let ((b (get-buffer-create "*CEDET mkid*"))
+	(cd default-directory)
+	)
+    (with-current-buffer b
+      (setq default-directory cd)
+      (erase-buffer))
+    (apply 'call-process cedet-idutils-make-command
 	   nil b nil
 	   flags)
     b))
@@ -172,6 +192,12 @@ return nil."
 	    (message "ID Utils %s  - Good enough for CEDET." rev))
 	  t)))))
 
+(defun cedet-idutils-create/update-database (&optional dir)
+  "Create an IDUtils database in DIR.
+IDUtils must start from scratch when updating a database."
+  (interactive "DDirectory: ")
+  (let ((default-directory dir))
+    (cedet-idutils-mkid-call nil)))
 
 (provide 'cedet-idutils)
 ;;; cedet-idutils.el ends here

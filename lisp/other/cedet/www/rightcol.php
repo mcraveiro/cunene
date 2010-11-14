@@ -26,6 +26,7 @@
 <tr><td >&nbsp<img src="page.gif">&nbsp<a class="SB" href="eieio.shtml"><b>EIEIO</b></a></a>&nbsp</td></tr>
 <tr><td >&nbsp<img src="page.gif">&nbsp<a class="SB" href="misc.shtml"><b>Misc Tools</b></a></a>&nbsp</td></tr>
 <tr><td class="BAR"><img src="dir-minus.gif">&nbsp<a class="SB" href="http://sourceforge.net/project/showfiles.php?group_id=17886"><b>Releases</b></a></a>&nbsp</td></tr>
+<tr><td >&nbsp<img src="page.gif">&nbsp<a class="SB" href="https://sourceforge.net/projects/cedet/files/cedet/cedet-1.0.tar.gz/download"><b>1.0</b></a></a>&nbsp</td></tr>
 <tr><td >&nbsp<img src="page.gif">&nbsp<a class="SB" href="https://sourceforge.net/projects/cedet/files/cedet/1.0pre7/cedet-1.0pre7.tar.gz/download"><b>1.0pre7</b></a></a>&nbsp</td></tr>
 <tr><td class="BAR"><img src="dir-minus.gif">&nbsp<a class="SB" href="http://www.sourceforge.net"><b>Source Forge</b></a></a>&nbsp</td></tr>
 <tr><td >&nbsp<img src="page.gif">&nbsp<a class="SB" href="http://www.sourceforge.net/projects/cedet"><b>Project</b></a></a>&nbsp</td></tr>
