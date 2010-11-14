@@ -18,7 +18,6 @@
 ;; Enable Emacs Development Environment project management features
 (global-ede-mode 1)
 
-
 ;;
 ;; Projects
 ;;
@@ -32,4 +31,5 @@
                       :system-include-path '("/usr/include/gtkmm-2.4"
                                              "/usr/include/glibmm-2.4")
                       :spp-table '(("isUnix" . "")
-                                   ("BOOST_TEST_DYN_LINK" . "")))
+                                   ("BOOST_TEST_DYN_LINK" . "")
+                                   ("_MSC_VER" . "")))
