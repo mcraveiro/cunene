@@ -27,7 +27,6 @@
             (c-set-offset 'arglist-cont-nonempty '+)
             (c-set-offset 'innamespace 0)      ;; Do not indent namespaces.
             (c-toggle-hungry-state 1)          ;; use hungry delete.
-            (company-mode)
             (setq c-basic-offset tab-width)
             (setq c-default-style "stroustrup")))
 
@@ -40,9 +39,6 @@
      (define-key c-mode-base-map (kbd "M-o") 'eassist-switch-h-cpp)
      ;; List methods.
      (define-key c-mode-base-map (kbd "M-m") 'eassist-list-methods)
-     ;; Complete the current symbol at point.
-     (define-key c-mode-base-map (kbd "C-<return>")
-       'semantic-ia-complete-symbol)
      ;; Complete the current symbol via a menu based at point.
      (define-key c-mode-base-map (kbd "C-x C-m ?")
        'semantic-ia-complete-symbol-menu)
@@ -61,6 +57,4 @@
      (define-key c-mode-base-map (kbd "C-c C-j") 'semantic-ia-fast-jump)
      ;;   (local-set-key (kbd ".") 'semantic-complete-self-insert)
      ;;   (local-set-key (kbd ">") 'semantic-complete-self-insert))
-     ;;   (local-set-key (kbd ".") 'company-complete)
-     ;;   (local-set-key (kbd ">") 'company-complete))
      ))
