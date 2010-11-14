@@ -23,12 +23,14 @@
 (setq highline-whole-line nil)
 
 ;; Turn on local highlighting for a bunch of modes
-(add-hook 'dired-after-readin-hook 'highline-on)
+(add-hook 'dired-mode-hook 'highline-on)
 (add-hook 'ibuffer-hooks #'highline-on)
 (add-hook 'grep-setup-hook #'highline-on)
 (add-hook 'compilation-mode-hook #'highline-on)
+(add-hook 'magit-mode-hook #'highline-on)
+(add-hook 'vc-git-log-view-mode-hook #'highline-on)
 ;; (add-hook 'log-view-hook #'highline-mode-on)
-;; (add-hook 'find-dired-hook #'highline-mode-on)
+(add-hook 'find-dired-mode-hook #'highline-mode-on)
 
 ;; Turn on local highlighting for list-buffers
 (defadvice list-buffers (after highlight-line activate)
