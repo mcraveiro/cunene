@@ -39,6 +39,9 @@
 ;; Display size of buffer
 (size-indication-mode t)
 
+;; indent after new line
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
 ;; Time and date
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
@@ -170,7 +173,9 @@
 (defun yank-advised-indent-function (beg end)
   "Do indentation, as long as the region isn't too large."
   (if (<= (- end beg) yank-advised-indent-threshold)
-      (indent-region beg end nil)))
+      (indent-region beg end nil))
+  (whitespace-cleanup-region beg end)
+)
 
 (defadvice yank (after yank-indent activate)
   "If current mode is one of 'yank-indent-modes, indent yanked
@@ -376,3 +381,35 @@ text (with prefix arg don't indent)."
   (insert (format-time-string "%a, %e %b %Y, %k:%M" (current-time))))
 
 (global-set-key "\C-cd" 'insert-date)
+
+(defun kill-and-join-forward (&optional arg)
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (progn (forward-char 1)
+             (just-one-space 0)
+             (backward-char 1)
+             (kill-line arg))
+    (kill-line arg)))
+(global-set-key "\C-k" 'kill-and-join-forward)
+
+;; (defun tab-indent-or-complete ()
+;;   (interactive)
+;;   (defun check-expansion ()
+;;     (save-excursion
+;;       (if (looking-at "\\_>") t
+;;         (progn (backward-char 1)
+;;                (if (looking-at "\\.") t
+;;                  (progn (backward-char 1)
+;;                         (if (looking-at "->") t nil)))))))
+
+;;   (defun do-yas-expand ()
+;;     (let ((yas/fallback-behavior 'return-nil))
+;;       (yas/expand)))
+;;   (if (minibufferp)
+;;       (minibuffer-complete)
+;;     (if (or (not yas/minor-mode)
+;;             (null (do-yas-expand)))
+;;         (if (check-expansion)
+;;             (company-complete-common)
+;;           (indent-for-tab-command)))))
+;; (global-set-key [tab] 'tab-indent-or-complete)
