@@ -16,7 +16,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;; hideshow for programming
 (require 'hideshow)
-(hs-minor-mode 1)
 (setq hs-isearch-open t)
 
 (add-hook 'java-mode-hook 'hs-minor-mode)
