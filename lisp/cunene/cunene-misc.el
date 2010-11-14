@@ -15,6 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;; fix weird error during compilation
+(setq warning-suppress-types nil)
+
 ;; Dont show the GNU splash screen
 (setq inhibit-startup-message t)
 
@@ -85,7 +88,6 @@
 
 (setq tab-width 4)
 (setq-default tab-width 4)
-(setq default-tab-width 4)
 (setq standard-indent 4)
 (setq-default tab-stop-list (build-tab-stop-list tab-width))
 (setq tab-stop-list (build-tab-stop-list tab-width))
@@ -106,7 +108,7 @@
 ;;
 ;; (set-default-font "Inconsolata Bold 11")
 ;; (set-default-font "DejaVu Sans Mono Bold 10")
-(set-frame-font "Droid Sans Mono Bold 12")
+(set-frame-font "Droid Sans Mono Bold 14")
 ;; (set-frame-font "Monospace Bold 9")
 (set-cursor-color "wheat")
 (set-background-color "black")
