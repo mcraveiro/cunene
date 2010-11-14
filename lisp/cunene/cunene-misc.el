@@ -357,6 +357,9 @@ text (with prefix arg don't indent)."
 ;; Back to first character in line
 (global-set-key (kbd "M-n") 'back-to-indentation)
 
+;; enable compression mode
+(auto-compression-mode 1)
+
 ;;
 ;; wind/frame move
 ;;
@@ -392,24 +395,6 @@ text (with prefix arg don't indent)."
     (kill-line arg)))
 (global-set-key "\C-k" 'kill-and-join-forward)
 
-;; (defun tab-indent-or-complete ()
-;;   (interactive)
-;;   (defun check-expansion ()
-;;     (save-excursion
-;;       (if (looking-at "\\_>") t
-;;         (progn (backward-char 1)
-;;                (if (looking-at "\\.") t
-;;                  (progn (backward-char 1)
-;;                         (if (looking-at "->") t nil)))))))
-
-;;   (defun do-yas-expand ()
-;;     (let ((yas/fallback-behavior 'return-nil))
-;;       (yas/expand)))
-;;   (if (minibufferp)
-;;       (minibuffer-complete)
-;;     (if (or (not yas/minor-mode)
-;;             (null (do-yas-expand)))
-;;         (if (check-expansion)
-;;             (company-complete-common)
-;;           (indent-for-tab-command)))))
-;; (global-set-key [tab] 'tab-indent-or-complete)
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+  (flet ((process-list ())) ad-do-it))
