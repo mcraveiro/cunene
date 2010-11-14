@@ -55,7 +55,6 @@
                      "cunene-clearcase"
                      "cunene-cl"
                      "cunene-cmake"
-                     "cunene-company"
                      "cunene-compilation"
                      "cunene-csharp"
                      "cunene-cua"
