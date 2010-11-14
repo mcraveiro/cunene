@@ -20,7 +20,7 @@
 
 ;; group buffers
 (setq ibuffer-saved-filter-groups
-      (quote (("default"
+      (quote (("home"
                ("c++" (or
                        (mode . c++-mode)
                        (name . "^\\*compilation\\*$")))
@@ -66,7 +66,7 @@
 
 (add-hook 'ibuffer-mode-hook
           (lambda ()
-            (ibuffer-switch-to-saved-filter-groups "default")))
+            (ibuffer-switch-to-saved-filter-groups "home")))
 
 ;; (setq ibuffer-formats '((mark modified read-only " " (name 30 30) " "
 ;;                               (mode 16 16)  " " filename)
@@ -109,3 +109,9 @@
 
 ;; Key bindings
 (global-set-key (kbd "<f5>") 'ibuffer)
+(setq ibuffer-expert t)
+(setq ibuffer-show-empty-filter-groups nil)
+(add-hook 'ibuffer-mode-hook
+          '(lambda ()
+             (ibuffer-auto-mode 1)
+             (ibuffer-switch-to-saved-filter-groups "home")))
