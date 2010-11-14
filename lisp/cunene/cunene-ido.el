@@ -90,3 +90,6 @@
 
 ;; Buffer switching with ido
 (global-set-key (kbd "C-b") 'ido-switch-buffer)
+
+;; do not ask for confirmation when creating new buffer
+(setq ido-create-new-buffer 'always)

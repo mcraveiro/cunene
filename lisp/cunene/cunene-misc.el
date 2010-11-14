@@ -42,6 +42,9 @@
 ;; indent after new line
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
+;; do not ask for confirmation when creating new file or buffer
+(setq confirm-nonexistent-file-or-buffer nil)
+
 ;; Time and date
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
