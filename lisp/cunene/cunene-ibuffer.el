@@ -55,7 +55,10 @@
                           (name . "^\\*Help\\*$")
                           (name . "^\\*scratch\\*$")
                           (name . "^\\*Messages\\*$")))
-                ("web" (name . "^\\*w3m"))
+                ("web browsing" (name . "^\\*w3m"))
+                ("web development" (or
+                                    (mode . html-mode)
+                                    (mode . css-mode)))
                 ("documentation" (or
                                   (mode . Info-mode)
                                   (mode . apropos-mode)
