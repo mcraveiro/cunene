@@ -155,7 +155,7 @@ expected by `pretty-patterns'"
        (?↑ ("\\^" tuareg))
        (?⟹ ("=>" sml perl ruby haskell))
        (?∅ ("nil" emacs-lisp ruby)
-           ("null" scheme java)
+           ("null" scheme java c++)
            ("NULL" c c++)
            ("None" python)
            ("()" ,@mley))
