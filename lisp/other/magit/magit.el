@@ -1524,7 +1524,7 @@ FUNC should leave point at the end of the modified region"
     (define-key map (kbd "M-H") 'magit-show-only-files-all)
     (define-key map (kbd "M-s") 'magit-show-level-4)
     (define-key map (kbd "M-S") 'magit-show-level-4-all)
-    (define-key map (kbd "<M-left>") 'magit-goto-parent-section)
+    (define-key map (kbd "<M-p>") 'magit-goto-parent-section)
     (define-key map (kbd "g") 'magit-refresh)
     (define-key map (kbd "G") 'magit-refresh-all)
     (define-key map (kbd "?") 'magit-describe-item)
