@@ -310,7 +310,7 @@ text (with prefix arg don't indent)."
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
-(global-set-key (kbd "C-c k") 'delete-this-buffer-and-file)
+(global-set-key (kbd "C-c k") 'delete-file-and-buffer)
 
 ;;
 ;; no emacs is complete without the power of the butterfly!
