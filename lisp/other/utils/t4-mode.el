@@ -22,7 +22,7 @@
    ;;'("template\\|language\\|output\\|extension" . font-lock-preprocessor-face)
    '("\"\\([^\"]\\)\"[^\"]+" (1 font-lock-string-face t t))
    (cons (rx word-start
-             (or "template" "import" "assembly" "")
+             (or "template" "import" "assembly" "output" "parameter" "include")
              word-end)
          font-lock-keyword-face)
    (cons (rx word-start
@@ -78,14 +78,14 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
                               'mumamo-search-fw-exc-end-t4-directive
                               ))
 
-(defun mumamo-chunk-t4-statement-block (pos min max)
-  "Find statement blocks: <# ... #>.  Return range and `t4-mode'.
+(defun mumamo-chunk-t4-standard-control-block (pos min max)
+  "Find standard control blocks: <# ... #>.  Return range and `t4-mode'.
 See `mumamo-find-possible-chunk' for POS, MIN and MAX."
   (mumamo-find-possible-chunk pos min max
-                              'mumamo-search-bw-exc-start-t4-statement-block
-                              'mumamo-search-bw-exc-end-t4-statement-block
-                              'mumamo-search-fw-exc-start-t4-statement-block
-                              'mumamo-search-fw-exc-end-t4-statement-block
+                              'mumamo-search-bw-exc-start-t4-standard-control-block
+                              'mumamo-search-bw-exc-end-t4-standard-control-block
+                              'mumamo-search-fw-exc-start-t4-standard-control-block
+                              'mumamo-search-fw-exc-end-t4-standard-control-block
                               ))
 
 (defun mumamo-chunk-t4-expression-block (pos min max)
@@ -117,8 +117,8 @@ POS is where to start search and MIN is where to stop."
        (cons exc-start 't4-mode)))
   )
 
-(defun mumamo-search-bw-exc-start-t4-statement-block (pos min)
-  "Helper for `mumamo-chunk-t4-statement-block'.
+(defun mumamo-search-bw-exc-start-t4-standard-control-block (pos min)
+  "Helper for `mumamo-chunk-t4-standard-control-block'.
 POS is where to start search and MIN is where to stop."
   (let ((exc-start (mumamo-chunk-start-bw-str-inc pos min "<# ")))
     (and exc-start
@@ -149,8 +149,8 @@ POS is where to start search and MIN is where to stop."
 POS is where to start search and MIN is where to stop."
   (mumamo-chunk-end-bw-str-inc pos min "#>"))
 
-(defun mumamo-search-bw-exc-end-t4-statement-block (pos min)
-  "Helper for `mumamo-chunk-t4-statement-block'.
+(defun mumamo-search-bw-exc-end-t4-standard-control-block (pos min)
+  "Helper for `mumamo-chunk-t4-standard-control-block'.
 POS is where to start search and MIN is where to stop."
   (mumamo-chunk-end-bw-str-inc pos min "#>"))
 
@@ -169,8 +169,8 @@ POS is where to start search and MIN is where to stop."
 POS is where to start search and MAX is where to stop."
   (mumamo-chunk-start-fw-str-inc pos max "<#@"))
 
-(defun mumamo-search-fw-exc-start-t4-statement-block (pos max)
-  "Helper for `mumamo-chunk-t4-statement-block'.
+(defun mumamo-search-fw-exc-start-t4-standard-control-block (pos max)
+  "Helper for `mumamo-chunk-t4-standard-control-block'.
 POS is where to start search and MAX is where to stop."
   (mumamo-chunk-start-fw-str-inc pos max "<# "))
 
@@ -189,8 +189,8 @@ POS is where to start search and MAX is where to stop."
 POS is where to start search and MAX is where to stop."
   (mumamo-chunk-end-fw-str-inc pos max "#>"))
 
-(defun mumamo-search-fw-exc-end-t4-statement-block(pos max)
-  "Helper for `mumamo-chunk-t4-statement-block'.
+(defun mumamo-search-fw-exc-end-t4-standard-control-block(pos max)
+  "Helper for `mumamo-chunk-t4-standard-control-block'.
 POS is where to start search and MAX is where to stop."
   (mumamo-chunk-end-fw-str-inc pos max "#>"))
 
@@ -210,7 +210,7 @@ POS is where to start search and MAX is where to stop."
   ("T4 C++ Family" c++-mode
    (mumamo-chunk-t4-directive
     mumamo-chunk-t4-class-block
-    mumamo-chunk-t4-statement-block
+    mumamo-chunk-t4-standard-control-block
     mumamo-chunk-t4-expression-block
     ;; mumamo-chunk-inlined-style
     ;; mumamo-chunk-inlined-script
@@ -218,10 +218,6 @@ POS is where to start search and MAX is where to stop."
     ;; mumamo-chunk-onjs=
     )))
 ;; )
-
-(add-to-list 'auto-mode-alist '("\\.tt$" . t4-c++-mumamo))
-(set-face-background 'mumamo-background-chunk-major "#000000")
-(set-face-background 'mumamo-background-chunk-submode1 "#303030")
 
 ;; (custom-set-faces
 ;;  '(mumamo-background-chunk-major ((t (:background "#FFFFFF"))))
