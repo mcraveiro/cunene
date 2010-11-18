@@ -88,6 +88,7 @@
                      "cunene-moccur"
                      "cunene-mpg123"
                      "cunene-multi-terminal"
+                     "cunene-nxhtml"
                      "cunene-nxml"
                      "cunene-org"
                      "cunene-pretty"
