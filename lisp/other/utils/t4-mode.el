@@ -16,17 +16,18 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 (require 'mumamo)
+(require 'csharp-mode)
 
 (defconst t4-font-lock-keywords
   (list
    ;;'("template\\|language\\|output\\|extension" . font-lock-preprocessor-face)
    '("\"\\([^\"]\\)\"[^\"]+" (1 font-lock-string-face t t))
    (cons (rx word-start
-             (or "template" "import" "assembly" "output" "parameter" "include")
+             (or "output" "parameter" "include" "template" "import" "assembly" )
              word-end)
          font-lock-keyword-face)
    (cons (rx word-start
-             (or "language" "extension" "name" "debug" "namespace")
+             (or "language" "extension" "name" "debug" "namespace" "file")
              word-end)
          font-lock-builtin-face)
    ;; '("{# ?\\(.*?\\) ?#}" . (1 font-lock-comment-face))
@@ -79,7 +80,7 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
                               ))
 
 (defun mumamo-chunk-t4-standard-control-block (pos min max)
-  "Find standard control blocks: <# ... #>.  Return range and `t4-mode'.
+  "Find standard control blocks: <# ... #>.  Return range and `csharp-mode'.
 See `mumamo-find-possible-chunk' for POS, MIN and MAX."
   (mumamo-find-possible-chunk pos min max
                               'mumamo-search-bw-exc-start-t4-standard-control-block
@@ -141,7 +142,7 @@ POS is where to start search and MIN is where to stop."
   (let ((exc-start (mumamo-chunk-start-bw-str-inc pos min "<#+")))
     (and exc-start
        (<= exc-start pos)
-       (cons exc-start 't4-mode)))
+       (cons exc-start 'csharp-mode)))
   )
 
 (defun mumamo-search-bw-exc-end-t4-directive (pos min)
