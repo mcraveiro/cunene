@@ -23,11 +23,13 @@
    ;;'("template\\|language\\|output\\|extension" . font-lock-preprocessor-face)
    '("\"\\([^\"]\\)\"[^\"]+" (1 font-lock-string-face t t))
    (cons (rx word-start
-             (or "output" "parameter" "include" "template" "import" "assembly" )
+             (or "output" "parameter" "include" "template" "import" "assembly"
+                "VolatileAssembly")
              word-end)
          font-lock-keyword-face)
    (cons (rx word-start
-             (or "language" "extension" "name" "debug" "namespace" "file")
+             (or "language" "extension" "name" "debug" "namespace" "file"
+                "processor" "hostspecific")
              word-end)
          font-lock-builtin-face)
    ;; '("{# ?\\(.*?\\) ?#}" . (1 font-lock-comment-face))
@@ -90,7 +92,7 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
                               ))
 
 (defun mumamo-chunk-t4-expression-block (pos min max)
-  "Find expression blocks: <#= ... #>.  Return range and `t4-mode'.
+  "Find expression blocks: <#= ... #>.  Return range and `csharp-mode'.
 See `mumamo-find-possible-chunk' for POS, MIN and MAX."
   (mumamo-find-possible-chunk pos min max
                               'mumamo-search-bw-exc-start-t4-expression-block
@@ -100,7 +102,7 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
                               ))
 
 (defun mumamo-chunk-t4-class-block (pos min max)
-  "Find class blocks: <#+ ... #>.  Return range and `t4-mode'.
+  "Find class blocks: <#+ ... #>.  Return range and `csharp-mode'.
 See `mumamo-find-possible-chunk' for POS, MIN and MAX."
   (mumamo-find-possible-chunk pos min max
                               'mumamo-search-bw-exc-start-t4-class-block
@@ -124,7 +126,7 @@ POS is where to start search and MIN is where to stop."
   (let ((exc-start (mumamo-chunk-start-bw-str-inc pos min "<# ")))
     (and exc-start
        (<= exc-start pos)
-       (cons exc-start 't4-mode)))
+       (cons exc-start 'csharp-mode)))
   )
 
 (defun mumamo-search-bw-exc-start-t4-expression-block (pos min)
@@ -133,7 +135,7 @@ POS is where to start search and MIN is where to stop."
   (let ((exc-start (mumamo-chunk-start-bw-str-inc pos min "<#=")))
     (and exc-start
        (<= exc-start pos)
-       (cons exc-start 't4-mode)))
+       (cons exc-start 'csharp-mode)))
   )
 
 (defun mumamo-search-bw-exc-start-t4-class-block (pos min)
