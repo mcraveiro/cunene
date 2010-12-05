@@ -108,6 +108,7 @@
                      "cunene-swbuff"
                      "cunene-t4"
                      "cunene-text"
+                     "cunene-tramp"
                      "cunene-uniquify"
                      "cunene-visual-basic"
                      "cunene-w3m"
