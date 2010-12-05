@@ -42,33 +42,19 @@
 ;; Sample database connections
 ;;
 (setq sql-connection-alist
-      '((sanzala-perlis
+      '((sanzala
          (sql-product 'postgres)
-         (sql-server "perlis")
+         (sql-server "127.0.0.1")
          (sql-user "marco")
-         (sql-password "not_needed")
+         ;; (sql-password "not_needed")
          (sql-database "sanzala")
          (sql-port 5432))
-        (sanzala-bohr
+        (musseque
          (sql-product 'postgres)
-         (sql-server "bohr")
+         (sql-server "127.0.0.1")
          (sql-user "marco")
-         (sql-password "not_needed")
-         (sql-database "sanzala")
-         (sql-port 5432))
-        (musseque-bohr
-         (sql-product 'postgres)
-         (sql-server "bohr")
-         (sql-user "marco")
-         (sql-password "not_needed")
+         ;; (sql-password "not_needed")
          (sql-database "musseque")
-         (sql-port 5432))
-        (sanzala-thompson
-         (sql-product 'postgres)
-         (sql-server "thompson")
-         (sql-user "marco")
-         (sql-password "not_needed")
-         (sql-database "sanzala")
          (sql-port 5432))
         (pool-b
          (sql-product 'mysql)
@@ -88,17 +74,13 @@
   (interactive)
   (sql-connect-preset 'sanzala-perlis))
 
-(defun sql-sanzala-bohr ()
+(defun sql-sanzala ()
   (interactive)
-  (sql-connect-preset 'sanzala-bohr))
+  (sql-connect-preset 'sanzala))
 
-(defun sql-musseque-bohr ()
+(defun sql-musseque ()
   (interactive)
-  (sql-connect-preset 'musseque-bohr))
-
-(defun sql-sanzala-thompson ()
-  (interactive)
-  (sql-connect-preset 'sanzala-thompson))
+  (sql-connect-preset 'musseque))
 
 ;; Increase column width for SqlServer.
 (setq sql-ms-options (quote ("-w" "8000" "-n")))
