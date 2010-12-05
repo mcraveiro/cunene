@@ -44,14 +44,14 @@
 (setq sql-connection-alist
       '((sanzala
          (sql-product 'postgres)
-         (sql-server "127.0.0.1")
+         (sql-server "localhost")
          (sql-user "marco")
          ;; (sql-password "not_needed")
          (sql-database "sanzala")
          (sql-port 5432))
         (musseque
          (sql-product 'postgres)
-         (sql-server "127.0.0.1")
+         (sql-server "localhost")
          (sql-user "marco")
          ;; (sql-password "not_needed")
          (sql-database "musseque")
