@@ -70,10 +70,6 @@
            (flet ((sql-get-login (&rest what)))
              (sql-product-interactive sql-product)))))
 
-(defun sql-sanzala-perlis ()
-  (interactive)
-  (sql-connect-preset 'sanzala-perlis))
-
 (defun sql-sanzala ()
   (interactive)
   (sql-connect-preset 'sanzala))
