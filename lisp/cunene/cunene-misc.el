@@ -112,18 +112,25 @@
 ;;
 ;; Looks
 ;;
-;; (set-default-font "Inconsolata Bold 11")
-;; (set-default-font "DejaVu Sans Mono Bold 10")
-(set-frame-font "Droid Sans Mono Bold 14")
-;; (set-frame-font "Monospace Bold 9")
-(set-cursor-color "wheat")
-(set-background-color "black")
-(set-foreground-color "wheat")
-(set-face-foreground font-lock-comment-face "Plum")
-(add-to-list 'default-frame-alist '(frame-font . "Droid Sans Mono Bold 12"))
-(add-to-list 'default-frame-alist '(cursor-color . "wheat"))
-(add-to-list 'default-frame-alist '(foreground-color . "wheat"))
-(add-to-list 'default-frame-alist '(background-color . "black"))
+
+(defun fontify-frame (frame)
+  ;; good fonts:
+  ;;
+  ;; - Inconsolata Bold 17
+  ;; - DejaVu Sans Mono Bold 10
+  ;; - Droid Sans Mono Bold 15
+  ;; - Monospace Bold 9
+  (set-frame-parameter frame 'font "Inconsolata Bold 17")
+  (set-frame-parameter frame 'cursor-color "wheat")
+  (set-frame-parameter frame 'foreground-color "wheat")
+  (set-frame-parameter frame 'background-color "black")
+  )
+
+;; Fontify current frame
+(fontify-frame nil)
+
+;; Fontify any future frames
+(push 'fontify-frame after-make-frame-functions)
 
 ;;
 ;; Syntax highlighting
