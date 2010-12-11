@@ -120,10 +120,11 @@
   ;; - DejaVu Sans Mono Bold 10
   ;; - Droid Sans Mono Bold 15
   ;; - Monospace Bold 9
-  (set-frame-parameter frame 'font "Inconsolata Bold 17")
+  (set-frame-parameter frame 'font "Inconsolata Bold 19")
   (set-frame-parameter frame 'cursor-color "wheat")
   (set-frame-parameter frame 'foreground-color "wheat")
   (set-frame-parameter frame 'background-color "black")
+  (set-face-foreground font-lock-comment-face "Plum")
   )
 
 ;; Fontify current frame
