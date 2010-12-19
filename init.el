@@ -62,6 +62,7 @@
                      "cunene-desktop-save"
                      "cunene-diff"
                      "cunene-dired"
+                     "cunene-doxymacs"
                      "cunene-delim-kill.el"
                      "cunene-ecb"
                      "cunene-ede"
