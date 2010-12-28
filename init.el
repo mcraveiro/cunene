@@ -55,6 +55,7 @@
                      "cunene-c"
                      "cunene-clearcase"
                      "cunene-cl"
+                     "cunene-chm-view"
                      "cunene-cmake"
                      "cunene-compile"
                      "cunene-csharp"
