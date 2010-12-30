@@ -891,7 +891,7 @@
 ;;            in the Oct. 24th issue of National Review
 %
 ;; There's an old story about the person who wished his computer were as easy to
-;; use as his telephone.  That wish has come true, since I no longer know how to
+;; use as his telephone. That wish has come true, since I no longer know how to
 ;; use my telephone.
 ;; -- Bjarne Stroustrup
 %
@@ -1303,11 +1303,6 @@
 ;; development time. The remaining 10% of the code accounts for the
 ;; other 90% of the development time.
 ;; -- Tom Cargill
-%
-;; I have always wished for my computer to be as easy to use as my
-;; telephone; my wish has come true because I can no longer figure out
-;; how to use my telephone.
-;; -- Bjarne Stroustrup
 %
 ;; Linux is only free if your time has no value.
 ;; -- Jamie Zawinski
@@ -2079,7 +2074,7 @@
 ;; -- Herbert Spencer
 %
 ;; the most important design issue is that Linux is supposed to be
-;; fun
+;; fun.
 ;; -- Linus Torvalds.
 %
 ;; As personal choice, we tend not to use debuggers beyond getting a
@@ -5668,9 +5663,6 @@
 ;; to provide us with meaning, to console us. But that's not the purpose of art.
 ;;       -- Peter Greenaway
 %
-;; Beware of bugs in the above code; I have only proved it correct, not tried it.
-;;       -- Donald E. Knuth
-%
 ;; In a manner which matches the fortuity, if not the consequence, of Archimedes'
 ;; bath and Newton's apple, the [3.6 million year old] fossil footprints were
 ;; eventually noticed one evening in September 1976 by the palaeontologist Andrew
@@ -6327,11 +6319,6 @@
 ;; "open file" button to open a file, and never answering any real questions that
 ;; anyone above sea slug on the neuron count scale would really ask.
 ;;       -- Benjamin Ketcham, in _comp.os.unix.advocacy_.
-%
-;; There's an old story about the person who wished his computer were as easy to
-;; use as his telephone. That wish has come true, since I no longer know how to
-;; use my telephone.
-;;       -- Bjarne Stroustrup
 %
 ;; The weirder you're going to behave, the more normal you should look. It works
 ;; in reverse, too. When I see a kid with three or four rings in his nose, I know
@@ -7757,3 +7744,152 @@
 ;; continuous. Good-night."
 ;;       -- Robertson Davies, _The Cunning Man_
 %
+;; Programming today is a race between software engineers striving to
+;; build bigger and better idiot-proof programs, and the universe
+;; trying to build bigger and better idiots. So far, the universe is
+;; winning.
+;; -- Rick Cook
+%
+;; Lisp isn't a language, it's a building material.
+;; -- Alan Kay
+%
+;; Walking on water and developing software from a specification are
+;; easy if both are frozen.
+;; -- Edward V Berard
+%
+;; They don't make bugs like Bunny anymore.
+;; -- Olav Mjelde
+%
+;; A programming language is low level when its programs require
+;; attention to the irrelevant.
+;; -- Alan J. Perlis.
+%
+;; A C program is like a fast dance on a newly waxed dance floor by
+;; people carrying razors.
+;; -- Waldi Ravens
+%
+;; Don’t worry if it doesn’t work right. If everything did, you’d be
+;; out of a job.
+;; -- Mosher’s Law of Software Engineering
+%
+;; I think Microsoft named .Net so it wouldn’t show up in a Unix
+;; directory listing.
+;; -- Oktal
+%
+;; Fine, Java MIGHT be a good example of what a programming language
+;; should be like. But Java applications are good examples of what
+;; applications SHOULDN’T be like.”
+;; -- pixadel
+%
+;; Considering the current sad state of our computer programs,
+;; software development is clearly still a black art, and cannot yet
+;; be called an engineering discipline.
+;; -- Bill Clinton
+%
+;; The use of COBOL cripples the mind; its teaching should therefore
+;; be regarded as a criminal offense.
+;; -- E.W. Dijkstra
+%
+;; In the one and only true way. The object-oriented version of
+;; 'Spaghetti code' is, of course, 'Lasagna code'. (Too many layers).
+;; -- Roberto Waltman
+;; FORTRAN is not a flower but a weed — it is hardy, occasionally
+;; blooms, and grows in every computer.
+;; -- Alan J. Perlis.
+%
+;; For a long time it puzzled me how something so expensive, so
+;; leading edge, could be so useless. And then it occurred to me that
+;; a computer is a stupid machine with the ability to do incredibly
+;; smart things, while computer programmers are smart people with the
+;; ability to do incredibly stupid things. They are, in short, a
+;; perfect match.
+;; -- Bill Bryson
+%
+;; In My Egotistical Opinion, most people's C programs should be
+;; indented six feet downward and covered with dirt.
+;; -- Blair P. Houghton.
+%
+;; When someone says: 'I want a programming language in which I need
+;; only say what I wish done', give him a lollipop.
+;; -- Alan J. Perlis
+%
+;; The evolution of languages: FORTRAN is a non-typed language. C is a
+;; weakly typed language. Ada is a strongly typed language. C++ is a
+;; strongly hyped language.
+;; -- Ron Sercely
+%
+;; Good design adds value faster than it adds cost.
+;; -- Thomas C. Gale
+%
+;; Python's a drop-in replacement for BASIC in the sense that Optimus
+;; Prime is a drop-in replacement for a truck.
+;; -- Cory Dodt
+%
+;; Talk is cheap. Show me the code.
+;; -- Linus Torvalds
+%
+;; C is quirky, flawed, and an enormous success.
+;; -- Dennis M. Ritchie
+%
+;; You can’t have great software without a great team, and most
+;; software teams behave like dysfunctional families.
+;; -- Jim McCarthy
+%
+;; PHP is a minor evil perpetrated and created by incompetent
+;; amateurs, whereas Perl is a great and insidious evil, perpetrated
+;; by skilled but perverted professionals."
+;; -- Jon Ribbens
+%
+;; Perl – The only language that looks the same before and after RSA
+;; encryption.
+;; -- Keith Bostic
+%
+;; It is easier to port a shell than a shell script.
+;; -- Larry Wall
+%
+;; I invented the term 'Object-Oriented', and I can tell you I did not
+;; have C++ in mind.
+;; -- Alan Kay
+%
+;; Learning to program has no more to do with designing interactive
+;; software than learning to touch type has to do with writing poetry
+;; -- Ted Nelson
+%
+;; The best programmers are not marginally better than merely good
+;; ones. They are an order-of-magnitude better, measured by whatever
+;; standard: conceptual creativity, speed, ingenuity of design, or
+;; problem-solving ability.
+;; -- Randall E. Stross
+%
+;; If McDonalds were run like a software company, one out of every
+;; hundred Big Macs would give you food poisoning, and the response
+;; would be, ‘We’re sorry, here’s a coupon for two more.’.
+;; -- Mark Minasi
+%
+;; Computer system analysis is like child-rearing; you can do grievous
+;; damage, but you cannot ensure success.
+;; -- Tom DeMarco
+%
+;; Sometimes it pays to stay in bed on Monday, rather than spending
+;; the rest of the week debugging Monday's code.
+;; -- Christopher Thompson
+%
+;; Measuring programming progress by lines of code is like measuring
+;; aircraft building progress by weight.
+;; -- Bill Gates
+%
+;; People think that computer science is the art of geniuses but the
+;; actual reality is the opposite, just many people doing things that
+;; build on each other, like a wall of mini stones.
+;; -- Donald Knuth
+%
+;; First learn computer science and all the theory. Next develop a
+;; programming style. Then forget all that and just hack.
+;; -- George Carrette
+%
+;; Most good programmers do programming not because they expect to get
+;; paid or get adulation by the public, but because it is fun to
+;; program.
+;; -- Linus Torvalds
+%
+
