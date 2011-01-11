@@ -75,6 +75,7 @@
                      "cunene-flyspell"
                      "cunene-fullscreen"
                      "cunene-grep"
+                     "cunene-gprof"
                      "cunene-hs"
                      "cunene-highlight-symbol"
                      "cunene-highline"
