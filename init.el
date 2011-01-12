@@ -66,6 +66,7 @@
                      "cunene-dired"
                      "cunene-doxymacs"
                      "cunene-delim-kill.el"
+                     "cunene-eassist"
                      "cunene-ecb"
                      "cunene-ede"
                      "cunene-edef"
