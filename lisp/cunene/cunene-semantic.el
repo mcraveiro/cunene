@@ -48,8 +48,6 @@
 (setq-mode-local c++-mode semanticdb-find-default-throttle
                  '(project unloaded system recursive))
 
-(require 'eassist)
-
 ;; smart complitions
 (require 'semantic-ia)
 
