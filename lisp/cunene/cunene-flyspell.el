@@ -31,3 +31,4 @@
 (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
 (add-hook 'sql-mode-hook 'flyspell-prog-mode)
 (add-hook 'LaTeX-mode-hook 'turn-on-flyspell)
+(add-hook 'cmake-mode-hook 'flyspell-prog-mode)
