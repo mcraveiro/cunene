@@ -21,14 +21,12 @@
 ;; group buffers
 (setq ibuffer-saved-filter-groups
       (quote (("home"
-               ("c++" (or
-                       (mode . c++-mode)
-                       (name . "^\\*compilation\\*$")))
+               ("c++" (mode . c++-mode))
                ("csharp" (mode . csharp-mode))
                ("make" (mode . cmake-mode))
                ("ruby" (mode . ruby-mode))
-               ("Text Templates" (name . ".tt$"))
-               ("XML" (mode . nxml-mode))
+               ("t4" (name . ".tt$"))
+               ("xml" (mode . nxml-mode))
                ("sql" (or
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
@@ -38,8 +36,10 @@
                ("shell" (or
                          (name . "^\\*Shell Command Output\\*$")
                          (mode . grep-mode)
-                         (mode . shell-mode)))
+                         (mode . shell-mode)
+                         (name . "^\\*compilation\\*$")))
                ("file management" (mode . dired-mode))
+               ("org" (mode . org-mode))
                ("emacs-lisp" (or
                               (mode . emacs-lisp-mode)
                               (name . "^\\*Compile-Log\\*$")))
