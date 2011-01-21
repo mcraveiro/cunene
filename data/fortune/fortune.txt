@@ -7892,4 +7892,14 @@
 ;; program.
 ;; -- Linus Torvalds
 %
-
+;; Some effort was expended to tune the software so that instead of
+;; being intolerable, it was back to merely unacceptable performance.
+;; -- Tom Davis, SGI
+%
+;; There's a disconnect between engineering and marketing. It's not
+;; surprising -- marketing wants all the whiz-bang features, it wants
+;; to run in 16 megabytes, and it wants it yesterday. Although
+;; engineering would like the same things, it is faced with the
+;; reality of time limits, fixed costs, and the laws of nature.
+;; -- Tom Davis, SGI
+%
