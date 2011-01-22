@@ -16,14 +16,21 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; Give details about white space usage
-(require 'whitespace)
+(autoload 'whitespace-mode "whitespace" "Toggle whitespace visualization." t)
+(autoload 'whitespace-toggle-options
+  "whitespace" "Toggle local `whitespace-mode' options." t)
 
 ;; What to highlight
-(setq whitespace-style '(trailing lines space-before-tab tabs tab-mark
-                                  indentation space-after-tab))
+(setq whitespace-style
+      '(trailing lines space-before-tab tabs tab-mark
+                 indentation space-after-tab))
 
 ;; Indicate if empty lines exist at end of the buffer
 (set-default 'indicate-empty-lines t)
+
+;; do not use global mode whitespace
+(global-whitespace-mode 0)
+(setq whitespace-global-modes nil)
 
 ;; Show whitespaces on these modes
 (add-hook 'sql-mode-hook 'whitespace-mode)
@@ -32,4 +39,6 @@
 (add-hook 'c-mode-common-hook 'whitespace-mode)
 (add-hook 'cmake-mode-hook 'whitespace-mode)
 (add-hook 'emacs-lisp-mode-hook 'whitespace-mode)
-(add-hook 'text-mode-hook 'whitespace-mode)
+
+;; disable whitespace in text-mode due to problems with orgmode.
+;; (add-hook 'text-mode-hook 'whitespace-mode)
