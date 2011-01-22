@@ -61,3 +61,34 @@
 
 ;; open URL at point. disabled as we're relying on orgmode instead.
 ;; (global-set-key (kbd "C-c C-o") 'browse-url-at-point)
+
+;; when working with html, see preview of the buffer.
+(defun w3m-browse-current-buffer ()
+  (interactive)
+  (let ((filename (concat (make-temp-file "w3m-") ".html")))
+    (unwind-protect
+        (progn
+          (write-region (point-min) (point-max) filename)
+          (w3m-find-file filename))
+      (delete-file filename))))
+
+(defun w3m-copy-url-at-point ()
+  (interactive)
+  (let ((url (w3m-anchor)))
+    (if (w3m-url-valid url)
+        (kill-new (w3m-anchor))
+      (message "No URL at point!"))))
+
+;; (add-hook 'w3m-mode-hook
+;;           (lambda ()
+;;             (local-set-key "\M-W" 'w3m-copy-url-at-point)))
+
+(defun my-w3m-rename-buffer (url)
+  "Renames the current buffer to be the current URL"
+  (rename-buffer url t))
+(add-hook 'w3m-display-hook 'my-w3m-rename-buffer)
+
+(add-hook 'w3m-display-hook
+          (lambda (url)
+            (let ((buffer-read-only nil))
+              (delete-trailing-whitespace))))
