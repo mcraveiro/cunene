@@ -14,9 +14,6 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-(autoload 'org "org" "Organiser mode." t)
-
 (setq org-directory (concat datafiles-dir "/org"))
 (setq org-default-notes-file (concat datafiles-dir "/org/todo.org"))
 
@@ -29,5 +26,26 @@
 ;;         ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/JOURNAL.org" "X" my-check)
 ;;         ("Idea" ?i "* %^{Title}\n  %i\n  %a" "~/org/JOURNAL.org" "New Ideas")))
 
-;; Quick note taking.
+;; quick note taking.
 (global-set-key (kbd "C-x /") 'org-remember)
+
+;; use enter to follow links
+;; (setq org-return-follows-link t)
+;; (setq org-tab-follows-link t)
+
+;; provide org-mode link functionality for all buffers.
+(global-set-key (kbd "C-c l") 'org-insert-link-global)
+(global-set-key (kbd "C-c o") 'org-open-at-point-global)
+
+;; disable keys already taken by other modes
+(add-hook 'org-mode-hook
+          (lambda ()
+            (setq org-replace-disputed-keys t)
+            (org-set-local 'yas/trigger-key [tab])
+            (define-key yas/keymap [tab] 'yas/next-field-group)))
+
+;; make windmove work in org-mode:
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
