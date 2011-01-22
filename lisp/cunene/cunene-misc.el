@@ -151,7 +151,10 @@
 (setq next-line-add-newlines nil)
 
 ;; Ask before adding newline to file
-(setq require-final-newline 'query)
+;; (setq require-final-newline 'query)
+
+;; do not ask before adding newline to file
+(setq inhibit-default-init t)
 
 ;; C-k kills whole line and newline if at beginning of line
 (setq kill-whole-line t)
