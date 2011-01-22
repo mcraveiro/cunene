@@ -58,4 +58,6 @@
 
 (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
 (setq browse-url-browser-function 'w3m-browse-url-new-tab)
-(global-set-key (kbd "C-c C-o") 'browse-url-at-point)
+
+;; open URL at point. disabled as we're relying on orgmode instead.
+;; (global-set-key (kbd "C-c C-o") 'browse-url-at-point)
