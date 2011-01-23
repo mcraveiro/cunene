@@ -18,3 +18,10 @@
 (add-to-list 'load-path (concat dotfiles-dir "/other/color-theme/themes"))
 ;; (require 'zenburn)
 ;; (color-theme-zenburn)
+;; (require 'color-theme-tangotango)
+;; (color-theme-tangotango)
+
+;; (require 'color-theme)
+(setq color-theme-load-all-themes nil)
+
+
