@@ -22,11 +22,14 @@
 ;; occur
 ;;
 (defun my-occur (&optional arg)
- "Make sure to always put occur in a vertical split, into a narrower buffer at the side.
-I didn't like the default horizontal split, nor the way it messes up the arrangement of windows in the frame or
-the way in which the standard way uses a neighbor window."
+ "Make sure to always put occur in a vertical split, into a
+ narrower buffer at the side. I didn't like the default
+ horizontal split, nor the way it messes up the arrangement of
+ windows in the frame or the way in which the standard way uses a
+ neighbor window."
   (interactive "P")
-  (window-configuration-to-register ?y) ; store whatever frame configuratin we are currently in
+  ;; store whatever frame configuratin we are currently in
+  (window-configuration-to-register ?y)
   (occur (read-from-minibuffer "Regexp: "))
   (if (occur-check-existence)
       (progn
@@ -37,7 +40,8 @@ the way in which the standard way uses a neighbor window."
   (occur-procede-accordingly))
 
 (defun occur-procede-accordingly ()
-  "Switch to occur buffer or prevent opening of the occur window if no matches occured."
+  "Switch to occur buffer or prevent opening of the occur window
+if no matches occured."
   (interactive "P")
   (if (not(get-buffer "*Occur*"))
       (message "There are no results.")
