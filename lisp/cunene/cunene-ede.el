@@ -25,7 +25,7 @@
 ;; Risk
 (ede-cpp-root-project "Kitanda"
                       :name "Kitanda Project"
-                      :file "~/code/kitanda/CMakeLists.txt"
+                      :file "~/code/kitanda/git/CMakeLists.txt"
                       :include-path '("/code/cpp/include"
                                       "/output/code/cpp/include")
                       :system-include-path '("/usr/include/gtkmm-2.4"
