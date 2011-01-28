@@ -16,3 +16,12 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (autoload 'psvn "psvn" "Subversion mode." t)
+
+;; show a green/red dot on the mode line.
+(setq svn-status-fancy-file-state-in-modeline t)
+
+;; hide unmodified files
+(setq svn-status-hide-unmodified t)
+
+;; verbose status is quite slow so disable it
+(setq svn-status-verbose nil)
