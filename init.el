@@ -94,6 +94,7 @@
                      "cunene-moccur"
                      "cunene-mpg123"
                      "cunene-multi-terminal"
+                     "cunene-muse"
                      "cunene-nxhtml"
                      "cunene-nxml"
                      "cunene-org"
