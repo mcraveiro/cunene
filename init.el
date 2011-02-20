@@ -74,6 +74,7 @@
                      "cunene-ffap"
                      "cunene-fixme"
                      "cunene-flyspell"
+                     "cunene-full-ack.el"
                      "cunene-fullscreen"
                      "cunene-grep"
                      "cunene-gprof"
