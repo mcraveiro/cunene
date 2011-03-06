@@ -30,6 +30,7 @@
                ("sql" (or
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
+               ("bash" (mode . sh-mode))
                ("powershell" (or
                               (mode . powershell-mode)
                               (name . "^\\*PowerShell")))
@@ -58,7 +59,7 @@
                 ("semantic" (or
                              (mode . data-debug-mode)
                              (name . "^\\*Lexer Output\\*$")))
-                ("web browsing" (name . "^\\*w3m"))
+                ("web browsing" (mode . w3m-mode))
                 ("web development" (or
                                     (mode . html-mode)
                                     (mode . css-mode)))
