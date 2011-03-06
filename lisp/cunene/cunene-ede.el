@@ -46,3 +46,14 @@
                       '(("isUnix" . "")
                         ("BOOST_TEST_DYN_LINK" . "")
                         ("_MSC_VER" . "")))
+
+(ede-cpp-root-project "Modeling"
+                      :name "Modeling Project"
+                      :file "~/code/kitanda/modeling/CMakeLists.txt"
+                      :include-path '("/cpp/include")
+                      :system-include-path
+                      '("~/code/kitanda/output/cpp/include")
+                      :spp-table
+                      '(("isUnix" . "")
+                        ("BOOST_TEST_DYN_LINK" . "")
+                        ("_MSC_VER" . "")))
