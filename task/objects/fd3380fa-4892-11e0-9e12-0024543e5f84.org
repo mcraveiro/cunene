@@ -1,0 +1,16 @@
+* Title: insert-date does not add leading zeros to numbers less than 10
+** Reporter: Marco Craveiro <marco.craveiro@gmail.com>
+** Implementer:
+** Component:
+** Date: 2011-03-07 08:16:22
+** Priority: normal
+** Status: new
+** Resolution: open
+** Found in version: 0.0.1
+** Fixed in version:
+* Description
+* Tasks
+* Steps to reproduce
+* Comment
+** Author:
+** Date:
