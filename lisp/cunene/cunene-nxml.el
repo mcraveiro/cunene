@@ -20,3 +20,4 @@
 (add-to-list 'auto-mode-alist '("\\.ecore$" . nxml-mode))
 (add-to-list 'auto-mode-alist '("\\.xsd$" . nxml-mode))
 (setq nxml-child-indent tab-width)
+(setq nxml-slash-auto-complete-flag t)
