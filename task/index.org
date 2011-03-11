@@ -1,10 +1,7 @@
 * Archived
 * Current
-** [[file:objects/9deefffc-4766-11e0-abba-001d605733c7.org][setup modeling project]]
-* Future
-* Uncategorised
-** [[file:objects/.org][insert-date does not add leading zeros to numbers less than 10]]
-** [[file:objects/.org][insert-date does not add leading zeros to numbers less than 10]]
-** [[file:objects/f65a03da-4892-11e0-a4ce-0024543e5f84.org][insert-date does not add leading zeros to numbers less than 10]]
 ** [[file:objects/fd3380fa-4892-11e0-9e12-0024543e5f84.org][insert-date does not add leading zeros to numbers less than 10]]
 ** [[file:objects/0a4dd808-4893-11e0-b66e-0024543e5f84.org][disable auto-complete-mode in shell buffers]]
+** [[file:objects/6815caa6-4bb6-11e0-b85b-0024543e5f84.org][add auto-indent on paste to nxml]]
+* Future
+* Uncategorised
