@@ -1,0 +1,19 @@
+* Title: use submodules to pickup modes which are on git
+** Reporter: Marco Craveiro <marco.craveiro@gmail.com>
+** Implementer:
+** Component:
+** Date:
+** Priority: normal
+** Status: new
+** Resolution: open
+** Found in version: 0.0.1
+** Fixed in version:
+* Description
+For example we could do this for:
+- magit
+- auto-complete-mode
+* Tasks
+* Steps to reproduce
+* Comment
+** Author:
+** Date:
