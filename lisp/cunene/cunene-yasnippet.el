@@ -20,3 +20,7 @@
 
 ;; Personal snippet directory
 (yas/load-directory (concat datafiles-dir "/yasnippets"))
+
+;; for GPL snippet
+(setq user-full-name "Marco Craveiro")
+(setq user-mail-address "marco.craveiro@gmail.com")
