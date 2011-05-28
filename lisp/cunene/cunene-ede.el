@@ -23,37 +23,37 @@
 ;;
 
 ;; Risk
-(ede-cpp-root-project "Kitanda"
-                      :name "Kitanda Project"
-                      :file "~/code/kitanda/git/CMakeLists.txt"
-                      :include-path '("/code/cpp/include")
-                      :system-include-path
-                      '("/usr/include/gtkmm-2.4"
-                        "/usr/include/glibmm-2.4"
-                        "~/code/kitanda/output/code/cpp/include")
-                      :spp-table
-                      '(("isUnix" . "")
-                        ("BOOST_TEST_DYN_LINK" . "")
-                        ("_MSC_VER" . "")))
+;; (ede-cpp-root-project "Kitanda"
+;;                       :name "Kitanda Project"
+;;                       :file "~/code/kitanda/git/CMakeLists.txt"
+;;                       :include-path '("/code/cpp/include")
+;;                       :system-include-path
+;;                       '("/usr/include/gtkmm-2.4"
+;;                         "/usr/include/glibmm-2.4"
+;;                         "~/code/kitanda/output/code/cpp/include")
+;;                       :spp-table
+;;                       '(("isUnix" . "")
+;;                         ("BOOST_TEST_DYN_LINK" . "")
+;;                         ("_MSC_VER" . "")))
 
-(ede-cpp-root-project "CMakeGit"
-                      :name "CMake Git Project"
-                      :file "~/code/cmake_git/CMakeLists.txt"
-                      :include-path
-                      '("/Source" "/Source/ctest" "/output/Source")
-                      :system-include-path '("/usr/include")
-                      :spp-table
-                      '(("isUnix" . "")
-                        ("BOOST_TEST_DYN_LINK" . "")
-                        ("_MSC_VER" . "")))
+;; (ede-cpp-root-project "CMakeGit"
+;;                       :name "CMake Git Project"
+;;                       :file "~/code/cmake_git/CMakeLists.txt"
+;;                       :include-path
+;;                       '("/Source" "/Source/ctest" "/output/Source")
+;;                       :system-include-path '("/usr/include")
+;;                       :spp-table
+;;                       '(("isUnix" . "")
+;;                         ("BOOST_TEST_DYN_LINK" . "")
+;;                         ("_MSC_VER" . "")))
 
-(ede-cpp-root-project "Modeling"
-                      :name "Modeling Project"
-                      :file "~/code/kitanda/modeling/CMakeLists.txt"
-                      :include-path '("/cpp/include")
-                      :system-include-path
-                      '("~/code/kitanda/output/cpp/include")
-                      :spp-table
-                      '(("isUnix" . "")
-                        ("BOOST_TEST_DYN_LINK" . "")
-                        ("_MSC_VER" . "")))
+;; (ede-cpp-root-project "Modeling"
+;;                       :name "Modeling Project"
+;;                       :file "~/code/kitanda/modeling/CMakeLists.txt"
+;;                       :include-path '("/cpp/include")
+;;                       :system-include-path
+;;                       '("~/code/kitanda/output/cpp/include")
+;;                       :spp-table
+;;                       '(("isUnix" . "")
+;;                         ("BOOST_TEST_DYN_LINK" . "")
+;;                         ("_MSC_VER" . "")))
