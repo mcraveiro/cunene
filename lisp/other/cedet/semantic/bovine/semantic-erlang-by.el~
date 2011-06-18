@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2002, 2003 Vladimir G. Sekissov
 
-;; Author: Marco Craveiro <marco@thompson>
-;; Created: 2010-05-18 21:20:01+0100
+;; Author: Marco Craveiro <marco@bohr>
+;; Created: 2010-11-14 12:33:38+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

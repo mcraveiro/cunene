@@ -2,8 +2,8 @@
 
 ;;; Copyright (C) 2007 Daniel Debertin (debertin@gmail.com)
 
-;; Author: Marco Craveiro <marco@thompson>
-;; Created: 2010-05-18 21:21:00+0100
+;; Author: Marco Craveiro <marco@bohr>
+;; Created: 2010-11-14 12:33:55+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

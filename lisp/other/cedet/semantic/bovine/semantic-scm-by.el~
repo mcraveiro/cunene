@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2001, 2003, 2009 Eric M. Ludlam
 
-;; Author: Marco Craveiro <marco@thompson>
-;; Created: 2010-05-18 21:20:00+0100
+;; Author: Marco Craveiro <marco@bohr>
+;; Created: 2010-11-14 12:33:38+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 
