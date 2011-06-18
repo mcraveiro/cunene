@@ -41,3 +41,4 @@
 
 ;; git status
 (global-set-key (kbd "C-x g") 'magit-status)
+(setq magit-use-highlights nil)
