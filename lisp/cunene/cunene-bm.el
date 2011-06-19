@@ -17,6 +17,7 @@
 
 ;; Visual bookmarks mode
 (require 'bm)
+(provide 'bm-ext)
 
 ;; Put bookmarks on the fringe
 (setq bm-highlight-style 'bm-highlight-only-fringe)

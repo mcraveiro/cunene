@@ -1,10 +1,13 @@
 ;;; cdb-gud.el --- Grand Unified Debugger mode for running CDB
 
 ;; Author: Stephan Doll <stephan_doll at dantz.com>
+;; Maintainer: Aaron Brady <abrady0 at yahoo dot com> :
 ;; Version: 1.0 (January 30, 2002)
 ;; Version: 1.4 (January 10, 2007) : updated to handle latest cdb
+;; Version: 1.5 (January 26, 2011) : helper functions for debugging running processes
 ;; frames a little better. also added helper functions. see
 ;; 'cdbDebugChoice' at bottom for example.
+;; Version: 1.5 (October 19, 2008) : parse fixes for latest debug tools.
 
 ;; This file is NOT part of GNU Emacs but the same permissions apply.
 ;; This is free software (needed for emacswiki upload.pl)
@@ -59,7 +62,7 @@
 
 ;; In Emacs, run
 
-;;    	M-x cdb
+;;      M-x cdb
 ;;     "Run cdb (like this):" cdb <name of your exe>
 
 ;; This will open a new Emacs buffer "*gud-xxx*".  In it you will get a
@@ -102,9 +105,10 @@
    "Highlight current line."
    (let* ((ov gud-overlay)
           (bf (gud-find-file true-file)))
-     (save-excursion
-       (set-buffer bf)
-       (move-overlay ov (line-beginning-position) (line-end-position) (current-buffer)))))
+     (if bf
+         (save-excursion
+           (set-buffer bf)
+           (move-overlay ov (line-beginning-position) (line-end-position) (current-buffer))))))
 
  (defun gud-kill-buffer ()
    (if (eq major-mode 'gud-mode)
@@ -115,7 +119,7 @@
 
 ;; Have fun,
 ;; -Stephan
-    
+
 ;;; Code:
 
 (require 'gud)
@@ -135,14 +139,19 @@ containing the executable being debugged."
                          directory))
   :group 'gud)
 
+(defvar gud-cdb-options-hook nil
+  "the default options to use when starting a coh cdb instance")
+
 (defun gud-cdb-massage-args (file args)
 ;; ab: my hack for remote  (append args (cons "-c" (cons "l+*;l-s" (cons "-lines" nil)))))
-  (cons "-c" (cons "l+*;" (cons "-lines" args)))) ; l-s
+  (setq tmp (append (loop for i in gud-cdb-options-hook append (funcall i)) (cons "-c" (cons "l+*;l-s" (cons "-lines" args)))))
+;;  (debug)
+ tmp)
 
 (defmacro make-gud-cdb-massage-args-remote (remote_addr)
   (append '(lambda (file args) (cons file args))
-		  (list (list 'cons "-remote" remote_addr) 
-				(cons '(cons "-c" (cons "l+*;l-s" (cons "-lines" args))) nil))))
+          (list (list 'cons "-remote" remote_addr)
+                (cons '(cons "-c" (cons "l+*;l-s" (cons "-lines" args))) nil))))
   ;;(list 'cons "-remote" remote_addr))
 ;;(funcall (make-gud-cdb-massage-args-remote "123.456.789") "a" "b")
 
@@ -167,104 +176,142 @@ containing the executable being debugged."
 (defvar gud-marker-acc "")
 (make-variable-buffer-local 'gud-marker-acc)
 
-(defvar gud-output-acc "" 
+(defvar gud-output-acc ""
   "accumulates all input between input markers 0:000>")
 (make-variable-buffer-local 'gud-output-acc)
 
+;; paths are hard-coded, it may be useful to remap
+;; a path to another, e.g. the visual studio std library
+;; is apparently compiled in f:/RTM/..., but I have it
+;; installed under program files.
+(defvar gud-cdb-remap-fname-hooks nil
+  "Hook to be run by gud-cdb-remap-fname when a source file is looked up")
+
+(defun gud-cdb-remap-fname (fname)
+  (cond
+   ((not fname) nil)
+   ;;   ((file-exists-p fname) fname)
+   (t ;; try to look the file up
+    (let (;;(file-name-directory fname)
+          ;;(file-name-nondirectory fname)
+          (full-filename (expand-file-name fname))
+          )
+      (or
+       (loop for i in gud-cdb-remap-fname-hooks
+             if (and (setq full-filename (funcall i fname)) (file-exists-p full-filename)) return full-filename)
+       fname)
+      )
+    )
+   )
+  )
+
+;; ab: where output is handled, parsed, and turned into source file
+;; gud-display-line : the 'find-file' of gud, calls gud-display-line which calls display-buffer
 (defun gud-cdb-marker-filter (string)
   (setq gud-marker-acc (concat gud-marker-acc string))
-  (let ((output "")
-		(input-cursor-found)
-		(lines)
-		(find-stack-marker
-			  (lambda (stack-lines)
-				(if (string-match 
-					 (concat 
-					  "^[0-9a-zA-Z]*" ;; optional frame number
-					  " *[0-9a-zA-Z]+" ;; instruction pointer
-					  " [0-9a-zA-Z]+ " ;; return address
-					  ".+!.+\\"	;; module!function
-					  ;;"+0x[0-9a-zA-Z]+" ;; offset (optional, ab: removing)
-					  " \\[\\(.*\\) @ \\([0-9]+\\)\\]" ;; file @ line
-					  ) stack-lines)
-					(let
-						((fname)
-						 (linenum))
-					  (setq fname (substring stack-lines (match-beginning 1) (match-end 1)))
-					  (setq linenum (string-to-int (substring stack-lines (match-beginning 2) (match-end 2))))
-					  (if (file-exists-p fname)
-						  (cons fname linenum)
-						(funcall find-stack-marker (substring stack-lines (match-end 0))))))))
-		(set-from-stack-marker (lambda (stack-lines)
-								 (setq gud-last-frame (or 
-													   (funcall find-stack-marker stack-lines)
-													   gud-last-frame)))))
+  (let* ((output "")
+        (input-cursor-found)
+        (lines)
+        (find-stack-marker
+              (lambda (stack-lines)
+                (if (string-match
+                     (concat
+                      "^[0-9a-zA-Z]*" ;; optional frame number
+                      " *[0-9a-zA-Z]+" ;; instruction pointer
+                      " [0-9a-zA-Z]+ " ;; return address
+                      ".+!.+\\"	;; module!function
+                      ;;"+0x[0-9a-zA-Z]+" ;; offset (optional, ab: removing)
+                      " \\[\\(.*\\) @ \\([0-9]+\\)\\]" ;; file @ line
+                      ) stack-lines)
+                    (let
+                        ((fname)
+                         (linenum))
+                      (setq fname (substring stack-lines (match-beginning 1) (match-end 1)))
+                      (setq linenum (string-to-number (substring stack-lines (match-beginning 2) (match-end 2))))
+                      (setq fname (gud-cdb-remap-fname fname))
+                      (if (and fname (file-exists-p fname))
+                          (cons fname linenum)
+                        (funcall find-stack-marker (substring stack-lines (match-end 0))))))))
+        (set-from-stack-marker (lambda (stack-lines)
+                                 (setq gud-last-frame (or
+                                                       (funcall find-stack-marker stack-lines)
+                                                       gud-last-frame))))
+        (set-gud-last-frame (lambda (fname line)
+                              "change new mark for buffer if file found"
+                              (let ((fn (gud-cdb-remap-fname fname)))
+                                (if fn
+                                    (setq gud-last-frame (cons fn line)))))))
 
-	;; *********************************************************************************
-	;; output capture  
-	;; *********************************************************************************
+;;    (message "in")
 
-	;; accum latest
-	(setq lines (split-string string "\n"))
-	(loop for line in lines
-		  until (setq input-cursor-found (string-match "^[0-9]:[0-9][0-9][0-9]>" line))
-		  do
-		  (setq gud-output-acc (concat gud-output-acc line "\n")))
-	;; ab: match frame markers.
+    ;; *********************************************************************************
+    ;; output capture
+    ;; *********************************************************************************
+
+    ;; accum latest
+    (setq lines (split-string string "\n"))
+    (loop for line in lines
+          until (setq input-cursor-found (string-match "^[0-9]:[0-9][0-9][0-9]\\(:.*\\)?>" line))
+          do
+          (setq gud-output-acc (concat gud-output-acc line "\n")))
+    ;; ab: match frame markers.
 ;; example:
 ;;"0b 0012f8ac 00516f22 Auctionserver!XactLogLine_FromStr+0xd9 [c:\\src\\xactlog.c @ 372]
-;;	(debug)
-	(if input-cursor-found 
-		(progn 
-		  (if (string-match "^\\([a-zA-Z]:.*\\)(\\([0-9]+\\))" gud-output-acc)
-			  (setq gud-last-frame (cons (match-string 1 gud-output-acc) (string-to-int (match-string 2 gud-output-acc)))))
-		  (funcall set-from-stack-marker gud-output-acc)))
-		  
-;; 		 (string-match 
-;; 		 (concat 
-;; 		  "^[0-9a-zA-Z]*" ;; optional frame number
-;; 		  " *[0-9a-zA-Z]+";; instruction pointer
-;; 		  " [0-9a-zA-Z]+ ";; return address
-;; 		  ".+!.+\\"		  ;; module!function
-;; 		  ;;"+0x[0-9a-zA-Z]+" ;; offset (optional, ab: removing)
-;; 		  " \\[\\(.*\\) @ \\([0-9]+\\)\\]" ;; file @ line
-;; 		  ) gud-output-acc))
-;; 		(let
-;; 			((fname (match-string 1 gud-output-acc))
-;; 			 (linenum (string-to-int (match-string 2 gud-output-acc))))
-;; 		  (if (file-exists-p fname)
-;; 			  (setq gud-last-frame (cons fname linenum)))))
+;	(debug)
+    (if input-cursor-found
+        (cond
+         ;;; info about a particular line, e.g. from a step
+         ((string-match "^\\([a-zA-Z]:.*\\)(\\([0-9]+\\))" gud-output-acc)
+          (funcall set-gud-last-frame (match-string 1 gud-output-acc) (string-to-number (match-string 2 gud-output-acc))))
+         ;;; default, scrape for a stack trace
+         (t (funcall set-from-stack-marker gud-output-acc))))
 
-	;; clear the accumulator
-	(if input-cursor-found
-		(setq gud-output-acc ""))
+;;           (string-match
+;;           (concat
+;;            "^[0-9a-zA-Z]*" ;; optional frame number
+;;            " *[0-9a-zA-Z]+";; instruction pointer
+;;            " [0-9a-zA-Z]+ ";; return address
+;;            ".+!.+\\"           ;; module!function
+;;            ;;"+0x[0-9a-zA-Z]+" ;; offset (optional, ab: removing)
+;;            " \\[\\(.*\\) @ \\([0-9]+\\)\\]" ;; file @ line
+;;            ) gud-output-acc))
+;;          (let
+;;              ((fname (match-string 1 gud-output-acc))
+;;               (linenum (string-to-number (match-string 2 gud-output-acc))))
+;;            (if (file-exists-p fname)
+;;                (setq gud-last-frame (cons fname linenum)))))
+
+    ;; clear the accumulator
+    (if input-cursor-found
+        (setq gud-output-acc ""))
 
 ;; Process all the complete markers in this chunk.  This regex might catch
 ;;     ;; too much, but that is the debugger's fault ...
 
-;; 	;; ab: .frame n parsing. only 1 line of output.
-;; 	(if (string-match "^[0-9a-f]+ .*\n.*>" string) 
-;; 		(funcall set-from-stack-marker string))
-	
-;; 	;; ab: add 'k' stack parsing
-;; 	(if (string-match "^ChildEBP.*RetAddr[ ]*\n" string)
-;; 		(progn
-;; 		  (funcall set-from-stack-marker (substring string (match-end 0)))))
-		  
+;;      ;; ab: .frame n parsing. only 1 line of output.
+;;      (if (string-match "^[0-9a-f]+ .*\n.*>" string)
+;;          (funcall set-from-stack-marker string))
+
+;;      ;; ab: add 'k' stack parsing
+;;      (if (string-match "^ChildEBP.*RetAddr[ ]*\n" string)
+;;          (progn
+;;            (funcall set-from-stack-marker (substring string (match-end 0)))))
+
 ;;     (while (string-match "^\\([-A-Za-z_\.:\\]*\\)(\\([0-9]*\\))\n" gud-marker-acc)
 
+;;    (message "before-munch")
     ;; too munch, but that is the debugger's fault ...
-    (while (string-match 
-			"^\\([-A-Za-z0-9_\.:\\]*\\)(\\([0-9]*\\))\n" 
-			gud-marker-acc)
+    (while (string-match
+            "^\\([-A-Za-z0-9_\.:\\]*\\)(\\([0-9]*\\))\n"
+            gud-marker-acc)
       (setq
 
        ;; Extract the frame position from the marker.
-       gud-last-frame
-       (cons (substring gud-marker-acc (match-beginning 1) (match-end 1))
-             (string-to-int (substring gud-marker-acc
-                                       (match-beginning 2)
-                                       (match-end 2))))
+;;        gud-last-frame
+;;        (cons (substring gud-marker-acc (match-beginning 1) (match-end 1))
+;;              (string-to-number (substring gud-marker-acc
+;;                                        (match-beginning 2)
+;;                                        (match-end 2))))
 
        ;; Append any text before the marker to the output we're going
        ;; to return - we don't include the marker in this text.
@@ -290,20 +337,34 @@ containing the executable being debugged."
                 (substring gud-marker-acc (match-beginning 0))))
       (setq output (concat output gud-marker-acc)
             gud-marker-acc ""))
+;;     (message "last frame: %s" gud-last-frame)
+;;     (message "marker-acc: %s" gud-marker-acc)
+;;     (message "output: %i" (length output))
+;;     (message "%s" output)
+;;     (setq output "Breakpoint 0 hit
+;; GameClient!SwitchToGameplayState:
+;; 015a74e0 55              push    ebp
+;; 0:000>
+;; ")
+;;     (setq gud-last-frame '("c:\\src\\crossroads\\gameclientlib\\gclloading.c" . 58))
+    ;;(sleep-for 5)
     output))
 
 (defun gud-cdb-find-file (f)
   (save-excursion
     (let ((realf (gud-cdb-file-name f)))
-      (if realf
-          (find-file-noselect realf t)
-        (find-file-noselect f 'nowarn)
+      (if (file-exists-p (or realf f))
+          (if realf
+              (find-file-noselect realf t)
+            (find-file-noselect f 'nowarn)
+            )
         ))))
 
 (defun cdb-simple-send (proc string)
+  (comint-send-string proc (concat string "\n")) ;; this first: error writing to buf otherwise
   (if (string-match "^[ \t]*[Qq][ \t]*" string)
-      (kill-buffer gud-comint-buffer))
-  (comint-send-string proc (concat string " \n")))
+      (kill-buffer gud-comint-buffer)
+    ))
 
 (defun cdb (command-line)
   "Run cdb on program FILE in buffer *gud-FILE*.
@@ -313,6 +374,7 @@ and source-file directory for your debugger."
 
   (gud-common-init command-line 'gud-cdb-massage-args
                    'gud-cdb-marker-filter 'gud-cdb-find-file)
+
   (set (make-local-variable 'gud-minor-mode) 'cdb)
 
   (gud-def gud-break  "bu `%d%f:%l` " "\C-b" "Set breakpoint at current line.")
@@ -334,7 +396,7 @@ and source-file directory for your debugger."
 (defun gud-cdb-goto-stackframe (text token indent)
   "Goto the stackframe described by TEXT, TOKEN, and INDENT."
   (speedbar-with-attached-buffer
-   (gud-display-line (nth 2 token) (string-to-int (nth 3 token)))
+   (gud-display-line (nth 2 token) (string-to-number (nth 3 token)))
    (gud-basic-call (concat ".frame " (nth 1 token)))))
 
 (defvar gud-cdb-complete-in-progress)
@@ -459,46 +521,129 @@ off the specialized speedbar mode."
     (setq gud-last-speedbar-stackframe gud-last-last-frame)))
 
 ;; *********************************************************************************
-;; cdb helpers  
+;; cdb helpers
 ;; *********************************************************************************
 
 (defun cdb-pidFromExe (&optional exe-name-regexp predicate)
   (interactive)
+  (cdr (cdb-promptPidAndExe exe-name-regexp predicate)))
+
+(defun cdb-promptPidAndExe (&optional exe-name-regexp predicate)
+  (interactive)
   (let
-	  ((tlist)
-	   (exe)
-	   (exes))
-	(setq tlist (shell-command-to-string "tlist"))
-	(setq exes
-		  (loop for n from 0 for i in (reverse (split-string tlist "\n"))
-				collect 
-				(progn
-				  (if (string-match "\\(^[ 0-9]+ \\)\\(.*\\)" i)
-					  (cons (match-string 2 i) (match-string 1 i))))))
-	(if exe-name-regexp 
-		(setq exe (loop for i in exes if (string-match exe-name-regexp (car i)) return (car i)))
-		(setq exe (completing-read "in: " ;; prompt 
-							   exes ;; table
-							   predicate ;; predicat (setq predicate (lambda (c) (string-match "mapserver.exe" (car c))))
-							   nil ;; require match
-							   nil ;; initial input
-							   nil ;; hist
-							   nil ;; def
-							   nil ;; inherit input method
-							   )))
-	(string-to-number (cdr (assoc exe exes)))))
+      ((tlist)
+       (exe)
+       (exes))
+    (setq tlist (shell-command-to-string "tlist"))
+    (setq exes
+          (loop for n from 0 for i in (reverse (split-string tlist "\n"))
+                collect
+                (progn
+                  (if (string-match "\\(^[ 0-9]+ \\)\\(.*\\)" i)
+                      (cons (match-string 2 i) (match-string 1 i))))))
+    (if exe-name-regexp
+        (setq exe (loop for i in exes if (string-match exe-name-regexp (car i)) return (car i)))
+        (setq exe (completing-read "in: " ;; prompt
+                               exes ;; table
+                               predicate ;; predicat (setq predicate (lambda (c) (string-match "mapserver.exe" (car c))))
+                               nil ;; require match
+                               nil ;; initial input
+                               nil ;; hist
+                               nil ;; def
+                               nil ;; inherit input method
+                               )))
+    (cons exe (string-to-number (cdr (assoc exe exes))))))
 
 (defun cdbAttach (exe-pid)
   (interactive (funcall (lambda () (list (cdb-pidFromExe)))))
-	(if exe-pid
-		(progn
-		  (gud-call (format ".attach 0n%i; " exe-pid)))))
+    (if exe-pid
+        (progn
+          (gud-call (format ".attach 0n%i; " exe-pid)))))
 
 (defun cdbDebugChoice (&optional predicate)
+  "if you want to debug a program running on windows, call this function and it will give you the list of running processes and
+   allow you to attach to one of them."
   (interactive)
-  (let* ((tlist (shell-command-to-string "tlist"))
-		 (pid))
-	(setq pid (cdb-pidFromExe nil predicate))
-	(cdb (format "cdb -p %i" pid))))
+  (let* ((exepidpair)
+         (pid))
+    (setq exepidpair (cdb-promptPidAndExe nil predicate))
+    (setq pid (cdr exepidpair))
+    (cdb (format "cdb -p %i" pid))
+    (rename-buffer (format "*gud-%s*" (car (string-split "\\s-+" (car exepidpair) 1))) t)))
+
+(defun cdbSetIP ()
+  "set instruction pointer to current point. if you are in source code and want to change the current line to mark"
+  (interactive)
+  (gud-call (format "r eip = %s" (cdbLineNoKill))))
+(defalias 'eip 'cdbSetIP)
+
+(defun cdbLineNoKill ()
+  "get current line in cdb format"
+  (concat "`" (buffer-file-name) ":" (number-to-string (count-lines (point-min) (1+ (point)))) "`"))
+
+(defun cdbLine ()
+  "kill current line in cdb format"
+  (interactive)
+  (message (kill-new (cdbLineNoKill))))
+(defalias 'xl 'cdbLine)
+
+;; ----------------------------------------
+;; auto-complete support
+
+(defvar cdb-ac-match-limit t
+  "limit for the number of matches to be collected in the cdb buffer or the src buffer for the current frame")
+
+(defun cdb-ac-candidate-words-in-buffer (prefix)
+  "cdb wants the words from the buffer for the current frame. the `ac-candidate-words-in-buffer' doesn't support this, but this version takes explicit params to do this"
+  (let ((i 0)
+        candidate
+        candidates
+        (regexp (concat "\\_<" (regexp-quote prefix) "\\(\\sw\\|\\s_\\)+\\_>")))
+    (save-excursion
+      (goto-char 0)
+      ;; Search forward
+      (while (and (or (eq cdb-ac-match-limit t)
+                      (< i limit))
+                  (re-search-forward regexp nil t))
+        (setq candidate (match-string-no-properties 0))
+        (unless (member candidate candidates)
+          (push candidate candidates)
+          (incf i)))
+      (nreverse candidates))))
+
+(defun cdb-ac-candidates ()
+  "list of potentially matching auto-complete words"
+;;  (debug)
+  (cond
+   ((looking-back "\\(0x\\)[0-9]+") nil)
+   (t
+    (append
+     (setq foo (ac-candidate-words-in-buffer))
+     (if (and gud-last-last-frame (car gud-last-last-frame) (find-buffer-visiting (car gud-last-last-frame)))
+         (with-current-buffer (find-buffer-visiting (car gud-last-last-frame))
+           (cdb-ac-candidate-words-in-buffer ac-prefix)
+           )
+       )
+     ))
+   )
+  )
+
+(defvar cdb-ac-sources
+  '((candidates . cdb-ac-candidates)
+    (requires . 3)))
+
+(defun cdb-ac-mode-init ()
+  (interactive)
+  "set up the auto complete variables for cdb"
+  (auto-complete-mode t)
+;;  (ac-define-dictionary-source
+;;   ac-source-cdb-keywords
+;;   ("g" "k" "kn" "p")) ;; not really necessary with the 3 character requirement
+  (setq ac-sources '(cdb-ac-sources
+                     ;; ac-source-cdb-keywords
+                     )))
+
+(if (require 'auto-complete nil t)
+    (add-hook 'cdb-mode-hook 'cdb-ac-mode-init))
 
 ;;; cdb-gud.el ends here

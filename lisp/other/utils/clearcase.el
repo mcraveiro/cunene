@@ -1,11 +1,11 @@
 ;;; clearcase.el --- ClearCase/Emacs integration.
 
-;; Copyright (C) 1999, 2000, 2001, 2002 Kevin Esler
+;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2006, 2006, 2007 Kevin Esler
 
-;; Author: Kevin Esler <esler@rational.com>
-;; Maintainer: Kevin Esler <esler@rational.com>
+;; Author: Kevin Esler <kaesler@us.ibm.com>
+;; Maintainer: Kevin Esler <kaesler@us.ibm.com>
 ;; Keywords: clearcase tools
-;; Web home: http://members.verizon.net/~vze24fr2/EmacsClearCase
+;; Web home: http://members.verizon.net/~kevin.a.esler/EmacsClearCase
 
 ;; This file is not part of GNU Emacs.
 ;;
@@ -26,7 +26,6 @@
 
 ;; This is a ClearCase/Emacs integration.
 ;;
-
 ;;
 ;; How to use
 ;; ==========
@@ -78,10 +77,13 @@
 ;;     unco,
 ;;     describe
 ;;     list history
+;;     edit config spec
 ;;     mkbrtype
-;;     update view
-;;     version comparisons using ediff, diff or applet
-;;   Auto version-stamping (if enabled, e.g in this file)
+;;     snapshot view update: file, directory, view
+;;     version comparisons using ediff, diff or GUI
+;;     find checkouts
+;;     annotate version
+;;     et al.
 ;;
 ;; Acknowledgements
 ;; ================
@@ -119,13 +121,34 @@
 ;;     Jonathan Stigelman
 ;;     Steve Baur
 ;;
+;;   Other Contributors:
+;;
+;;     Alastair Rankine
+;;     Andrew Maguire
+;;     Barnaby Dalton
+;;     Christian Savard
+;;     David O'Shea
+;;     Dee Zsombor
+;;     Gabor Zoka
+;;     Jason Rumney
+;;     Jeff Phillips
+;;     Justin Vallon
+;;     Mark Collins
+;;     Patrik Madison
+;;     Ram Bhamidipaty
+;;     Reinhard Hahn
+;;     Richard Kim
+;;     Richard Y. Kim
+;;     Simon Graham
+;;     Stephen Leake
+;;     Steven E. Harris
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;}}}
 
 ;;{{{ Version info
 
-(defconst clearcase-version-stamp "ClearCase-version: </main/laptop/115>")
+(defconst clearcase-version-stamp "ClearCase-version: </main/laptop/166>")
 (defconst clearcase-version (substring clearcase-version-stamp 19))
 
 (defun clearcase-maintainer-address ()
@@ -155,7 +178,7 @@
           clearcase-v6
           clearcase-servers-online
           clearcase-disable-tq
-          clearcase-on-cygwin32
+          clearcase-on-cygwin
           clearcase-setview-root
           clearcase-suppress-vc-within-mvfs
           shell-file-name
@@ -185,9 +208,16 @@
 
 (defvar clearcase-xemacs-p (string-match "XEmacs" emacs-version))
 
-(defvar clearcase-on-mswindows (memq system-type '(windows-nt ms-windows cygwin32)))
+(defvar clearcase-on-mswindows (memq system-type
+                                     '(windows-nt ms-windows cygwin cygwin32)))
 
-(defvar clearcase-on-cygwin32 (eq system-type 'cygwin32))
+(defvar clearcase-on-cygwin (memq system-type '(cygwin cygwin32)))
+
+(defvar clearcase-sink-file-name
+  (cond
+   (clearcase-on-cygwin "/dev/null")
+   (clearcase-on-mswindows "NUL")
+   (t "/dev/null")))
 
 (defun clearcase-view-mode-quit (buf)
   "Exit from View mode, restoring the previous window configuration."
@@ -254,6 +284,7 @@ Unless optional argument INPLACE is non-nil, return a new string."
 (require 'comint)
 (require 'dired)
 (require 'easymenu)
+(require 'executable)
 (require 'reporter)
 (require 'ring)
 (or clearcase-xemacs-p
@@ -292,18 +323,12 @@ Unless optional argument INPLACE is non-nil, return a new string."
 
 (defun clearcase-dump ()
   (interactive)
-  (let ((buf (get-buffer-create "*clearcase-dump*"))
-        (camefrom (current-buffer)))
-    (save-excursion
-      (set-buffer buf)
-      (clearcase-view-mode 0 camefrom)
-      (erase-buffer))
-    (clearcase-fprop-dump buf)
-    (clearcase-vprop-dump buf)
-    (clearcase-port-view-buffer-other-window buf)
-    (goto-char 0)
-    (set-buffer-modified-p nil)         ; XEmacs - fsf uses `not-modified'
-    (shrink-window-if-larger-than-buffer)))
+  (clearcase-utl-populate-and-view-buffer
+   "*clearcase-dump*"
+   nil
+   (function (lambda ()
+               (clearcase-fprop-dump-to-current-buffer)
+               (clearcase-vprop-dump-to-current-buffer)))))
 
 (defun clearcase-flush-caches ()
   (interactive)
@@ -320,7 +345,7 @@ Unless optional argument INPLACE is non-nil, return a new string."
     (error nil))
   (if (and (featurep 'custom)
            (fboundp 'custom-declare-variable))
-      nil;; We've got what we needed
+      nil ;; We've got what we needed
     ;; We have the old custom-library, hack around it!
     (defmacro defgroup (&rest args)
       nil)
@@ -332,6 +357,18 @@ Unless optional argument INPLACE is non-nil, return a new string."
       (list 'defvar (eval symbol) value doc))))
 
 (defgroup clearcase () "ClearCase Options" :group 'tools :prefix "clearcase")
+
+(defcustom clearcase-keep-uncheckouts t
+  "When true, the contents of an undone checkout will be kept in a file
+with a \".keep\" suffix. Otherwise it will be removed."
+  :group 'clearcase
+  :type 'boolean)
+
+(defcustom clearcase-keep-unhijacks t
+  "When true, the contents of an undone hijack will be kept in a file
+with a \".keep\" suffix. Otherwise it will be removed."
+  :group 'clearcase
+  :type 'boolean)
 
 ;; nyi: We could also allow a value of 'prompt here
 ;;
@@ -367,25 +404,9 @@ this should be set to nil."
   :group 'clearcase
   :type 'boolean)
 
-;; nyi: Currently unused:
-;;
-(defcustom clearcase-display-status t
-  "*If non-nil, display version string and reservation status in modeline.
-Otherwise, not displayed."
-  :group 'clearcase
-  :type 'boolean)
-
-;; nyi: Currently unused:
-;;
-(defcustom clearcase-display-branch t
-  "*If non-nil, full branch name of ClearCase working file displayed in modeline.
-Otherwise, just the version number or label is displayed."
-  :group 'clearcase
-  :type 'boolean)
-
 (defcustom clearcase-auto-dired-mode t
-  "*If non-nil, automatically enter `clearcase-dired-mode' in dired-mode buffers where
-version control is set-up."
+  "*If non-nil, automatically enter `clearcase-dired-mode' in dired-mode
+for directories in ClearCase."
   :group 'clearcase
   :type 'boolean)
 
@@ -394,17 +415,16 @@ version control is set-up."
   :group 'clearcase
   :type 'boolean)
 
-(defcustom clearcase-checkout-dir-on-mkelem 'ask
-  "*If t, automatically checkout the directory (if needed) when creating an element.
-If nil, don't checkout the directory and cancel the registration.
-If `ask', prompt before checking out the directory.
-
-This only applies to version control systems with versioned directories (namely
-ClearCase."
+(defcustom clearcase-dired-show-view t
+  "If non-nil, show the view tag in dired buffers."
   :group 'clearcase
-  :type '(radio (const :tag "Never checkout dir on mkelem" nil)
-                (const :tag "Automatically checkout dir on mkelem" t)
-                (const :tag "Prompt to checkout dir on mkelem" ask)))
+  :type 'boolean)
+
+(defcustom clearcase-verify-pre-mkelem-dir-checkout nil
+  "*If non-nil, prompt before checking out the containing directory
+before creating a new ClearCase element."
+  :group 'clearcase
+  :type 'boolean)
 
 (defcustom clearcase-diff-on-checkin nil
   "Display diff on checkin to help you compose the checkin comment."
@@ -428,11 +448,16 @@ ClearCase."
   :group 'clearcase
   :type 'boolean)
 
-(defcustom clearcase-checkin-switches nil
-  "Extra switches passed to the checkin program by \\[clearcase-checkin]."
+(defcustom clearcase-checkin-arguments
+  ;; For backwards compatibility with old name for this variable:
+  ;;
+  (if (and (boundp 'clearcase-checkin-switches)
+           (not (null clearcase-checkin-switches)))
+      (list clearcase-checkin-switches)
+    nil)
+  "A list of extra arguments passed to the checkin command."
   :group 'clearcase
-  :type '(radio (const :tag "No extra switches" nil)
-                (string :tag "Switches")))
+  :type '(repeat (string :tag "Argument")))
 
 (defcustom clearcase-checkin-on-mkelem nil
   "If t, file will be checked-in when first created as an element."
@@ -445,11 +470,16 @@ systems which use them."
   :group 'clearcase
   :type 'boolean)
 
-(defcustom clearcase-checkout-switches nil
-  "Extra switches passed to the checkout program by \\[clearcase-commented-checkout]."
+(defcustom clearcase-checkout-arguments
+  ;; For backwards compatibility with old name for this variable:
+  ;;
+  (if (and (boundp 'clearcase-checkout-arguments)
+           (not (null clearcase-checkout-arguments)))
+      (list clearcase-checkout-arguments)
+    nil)
+  "A list of extra arguments passed to the checkout command."
   :group 'clearcase
-  :type '(radio (const :tag "No extra switches" nil)
-                (string :tag "Switches")))
+  :type '(repeat (string :tag "Argument")))
 
 (defcustom clearcase-directory-exclusion-list '("lost+found")
   "Directory names ignored by functions that recursively walk file trees."
@@ -467,13 +497,17 @@ when `clearcase-use-normal-diff' is t."
   :group 'clearcase
   :type 'string)
 
-(defcustom clearcase-normal-diff-switches "-u"
-  "*Switches (combined into single string) passed to `clearcase-normal-diff-program'
+(defcustom clearcase-normal-diff-arguments
+  (if (and (boundp 'clearcase-normal-diff-switches)
+           (not (null clearcase-normal-diff-switches)))
+      (list clearcase-normal-diff-switches)
+    (list "-u"))
+  "A list of extra arguments passed to `clearcase-normal-diff-program'
 when `clearcase-use-normal-diff' is t.  Usage of the -u switch is
 recommended to produce unified diffs, when your
 `clearcase-normal-diff-program' supports it."
   :group 'clearcase
-  :type 'string)
+  :type '(repeat (string :tag "Argument")))
 
 (defcustom clearcase-vxpath-glue "@@"
   "The string used to construct version-extended pathnames."
@@ -572,6 +606,7 @@ recommended to produce unified diffs, when your
 (define-key clearcase-prefix-map "b" 'clearcase-browse-vtree-current-buffer)
 (define-key clearcase-prefix-map "c" 'clearcase-uncheckout-current-buffer)
 (define-key clearcase-prefix-map "e" 'clearcase-edcs-edit)
+(define-key clearcase-prefix-map "g" 'clearcase-annotate-current-buffer)
 (define-key clearcase-prefix-map "i" 'clearcase-mkelem-current-buffer)
 (define-key clearcase-prefix-map "l" 'clearcase-list-history-current-buffer)
 (define-key clearcase-prefix-map "m" 'clearcase-mkbrtype)
@@ -580,26 +615,19 @@ recommended to produce unified diffs, when your
 (define-key clearcase-prefix-map "w" 'clearcase-what-rule-current-buffer)
 (define-key clearcase-prefix-map "=" 'clearcase-diff-pred-current-buffer)
 (define-key clearcase-prefix-map "?" 'clearcase-describe-current-buffer)
+(define-key clearcase-prefix-map "~" 'clearcase-version-other-window)
 
 ;; To avoid confusion, we prevent VC Mode from being active at all by
 ;; undefining its keybindings for which ClearCase Mode doesn't yet have an
 ;; analogue.
 ;;
-(define-key clearcase-prefix-map "a" 'undefined);; vc-update-change-log
-(define-key clearcase-prefix-map "d" 'undefined);; vc-directory
-(define-key clearcase-prefix-map "g" 'undefined);; vc-annotate
-(define-key clearcase-prefix-map "h" 'undefined);; vc-insert-headers
-(define-key clearcase-prefix-map "m" 'undefined);; vc-merge
-(define-key clearcase-prefix-map "r" 'undefined);; vc-retrieve-snapshot
-(define-key clearcase-prefix-map "s" 'undefined);; vc-create-snapshot
-(define-key clearcase-prefix-map "t" 'undefined);; vc-dired-toggle-terse-mode
-(define-key clearcase-prefix-map "~" 'undefined);; vc-version-other-window
-
-;;
-;; NGW - get and put for checkout and checkin
-;;
-(define-key clearcase-prefix-map "g" 'clearcase-checkout-current-buffer)
-(define-key clearcase-prefix-map "p" 'clearcase-checkin-current-buffer)
+(define-key clearcase-prefix-map "a" 'undefined) ;; vc-update-change-log
+(define-key clearcase-prefix-map "d" 'undefined) ;; vc-directory
+(define-key clearcase-prefix-map "h" 'undefined) ;; vc-insert-headers
+(define-key clearcase-prefix-map "m" 'undefined) ;; vc-merge
+(define-key clearcase-prefix-map "r" 'undefined) ;; vc-retrieve-snapshot
+(define-key clearcase-prefix-map "s" 'undefined) ;; vc-create-snapshot
+(define-key clearcase-prefix-map "t" 'undefined) ;; vc-dired-toggle-terse-mode
 
 ;; Associate the map and the minor mode
 ;;
@@ -632,8 +660,8 @@ recommended to produce unified diffs, when your
               (setq arg (car arg)))
           (if (symbolp arg)
               (if (null arg)
-                  (not clearcase-mode);; toggle mode switch
-                (not (eq '- arg)));; True if symbol is not '-
+                  (not clearcase-mode) ;; toggle mode switch
+                (not (eq '- arg))) ;; True if symbol is not '-
 
             ;; else
             ;; assume it's a number and check that.
@@ -657,9 +685,26 @@ recommended to produce unified diffs, when your
       (make-face 'clearcase-dired-checkedout-face)
       (set-face-foreground 'clearcase-dired-checkedout-face "red")))
 
+(defun clearcase-dired-insert-viewtag ()
+  (save-excursion
+    (progn
+      (goto-char (point-min))
+
+      ;; Only do this if the buffer is not currently narrowed
+      ;;
+      (if (= 1 (point))
+          (let ((viewtag (clearcase-fprop-viewtag (file-truename default-directory))))
+            (if viewtag
+                (progn
+                  (forward-line 1)
+                  (let ((buffer-read-only nil))
+                    (insert (format "  [ClearCase View: %s]\n" viewtag))))))))))
+
 (defun clearcase-dired-reformat-buffer ()
   "Reformats the current dired buffer."
   (let* ((checkout-list nil)
+         (modified-file-info nil)
+         (hijack-list nil)
          (directory default-directory)
          subdir
          fullpath)
@@ -673,7 +718,7 @@ recommended to produce unified diffs, when your
     ;;   2. Since this is called from dired-after-reading-hook, it can get
     ;;      called on a single-line buffer. In this case there is no subdir,
     ;;      and no checkout-list. We need to call clearcase-fprop-checked-out
-    ;;      to text for a checkout.
+    ;;      to test for a checkout.
     ;;
     (save-excursion
       (goto-char (point-min))
@@ -685,9 +730,11 @@ recommended to produce unified diffs, when your
          ((setq subdir (dired-get-subdir))
 
           ;; We're at a subdirectory line in the dired buffer.
-          ;; Go and list all checkouts in this subdirectory.
+          ;; Go and list all checkouts and hijacks in this subdirectory.
           ;;
-          (setq checkout-list (clearcase-dired-list-checkouts subdir))
+          (setq modified-file-info (clearcase-dired-list-modified-files subdir))
+          (setq checkout-list (nth 0 modified-file-info))
+          (setq hijack-list (nth 1 modified-file-info))
 
           ;; If no checkouts are found, we don't need to check each file, and
           ;; it's very slow.  The checkout-list should contain something so it
@@ -695,6 +742,8 @@ recommended to produce unified diffs, when your
           ;;
           (if (null checkout-list)
               (setq checkout-list '(nil)))
+          (if (null hijack-list)
+              (setq hijack-list '(nil)))
           (message "Reformatting %s..." subdir))
 
          ;; Case 2: Look for files (the safest way to get the filename).
@@ -704,6 +753,8 @@ recommended to produce unified diffs, when your
           ;; Expand it to get rid of . and .. entries.
           ;;
           (setq fullpath (expand-file-name fullpath))
+
+      (setq fullpath (clearcase-path-canonicalise-slashes fullpath))
 
           ;; Only modify directory listings of the correct format.
           ;; We replace the GID field with a checkout indicator.
@@ -717,36 +768,70 @@ recommended to produce unified diffs, when your
                      (replacement-end (match-end 4))
 
                      (replacement-length (- replacement-end replacement-begin))
-                     (replacement-text (format "CHECKOUT"))
+                     (checkout-replacement-text (format "CHECKOUT"))
+                     (hijack-replacement-text (format "HIJACK"))
                      (is-checkout (if checkout-list
                                       (member fullpath checkout-list)
-                                    (clearcase-fprop-checked-out fullpath))))
+                                    (clearcase-fprop-checked-out fullpath)))
+                     (is-hijack (if hijack-list
+                                      (member fullpath hijack-list)
+                                    (clearcase-fprop-hijacked fullpath))))
 
                 ;; Highlight the line if the file is checked-out.
                 ;;
                 (if is-checkout
-                    ;; Replace the GID field with CHECKOUT.
-                    ;;
-                    (let ((buffer-read-only nil))
+            (progn
+              ;; Replace the GID field with CHECKOUT.
+              ;;
+              (let ((buffer-read-only nil))
 
-                      ;; Pad with replacement text with trailing spaces if necessary.
-                      ;;
-                      (if (>= replacement-length (length replacement-text))
-                          (setq replacement-text
-                                (concat replacement-text
-                                        (make-string (- replacement-length (length replacement-text))
-                                                     32))))
-                      (goto-char replacement-begin)
-                      (delete-char replacement-length)
-                      (insert (substring replacement-text 0 replacement-length)))
+            ;; Pad with replacement text with trailing spaces if necessary.
+            ;;
+            (if (>= replacement-length (length checkout-replacement-text))
+                (setq checkout-replacement-text
+                  (concat checkout-replacement-text
+                      (make-string (- replacement-length (length checkout-replacement-text))
+                               32))))
+            (goto-char replacement-begin)
+            (delete-char replacement-length)
+            (insert (substring checkout-replacement-text 0 replacement-length)))
 
-                  ;; Highlight the checked out files.
-                  ;;
-                  (if (fboundp 'put-text-property)
-                      (let ((buffer-read-only nil))
-                        (put-text-property replacement-begin replacement-end
-                                           'face 'clearcase-dired-checkedout-face)))
-                  )))))
+              ;; Highlight the checked out files.
+              ;;
+              (if (fboundp 'put-text-property)
+              (let ((buffer-read-only nil))
+                (put-text-property replacement-begin replacement-end
+                           'face 'clearcase-dired-checkedout-face)))
+              )
+          )
+
+                (if is-hijack
+            (progn
+              ;; Replace the GID field with CHECKOUT.
+              ;;
+              (let ((buffer-read-only nil))
+
+            ;; Pad with replacement text with trailing spaces if necessary.
+            ;;
+            (if (>= replacement-length (length hijack-replacement-text))
+                (setq hijack-replacement-text
+                  (concat hijack-replacement-text
+                      (make-string (- replacement-length (length hijack-replacement-text))
+                               32))))
+            (goto-char replacement-begin)
+            (delete-char replacement-length)
+            (insert (substring hijack-replacement-text 0 replacement-length)))
+
+              ;; Highlight the checked out files.
+              ;;
+              (if (fboundp 'put-text-property)
+              (let ((buffer-read-only nil))
+                (put-text-property replacement-begin replacement-end
+                           'face 'clearcase-dired-checkedout-face)))
+              )
+          )
+
+                ))))
         (forward-line 1))))
   (message "Reformatting...Done"))
 
@@ -765,171 +850,235 @@ recommended to produce unified diffs, when your
     ;;
     path))
 
-(defun clearcase-dired-list-checkouts (directory)
-  "Returns a list of files checked-out to the current view in DIRECTORY."
+;;{{{ Searching for modified files
 
-  ;; Don't bother looking for checkouts in
-  ;;  - a history-mode branch-qua-directory
-  ;;  - a view-private directory
-  ;;
-  ;; NYI: For now don't run lsco in root of a snapshot because it gives errors.
-  ;;      We need to make this smarter.
-  ;;
-  ;; NYI: For a pathname which is a slink to a dir, despite the fact that
-  ;;      clearcase-fprop-file-is-version-p returns true, lsco fails on it,
-  ;;      with "not an element". Sheesh, surely lsco ought to follow links ?
-  ;;      Solution: catch the error and check if the dir is a slink then follow
-  ;;      the link and retry the lsco on the target.
-  ;;
-  ;;      For now just ignore the error.
-  ;;
-  (if (and (not (clearcase-vxpath-p directory))
-           (not (eq 'view-private-object (clearcase-fprop-mtype directory)))
-           (clearcase-fprop-file-is-version-p directory))
+;;{{{ Old code
+
+;; (defun clearcase-dired-list-checkouts (directory)
+;;   "Returns a list of files checked-out to the current view in DIRECTORY."
+
+;;   ;; Don't bother looking for checkouts in
+;;   ;;  - a history-mode branch-qua-directory
+;;   ;;  - a view-private directory
+;;   ;;
+;;   ;; NYI: For now don't run lsco in root of a snapshot because it gives errors.
+;;   ;;      We need to make this smarter.
+;;   ;;
+;;   ;; NYI: For a pathname which is a slink to a dir, despite the fact that
+;;   ;;      clearcase-fprop-file-is-version-p returns true, lsco fails on it,
+;;   ;;      with "not an element". Sheesh, surely lsco ought to follow links ?
+;;   ;;      Solution: catch the error and check if the dir is a slink then follow
+;;   ;;      the link and retry the lsco on the target.
+;;   ;;
+;;   ;;      For now just ignore the error.
+;;   ;;
+;;   (if (and (not (clearcase-vxpath-p directory))
+;;            (not (eq 'view-private-object (clearcase-fprop-mtype directory)))
+;;            (clearcase-fprop-file-is-version-p directory))
 
 
-      (let* ((ignore (message "Listing ClearCase checkouts..."))
-             
-             (true-dir-path (file-truename directory))
+;;       (let* ((ignore (message "Listing ClearCase checkouts..."))
 
-             ;; Give the directory as an argument so all names will be
-             ;; fullpaths. For some reason ClearCase adds an extra slash if you
-             ;; leave the trailing slash on the directory, so we need to remove
-             ;; it.
-             ;;
-             (native-dir-path (clearcase-path-native (directory-file-name true-dir-path)))
+;;              (true-dir-path (file-truename directory))
 
-             (followed-dir-path (clearcase-path-follow-if-vob-slink native-dir-path))
-             
-             ;; Form the command:
-             ;;
-             (cmd (list
-                   "lsco" "-cview" "-fmt"
-                   (if clearcase-on-mswindows
-                       "%n\\n"
-                     "'%n\\n'")
+;;              ;; Give the directory as an argument so all names will be
+;;              ;; fullpaths. For some reason ClearCase adds an extra slash if you
+;;              ;; leave the trailing slash on the directory, so we need to remove
+;;              ;; it.
+;;              ;;
+;;              (native-dir-path (clearcase-path-native (directory-file-name true-dir-path)))
 
-                   followed-dir-path))
-             
-             ;; Capture the output:
-             ;;
-             (string (clearcase-path-canonicalise-slashes
-                      (apply 'clearcase-ct-cleartool-cmd cmd)))
-             
-             ;; Split the output at the newlines:
-             ;;
-             (checkout-list (clearcase-utl-split-string-at-char string ?\n)))
-        
-        ;; Add entries for "." and ".." if they're checked-out.
-        ;;
-        (let* ((entry ".")
-               (path (expand-file-name (concat (file-name-as-directory true-dir-path)
-                                               entry))))
-          (if (clearcase-fprop-checked-out path)
-              (setq checkout-list (cons path checkout-list))))
-        (let* ((entry "..")
-               (path (expand-file-name (concat (file-name-as-directory true-dir-path)
-                                               entry))))
-          (if (clearcase-fprop-checked-out path)
-              (setq checkout-list (cons path checkout-list))))
+;;              (followed-dir-path (clearcase-path-follow-if-vob-slink native-dir-path))
 
-        ;; If DIRECTORY is a vob-slink, checkout list will contain pathnames
-        ;; relative to the vob-slink target rather than to DIRECTORY.  Convert
-        ;; them back here.  We're making it appear that lsco works on
-        ;; slinks-to-dirs.
-        ;;
-        (if (clearcase-fprop-file-is-vob-slink-p true-dir-path)
-            (let ((re (regexp-quote (file-name-as-directory followed-dir-path))))
-              (setq checkout-list
-                    (mapcar
-                     (function
-                      (lambda (path)
-                        (replace-regexp-in-string re true-dir-path path)))
-                     checkout-list))))
-        
-        (message "Listing ClearCase checkouts...done")
-        
-        ;; Return the result.
-        ;;
-        checkout-list)
-    ))
+;;              ;; Form the command:
+;;              ;;
+;;              (cmd (list
+;;                    "lsco" "-cview" "-fmt"
+;;                    (if clearcase-on-mswindows
+;;                        "%n\\n"
+;;                      "'%n\\n'")
 
-;; I had believed that this implementation below OUGHT to be faster, having
-;; read the code in "ct+lsco". It seemed that "lsco -cview" hit the VOB and
-;; listed all checkouts on all elements in the directory, and then filtered by
-;; view.  I thought it would probably be quicker to run "ct ls -vob_only" and
-;; keep the lines that have "[eclipsed by checkout]".  However this code
-;; actually seemed to run slower.  Leave the code here for now so I can test
-;; further.
-;;
-(defun clearcase-dired-list-checkouts-experimental (directory)
-  "Returns a list of files checked-out to the current view in DIRECTORY."
+;;                    followed-dir-path))
 
-  ;; Don't bother looking for checkouts in a history-mode listing
-  ;; nor in view-private directories.
-  ;;
-  (if (and (not (clearcase-vxpath-p directory))
-           (not (eq 'view-private-object (clearcase-fprop-mtype directory))))
+;;              ;; Capture the output:
+;;              ;;
+;;              (string (clearcase-path-canonicalise-slashes
+;;                       (apply 'clearcase-ct-cleartool-cmd cmd)))
 
-      (let* ((ignore (message "Listing ClearCase checkouts..."))
+;;              ;; Split the output at the newlines:
+;;              ;;
+;;              (checkout-list (clearcase-utl-split-string-at-char string ?\n)))
 
-             (true-directory (file-truename directory))
+;;         ;; Add entries for "." and ".." if they're checked-out.
+;;         ;;
+;;         (let* ((entry ".")
+;;                (path (expand-file-name (concat (file-name-as-directory true-dir-path)
+;;                                                entry))))
+;;           (if (clearcase-fprop-checked-out path)
+;;               (setq checkout-list (cons path checkout-list))))
+;;         (let* ((entry "..")
+;;                (path (expand-file-name (concat (file-name-as-directory true-dir-path)
+;;                                                entry))))
+;;           (if (clearcase-fprop-checked-out path)
+;;               (setq checkout-list (cons path checkout-list))))
 
-             ;; Move temporarily to the directory:
-             ;;
-             (default-directory true-directory)
+;;         ;; If DIRECTORY is a vob-slink, checkout list will contain pathnames
+;;         ;; relative to the vob-slink target rather than to DIRECTORY.  Convert
+;;         ;; them back here.  We're making it appear that lsco works on
+;;         ;; slinks-to-dirs.
+;;         ;;
+;;         (if (clearcase-fprop-file-is-vob-slink-p true-dir-path)
+;;             (let ((re (regexp-quote (file-name-as-directory followed-dir-path))))
+;;               (setq checkout-list
+;;                     (mapcar
+;;                      (function
+;;                       (lambda (path)
+;;                         (replace-regexp-in-string re true-dir-path path)))
+;;                      checkout-list))))
 
-             ;; Form the command:
-             ;;
-             (cmd (list "ls" "-vob_only"))
+;;         (message "Listing ClearCase checkouts...done")
 
-             ;; Capture the output:
-             ;;
-             (string (clearcase-path-canonicalise-slashes
-                      (apply 'clearcase-ct-cleartool-cmd cmd)))
+;;         ;; Return the result.
+;;         ;;
+;;         checkout-list)
+;;     ))
 
-             ;; Split the output at the newlines:
-             ;;
-             (line-list (clearcase-utl-split-string-at-char string ?\n))
+;; ;; I had believed that this implementation below OUGHT to be faster, having
+;; ;; read the code in "ct+lsco". It seemed that "lsco -cview" hit the VOB and
+;; ;; listed all checkouts on all elements in the directory, and then filtered by
+;; ;; view.  I thought it would probably be quicker to run "ct ls -vob_only" and
+;; ;; keep the lines that have "[eclipsed by checkout]".  However this code
+;; ;; actually seemed to run slower.  Leave the code here for now so I can test
+;; ;; further.
+;; ;;
+;; (defun clearcase-dired-list-checkouts-experimental (directory)
+;;   "Returns a list of files checked-out to the current view in DIRECTORY."
 
-             (checkout-list nil))
+;;   ;; Don't bother looking for checkouts in a history-mode listing
+;;   ;; nor in view-private directories.
+;;   ;;
+;;   (if (and (not (clearcase-vxpath-p directory))
+;;            (not (eq 'view-private-object (clearcase-fprop-mtype directory))))
 
-        ;; Look for lines of the form:
-        ;; FILENAME@@ [eclipsed by checkout]
-        ;;
-        (mapcar (function
-                 (lambda (line)
-                   (if (string-match "^\\([^ @]+\\)@@ +\\[eclipsed by checkout\\].*" line)
-                       (setq checkout-list (cons (concat
-                                                  ;; Add back directory name to get
-                                                  ;; full pathname.
-                                                  ;;
-                                                  default-directory
-                                                  (substring line
-                                                             (match-beginning 1)
-                                                             (match-end 1)))
-                                                 checkout-list)))))
-                line-list)
+;;       (let* ((ignore (message "Listing ClearCase checkouts..."))
 
-        ;; Add entries for "." and ".." if they're checked-out.
-        ;;
-        (let* ((entry ".")
-               (path (expand-file-name (concat true-directory entry))))
-          (if (clearcase-fprop-checked-out path)
-              (setq checkout-list (cons path checkout-list))))
-        (let* ((entry "..")
-               (path (expand-file-name (concat true-directory entry))))
-          (if (clearcase-fprop-checked-out path)
-              (setq checkout-list (cons path checkout-list))))
+;;              (true-directory (file-truename directory))
 
-        (message "Listing ClearCase checkouts...done")
+;;              ;; Move temporarily to the directory:
+;;              ;;
+;;              (default-directory true-directory)
 
-        ;; Return the result.
-        ;;
-        checkout-list)))
+;;              ;; Form the command:
+;;              ;;
+;;              (cmd (list "ls" "-vob_only"))
 
-(defun clearcase-dired-list-hijacks (directory)
-  "Returns a list of files hijacked to the current view in DIRECTORY."
+;;              ;; Capture the output:
+;;              ;;
+;;              (string (clearcase-path-canonicalise-slashes
+;;                       (apply 'clearcase-ct-cleartool-cmd cmd)))
+
+;;              ;; Split the output at the newlines:
+;;              ;;
+;;              (line-list (clearcase-utl-split-string-at-char string ?\n))
+
+;;              (checkout-list nil))
+
+;;         ;; Look for lines of the form:
+;;         ;; FILENAME@@ [eclipsed by checkout]
+;;         ;;
+;;         (mapcar (function
+;;                  (lambda (line)
+;;                    (if (string-match "^\\([^ @]+\\)@@ +\\[eclipsed by checkout\\].*" line)
+;;                        (setq checkout-list (cons (concat
+;;                                                   ;; Add back directory name to get
+;;                                                   ;; full pathname.
+;;                                                   ;;
+;;                                                   default-directory
+;;                                                   (substring line
+;;                                                              (match-beginning 1)
+;;                                                              (match-end 1)))
+;;                                                  checkout-list)))))
+;;                 line-list)
+
+;;         ;; Add entries for "." and ".." if they're checked-out.
+;;         ;;
+;;         (let* ((entry ".")
+;;                (path (expand-file-name (concat true-directory entry))))
+;;           (if (clearcase-fprop-checked-out path)
+;;               (setq checkout-list (cons path checkout-list))))
+;;         (let* ((entry "..")
+;;                (path (expand-file-name (concat true-directory entry))))
+;;           (if (clearcase-fprop-checked-out path)
+;;               (setq checkout-list (cons path checkout-list))))
+
+;;         (message "Listing ClearCase checkouts...done")
+
+;;         ;; Return the result.
+;;         ;;
+;;         checkout-list)))
+
+;; (defun clearcase-dired-list-hijacks (directory)
+;;   "Returns a list of files hijacked to the current view in DIRECTORY."
+
+;;   ;; Don't bother looking for hijacks in;
+;;   ;;   - a history-mode listing
+;;   ;;   - a in view-private directory
+;;   ;;   - a dynamic view
+;;   ;;
+;;   (let* ((true-directory (file-truename directory))
+;;          (viewtag (clearcase-fprop-viewtag true-directory)))
+
+;;     (if (and viewtag
+;;              (not (clearcase-vxpath-p directory))
+;;              (not (eq 'view-private-object (clearcase-fprop-mtype directory)))
+;;              (clearcase-file-would-be-in-snapshot-p true-directory))
+
+;;         (let* ((ignore (message "Listing ClearCase hijacks..."))
+
+;;                (true-directory (file-truename directory))
+
+;;                ;; Form the command:
+;;                ;;
+;;                (cmd (list
+;;                      "ls"
+
+;;                      ;; Give the directory as an argument so all names will be
+;;                      ;; fullpaths. For some reason ClearCase adds an extra slash
+;;                      ;; if you leave the trailing slash on the directory, so we
+;;                      ;; need to remove it.
+;;                      ;;
+;;                      (clearcase-path-native (directory-file-name true-directory))))
+
+;;                ;; Capture the output:
+;;                ;;
+;;                (string (clearcase-path-canonicalise-slashes
+;;                         (apply 'clearcase-ct-cleartool-cmd cmd)))
+
+;;                ;; Split the output at the newlines:
+;;                ;;
+;;                (line-list (clearcase-utl-split-string-at-char string ?\n))
+
+;;                (hijack-list nil))
+
+;;           (mapcar (function
+;;                    (lambda (line)
+;;                      (if (string-match "^\\([^ @]+\\)@@[^ ]+ \\[hijacked\\].*" line)
+;;                          (setq hijack-list (cons (substring line
+;;                                                             (match-beginning 1)
+;;                                                             (match-end 1))
+;;                                                  hijack-list)))))
+;;                   line-list)
+
+;;           (message "Listing ClearCase hijacks...done")
+
+;;           ;; Return the result.
+;;           ;;
+;;           hijack-list))))
+
+;;}}}
+
+(defun clearcase-dired-list-modified-files (directory)
+  "Returns a pair of lists of files (checkouts . hijacks) to the current view in DIRECTORY."
 
   ;; Don't bother looking for hijacks in;
   ;;   - a history-mode listing
@@ -937,14 +1086,15 @@ recommended to produce unified diffs, when your
   ;;   - a dynamic view
   ;;
   (let* ((true-directory (file-truename directory))
-         (viewtag (clearcase-fprop-viewtag true-directory)))
+         (viewtag (clearcase-fprop-viewtag true-directory))
+         (snapshot (clearcase-file-would-be-in-snapshot-p true-directory))
+         (result '(() ())))
 
     (if (and viewtag
              (not (clearcase-vxpath-p directory))
-             (not (eq 'view-private-object (clearcase-fprop-mtype directory)))
-             (clearcase-file-would-be-in-snapshot-p true-directory))
+             (not (eq 'view-private-object (clearcase-fprop-mtype directory))))
 
-        (let* ((ignore (message "Listing ClearCase hijacks..."))
+        (let* ((ignore (message "Listing ClearCase modified files..."))
 
                (true-directory (file-truename directory))
 
@@ -965,11 +1115,12 @@ recommended to produce unified diffs, when your
                (string (clearcase-path-canonicalise-slashes
                         (apply 'clearcase-ct-cleartool-cmd cmd)))
 
-             ;; Split the output at the newlines:
-             ;;
-             (line-list (clearcase-utl-split-string-at-char string ?\n))
+               ;; Split the output at the newlines:
+               ;;
+               (line-list (clearcase-utl-split-string-at-char string ?\n))
 
-             (hijack-list nil))
+               (hijack-list nil)
+               (checkout-list nil))
 
           (mapcar (function
                    (lambda (line)
@@ -977,14 +1128,22 @@ recommended to produce unified diffs, when your
                          (setq hijack-list (cons (substring line
                                                             (match-beginning 1)
                                                             (match-end 1))
-                                                 hijack-list)))))
+                                                 hijack-list)))
+                     (if (string-match "^\\([^ @]+\\)@@.+CHECKEDOUT from .*" line)
+                         (setq checkout-list (cons (substring line
+                                                              (match-beginning 1)
+                                                              (match-end 1))
+                                                   checkout-list)))))
                   line-list)
 
-          (message "Listing ClearCase hijacks...done")
+          (message "Listing ClearCase modified files...done")
 
           ;; Return the result.
           ;;
-          hijack-list))))
+          (setq result (list checkout-list hijack-list))))
+    result))
+
+;;}}}
 
 ;;}}}
 
@@ -1011,6 +1170,7 @@ recommended to produce unified diffs, when your
 (define-key clearcase-dired-prefix-map "c" 'clearcase-uncheckout-dired-files)
 (define-key clearcase-dired-prefix-map "e" 'clearcase-edcs-edit)
 (define-key clearcase-dired-prefix-map "i" 'clearcase-mkelem-dired-files)
+(define-key clearcase-dired-prefix-map "g" 'clearcase-annotate-dired-file)
 (define-key clearcase-dired-prefix-map "l" 'clearcase-list-history-dired-file)
 (define-key clearcase-dired-prefix-map "m" 'clearcase-mkbrtype)
 (define-key clearcase-dired-prefix-map "u" 'clearcase-uncheckout-dired-files)
@@ -1024,14 +1184,13 @@ recommended to produce unified diffs, when your
 ;; undefining its keybindings for which ClearCase Mode doesn't yet have an
 ;; analogue.
 ;;
-(define-key clearcase-dired-prefix-map "a" 'undefined);; vc-update-change-log
-(define-key clearcase-dired-prefix-map "d" 'undefined);; vc-directory
-(define-key clearcase-dired-prefix-map "g" 'undefined);; vc-annotate
-(define-key clearcase-dired-prefix-map "h" 'undefined);; vc-insert-headers
-(define-key clearcase-dired-prefix-map "m" 'undefined);; vc-merge
-(define-key clearcase-dired-prefix-map "r" 'undefined);; vc-retrieve-snapshot
-(define-key clearcase-dired-prefix-map "s" 'undefined);; vc-create-snapshot
-(define-key clearcase-dired-prefix-map "t" 'undefined);; vc-dired-toggle-terse-mode
+(define-key clearcase-dired-prefix-map "a" 'undefined) ;; vc-update-change-log
+(define-key clearcase-dired-prefix-map "d" 'undefined) ;; vc-directory
+(define-key clearcase-dired-prefix-map "h" 'undefined) ;; vc-insert-headers
+(define-key clearcase-dired-prefix-map "m" 'undefined) ;; vc-merge
+(define-key clearcase-dired-prefix-map "r" 'undefined) ;; vc-retrieve-snapshot
+(define-key clearcase-dired-prefix-map "s" 'undefined) ;; vc-create-snapshot
+(define-key clearcase-dired-prefix-map "t" 'undefined) ;; vc-dired-toggle-terse-mode
 
 ;; Associate the map and the minor mode
 ;;
@@ -1069,8 +1228,8 @@ on a buffer attached to the file named in the current Dired buffer line."
 
           (if (symbolp arg)
               (if (null arg)
-                  (not clearcase-dired-mode);; toggle mode switch
-                (not (eq '- arg)));; True if symbol is not '-
+                  (not clearcase-dired-mode) ;; toggle mode switch
+                (not (eq '- arg))) ;; True if symbol is not '-
 
             ;; else
             ;; assume it's a number and check that.
@@ -1211,12 +1370,15 @@ is complete.
 Optional 6th argument specifies a COMMENT-SEED to insert in the comment buffer for
 the user to edit."
 
-  (let ((comment-buffer (get-buffer-create (format "*Comment-%s*" uniquifier)))
+  (let ((comment-buffer (get-buffer-create (format "*clearcase-comment-%s*" uniquifier)))
         (old-window-config (current-window-configuration))
         (parent (or parent-buffer
                     (current-buffer))))
     (pop-to-buffer comment-buffer)
 
+    ;; Record in buffer-local variables information sufficient to restore
+    ;; window context.
+    ;;
     (set (make-local-variable 'clearcase-comment-window-config) old-window-config)
     (set (make-local-variable 'clearcase-parent-buffer) parent)
 
@@ -1286,7 +1448,7 @@ the user to edit."
             (clearcase-ct-do-cleartool-command "chevent"
                                                file
                                                comment
-                                               "-replace")
+                                               (list "-replace"))
             (clearcase-fprop-set-comment file comment))
         (error "Can't change comment of checked-in version with this interface")))))
 
@@ -1426,7 +1588,7 @@ the user to edit."
        (read-string "View Tag: "))))
 
   (let ((start (current-buffer))
-        (buffer-name (format "*ClearCase-Config-%s*" tag-name)))
+        (buffer-name (format "*clearcase-config-spec-%s*" tag-name)))
     (kill-buffer (get-buffer-create buffer-name))
     (pop-to-buffer (get-buffer-create buffer-name))
     (auto-save-mode auto-save-default)
@@ -1492,7 +1654,63 @@ the user to edit."
 
 ;;{{{ Commands
 
-;;{{{ Find checkouts
+;;{{{ Hijack/unhijack
+
+(defun clearcase-hijack-current-buffer ()
+  "Hijack the file in the current buffer."
+  (interactive)
+  (clearcase-hijack buffer-file-name))
+
+(defun clearcase-hijack-dired-files ()
+  "Hijack the selected files."
+  (interactive)
+  (clearcase-hijack-seq (dired-get-marked-files)))
+
+(defun clearcase-unhijack-current-buffer ()
+  "Unhijack the file in the current buffer."
+  (interactive)
+  (clearcase-unhijack buffer-file-name))
+
+(defun clearcase-unhijack-dired-files ()
+  "Hijack the selected files."
+  (interactive)
+  (clearcase-unhijack-seq (dired-get-marked-files)))
+
+;;}}}
+
+;;{{{ Annotate
+
+(defun clearcase-annotate-file (file)
+  (let ((relative-name (file-relative-name file)))
+    (message "Annotating %s ..." relative-name)
+    (clearcase-with-tempfile
+     annotation-file
+     (clearcase-ct-do-cleartool-command "annotate"
+                                        file
+                                        'unused
+                                        (list "-nco"
+                                              "-out"
+                                              annotation-file))
+     (clearcase-utl-populate-and-view-buffer
+      "*clearcase-annotate*"
+      nil
+      (function
+       (lambda ()
+         (insert-file-contents annotation-file)))))
+    (message "Annotating %s ...done" relative-name)))
+
+(defun clearcase-annotate-current-buffer ()
+  (interactive)
+  (clearcase-annotate-file buffer-file-name))
+
+(defun clearcase-annotate-dired-file ()
+  "Annotate the selected file."
+  (interactive)
+  (clearcase-annotate-file (dired-get-filename)))
+
+;;}}}
+
+;;{{{ nyi: Find checkouts
 
 ;; NYI: Enhance this:
 ;;  - group by:
@@ -1504,25 +1722,23 @@ the user to edit."
   "Find the checkouts in all vobs in the current view."
   (interactive)
   (let ((viewtag (clearcase-fprop-viewtag default-directory))
-        (dir default-directory)
-        (camefrom (current-buffer)))
+        (dir default-directory))
     (if viewtag
         (let* ((ignore (message "Finding checkouts..."))
-               (ret (clearcase-ct-blocking-call "lsco"
-                                                "-cview"
-                                                "-avobs"
-                                                "-short")))
-          (if (zerop (length ret))
+               (text (clearcase-ct-blocking-call "lsco"
+                                                 "-cview"
+                                                 "-avobs"
+                                                 "-short")))
+          (if (zerop (length text))
               (message "No checkouts found")
-            (message "Finding checkouts...done")
-            (set-buffer (get-buffer-create "*clearcase*"))
-            (clearcase-view-mode 0 camefrom)
-            (erase-buffer)
-            (insert ret)
-            (clearcase-port-view-buffer-other-window "*clearcase*")
-            (goto-char 0)
-            (set-buffer-modified-p nil)   ; XEmacs - fsf uses `not-modified'
-            (shrink-window-if-larger-than-buffer))))))
+            (progn
+              (message "Finding checkouts...done")
+
+              (clearcase-utl-populate-and-view-buffer
+               "*clearcase*"
+               (list text)
+               (function (lambda (s)
+                           (insert s))))))))))
 
 ;;}}}
 
@@ -1661,7 +1877,7 @@ associated with the view associated with the current directory."
     (let ((activities (clearcase-ucm-filter-out-rebases (clearcase-vprop-activities viewtag))))
       (if (null activities)
           (error "View %s has no activities" viewtag))
-      (clearcase-ucm-make-selection-window (concat "*clearcase-activity-select-%s*" viewtag)
+      (clearcase-ucm-make-selection-window (format "*clearcase-activity-select-%s*" viewtag)
                                            (mapconcat
                                             (function
                                              (lambda (activity)
@@ -1726,8 +1942,7 @@ associated with the view associated with the current directory."
 
 (defun clearcase-ucm-describe-current-activity ()
   (interactive)
-  (let* ((viewtag (clearcase-fprop-viewtag default-directory))
-         (camefrom (current-buffer)))
+  (let* ((viewtag (clearcase-fprop-viewtag default-directory)))
     (if (not viewtag)
         (error "Not in a view"))
     (if (not (clearcase-vprop-ucm viewtag))
@@ -1736,24 +1951,17 @@ associated with the view associated with the current directory."
           (current-activity (clearcase-vprop-current-activity viewtag)))
       (if (not current-activity)
           (message "No activity set")
-        (let ((ret (clearcase-ct-blocking-call "desc"
-                                               (concat "activity:"
-                                                       current-activity
-                                                       "@"
-                                                       pvob))))
-          ;; nyi:factor this sort of stuff out
-          ;;
-          (if (not (zerop (length ret)))
-              (progn
-                (set-buffer (get-buffer-create "*clearcase*"))
-                (clearcase-view-mode 0 camefrom)
-                (erase-buffer)
-                (insert ret)
-                (clearcase-port-view-buffer-other-window "*clearcase*")
-                (goto-char 0)
-                (set-buffer-modified-p nil)   ; XEmacs - fsf uses `not-modified'
-                (shrink-window-if-larger-than-buffer))))))))
-
+        (let ((text (clearcase-ct-blocking-call "desc"
+                                                (concat "activity:"
+                                                        current-activity
+                                                        "@"
+                                                        pvob))))
+          (if (not (zerop (length text)))
+              (clearcase-utl-populate-and-view-buffer
+               "*clearcase*"
+               (list text)
+               (function (lambda (s)
+                           (insert s))))))))))
 ;;}}}
 
 ;;}}}
@@ -1931,6 +2139,35 @@ If all the files are not in an equivalent state, an error is raised."
 
 ;;}}}
 
+;;{{{ Edit checkout comment
+
+(defun clearcase-edit-checkout-comment-current-buffer ()
+  "Edit the clearcase comment for the checked-out file in the current buffer."
+  (interactive)
+  (clearcase-edit-checkout-comment buffer-file-name))
+
+(defun clearcase-edit-checkout-comment-dired-file ()
+  "Checkin the selected file."
+  (interactive)
+  (clearcase-edit-checkout-comment (dired-get-filename)))
+
+(defun clearcase-edit-checkout-comment (file &optional comment)
+  "Edit comment for FILE by popping up a buffer to accept one.  If COMMENT
+is specified, save it."
+  (if (null comment)
+      ;; If no comment supplied, go and get one...
+      ;;
+      (clearcase-comment-start-entry (file-name-nondirectory file)
+                     "Edit the file's check-out comment."
+                     'clearcase-edit-checkout-comment
+                     (list buffer-file-name)
+                     (find-file-noselect file)
+                     (clearcase-fprop-comment file))
+    ;; We have a comment, save it
+    (clearcase-comment-save-comment-for-buffer comment clearcase-parent-buffer)))
+
+;;}}}
+
 ;;{{{ Checkout
 
 (defun clearcase-checkout-current-buffer ()
@@ -2071,66 +2308,66 @@ against the base of its branch."
 
 ;;}}}
 
-;;{{{ Applet diff
+;;{{{ GUI diff
 
-(defun clearcase-applet-diff-pred-current-buffer ()
-  "Use applet to compare a version in the current buffer against its predecessor."
+(defun clearcase-gui-diff-pred-current-buffer ()
+  "Use GUI to compare a version in the current buffer against its predecessor."
   (interactive)
-  (clearcase-applet-diff-file-with-version buffer-file-name
-                                           (clearcase-fprop-predecessor-version buffer-file-name)))
+  (clearcase-gui-diff-file-with-version buffer-file-name
+                                        (clearcase-fprop-predecessor-version buffer-file-name)))
 
-(defun clearcase-applet-diff-pred-dired-file ()
-  "Use applet to compare the selected version against its predecessor."
+(defun clearcase-gui-diff-pred-dired-file ()
+  "Use GUI to compare the selected version against its predecessor."
   (interactive)
   (let ((truename (clearcase-fprop-truename (dired-get-filename))))
-    (clearcase-applet-diff-file-with-version truename
-                                             (clearcase-fprop-predecessor-version truename))))
+    (clearcase-gui-diff-file-with-version truename
+                                          (clearcase-fprop-predecessor-version truename))))
 
-(defun clearcase-applet-diff-branch-base-current-buffer()
-  "Use applet to compare a version in the current buffer
+(defun clearcase-gui-diff-branch-base-current-buffer()
+  "Use GUI to compare a version in the current buffer
 against the base of its branch."
   (interactive)
-  (clearcase-applet-diff-file-with-version buffer-file-name
-                                           (clearcase-vxpath-version-of-branch-base buffer-file-name)))
+  (clearcase-gui-diff-file-with-version buffer-file-name
+                                        (clearcase-vxpath-version-of-branch-base buffer-file-name)))
 
-(defun clearcase-applet-diff-branch-base-dired-file()
-  "Use applet to compare the selected version against the base of its branch."
+(defun clearcase-gui-diff-branch-base-dired-file()
+  "Use GUI to compare the selected version against the base of its branch."
   (interactive)
   (let ((truename (clearcase-fprop-truename (dired-get-filename))))
-    (clearcase-applet-diff-file-with-version truename
-                                             (clearcase-vxpath-version-of-branch-base truename))))
+    (clearcase-gui-diff-file-with-version truename
+                                          (clearcase-vxpath-version-of-branch-base truename))))
 
-(defun clearcase-applet-diff-named-version-current-buffer (version)
+(defun clearcase-gui-diff-named-version-current-buffer (version)
   ;; nyi: if we're in history-mode, probably should just use
   ;; (read-file-name)
   ;;
   (interactive (list (clearcase-read-version-name "Version for comparison: "
                                                   buffer-file-name)))
-  (clearcase-applet-diff-file-with-version buffer-file-name version))
+  (clearcase-gui-diff-file-with-version buffer-file-name version))
 
-(defun clearcase-applet-diff-named-version-dired-file (version)
+(defun clearcase-gui-diff-named-version-dired-file (version)
   ;; nyi: if we're in history-mode, probably should just use
   ;; (read-file-name)
   ;;
   (interactive (list (clearcase-read-version-name "Version for comparison: "
                                                   (dired-get-filename))))
-  (clearcase-applet-diff-file-with-version  (clearcase-fprop-truename (dired-get-filename))
-                                            version))
+  (clearcase-gui-diff-file-with-version  (clearcase-fprop-truename (dired-get-filename))
+                                         version))
 
-(defun clearcase-applet-diff-file-with-version (truename other-version)
+(defun clearcase-gui-diff-file-with-version (truename other-version)
   (let* ((other-vxpath (clearcase-vxpath-cons-vxpath (clearcase-vxpath-element-part truename)
                                                      other-version))
          (other-file (if (clearcase-file-is-in-mvfs-p truename)
                          other-vxpath
                        (clearcase-vxpath-get-version-in-temp-file other-vxpath)))
-         (applet-name (if clearcase-on-mswindows
-                          "cleardiffmrg"
-                        "xcleardiff")))
-    (start-process-shell-command "Diff"
-                                 nil
-                                 applet-name
-                                 other-file
-                                 truename)))
+         (gui-name (if clearcase-on-mswindows
+                       "cleardiffmrg"
+                     "xcleardiff")))
+    (start-process "Diff"
+                   nil
+                   gui-name
+                   (clearcase-path-native other-file)
+                   (clearcase-path-native truename))))
 
 ;;}}}
 
@@ -2192,6 +2429,16 @@ against the base of its branch."
 
 ;;{{{ Browse vtree
 
+(defun clearcase-version-other-window (version)
+  (interactive
+   (list
+    (clearcase-read-version-name (format "Version of %s to visit: "
+      (file-name-nondirectory buffer-file-name))
+                                 buffer-file-name)))
+  (find-file-other-window (clearcase-vxpath-cons-vxpath
+                           (clearcase-vxpath-element-part buffer-file-name)
+                           version)))
+
 (defun clearcase-browse-vtree-current-buffer ()
   (interactive)
   (clearcase-browse-vtree buffer-file-name))
@@ -2202,37 +2449,37 @@ against the base of its branch."
 
 ;;}}}
 
-;;{{{ Applet vtree
+;;{{{ GUI vtree
 
-(defun clearcase-applet-vtree-browser-current-buffer ()
+(defun clearcase-gui-vtree-browser-current-buffer ()
   (interactive)
-  (clearcase-applet-vtree-browser buffer-file-name))
+  (clearcase-gui-vtree-browser buffer-file-name))
 
-(defun clearcase-applet-vtree-browser-dired-file ()
+(defun clearcase-gui-vtree-browser-dired-file ()
   (interactive)
-  (clearcase-applet-vtree-browser (dired-get-filename)))
+  (clearcase-gui-vtree-browser (dired-get-filename)))
 
-(defun clearcase-applet-vtree-browser (file)
-  (let ((applet-name (if clearcase-on-mswindows
-                         "clearvtree"
-                       "xlsvtree")))
+(defun clearcase-gui-vtree-browser (file)
+  (let ((gui-name (if clearcase-on-mswindows
+                      "clearvtree"
+                    "xlsvtree")))
     (start-process-shell-command "Vtree_browser"
                                  nil
-                                 applet-name
-                                 file)))
+                                 gui-name
+                                 (clearcase-path-native file))))
 
 ;;}}}
 
-;;{{{ Other applets
+;;{{{ Other GUIs
 
-(defun clearcase-applet-clearexplorer ()
+(defun clearcase-gui-clearexplorer ()
   (interactive)
   (start-process-shell-command "ClearExplorer"
                                nil
                                "clearexplorer"
                                "."))
 
-(defun clearcase-applet-rebase ()
+(defun clearcase-gui-rebase ()
   (interactive)
   (start-process-shell-command "Rebase"
                                nil
@@ -2241,7 +2488,7 @@ against the base of its branch."
                                    "/rebase"
                                  "-rebase")))
 
-(defun clearcase-applet-deliver ()
+(defun clearcase-gui-deliver ()
   (interactive)
   (start-process-shell-command "Deliver"
                                nil
@@ -2250,19 +2497,19 @@ against the base of its branch."
                                    "/deliver"
                                  "-deliver")))
 
-(defun clearcase-applet-merge-manager ()
+(defun clearcase-gui-merge-manager ()
   (interactive)
   (start-process-shell-command "Merge_manager"
                                nil
                                "clearmrgman"))
 
-(defun clearcase-applet-project-explorer ()
+(defun clearcase-gui-project-explorer ()
   (interactive)
   (start-process-shell-command "Project_explorer"
                                nil
                                "clearprojexp"))
 
-(defun clearcase-applet-snapshot-view-updater ()
+(defun clearcase-gui-snapshot-view-updater ()
   (interactive)
   (start-process-shell-command "View_updater"
                                nil
@@ -2288,54 +2535,20 @@ against the base of its branch."
 
 (defun clearcase-update-default-directory ()
   (interactive)
-  (clearcase-update (clearcase-fprop-viewtag default-directory) default-directory))
+  (clearcase-update (clearcase-fprop-viewtag default-directory)
+                    default-directory))
 
 (defun clearcase-update-current-buffer ()
   (interactive)
-  (clearcase-update (clearcase-fprop-viewtag default-directory) buffer-file-name))
+  (clearcase-update (clearcase-fprop-viewtag default-directory)
+                    buffer-file-name))
 
 (defun clearcase-update-dired-files ()
   (interactive)
   (apply (function clearcase-update)
          (cons (clearcase-fprop-viewtag default-directory)
                (dired-get-marked-files))))
-;; Silence compiler complaints about free variable.
-;;
-(defvar clearcase-update-buffer-viewtag nil)
 
-(defun clearcase-update (viewtag &rest pnames)
-  "Run a cleartool+update process in VIEWTAG
-if there isn't one already running in that view.
-Other arguments PNAMES indicate files to update"
-
-  ;; Check that there is no update process running in that view.
-  ;;
-  (if (apply (function clearcase-utl-or-func)
-             (mapcar (function (lambda (proc)
-                                 (if (not (eq 'exit (process-status proc)))
-                                     (let ((buf (process-buffer proc)))
-                                       (and buf
-                                            (assq 'clearcase-update-buffer-viewtag (buffer-local-variables buf))
-                                            (save-excursion
-                                              (set-buffer buf)
-                                              (equal viewtag clearcase-update-buffer-viewtag)))))))
-                     (process-list)))
-      (error "There is already an update running in view %s" viewtag))
-
-  ;; All clear so:
-  ;;  - create a process in a buffer
-  ;;  - rename the buffer to be of the form *clearcase-update*<N>
-  ;;  - mark it as one of ours by setting clearcase-update-buffer-viewtag
-  ;;
-  (pop-to-buffer (apply (function make-comint)
-                        (append (list "clearcase-update-temp-name"
-                                      clearcase-cleartool-path
-                                      nil
-                                      "update")
-                                pnames))
-                 t);; other window
-  (rename-buffer "*clearcase-update*" t)
-  (set (make-local-variable 'clearcase-update-buffer-viewtag) viewtag))
 
 ;;}}}
 
@@ -2345,6 +2558,363 @@ Other arguments PNAMES indicate files to update"
 
 ;;{{{ Basic ClearCase operations
 
+;;{{{ Update snapshot view
+
+;;{{{ Asynchronous post-processing of update
+
+(defvar clearcase-post-update-timer nil)
+(defvar clearcase-post-update-work-queue nil)
+
+(defun clearcase-post-update-schedule-work (buffer)
+  (clearcase-trace "entering clearcase-post-update-schedule-work")
+  ;; Add to the work queue.
+  ;;
+  (setq clearcase-post-update-work-queue (cons buffer
+                                               clearcase-post-update-work-queue))
+  ;; Create the timer if necessary.
+  ;;
+  (if (null clearcase-post-update-timer)
+      (if clearcase-xemacs-p
+          ;; Xemacs
+          ;;
+          (setq clearcase-post-update-timer
+                (run-with-idle-timer 2 t 'clearcase-post-update-timer-function))
+        ;; FSF Emacs
+        ;;
+        (progn
+          (setq clearcase-post-update-timer (timer-create))
+          (timer-set-function clearcase-post-update-timer 'clearcase-post-update-timer-function)
+          (timer-set-idle-time clearcase-post-update-timer 2)
+          (timer-activate-when-idle clearcase-post-update-timer)))
+    (clearcase-trace "clearcase-post-update-schedule-work: post-update timer found to be non-null")))
+
+
+(defun clearcase-post-update-timer-function ()
+  (clearcase-trace "Entering clearcase-post-update-timer-function")
+  ;; For (each update-process buffer in the work queue)
+  ;;   if (its process has successfully terminated)
+  ;;      do the post-processing for this update
+  ;;      remove it from the work queue
+  ;;
+  (clearcase-trace (format "Queue before: %s" clearcase-post-update-work-queue))
+  (setq clearcase-post-update-work-queue
+
+        (clearcase-utl-list-filter
+         (function clearcase-post-update-check-process-buffer)
+         clearcase-post-update-work-queue))
+
+  (clearcase-trace (format "Queue after: %s" clearcase-post-update-work-queue))
+  ;; If the work queue is now empty cancel the timer.
+  ;;
+  (if (null clearcase-post-update-work-queue)
+      (progn
+        (cancel-timer clearcase-post-update-timer)
+        (setq clearcase-post-update-timer nil))))
+
+(defun clearcase-post-update-check-process-buffer (buffer)
+  (clearcase-trace "Entering clearcase-post-update-check-process-buffer")
+
+  ;; return t for those buffers that should remain in the work queue
+
+  ;; if it has terminated successfully
+  ;;   go sync buffers on the files that were updated
+
+  ;; We want to field errors here and when they occurm return nil to avoid a
+  ;; loop
+  ;;
+  ;;(condition-case nil
+
+  ;; protected form
+  (let ((proc (get-buffer-process buffer)))
+    (if proc
+        ;; Process still exists so keep this on the work queue.
+        ;;
+        (progn
+          (clearcase-trace "Update process still exists")
+          t)
+
+      ;; Process no longer there, cleaned up by comint code.
+      ;;
+
+      ;; Sync any buffers that need it.
+      ;;
+      (clearcase-trace "Update process finished")
+      (clearcase-sync-after-scopes-updated (with-current-buffer buffer
+                                             ;; Evaluate buffer-local variable.
+                                             ;;
+                                             clearcase-update-buffer-scopes))
+
+      ;; Remove  from work queue
+      ;;
+      nil))
+
+  ;; Error occurred, make sure we return nil to remove the buffer from the
+  ;; work queue, or a loop could develop.
+  ;;
+  ;;(error nil)
+  )
+
+(defun clearcase-sync-after-scopes-updated (scopes)
+  (clearcase-trace "Entering clearcase-sync-after-scopes-updated")
+
+  ;; nyi: reduce scopes to minimal set of disjoint scopes
+
+  ;; Use dynamic binding here since we don't have lexical binding.
+  ;;
+  (let ((clearcase-dynbound-updated-scopes scopes))
+
+    ;; For all buffers...
+    ;;
+    (mapcar
+     (function
+      (lambda (buffer)
+        (let ((visited-file (buffer-file-name buffer)))
+          (if visited-file
+              (if (clearcase-path-file-in-any-scopes visited-file
+                                                     clearcase-dynbound-updated-scopes)
+                  ;; This buffer visits a file within an updated scope.
+                  ;; Sync it from disk if it needs it.
+                  ;;
+                  (clearcase-sync-from-disk-if-needed visited-file))
+
+            ;; Buffer is not visiting a file.  If it is a dired-mode buffer
+            ;; under one of the scopes, revert it.
+            ;;
+            (with-current-buffer buffer
+              (if (eq 'dired-mode major-mode)
+                  (if (clearcase-path-file-in-any-scopes default-directory
+                                                         clearcase-dynbound-updated-scopes)
+                      (dired-revert nil t))))))))
+     (buffer-list))))
+
+;;}}}
+
+;; Silence compiler complaints about free variable.
+;;
+(defvar clearcase-update-buffer-viewtag nil)
+
+(defun clearcase-update (viewtag &rest files)
+  "Run a cleartool+update process in VIEWTAG
+if there isn't one already running in that view.
+Other arguments FILES indicate files to update"
+
+  ;; Check that there is no update process running in that view.
+  ;;
+  (if (apply (function clearcase-utl-or-func)
+             (mapcar (function (lambda (proc)
+                                 (if (not (eq 'exit (process-status proc)))
+                                     (let ((buf (process-buffer proc)))
+                                       (and buf
+                                            (assq 'clearcase-update-buffer-viewtag
+                                                  (buffer-local-variables buf))
+                                            (save-excursion
+                                              (set-buffer buf)
+                                              (equal viewtag
+                                                     clearcase-update-buffer-viewtag)))))))
+                     (process-list)))
+      (error "There is already an update running in view %s" viewtag))
+
+  ;; All clear so:
+  ;;  - create a process in a buffer
+  ;;  - rename the buffer to be of the form *clearcase-update*<N>
+  ;;  - mark it as one of ours by setting clearcase-update-buffer-viewtag
+  ;;
+  (pop-to-buffer (apply (function make-comint)
+                        (append (list "*clearcase-update-temp-name*"
+                                      clearcase-cleartool-path
+                                      nil
+                                      "update")
+                                files))
+                 t) ;; other window
+  (rename-buffer "*clearcase-update*" t)
+
+  ;; Store in this buffer what view was being updated and what files.
+  ;;
+  (set (make-local-variable 'clearcase-update-buffer-viewtag) viewtag)
+  (set (make-local-variable 'clearcase-update-buffer-scopes) files)
+
+  ;; nyi: schedule post-update buffer syncing
+  (clearcase-post-update-schedule-work (current-buffer)))
+
+;;}}}
+
+;;{{{ Hijack
+
+(defun clearcase-file-ok-to-hijack (file)
+
+  "Test if FILE is suitable for hijack."
+
+  (and
+
+   ;; If it is writeable already, no need to offer a hijack operation, even
+   ;; though, according to ClearCase, it may not yet be hijacked.
+   ;;
+   ;;(not (file-writable-p file))
+
+   (not (clearcase-fprop-hijacked file))
+   (clearcase-file-is-in-view-p file)
+   (not (clearcase-file-is-in-mvfs-p file))
+   (eq 'version (clearcase-fprop-mtype file))
+   (not (clearcase-fprop-checked-out file))))
+
+(defun clearcase-hijack-seq (files)
+  (unwind-protect
+      (progn
+        (message "Hijacking...")
+        (mapcar
+         (function
+          (lambda (file)
+            (if (not (file-directory-p file))
+                (clearcase-hijack file))))
+         files))
+    ;; Unwind
+    ;;
+    (message "Hijacking...done")))
+
+(defun clearcase-hijack (file)
+
+  ;; cases
+  ;;  - buffer/files modtimes are equal
+  ;;  - file more recent
+  ;;    ==> revert
+  ;;  - buffer more recent
+  ;;    ==> make file writeable; save buffer ?
+  ;;
+  ;; Post-conditions:
+  ;;   - file is hijacked wrt. CC
+  ;;   - buffer is in sync with disk contents, modtime and writeability
+  ;;     except if the user refused to save
+  ;;
+  (if (not (file-writable-p file))
+      ;; Make it writeable.
+      ;;
+      (clearcase-utl-make-writeable file))
+
+  ;; Attempt to modify the modtime of the file on disk, otherwise ClearCase
+  ;; won't actually deem it hijacked. This will silently fail if there is no
+  ;; "touch" command command available.
+  ;;
+  (clearcase-utl-touch-file file)
+
+  ;; Sync up any buffers.
+  ;;
+  (clearcase-sync-from-disk file t))
+
+;;}}}
+
+;;{{{ Unhijack
+
+(defun clearcase-file-ok-to-unhijack (file)
+  "Test if FILE is suitable for unhijack."
+  (clearcase-fprop-hijacked file))
+
+(defun clearcase-unhijack (file)
+  (clearcase-unhijack-seq (list file)))
+
+(defun cleartool-unhijack-parse-for-kept-files (ret snapshot-view-root)
+  ;; Look for occurrences of:
+  ;; Loading "source\emacs\.emacs.el" (296690 bytes).
+  ;; (renaming original hijacked object to ".emacs.el.keep.10").
+  ;;
+  (let ((start 0)
+        (kept-files nil))
+    (while (string-match
+            "^Loading \"\\([^\"]+\\)\"[^\n]+\n(renaming original hijacked object to \"\\([^\"]+\\)\")\\.\n"
+            ret
+            start)
+      (let* ((elt-path (substring ret (match-beginning 1) (match-end 1)))
+             (abs-elt-path (concat (if snapshot-view-root
+                                       snapshot-view-root
+                                     "/")
+                                   elt-path))
+             (abs-elt-dir (file-name-directory abs-elt-path ))
+             (kept-file-rel (concat abs-elt-dir
+                                    (substring ret (match-beginning 2) (match-end 2))))
+
+             ;; This is necessary on Windows to get an absolute path, i.e. one
+             ;; with a drive letter. Note: probably only correct if
+             ;; unhijacking files in a single snapshot view, mounted on a
+             ;; drive-letter.
+             ;;
+             (kept-file (expand-file-name kept-file-rel)))
+        (setq kept-files (cons kept-file kept-files)))
+      (setq start (match-end 0)))
+    kept-files))
+
+(defun clearcase-utl-files-in-same-view-p (files)
+  (if (< (length files) 2)
+      t
+    (let ((v0 (clearcase-fprop-viewtag (nth 0 files)))
+          (v1 (clearcase-fprop-viewtag (nth 1 files))))
+      (if (or (not (stringp v0))
+              (not (stringp v1))
+              (not (string= v0 v1)))
+          nil
+        (clearcase-utl-files-in-same-view-p (cdr files))))))
+
+(defun clearcase-unhijack-seq (files)
+
+  ;; Check: there are no directories involved.
+  ;;
+  (mapcar
+   (function
+    (lambda (file)
+      (if (file-directory-p file)
+          (error "Cannot unhijack a directory"))))
+   files)
+
+  ;; Check: all files are in the same snapshot view.
+  ;;
+  ;; (Why ?  The output from ct+update only has view-root-relative paths
+  ;; and we need to obtain absolute paths of renamed-aside hijacks if we are to
+  ;; dired-relist them.)
+  ;;
+  ;; Alternative: partition the set, with each partition containing elements in
+  ;; the same view.
+  ;;
+  (if (not (clearcase-utl-files-in-same-view-p files))
+      (error "Can't unhijack files in different views in the same operation"))
+
+  ;; Run the scoped workspace update synchronously.
+  ;;
+  (unwind-protect
+      (progn
+        (message "Unhijacking...")
+        (let* ((ret (apply (function clearcase-ct-blocking-call)
+                           (append (list "update"
+                                         (if clearcase-keep-unhijacks
+                                             "-rename"
+                                           "-overwrite")
+                                         "-log" clearcase-sink-file-name)
+                                   files)))
+               (snapshot-view-root (clearcase-file-snapshot-root (car files)))
+
+               ;; Scan for renamed-aside files.
+               ;;
+               (kept-files (if clearcase-keep-unhijacks
+                               (cleartool-unhijack-parse-for-kept-files ret
+                                                                        snapshot-view-root)
+                             nil)))
+
+          ;; Do post-update synchronisation.
+          ;;
+          (mapcar
+           (function clearcase-sync-after-file-updated-from-vob)
+           files)
+
+          ;; Update any dired buffers as to the existence of the kept files.
+          ;;
+          (if clearcase-keep-unhijacks
+              (mapcar (function
+                       (lambda (file)
+                         (dired-relist-file file)))
+                      kept-files))))
+    ;; unwind
+    ;;
+    (message "Unhijacking...done")))
+
+;;}}}
+
 ;;{{{ Mkelem
 
 (defun clearcase-file-ok-to-mkelem (file)
@@ -2353,6 +2923,7 @@ Other arguments PNAMES indicate files to update"
     (and (not (file-directory-p file))
          (and (or (equal 'view-private-object mtype)
                   (equal 'derived-object mtype))
+              (not (clearcase-fprop-hijacked file))
               (not (clearcase-file-covers-element-p file))))))
 
 (defun clearcase-assert-file-ok-to-mkelem (file)
@@ -2360,62 +2931,80 @@ Other arguments PNAMES indicate files to update"
   (if (not (clearcase-file-ok-to-mkelem file))
       (error "%s cannot be made into an element" file)))
 
-(defun clearcase-commented-mkelem (file &optional comment)
-  "Create a new element from FILE. If COMMENT is non-nil, it
-will be used, otherwise the user will be prompted to enter one."
+(defun clearcase-commented-mkelem (file &optional okay-to-checkout-dir-first comment)
+  "Create a new element from FILE. If OKAY-TO-CHECKOUT-DIR-FIRST is non-nil,
+the containing directory will be checked out if necessary.
+If COMMENT is non-nil, it will be used, otherwise the user will be prompted
+to enter one."
 
+  ;; Pre-condition
+  ;;
   (clearcase-assert-file-ok-to-mkelem file)
 
-  ;; We may need to checkout the directory.
-  ;;
-  (let ((containing-dir (file-name-directory file))
-        user)
-    (if (eq 'directory-version (clearcase-fprop-mtype containing-dir))
-        (progn
-          (setq user (clearcase-fprop-owner-of-checkout containing-dir))
-          (if user
-              (if (not (equal user (user-login-name)))
-                  (error "Directory is checked-out by %s." user))
-            (if (cond
-                 ((eq clearcase-checkout-dir-on-mkelem 'ask)
-                  (y-or-n-p (format "Checkout directory %s " containing-dir)))
-                 (clearcase-checkout-dir-on-mkelem)
-                 (t nil))
-                (clearcase-commented-checkout containing-dir comment)
-              (error "Can't make an element unless directory is checked-out."))))))
+  (let ((containing-dir (file-name-directory file)))
 
-  (if (null comment)
-      ;; If no comment supplied, go and get one...
-      ;;
-      (clearcase-comment-start-entry (file-name-nondirectory file)
-                                     "Enter initial comment for the new element."
-                                     'clearcase-commented-mkelem
-                                     (list file)
-                                     (find-file-noselect file)
-                                     clearcase-initial-mkelem-comment)
-
-    ;; ...otherwise perform the operation.
+    ;; Pre-condition
     ;;
-    (clearcase-fprop-unstore-properties file)
-    (message "Making element %s..." file)
+    (if (not (eq 'directory-version (clearcase-fprop-mtype containing-dir)))
+        (error "Parent directory of %s is not a ClearCase versioned directory."
+               file))
 
-    (save-excursion
-      ;; Sync the buffer to disk.
-      ;;
-      (let ((buffer-on-file (find-buffer-visiting file)))
-        (if buffer-on-file
-            (progn
-              (set-buffer buffer-on-file)
-              (clearcase-sync-to-disk))))
+    ;; Determine if we'll need to checkout the parent directory first.
+    ;;
+    (let ((dir-checkout-needed (not (clearcase-fprop-checked-out containing-dir))))
+      (if dir-checkout-needed
+          (progn
+            ;; Parent dir will need to be checked out. Get permission if
+            ;; appropriate.
+            ;;
+            (if (null okay-to-checkout-dir-first)
+                (setq okay-to-checkout-dir-first
+                      (or (null clearcase-verify-pre-mkelem-dir-checkout)
+                          (y-or-n-p (format "Checkout directory %s " containing-dir)))))
+            (if (null okay-to-checkout-dir-first)
+                (error "Can't make an element unless directory is checked-out."))))
 
-      (if clearcase-checkin-on-mkelem
-          (clearcase-ct-do-cleartool-command "mkelem" file comment "-ci")
-        (clearcase-ct-do-cleartool-command "mkelem" file comment))
-      (message "Making element %s...done" file)
+      (if (null comment)
+          ;; If no comment supplied, go and get one...
+          ;;
+          (clearcase-comment-start-entry (file-name-nondirectory file)
+                                         "Enter initial comment for the new element."
+                                         'clearcase-commented-mkelem
+                                         (list file okay-to-checkout-dir-first)
+                                         (find-file-noselect file)
+                                         clearcase-initial-mkelem-comment)
 
-      ;; Resync.
-      ;;
-      (clearcase-sync-from-disk file t))))
+        ;; ...otherwise perform the operation.
+        ;;
+
+        ;;    We may need to checkout the directory.
+        ;;
+        (if dir-checkout-needed
+            (clearcase-commented-checkout containing-dir comment))
+
+        (clearcase-fprop-unstore-properties file)
+
+        (message "Making element %s..." file)
+
+        (save-excursion
+          ;; Sync the buffer to disk.
+          ;;
+          (let ((buffer-on-file (find-buffer-visiting file)))
+            (if buffer-on-file
+                (progn
+                  (set-buffer buffer-on-file)
+                  (clearcase-sync-to-disk))))
+
+          (clearcase-ct-do-cleartool-command "mkelem"
+                                             file
+                                             comment
+                                             (if clearcase-checkin-on-mkelem
+                                                 (list "-ci")))
+          (message "Making element %s...done" file)
+
+          ;; Resync.
+          ;;
+          (clearcase-sync-from-disk file t))))))
 
 (defun clearcase-commented-mkelem-seq (files &optional comment)
   "Mkelem a sequence of FILES. If COMMENT is supplied it will be
@@ -2437,7 +3026,7 @@ used, otherwise the user will be prompted to enter one."
     (mapcar
      (function
       (lambda (file)
-        (clearcase-commented-mkelem file comment)))
+        (clearcase-commented-mkelem file nil comment)))
      files)))
 
 ;;}}}
@@ -2491,15 +3080,17 @@ a buffer is popped up to accept one."
     ;;
     (message "Checking in %s..." file)
     (save-excursion
-      ;; Sync the buffer to disk, and get local value of clearcase-checkin-switches
+      ;; Sync the buffer to disk, and get local value of clearcase-checkin-arguments
       ;;
       (let ((buffer-on-file (find-buffer-visiting file)))
         (if buffer-on-file
             (progn
               (set-buffer buffer-on-file)
               (clearcase-sync-to-disk))))
-      (apply 'clearcase-ct-do-cleartool-command "ci" file comment
-             clearcase-checkin-switches))
+      (clearcase-ct-do-cleartool-command "ci"
+                                         file
+                                         comment
+                                         clearcase-checkin-arguments))
     (message "Checking in %s...done" file)
 
     ;; Resync.
@@ -2539,7 +3130,8 @@ used, otherwise the user will be prompted to enter one."
   "Test if FILE is suitable for checkout."
   (let ((mtype (clearcase-fprop-mtype file)))
     (and (or (eq 'version mtype)
-             (eq 'directory-version mtype))
+             (eq 'directory-version mtype)
+             (clearcase-fprop-hijacked file))
          (not (clearcase-fprop-checked-out file)))))
 
 (defun clearcase-assert-file-ok-to-checkout (file)
@@ -2568,7 +3160,7 @@ a buffer is popped up to accept one."
     ;; ...otherwise perform the operation.
     ;;
     (message "Checking out %s..." file)
-    ;; Change buffers to get local value of clearcase-checkin-switches.
+    ;; Change buffers to get local value of clearcase-checkin-arguments.
     ;;
     (save-excursion
       (set-buffer (or (find-buffer-visiting file)
@@ -2576,7 +3168,7 @@ a buffer is popped up to accept one."
       (clearcase-ct-do-cleartool-command "co"
                                          file
                                          comment
-                                         clearcase-checkout-switches))
+                                         clearcase-checkout-arguments))
     (message "Checking out %s...done" file)
 
     ;; Resync.
@@ -2622,6 +3214,12 @@ used, otherwise the user will be prompted to enter one."
   (if (not (clearcase-file-ok-to-uncheckout file))
       (error "You cannot uncheckout %s" file)))
 
+(defun cleartool-unco-parse-for-kept-file (ret)
+  ;;Private version of "foo" saved in "foo.keep.1"
+  (if (string-match "^Private version of .* saved in \"\\([^\"]+\\)\"\\.$" ret)
+      (substring ret (match-beginning 1) (match-end 1))
+    nil))
+
 (defun clearcase-uncheckout (file)
   "Uncheckout FILE."
 
@@ -2635,19 +3233,38 @@ used, otherwise the user will be prompted to enter one."
            (not (yes-or-no-p (format "Really discard changes to %s ?" file))))
       (message "Uncheckout of %s cancelled" file)
 
-    ;; Go ahead and unco:
+    ;; Go ahead and unco.
     ;;
     (message "Cancelling checkout of %s..." file)
     ;; nyi:
     ;;  - Prompt for -keep or -rm
     ;;  - offer to remove /0 branches
     ;;
-    (clearcase-ct-do-cleartool-command "unco" file 'unused "-keep")
-    (message "Cancelling checkout of %s...done" file)
+    (let* ((ret (clearcase-ct-blocking-call "unco"
+                                            (if clearcase-keep-uncheckouts
+                                                "-keep"
+                                              "-rm")
+                                            file))
+           ;; Discover the name of the saved.
+           ;;
+           (kept-file (if clearcase-keep-uncheckouts
+                          (cleartool-unco-parse-for-kept-file ret)
+                        nil)))
 
-    ;; Resync.
-    ;;
-    (clearcase-sync-from-disk file t)))
+      (if kept-file
+          (message "Checkout of %s cancelled (saved in %s)"
+                   (file-name-nondirectory kept-file)
+                   file)
+        (message "Cancelling checkout of %s...done" file))
+
+      ;; Sync any buffers over the file itself.
+      ;;
+      (clearcase-sync-from-disk file t)
+
+      ;; Update any dired buffers as to the existence of the kept file.
+      ;;
+      (if kept-file
+          (dired-relist-file kept-file)))))
 
 (defun clearcase-uncheckout-seq (files)
   "Uncheckout a sequence of FILES."
@@ -2666,10 +3283,13 @@ used, otherwise the user will be prompted to enter one."
 
 (defun clearcase-describe (file)
   "Give a ClearCase description of FILE."
-  (clearcase-ct-do-cleartool-command "describe" file 'unused)
-  (clearcase-port-view-buffer-other-window "*clearcase*")
-  (goto-char 0)
-  (shrink-window-if-larger-than-buffer))
+
+  (clearcase-utl-populate-and-view-buffer
+   "*clearcase*"
+   (list file)
+   (function
+    (lambda (file)
+      (clearcase-ct-do-cleartool-command "describe" file 'unused)))))
 
 (defun clearcase-describe-seq (files)
   "Give a ClearCase description of the sequence of FILES."
@@ -2697,6 +3317,7 @@ used, otherwise the user will be prompted to enter one."
                                    "-cfile"
                                    (clearcase-path-native comment-file)
                                    qualified-typename)))))
+
 ;;}}}
 
 ;;{{{ Browse vtree (using Dired Mode)
@@ -2771,18 +3392,26 @@ on the directory element itself is listed, not on its contents."
             (eq mtype 'directory-version))
         (progn
           (message "Listing element history...")
-          (apply 'clearcase-ct-do-cleartool-command "lshistory" file 'unused
-                 (list (if (eq mtype 'directory-version) "-d")))
-          (pop-to-buffer (get-buffer-create "*clearcase*"))
-          (setq default-directory (file-name-directory file))
-          (while (looking-at "=3D*\n")
-            (delete-char (- (match-end 0) (match-beginning 0)))
-            (forward-line -1))
-          (goto-char (point-min))
-          (if (looking-at "[\b\t\n\v\f\r ]+")
-              (delete-char (- (match-end 0) (match-beginning 0))))
-          (shrink-window-if-larger-than-buffer)
+
+          (clearcase-utl-populate-and-view-buffer
+           "*clearcase*"
+           (list file)
+           (function
+            (lambda (file)
+              (clearcase-ct-do-cleartool-command "lshistory"
+                                                 file
+                                                 'unused
+                                                 (if (eq mtype 'directory-version)
+                                                     (list "-d")))
+              (setq default-directory (file-name-directory file))
+              (while (looking-at "=3D*\n")
+                (delete-char (- (match-end 0) (match-beginning 0)))
+                (forward-line -1))
+              (goto-char (point-min))
+              (if (looking-at "[\b\t\n\v\f\r ]+")
+                  (delete-char (- (match-end 0) (match-beginning 0)))))))
           (message "Listing element history...done"))
+
       (error "%s is not a ClearCase element" file))))
 
 ;;}}}
@@ -2803,8 +3432,15 @@ on the directory element itself is listed, not on its contents."
 (defun clearcase-diff-files (file1 file2)
   "Run cleardiff on FILE1 and FILE2 and display the differences."
   (if clearcase-use-normal-diff
-      (clearcase-do-command 2 clearcase-normal-diff-program file2 clearcase-normal-diff-switches file1)
-    (clearcase-do-command 2 "cleardiff" file2 "-diff_format" file1))
+      (clearcase-do-command 2
+                            clearcase-normal-diff-program
+                            file2
+                            (append clearcase-normal-diff-arguments
+                                    (list file1)))
+    (clearcase-do-command 2
+                          "cleardiff"
+                          file2
+                          (list "-diff_format" file1)))
   (let ((diff-size  (save-excursion
                       (set-buffer "*clearcase*")
                       (buffer-size))))
@@ -2856,6 +3492,7 @@ on the directory element itself is listed, not on its contents."
 ;; [10] viewtag            : string
 ;; [11] comment            : string
 ;; [12] slink-text         : string (empty string if not symlink)
+;; [13] hijacked           : boolean
 
 ;; nyi: other possible properties to record:
 ;;      mtime when last described (lets us know when the cached properties
@@ -2878,53 +3515,45 @@ on the directory element itself is listed, not on its contents."
    (format "time-last-described: %s\n" (current-time-string (aref properties 9)))
    (format "viewtag:             %s\n" (aref properties 10))
    (format "comment:             %s\n" (aref properties 11))
-   (format "slink-text:          %s\n" (aref properties 12))))
+   (format "slink-text:          %s\n" (aref properties 12))
+   (format "hijacked:            %s\n" (aref properties 13))))
 
 (defun clearcase-fprop-display-properties (file)
   "Display the recorded ClearCase properties of FILE."
   (interactive "F")
   (let* ((abs-file (expand-file-name file))
-         (properties (clearcase-fprop-lookup-properties abs-file))
-         (camefrom (current-buffer)))
+         (properties (clearcase-fprop-lookup-properties abs-file)))
     (if properties
-        (progn
-          (set-buffer (get-buffer-create "*clearcase*"))
-          (clearcase-view-mode 0 camefrom)
-          (erase-buffer)
-          (insert (clearcase-fprop-unparse-properties properties))
-          (clearcase-port-view-buffer-other-window "*clearcase*")
-          (goto-char 0)
-          (set-buffer-modified-p nil)   ; XEmacs - fsf uses `not-modified'
-          (shrink-window-if-larger-than-buffer))
+        (let ((unparsed-properties (clearcase-fprop-unparse-properties properties)))
+          (clearcase-utl-populate-and-view-buffer
+           "*clearcase*"
+           nil
+           (function (lambda ()
+                       (insert unparsed-properties)))))
       (error "Properties for %s not stored" file))))
 
-(defun clearcase-fprop-dump (&optional buf)
-  "Dump out the table recording ClearCase properties of files."
+(defun clearcase-fprop-dump-to-current-buffer ()
+  "Dump to the current buffer the table recording ClearCase properties of files."
   (interactive)
-  (let ((output-buffer (if buf
-                           buf
-                         (get-buffer-create "*clearcase-fprop-dump*")))
-        (camefrom (current-buffer)))
-    (set-buffer output-buffer)
-    (or buf (clearcase-view-mode 0 camefrom))
-    (or buf (erase-buffer))
-    (insert (format "File describe count: %s\n" clearcase-fprop-describe-count))
-    (mapatoms
-     (function
-      (lambda (symbol)
-        (let ((properties (symbol-value symbol)))
-          (insert "\n"
-                  (format "key:                 %s\n" (symbol-name symbol))
-		  "\n"
-                  (clearcase-fprop-unparse-properties properties)))))
-     clearcase-fprop-hashtable)
-    (insert "\n")
-    (or buf
-        (progn
-          (clearcase-port-view-buffer-other-window output-buffer)
-          (goto-char 0)
-          (set-buffer-modified-p nil)   ; XEmacs - fsf uses `not-modified'
-          (shrink-window-if-larger-than-buffer)))))
+  (insert (format "File describe count: %s\n" clearcase-fprop-describe-count))
+  (mapatoms
+   (function
+    (lambda (symbol)
+      (let ((properties (symbol-value symbol)))
+        (insert "\n"
+                (format "key:                 %s\n" (symbol-name symbol))
+                "\n"
+                (clearcase-fprop-unparse-properties properties)))))
+   clearcase-fprop-hashtable)
+  (insert "\n"))
+
+(defun clearcase-fprop-dump ()
+  (interactive)
+  (clearcase-utl-populate-and-view-buffer
+   "*clearcase*"
+   nil
+   (function (lambda ()
+               (clearcase-fprop-dump-to-current-buffer)))))
 
 ;;}}}
 
@@ -2968,13 +3597,13 @@ clearcase-fprop-hashtable."
                              clearcase-fprop-hashtable)))
 
 (defun clearcase-fprop-get-properties (file)
-  "For FILE, make sure it's ClearCase properties are in the hashtable
+  "For FILE, make sure its ClearCase properties are in the hashtable
 and then return them."
   (or (clearcase-fprop-lookup-properties file)
       (let ((properties
-	     (condition-case signal-info
-		 (clearcase-fprop-read-properties file)
-	       (error
+         (condition-case signal-info
+         (clearcase-fprop-read-properties file)
+           (error
                 (progn
                   (clearcase-trace (format "(clearcase-fprop-read-properties %s) signalled error: %s"
                                            file
@@ -3035,6 +3664,10 @@ and then return them."
   "For FILE, return its \"slink-text\" ClearCase property."
   (aref (clearcase-fprop-get-properties file) 12))
 
+(defun clearcase-fprop-hijacked (file)
+  "For FILE, return its \"hijacked\" ClearCase property."
+  (aref (clearcase-fprop-get-properties file) 13))
+
 (defun clearcase-fprop-set-comment (file comment)
   "For FILE, set its \"comment\" ClearCase property to COMMENT."
   (aset (clearcase-fprop-get-properties file) 11 comment))
@@ -3070,22 +3703,21 @@ and then return them."
       (if clearcase-xemacs-p
           ;; XEmacs/Windows
           ;;
-	  (if clearcase-on-cygwin32
-	      ;; Cygwin build
-	      ;;
-	      "[nil \\\"%m\\\" \\\"%f\\\" \\\"%Rf\\\" \\\"%Sn\\\" \\\"%PSn\\\" \\\"%On\\\" \\\"%u\\\" \\\"%Nd\\\" nil nil nil \\\"%[slink_text]p\\\" ]\\n%c"
-	    ;; Native build
-	    ;;
-	    ;;"\"[nil \\\"%m\\\" \\\"%f\\\" \\\"%Rf\\\" \\\"%Sn\\\" \\\"%PSn\\\" \\\"%On\\\" \\\"%u\\\" \\\"%Nd\\\" nil nil nil \\\"%[slink_text]p\\\"]\n%c\"")
-            "[nil \\\"%m\\\" \\\"%f\\\" \\\"%Rf\\\" \\\"%Sn\\\" \\\"%PSn\\\" \\\"%On\\\" \\\"%u\\\" \\\"%Nd\\\" nil nil nil]\n%c")
+      (if clearcase-on-cygwin
+          ;; Cygwin build
+          ;;
+          "[nil \\\"%m\\\" \\\"%f\\\" \\\"%Rf\\\" \\\"%Sn\\\" \\\"%PSn\\\" \\\"%On\\\" \\\"%u\\\" \\\"%Nd\\\" nil nil nil \\\"%[slink_text]p\\\"  nil ]\\n%c"
+        ;; Native build
+        ;;
+            "[nil \\\"%m\\\" \\\"%f\\\" \\\"%Rf\\\" \\\"%Sn\\\" \\\"%PSn\\\" \\\"%On\\\" \\\"%u\\\" \\\"%Nd\\\" nil nil nil \\\"%[slink_text]p\\\" nil]\n%c")
 
         ;; GnuEmacs/Windows
         ;;
-        "[nil \"%m\" \"%f\" \"%Rf\" \"%Sn\" \"%PSn\" \"%On\" \"%u\" \"%Nd\" nil nil nil \"%[slink_text]p\"]\\n%c")
+        "[nil \"%m\" \"%f\" \"%Rf\" \"%Sn\" \"%PSn\" \"%On\" \"%u\" \"%Nd\" nil nil nil \"%[slink_text]p\" nil]\\n%c")
 
     ;; Unix
     ;;
-    "'[nil \"%m\" \"%f\" \"%Rf\" \"%Sn\" \"%PSn\" \"%On\" \"%u\" \"%Nd\" nil nil nil \"%[slink_text]p\"]\\n%c'")
+    "'[nil \"%m\" \"%f\" \"%Rf\" \"%Sn\" \"%PSn\" \"%On\" \"%u\" \"%Nd\" nil nil nil \"%[slink_text]p\" nil]\\n%c'")
 
   "Format for cleartool+describe command when reading the
 ClearCase properties of a file")
@@ -3129,7 +3761,7 @@ properties of FILE."
         (let* ((first-read (read-from-string (clearcase-path-canonicalise-slashes desc-string)))
                (result (car first-read))
                (bytes-read (cdr first-read))
-               (comment (substring desc-string (1+ bytes-read))));; skip \n
+               (comment (substring desc-string (1+ bytes-read)))) ;; skip \n
 
           ;; Plug in the slots I left empty:
           ;;
@@ -3149,7 +3781,21 @@ properties of FILE."
               (aset result 1 'directory-version))
 
              ((string= mtype-string "view private object")
-              (aset result 1 'view-private-object))
+              (aset result 1 'view-private-object)
+
+              ;; If we're in a snapshot see if it is hijacked by running
+              ;; ct+desc FILE@@. No error indicates it's hijacked.
+              ;;
+              (if (clearcase-file-would-be-in-snapshot-p truename)
+                  (aset result 13
+                        (condition-case nil
+                            (stringp
+                             (clearcase-ct-cleartool-cmd
+                              "desc"
+                              "-short"
+                              (concat (clearcase-path-native truename)
+                                      clearcase-vxpath-glue)))
+                          (error nil)))))
 
              ((string= mtype-string "file element")
               (aset result 1 'file-element))
@@ -3222,33 +3868,27 @@ properties of FILE."
 
 ;;{{{ Debug code
 
-(defun clearcase-vprop-dump (&optional buf)
-  "Dump out the table recording ClearCase properties of views."
+(defun clearcase-vprop-dump-to-current-buffer ()
+  "Dump to the current buffer the table recording ClearCase properties of views."
+  (insert (format "View describe count: %s\n" clearcase-vprop-describe-count))
+  (mapatoms
+   (function
+    (lambda (symbol)
+      (let ((properties (symbol-value symbol)))
+        (insert "\n"
+                (format "viewtag:             %s\n" (symbol-name symbol))
+                "\n"
+                (clearcase-vprop-unparse-properties properties)))))
+   clearcase-vprop-hashtable)
+  (insert "\n"))
+
+(defun clearcase-vprop-dump ()
   (interactive)
-  (let ((output-buffer (if buf
-                           buf
-                         (get-buffer-create "*clearcase-vprop-dump*")))
-        (camefrom (current-buffer)))
-    (set-buffer output-buffer)
-    (or buf (clearcase-view-mode 0 camefrom))
-    (or buf (erase-buffer))
-    (insert (format "View describe count: %s\n" clearcase-vprop-describe-count))
-    (mapatoms
-     (function
-      (lambda (symbol)
-        (let ((properties (symbol-value symbol)))
-          (insert "\n"
-		  (format "viewtag:             %s\n" (symbol-name symbol))
-		  "\n"
-		  (clearcase-vprop-unparse-properties properties)))))
-     clearcase-vprop-hashtable)
-    (insert "\n")
-    (or buf
-        (progn
-          (clearcase-port-view-buffer-other-window output-buffer)
-          (goto-char 0)
-          (set-buffer-modified-p nil)   ; XEmacs - fsf uses `not-modified'
-          (shrink-window-if-larger-than-buffer)))))
+  (clearcase-utl-populate-and-view-buffer
+   "*clearcase*"
+   nil
+   (function (lambda ()
+               (clearcase-vprop-dump-to-current-buffer)))))
 
 (defun clearcase-vprop-unparse-properties (properties)
   "Return a string suitable for printing PROPERTIES."
@@ -3264,25 +3904,41 @@ properties of FILE."
 ;;{{{ Asynchronously fetching view properties:
 
 (defvar clearcase-vprop-timer nil)
-(defvar clearcase-vprop-prefetch-queue nil)
+(defvar clearcase-vprop-work-queue nil)
 
-(defun clearcase-vprop-schedule-fetch (viewtag)
-  (or clearcase-xemacs-p
-      (if (null clearcase-vprop-timer)
-          (setq clearcase-vprop-timer (timer-create))))
-  (setq clearcase-vprop-prefetch-queue (cons viewtag clearcase-vprop-prefetch-queue))
-  (if clearcase-xemacs-p
-      (setq clearcase-vprop-timer
-            (run-with-idle-timer 5 t 'clearcase-vprop-timer-function))
-    (timer-set-function clearcase-vprop-timer 'clearcase-vprop-timer-function)
-    (timer-set-idle-time clearcase-vprop-timer 5)
-    (timer-activate-when-idle clearcase-vprop-timer)))
+(defun clearcase-vprop-schedule-work (viewtag)
+  ;; Add to the work queue.
+  ;;
+  (setq clearcase-vprop-work-queue (cons viewtag
+                                             clearcase-vprop-work-queue))
+  ;; Create the timer if necessary.
+  ;;
+  (if (null clearcase-vprop-timer)
+      (if clearcase-xemacs-p
+          ;; Xemacs
+          ;;
+          (setq clearcase-vprop-timer
+                (run-with-idle-timer 5 t 'clearcase-vprop-timer-function))
+        ;; FSF Emacs
+        ;;
+        (progn
+          (setq clearcase-vprop-timer (timer-create))
+          (timer-set-function clearcase-vprop-timer 'clearcase-vprop-timer-function)
+          (timer-set-idle-time clearcase-vprop-timer 5)
+          (timer-activate-when-idle clearcase-vprop-timer)))))
 
 (defun clearcase-vprop-timer-function ()
+  ;; Process the work queue and empty it.
+  ;;
   (mapcar (function (lambda (viewtag)
                       (clearcase-vprop-get-properties viewtag)))
-          clearcase-vprop-prefetch-queue)
-  (setq clearcase-vprop-prefetch-queue nil))
+          clearcase-vprop-work-queue)
+  (setq clearcase-vprop-work-queue nil)
+
+  ;; Cancel the timer.
+  ;;
+  (cancel-timer clearcase-vprop-timer)
+  (setq clearcase-vprop-timer nil))
 
 ;;}}}
 
@@ -3418,13 +4074,13 @@ to cause a future re-fetch."
       (if clearcase-xemacs-p
           ;; XEmacs/Windows
           ;;
-	  (if clearcase-on-cygwin32
-	      ;; Cygwin build
-	      ;;
-	      "[\\\"%n\\\"  \\\"%[master]p\\\" ]"
-	    ;; Native build
-	    ;;
-	    "[\\\"%n\\\"  \\\"%[master]p\\\" ]")
+      (if clearcase-on-cygwin
+          ;; Cygwin build
+          ;;
+          "[\\\"%n\\\"  \\\"%[master]p\\\" ]"
+        ;; Native build
+        ;;
+        "[\\\"%n\\\"  \\\"%[master]p\\\" ]")
         ;; GnuEmacs/Windows
         ;;
         "[\"%n\"  \"%[master]p\" ]")
@@ -3441,8 +4097,8 @@ properties of VIEWTAG."
   ;; ADM_VIEW_GET_INFO RPC can take up to 60 seconds in certain circumstances
   ;; (typically on my laptop with self-contained ClearCase region).
 
-  ;; Accordingly, since we don't really need to store snapshotness, the minimum we
-  ;; really need to discover about a view is whether it is UCM-attached. For
+  ;; Accordingly, since we don't really need to store snapshotness, the minimum
+  ;; we really need to discover about a view is whether it is UCM-attached. For
   ;; this the much faster ct+lsstream suffices.
   ;;
   (let* ((result (make-vector 5 nil)))
@@ -3454,101 +4110,107 @@ properties of VIEWTAG."
               (activity-titles nil)
               (activities nil)
               (current-activity nil)
-              (desc-string
-               (progn
-                 (message "Reading view properties...")
-                 (clearcase-ct-blocking-call "lsstream" "-fmt"
-                                             clearcase-lsstream-fmt-string
-                                             "-view" viewtag))))
+              (ret ""))
 
-          (setq clearcase-vprop-describe-count (1+ clearcase-vprop-describe-count))
+          ;; This was necessary to make sure the "done" message was always
+          ;; displayed.  Not quite sure why.
+          ;;
+          (unwind-protect
+              (progn
+                (message "Reading view properties...")
+                (setq ret (clearcase-ct-blocking-call "lsstream" "-fmt"
+                                                      clearcase-lsstream-fmt-string
+                                                      "-view" viewtag))
 
-          (if (setq ucm (not (zerop (length desc-string))))
+                (setq clearcase-vprop-describe-count (1+ clearcase-vprop-describe-count))
 
-              ;; It's apparently a UCM view
-              ;;
-              (let* ((first-read (read-from-string (clearcase-utl-escape-backslashes desc-string)))
-                     (array-read (car first-read))
-                     (bytes-read (cdr first-read)))
+                (if (setq ucm (not (zerop (length ret))))
 
-                ;; Get stream name
-                ;;
-                (setq stream (aref array-read 0))
+                    ;; It's apparently a UCM view
+                    ;;
+                    (let* ((first-read (read-from-string (clearcase-utl-escape-backslashes ret)))
+                           (array-read (car first-read))
+                           (bytes-read (cdr first-read)))
 
-                ;; Get PVOB tag from something like "unix@/vobs/projects"
-                ;;
-                (let ((s (aref array-read 1)))
-                  (if (string-match "@" s)
-                      (setq pvob (substring s (match-end 0)))
-                    (setq pvob s)))
+                      ;; Get stream name
+                      ;;
+                      (setq stream (aref array-read 0))
 
-                ;; Get the activity list and store as a list of (NAME . TITLE) pairs
-                ;;
-                (setq activities (clearcase-vprop-read-activities-asynchronously viewtag))
+                      ;; Get PVOB tag from something like "unix@/vobs/projects"
+                      ;;
+                      (let ((s (aref array-read 1)))
+                        (if (string-match "@" s)
+                            (setq pvob (substring s (match-end 0)))
+                          (setq pvob s)))
 
-                ;; Get the current activity
-                ;;
-                (let ((name-string (clearcase-ct-blocking-call "lsact" "-cact" "-fmt" "%n"
-                                                               "-view" viewtag)))
-                  (if (not (zerop (length name-string)))
-                      (setq current-activity name-string)))
+                      ;; Get the activity list and store as a list of (NAME . TITLE) pairs
+                      ;;
+                      (setq activities (clearcase-vprop-read-activities-asynchronously viewtag))
 
-                (aset result 0 ucm)
-                (aset result 1 stream)
-                (aset result 2 pvob)
-                (aset result 3 activities)
-                (aset result 4 current-activity)))
+                      ;; Get the current activity
+                      ;;
+                      (let ((name-string (clearcase-ct-blocking-call "lsact" "-cact" "-fmt" "%n"
+                                                                     "-view" viewtag)))
+                        (if (not (zerop (length name-string)))
+                            (setq current-activity name-string)))
 
-          (message "Reading view properties...done")))
+                      (aset result 0 ucm)
+                      (aset result 1 stream)
+                      (aset result 2 pvob)
+                      (aset result 3 activities)
+                      (aset result 4 current-activity))))
+
+            (message "Reading view properties...done"))))
 
     result))
 
 (defvar clearcase-vprop-async-viewtag nil)
 (defvar clearcase-vprop-async-proc nil)
 (defun clearcase-vprop-read-activities-asynchronously (viewtag)
-  ;; Clean up old instance of the buffer we use to fetch activities:
-  ;;
-  (let ((buf (get-buffer (format "*clearcase-activity-listing-%s*" viewtag))))
-    (if buf
-        (progn
-          (save-excursion
-            (set-buffer buf)
-            (if (and (boundp 'clearcase-vprop-async-proc)
-                     clearcase-vprop-async-proc)
-                (condition-case nil
-                    (kill-process clearcase-vprop-async-proc)
-                  (error nil))))
-          (kill-buffer buf))))
-
-  ;; Create a buffer and an associated new process to read activities
-  ;; in the background. We return the buffer to be stored in the
-  ;; activities field of the view-properties record. The function
-  ;; clearcase-vprop-activities will recognise when the asynch fetching
-  ;; is still underway and wait for it to finish.
-  ;;
-  ;; The process has a sentinel function which is supposed to get called when
-  ;; the process finishes. This sometimes doesn't happen on Windows, so that
-  ;; clearcase-vprop-activities has to do a bit more work.  (Perhaps a race exists:
-  ;; the process completes before the sentinel can be set ?)
-  ;;
-  (let* ((buf (get-buffer-create (format "*clearcase-activity-listing-%s*" viewtag)))
-         (proc (start-process (format "*clearcase-activity-listing-%s*" viewtag)
-                              buf
-                              clearcase-cleartool-path
-                              "lsact" "-view" viewtag)))
-    (process-kill-without-query proc)
-    (save-excursion
-      (set-buffer buf)
-      ;; Create a sentinel to parse and store the activities when the
-      ;; process finishes. We record the viewtag as a buffer-local
-      ;; variable so the sentinel knows where to store the activities.
-      ;;
-      (set (make-local-variable 'clearcase-vprop-async-viewtag) viewtag)
-      (set (make-local-variable 'clearcase-vprop-async-proc) proc)
-      (set-process-sentinel proc 'clearcase-vprop-read-activities-sentinel))
-    ;; Return the buffer.
+  (let ((buf-name (format "*clearcase-activities-%s*" viewtag)))
+    ;; Clean up old instance of the buffer we use to fetch activities:
     ;;
-    buf))
+    (let ((buf (get-buffer buf-name)))
+      (if buf
+          (progn
+            (save-excursion
+              (set-buffer buf)
+              (if (and (boundp 'clearcase-vprop-async-proc)
+                       clearcase-vprop-async-proc)
+                  (condition-case nil
+                      (kill-process clearcase-vprop-async-proc)
+                    (error nil))))
+            (kill-buffer buf))))
+
+    ;; Create a buffer and an associated new process to read activities in the
+    ;; background. We return the buffer to be stored in the activities field of
+    ;; the view-properties record. The function clearcase-vprop-activities will
+    ;; recognise when the asynch fetching is still underway and wait for it to
+    ;; finish.
+    ;;
+    ;; The process has a sentinel function which is supposed to get called when
+    ;; the process finishes. This sometimes doesn't happen on Windows, so that
+    ;; clearcase-vprop-activities has to do a bit more work.  (Perhaps a race
+    ;; exists: the process completes before the sentinel can be set ?)
+    ;;
+    (let* ((buf (get-buffer-create buf-name))
+           (proc (start-process (format "*clearcase-activities-process-%s*" viewtag)
+                                buf
+                                clearcase-cleartool-path
+                                "lsact" "-view" viewtag)))
+      (process-kill-without-query proc)
+      (save-excursion
+        (set-buffer buf)
+        ;; Create a sentinel to parse and store the activities when the
+        ;; process finishes. We record the viewtag as a buffer-local
+        ;; variable so the sentinel knows where to store the activities.
+        ;;
+        (set (make-local-variable 'clearcase-vprop-async-viewtag) viewtag)
+        (set (make-local-variable 'clearcase-vprop-async-proc) proc)
+        (set-process-sentinel proc 'clearcase-vprop-read-activities-sentinel))
+      ;; Return the buffer.
+      ;;
+      buf)))
 
 (defun clearcase-vprop-read-activities-sentinel (process event-string)
   (clearcase-trace "Activity reading process sentinel called")
@@ -3600,40 +4262,40 @@ properties of VIEWTAG."
 
 ;;{{{ old synchronous activity reader
 
-(defun clearcase-vprop-read-activities-synchronously (viewtag)
-  "Return a list of (activity-name . title) pairs for VIEWTAG"
-  ;; nyi: ought to use a variant of clearcase-ct-blocking-call that returns a buffer
-  ;;      rather than a string
+;; (defun clearcase-vprop-read-activities-synchronously (viewtag)
+;;   "Return a list of (activity-name . title) pairs for VIEWTAG"
+;;   ;; nyi: ought to use a variant of clearcase-ct-blocking-call that returns a buffer
+;;   ;;      rather than a string
 
-  ;; Performance: takes around 30 seconds to read 1000 activities.
-  ;; Too slow to invoke willy-nilly on integration streams for example,
-  ;; which typically can have 1000+ activities.
+;;   ;; Performance: takes around 30 seconds to read 1000 activities.
+;;   ;; Too slow to invoke willy-nilly on integration streams for example,
+;;   ;; which typically can have 1000+ activities.
 
-  (let ((ret (clearcase-ct-blocking-call "lsact" "-view" viewtag)))
-    (let ((buf (get-buffer-create "*clearcase-activity-listing*"))
-          (activity-list nil))
-      (save-excursion
-        (set-buffer buf)
-        (erase-buffer)
-        (insert ret)
-        (goto-char (point-min))
-        ;; Slice out the 2nd and 4th fields as name and title
-        ;;
-        (while (re-search-forward "^[^ \t]+[ \t]+\\([^ \t]+\\)[ \t]+[^ \t]+[ \t]+\"+\\(.*\\)\"$" nil t)
-          (setq activity-list (cons (cons (buffer-substring (match-beginning 1)
-                                                            (match-end 1))
-                                          (buffer-substring (match-beginning 2)
-                                                            (match-end 2)))
-                                    activity-list)))
-        (kill-buffer buf))
+;;   (let ((ret (clearcase-ct-blocking-call "lsact" "-view" viewtag)))
+;;     (let ((buf (get-buffer-create "*clearcase-temp-activities*"))
+;;           (activity-list nil))
+;;       (save-excursion
+;;         (set-buffer buf)
+;;         (erase-buffer)
+;;         (insert ret)
+;;         (goto-char (point-min))
+;;         ;; Slice out the 2nd and 4th fields as name and title
+;;         ;;
+;;         (while (re-search-forward "^[^ \t]+[ \t]+\\([^ \t]+\\)[ \t]+[^ \t]+[ \t]+\"+\\(.*\\)\"$" nil t)
+;;           (setq activity-list (cons (cons (buffer-substring (match-beginning 1)
+;;                                                             (match-end 1))
+;;                                           (buffer-substring (match-beginning 2)
+;;                                                             (match-end 2)))
+;;                                     activity-list)))
+;;         (kill-buffer buf))
 
-      ;; We've got activity-list in the reverse order that
-      ;; cleartool+lsactivity generated them.  I think this is reverse
-      ;; chronological order, so keep this order since it is more
-      ;; convenient when setting to an activity.
-      ;;
-      ;;(nreverse activity-list))))
-      activity-list)))
+;;       ;; We've got activity-list in the reverse order that
+;;       ;; cleartool+lsactivity generated them.  I think this is reverse
+;;       ;; chronological order, so keep this order since it is more
+;;       ;; convenient when setting to an activity.
+;;       ;;
+;;       ;;(nreverse activity-list))))
+;;       activity-list)))
 
 ;;}}}
 
@@ -3669,50 +4331,62 @@ It doesn't examine the file contents."
   (if (not (clearcase-fprop-checked-out file))
       nil
 
-    (let ((presumed-modified nil))
+    (let ((mvfs (clearcase-file-is-in-mvfs-p file)))
 
       ;; We consider various cases in order of increasing cost to compute.
 
-      ;; Case 1: the size is different to its predecessor.
-      ;;
-      (if (and (clearcase-file-is-in-mvfs-p file)
-               (not
-                (equal
-                 (clearcase-utl-file-size file)
-                 ;; nyi: For the snapshot case it'd be nice to get the size of the
-                 ;;      predecessor by using "ct+desc -pred -fmt" but there doesn't
-                 ;;      seem to be a format descriptor for file size. On the other hand
-                 ;;      ct+dump can obtain the size.
-                 ;;
-                 (clearcase-utl-file-size (clearcase-vxpath-cons-vxpath
-                                           file
-                                           (clearcase-fprop-predecessor-version
-                                           file))))))
-          (setq presumed-modified 'size-changed)
+      (cond
+       ;; Case 1: (MVFS only) the size is different to its predecessor.
+       ;;
+       ((and mvfs
+             (not
+              (equal
+               (clearcase-utl-file-size file)
+               ;; nyi: For the snapshot case it'd be nice to get the size of the
+               ;;      predecessor by using "ct+desc -pred -fmt" but there doesn't
+               ;;      seem to be a format descriptor for file size. On the other hand
+               ;;      ct+dump can obtain the size.
+               ;;
+               (clearcase-utl-file-size (clearcase-vxpath-cons-vxpath
+                                         file
+                                         (clearcase-fprop-predecessor-version
+                                          file)))))
+             ;; Return:
+             ;;
+             'size-changed))
 
-        ;; Case 2: the mtime and the ctime are no longer the same.
+       ;; Case 2: (MVFS only) the mtime and the ctime are no longer the same.
+       ;;
+       ;; nyi: At least on Windows there seems to be a small number of seconds
+       ;;      difference here even when the file is not modified.
+       ;;      So we really check to see of they are close.
+       ;;
+       ;; nyi: This doesn't work in a snapshot view.
+       ;;
+       ((and mvfs
+             (not (clearcase-utl-filetimes-close (clearcase-utl-file-mtime file)
+                                                 (clearcase-utl-file-ctime file)
+                                                 5))
+             ;; Return:
+             ;;
+             'ctime-mtime-not-close))
+
+       (t
+        ;; Case 3: last resort. Actually run a diff against predecessor.
         ;;
-        ;; nyi: At least on Windows there seems to be a small number of seconds
-        ;;      difference here even when the file is not modified.
-        ;;      So we really check to see of they are close.
-        ;;
-        (if (not (clearcase-utl-filetimes-close (clearcase-utl-file-mtime file)
-                                                (clearcase-utl-file-ctime file)
-                                                5))
-            (setq presumed-modified 'ctime-mtime-not-close)
+        (let ((ret (clearcase-ct-blocking-call "diff"
+                                               "-options"
+                                               "-quiet"
+                                               "-pred"
+                                               file)))
+          (if (not (zerop (length ret)))
+              ;; Return:
+              ;;
+              'diffs-nonempty
 
-
-          ;; Case 3: last resort. Actually run a diff against predecessor.
-          ;;
-          (let ((ret (clearcase-ct-blocking-call "diff"
-                                                 "-options"
-                                                 "-quiet"
-                                                 "-pred"
-                                                 file)))
-            (if (not (zerop (length ret)))
-                (setq presumed-modified 'diffs-nonempty)))))
-
-      presumed-modified)))
+            ;; Return:
+            ;;
+            nil)))))))
 
 ;;}}}
 
@@ -3909,7 +4583,7 @@ If so, return the viewtag."
         ;; See if .view.dat exists and contains a valid view uuid
         ;;
         (let ((view-dat-name (concat dir (if clearcase-on-mswindows
-					     "view.dat" ".view.dat"))))
+                         "view.dat" ".view.dat"))))
           (if (file-readable-p view-dat-name)
               (let ((uuid (clearcase-viewdat-to-uuid view-dat-name)))
                 (if uuid
@@ -3926,7 +4600,7 @@ If so, return the viewtag."
 
       ;; nyi: update a viewtag==>viewroot map ?
 
-      viewtag)))
+      viewroot)))
 
 (defun clearcase-viewdat-to-uuid (file)
   "Extract the view-uuid from a .view.dat file."
@@ -4106,7 +4780,7 @@ or the empty string if none")
                                      ;;; emacs is a GUI, right? :-)
                                      process-environment)))
     (clearcase-trace (format "Starting cleartool in %s" default-directory))
-    (let* (;; Force the use of a pipe
+    (let* ( ;; Force the use of a pipe
            ;;
            (process-connection-type nil)
            (cleartool-process
@@ -4117,10 +4791,10 @@ or the empty string if none")
       (setq clearcase-ct-view "")
       (setq clearcase-ct-tq (tq-create cleartool-process))
       (tq-enqueue clearcase-ct-tq
-                  clearcase-ct-eotxn-cmd;; question
-                  clearcase-ct-eotxn-response;; regexp
-                  'clearcase-ct-running;; closure
-                  'set);; function
+                  clearcase-ct-eotxn-cmd ;; question
+                  clearcase-ct-eotxn-response ;; regexp
+                  'clearcase-ct-running ;; closure
+                  'set) ;; function
       (while (not clearcase-ct-running)
         (message "waiting for cleartool to start...")
         (clearcase-ct-accept-process-output (tq-process clearcase-ct-tq)
@@ -4159,17 +4833,15 @@ it will be restarted.  This may be useful if you're debugging clearcase."
   ;;
   (setq clearcase-ct-return (substring val 0 (- clearcase-ct-eotxn-response-length))))
 
-(defun clearcase-ct-do-cleartool-command (command file comment &rest flags)
+(defun clearcase-ct-do-cleartool-command (command file comment &optional extra-args)
   "Execute a cleartool command, notifying user and checking for
 errors. Output from COMMAND goes to buffer *clearcase*.  The last argument of the
 command is the name of FILE; this is appended to an optional list of
-FLAGS."
+EXTRA-ARGS."
+
   (if file
       (setq file (expand-file-name file)))
   (if (listp command)
-      ;;      (progn
-      ;;      (setq flags (append (cdr command) flags))
-      ;;      (setq command (car command)))
       (error "command must not be a list"))
   (if clearcase-command-messages
       (if file
@@ -4197,7 +4869,7 @@ FLAGS."
                       (not (zerop (length s)))
                       (setq squeezed
                             (append squeezed (list s))))))
-     flags)
+     extra-args)
 
     (clearcase-with-tempfile
      comment-file
@@ -4249,11 +4921,11 @@ FLAGS."
   "Call PROGRAM.
 Returns PROGRAM's stdout.
 ARGS is the command line arguments to PROGRAM."
-  (let ((buf (generate-new-buffer "cleartoolexecution")))
+  (let ((buf (get-buffer-create "cleartoolexecution")))
     (prog1
         (save-excursion
           (set-buffer buf)
-	  (apply 'call-process program nil buf nil args)
+      (apply 'call-process program nil buf nil args)
           (buffer-string))
       (kill-buffer buf))))
 
@@ -4280,8 +4952,8 @@ ARGS is the command line arguments to PROGRAM."
           (clearcase-ct-start-cleartool))
       (unwind-protect
           (let ((command ""))
-	    (mapcar
-	     (function
+        (mapcar
+         (function
               (lambda (token)
                 ;; If the token has imbedded spaces and is not already quoted,
                 ;; add double quotes.
@@ -4289,13 +4961,13 @@ ARGS is the command line arguments to PROGRAM."
                 (setq command (concat command
                                       " "
                                       (clearcase-utl-quote-if-nec token)))))
-	     cmd)
+         cmd)
             (tq-enqueue clearcase-ct-tq
                         (concat command "\n"
-                                clearcase-ct-eotxn-cmd);; question
-                        clearcase-ct-eotxn-response;; regexp
-                        nil;; closure
-                        'clearcase-ct-callback);; function
+                                clearcase-ct-eotxn-cmd) ;; question
+                        clearcase-ct-eotxn-response ;; regexp
+                        nil ;; closure
+                        'clearcase-ct-callback) ;; function
             (while (not clearcase-ct-return)
               (clearcase-ct-accept-process-output (tq-process clearcase-ct-tq)
                                                   clearcase-ct-subproc-timeout)))
@@ -4310,10 +4982,10 @@ ARGS is the command line arguments to PROGRAM."
   clearcase-ct-return)
 
 (defun clearcase-ct-kill-tq ()
-  (process-send-eof (tq-process clearcase-ct-tq))
-  (kill-process (tq-process clearcase-ct-tq))
   (setq clearcase-ct-running nil)
-  (setq clearcase-ct-tq nil))
+  (setq clearcase-ct-tq nil)
+  (process-send-eof (tq-process clearcase-ct-tq))
+  (kill-process (tq-process clearcase-ct-tq)))
 
 (defun clearcase-ct-kill-buffer-hook ()
 
@@ -4332,13 +5004,13 @@ ARGS is the command line arguments to PROGRAM."
 
 ;;{{{ Invoking a command
 
-;; nyi Probably redundant.
+;; nyi Would be redundant if we didn't need it to invoke normal-diff-program
 
-(defun clearcase-do-command (okstatus command file &rest flags)
+(defun clearcase-do-command (okstatus command file &optional extra-args)
   "Execute a version-control command, notifying user and checking for errors.
 The command is successful if its exit status does not exceed OKSTATUS.
 Output from COMMAND goes to buffer *clearcase*.  The last argument of the command is
-an optional list of FLAGS."
+an optional list of EXTRA-ARGS."
   (setq file (expand-file-name file))
   (if clearcase-command-messages
       (message "Running %s on %s..." command file))
@@ -4361,9 +5033,10 @@ an optional list of FLAGS."
     (mapcar
      (function (lambda (s)
                  (and s
+                      (not (zerop (length s)))
                       (setq squeezed
                             (append squeezed (list s))))))
-     flags)
+     extra-args)
     (setq squeezed (append squeezed (list file)))
     (setq status (apply 'call-process command nil t nil squeezed))
     (goto-char (point-min))
@@ -4549,7 +5222,7 @@ an optional list of FLAGS."
 (defun clearcase-vxpath-version (vxpath)
   "Return the numeric version part of a version-extended path or of a version"
   (if (clearcase-vxpath-p vxpath)
-       (file-name-nondirectory (clearcase-vxpath-version-part vxpath))
+      (file-name-nondirectory (clearcase-vxpath-version-part vxpath))
     (file-name-nondirectory vxpath)))
 
 (defun clearcase-vxpath-cons-vxpath (file version &optional viewtag)
@@ -4599,9 +5272,9 @@ replacing the existing view prefix."
      (clearcase-utl-1st-line-of-string
       (clearcase-ct-cleartool-cmd "describe"
                                   "-fmt"
-				  (concat "%En"
-					  clearcase-vxpath-glue
-					  "%Vn")
+                  (concat "%En"
+                      clearcase-vxpath-glue
+                      "%Vn")
                                   (clearcase-path-native abs-file))))))
 
 (defun clearcase-vxpath-of-branch-base (file)
@@ -4619,7 +5292,7 @@ replacing the existing view prefix."
     (let* ((base-number 0)
            (base-version-path (format "%s%d" branch base-number)))
       (while (and (not (clearcase-file-is-in-snapshot-p base-version-path))
-		  (not (file-exists-p base-version-path))
+          (not (file-exists-p base-version-path))
                   (< base-number file-version-number))
         (setq base-number (1+ base-number))
         (setq base-version-path (format "%s%d" branch base-number)))
@@ -4639,7 +5312,7 @@ Intended for use in snapshot views."
     (if clearcase-xemacs-p
         (if (not (file-writable-p temp-file))
             (set-file-modes temp-file (string-to-number "666" 8))))
-    
+
     (delete-file temp-file)
     buffer))
 
@@ -4741,15 +5414,15 @@ Intended for use in snapshot views."
 (defun clearcase-path-canonical (path)
   (if (not clearcase-on-mswindows)
       path
-    (if clearcase-on-cygwin32
-	(substring (shell-command-to-string (concat "cygpath -u '" path "'")) 0 -1)
+    (if clearcase-on-cygwin
+    (substring (shell-command-to-string (concat "cygpath -u '" path "'")) 0 -1)
       (subst-char-in-string ?\\ ?/ path))))
 
 (defun clearcase-path-native (path)
   (if (not clearcase-on-mswindows)
       path
-    (if clearcase-on-cygwin32
-	(substring (shell-command-to-string (concat "cygpath -w " path)) 0 -1)
+    (if clearcase-on-cygwin
+    (substring (shell-command-to-string (concat "cygpath -w " path)) 0 -1)
       (subst-char-in-string ?/ ?\\ path))))
 
 (defun clearcase-path-file-really-exists-p (filename)
@@ -4760,6 +5433,32 @@ Intended for use in snapshot views."
                                        (cdr pair))
                                      file-name-handler-alist)))
     (file-exists-p filename)))
+
+(defun clearcase-path-file-in-any-scopes (file scopes)
+  (let ((result nil)
+        (cursor scopes))
+    (while (and (null result)
+                cursor)
+      (if (clearcase-path-file-in-scope file (car cursor))
+          (setq result t))
+      (setq cursor (cdr cursor)))
+    result))
+
+
+(defun clearcase-path-file-in-scope (file scope)
+  (assert (file-name-absolute-p file))
+  (assert (file-name-absolute-p scope))
+
+  (or
+   ;; Pathnames are equal
+   ;;
+   (string= file scope)
+
+   ;; scope-qua-dir is an ancestor of file (proper string prefix)
+   ;;
+   (let ((scope-as-dir (concat scope "/")))
+     (string= scope-as-dir
+              (substring file 0 (length scope-as-dir))))))
 
 ;;}}}
 
@@ -4801,7 +5500,7 @@ with completion if possible."
          (predecessor (clearcase-fprop-predecessor-version file))
          (default-filename (clearcase-vxpath-cons-vxpath file predecessor))
 
-         ;; To get this too work it is necessary to make Emacs think
+         ;; To get this to work it is necessary to make Emacs think
          ;; we're completing with respect to "ELEMENT@@/" rather
          ;; than "ELEMENT@@". Otherwise when we enter a version
          ;; like "/main/NN", it thinks we entered an absolute path.
@@ -4821,6 +5520,7 @@ with completion if possible."
       (concat "/" (read-string prompt
                                (substring predecessor 1)
                                nil)))))
+
 ;;}}}
 
 ;;{{{ clearcase-read-label-name
@@ -4872,7 +5572,7 @@ with completion if possible."
                      (member f clearcase-directory-exclusion-list)
                      (let ((dirf (concat dir f)))
                        (or
-                        (file-symlink-p dirf);; Avoid possible loops
+                        (file-symlink-p dirf) ;; Avoid possible loops
                         (clearcase-file-tree-walk-internal dirf func args quiet))))))
        (directory-files dir)))))
 ;;
@@ -4902,7 +5602,7 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
                        (member f clearcase-directory-exclusion-list)
                        (let ((dirf (concat dir f)))
                          (or
-                          (file-symlink-p dirf);; Avoid possible loops
+                          (file-symlink-p dirf) ;; Avoid possible loops
                           (clearcase-subdir-tree-walk-internal dirf
                                                                func
                                                                args
@@ -4953,6 +5653,28 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
 
 ;;{{{ Synchronizing buffers with disk
 
+(defun clearcase-sync-after-file-updated-from-vob (file)
+  ;; Do what is needed after a file in a snapshot is updated or a checkout is
+  ;; cancelled.
+
+  ;; "ct+update" will not always make the file readonly, if, for
+  ;; example, its contents didn't actually change.  But we'd like
+  ;; update to result in a readonly file, so force it here.
+  ;;
+  (clearcase-utl-make-unwriteable file)
+
+  (or
+   ;; If this returns true, there was a buffer visiting the file and it it
+   ;; flushed fprops...
+   ;;
+   (clearcase-sync-from-disk-if-needed file)
+
+   ;; ...otherwise, just sync this other state:
+   ;;
+   (progn
+     (clearcase-fprop-unstore-properties file)
+     (dired-relist-file file))))
+
 (defun clearcase-sync-from-disk (file &optional no-confirm)
 
   (clearcase-fprop-unstore-properties file)
@@ -4984,6 +5706,33 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
                         (set-buffer buffer)
                         (revert-buffer))))
           (dired-buffers-for-dir file)))
+
+(defun clearcase-sync-from-disk-if-needed (file)
+
+  ;; If the buffer on FILE is out of sync with its file, synch it. Returns t if
+  ;; clearcase-sync-from-disk is called.
+
+  (let ((buffer (find-buffer-visiting file)))
+    (if (and buffer
+             ;; Buffer can be out of sync in two ways:
+             ;;  (a) Buffer is modified (hasn't been written)
+             ;;  (b) Buffer is recording a different modtime to what the file has.
+             ;;      This is what happens when the file is updated by another
+             ;;      process.
+             ;;  (c) Buffer and file differ in their writeability.
+             ;;
+             (or (buffer-modified-p buffer)
+                 (not (verify-visited-file-modtime buffer))
+                 (eq (file-writable-p file)
+                     (with-current-buffer buffer buffer-read-only))))
+        (progn
+          (clearcase-sync-from-disk file
+                                    ;; Only confirm for modified buffers.
+                                    ;;
+                                    (not (buffer-modified-p buffer)))
+          t)
+      nil)))
+
 
 (defun clearcase-sync-to-disk (&optional not-urgent)
 
@@ -5065,6 +5814,52 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
 
 ;;{{{ Utilities
 
+;;{{{ Displaying content in special buffers
+
+(defun clearcase-utl-populate-and-view-buffer (buffer
+                                               args
+                                               content-generating-func)
+  "Empty BUFFER, and populate it by applying to ARGS the CONTENT-GENERATING-FUNC,
+and display in a separate window."
+
+  (clearcase-utl-edit-and-view-buffer
+   buffer
+   (list args)
+   (function
+    (lambda (args)
+      (erase-buffer)
+      (apply content-generating-func args)))))
+
+(defun clearcase-utl-edit-and-view-buffer (buffer
+                                           args
+                                           content-editing-func)
+  "Empty BUFFER, and edit it by applying to ARGS the CONTENT-EDITING-FUNC,
+and display in a separate window."
+
+  (let ( ;; Create the buffer if necessary.
+        ;;
+        (buf (get-buffer-create buffer))
+
+        ;; Record where we came from.
+        ;;
+        (camefrom (current-buffer)))
+
+    (set-buffer buf)
+    (clearcase-view-mode 0 camefrom)
+
+    ;; Edit the buffer.
+    ;;
+    (apply content-editing-func args)
+
+    ;; Display the buffer.
+    ;;
+    (clearcase-port-view-buffer-other-window buf)
+    (goto-char 0)
+    (set-buffer-modified-p nil)         ; XEmacs - fsf uses `not-modified'
+    (shrink-window-if-larger-than-buffer)))
+
+;;}}}
+
 ;;{{{ Temporary files
 
 (defvar clearcase-tempfiles nil)
@@ -5088,15 +5883,27 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
 
 (defun clearcase-utl-clean-tempfiles ()
   (mapcar (function
-                 (lambda (tempfile)
-                   (if (file-exists-p tempfile)
-                       (condition-case nil
-                           (delete-file tempfile)
-                         (error nil)))))
-         clearcase-tempfiles)
+           (lambda (tempfile)
+             (if (file-exists-p tempfile)
+                 (condition-case nil
+                     (delete-file tempfile)
+                   (error nil)))))
+          clearcase-tempfiles)
   (setq clearcase-tempfiles nil))
 
 ;;}}}
+
+(defun clearcase-utl-touch-file (file)
+  "Attempt to update the modtime of FILE. Return t if it worked."
+  (zerop
+   ;; Silently fail if there is no "touch" command available.  Couldn't find a
+   ;; convenient way to update a file's modtime in ELisp.
+   ;;
+   (condition-case nil
+       (prog1
+         (shell-command (concat "touch " file))
+         (message ""))
+     (error nil))))
 
 (defun clearcase-utl-filetimes-close (filetime1 filetime2 tolerance)
   "Test if FILETIME1 and FILETIME2 are within TOLERANCE of each other."
@@ -5110,13 +5917,13 @@ Invoke FUNC f ARGS on each subdirectory underneath it."
 
 (defun clearcase-utl-emacs-date-to-clearcase-date (s)
   (concat
-   (substring s 20);; yyyy
-   (int-to-string (clearcase-utl-month-unparse (substring s 4 7)));; mm
-   (substring s 8 10);; dd
+   (substring s 20) ;; yyyy
+   (int-to-string (clearcase-utl-month-unparse (substring s 4 7))) ;; mm
+   (substring s 8 10) ;; dd
    "."
-   (substring s 11 13);; hh
-   (substring s 14 16);; mm
-   (substring s 17 19)));; ss
+   (substring s 11 13) ;; hh
+   (substring s 14 16) ;; mm
+   (substring s 17 19))) ;; ss
 
 (defun clearcase-utl-month-unparse (s)
   (cond
@@ -5191,6 +5998,28 @@ wrap it in double quotes."
                 cursor)
       (if (car cursor)
           (setq result t))
+      (setq cursor (cdr cursor)))
+    result))
+
+(defun clearcase-utl-any (predicate list)
+  "Returns t if PREDICATE is satisfied by any element in LIST."
+  (let ((result nil)
+        (cursor list))
+    (while (and (null result)
+                cursor)
+      (if (funcall predicate (car cursor))
+          (setq result t))
+      (setq cursor (cdr cursor)))
+    result))
+
+(defun clearcase-utl-every (predicate list)
+  "Returns t if PREDICATE is satisfied by every element in LIST."
+  (let ((result t)
+        (cursor list))
+    (while (and result
+                cursor)
+      (if (not (funcall predicate (car cursor)))
+          (setq result nil))
       (setq cursor (cdr cursor)))
     result))
 
@@ -5322,6 +6151,18 @@ that mapped to non-nil."
       (setq old-env (cdr old-env)))
     newenv))
 
+(defun clearcase-utl-make-writeable (file)
+  ;; Equivalent to chmod u+w
+  ;;
+  (set-file-modes file
+                  (logior #o0200 (file-modes file))))
+
+(defun clearcase-utl-make-unwriteable (file)
+  ;; Equivalent to chmod u-w
+  ;;
+  (set-file-modes file
+                  (logand #o7577 (file-modes file))))
+
 ;;}}}
 
 ;;}}}
@@ -5347,15 +6188,27 @@ that mapped to non-nil."
 (defvar clearcase-menu-contents-minimised
   (list "ClearCase"
 
-        ["Check In" clearcase-checkin-current-buffer
+        ["Checkin" clearcase-checkin-current-buffer
          :keys nil
          :visible (clearcase-file-ok-to-checkin buffer-file-name)]
 
-        ["Check Out" clearcase-checkout-current-buffer
+        ["Edit checkout comment" clearcase-edit-checkout-comment-current-buffer
+         :keys nil
+         :visible (clearcase-file-ok-to-checkin buffer-file-name)]
+
+        ["Checkout" clearcase-checkout-current-buffer
          :keys nil
          :visible (clearcase-file-ok-to-checkout buffer-file-name)]
 
-        ["Un-checkout" clearcase-uncheckout-current-buffer
+        ["Hijack" clearcase-hijack-current-buffer
+         :keys nil
+         :visible (clearcase-file-ok-to-hijack buffer-file-name)]
+
+        ["Unhijack" clearcase-unhijack-current-buffer
+         :keys nil
+         :visible (clearcase-file-ok-to-unhijack buffer-file-name)]
+
+        ["Uncheckout" clearcase-uncheckout-current-buffer
          :visible (clearcase-file-ok-to-uncheckout buffer-file-name)]
 
         ["Find checkouts" clearcase-find-checkouts-in-current-view t]
@@ -5370,6 +6223,9 @@ that mapped to non-nil."
         ["Describe file" clearcase-describe-current-buffer
          :visible (not (clearcase-buffer-contains-version-p))]
 
+        ["Annotate version" clearcase-annotate-current-buffer
+         :visible (clearcase-buffer-contains-version-p)]
+
         ["Show config-spec rule" clearcase-what-rule-current-buffer
          :visible (clearcase-buffer-contains-version-p)]
 
@@ -5378,7 +6234,7 @@ that mapped to non-nil."
         ["Edit config-spec" clearcase-edcs-edit t]
 
         "---------------------------------"
-        (list "Compare (emacs)..."
+        (list "Compare (Emacs)..."
               ["Compare with predecessor" clearcase-ediff-pred-current-buffer
                :keys nil
                :visible (clearcase-buffer-contains-version-p)]
@@ -5388,14 +6244,14 @@ that mapped to non-nil."
               ["Compare with named version" clearcase-ediff-named-version-current-buffer
                :keys nil
                :visible (clearcase-buffer-contains-version-p)])
-        (list "Compare (applet)..."
-              ["Compare with predecessor" clearcase-applet-diff-pred-current-buffer
+        (list "Compare (GUI)..."
+              ["Compare with predecessor" clearcase-gui-diff-pred-current-buffer
                :keys nil
                :visible (clearcase-buffer-contains-version-p)]
-              ["Compare with branch base" clearcase-applet-diff-branch-base-current-buffer
+              ["Compare with branch base" clearcase-gui-diff-branch-base-current-buffer
                :keys nil
                :visible (clearcase-buffer-contains-version-p)]
-              ["Compare with named version" clearcase-applet-diff-named-version-current-buffer
+              ["Compare with named version" clearcase-gui-diff-named-version-current-buffer
                :keys nil
                :visible (clearcase-buffer-contains-version-p)])
         (list "Compare (diff)..."
@@ -5411,7 +6267,7 @@ that mapped to non-nil."
         "---------------------------------"
         ["Browse versions (dired)" clearcase-browse-vtree-current-buffer
          :visible (clearcase-file-ok-to-browse buffer-file-name)]
-        ["Vtree browser applet" clearcase-applet-vtree-browser-current-buffer
+        ["Vtree browser GUI" clearcase-gui-vtree-browser-current-buffer
          :keys nil
          :visible (clearcase-buffer-contains-version-p)]
         "---------------------------------"
@@ -5453,22 +6309,22 @@ that mapped to non-nil."
         ["Set NO activity" clearcase-ucm-set-activity-none-current-dir
          :keys nil
          :visible (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Rebase this stream" clearcase-applet-rebase
+        ["Rebase this stream" clearcase-gui-rebase
          :keys nil
          :visible (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Deliver from this stream" clearcase-applet-deliver
+        ["Deliver from this stream" clearcase-gui-deliver
          :keys nil
          :visible (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
         "---------------------------------"
-        (list "Applets"
-              ["ClearCase Explorer" clearcase-applet-clearexplorer
+        (list "ClearCase GUI"
+              ["ClearCase Explorer" clearcase-gui-clearexplorer
                :keys nil
                :visible clearcase-on-mswindows]
-              ["Project Explorer" clearcase-applet-project-explorer
+              ["Project Explorer" clearcase-gui-project-explorer
                :keys nil]
-              ["Merge Manager" clearcase-applet-merge-manager
+              ["Merge Manager" clearcase-gui-merge-manager
                :keys nil]
-              ["Snapshot View Updater" clearcase-applet-snapshot-view-updater
+              ["Snapshot View Updater" clearcase-gui-snapshot-view-updater
                :keys nil])
         "---------------------------------"
 
@@ -5499,15 +6355,27 @@ that mapped to non-nil."
 (defvar clearcase-menu-contents
   (list "ClearCase"
 
-        ["Check In" clearcase-checkin-current-buffer
+        ["Checkin" clearcase-checkin-current-buffer
          :keys nil
          :active (clearcase-file-ok-to-checkin buffer-file-name)]
 
-        ["Check Out" clearcase-checkout-current-buffer
+        ["Edit checkout comment" clearcase-edit-checkout-comment-current-buffer
+         :keys nil
+         :active (clearcase-file-ok-to-checkin buffer-file-name)]
+
+        ["Checkout" clearcase-checkout-current-buffer
          :keys nil
          :active (clearcase-file-ok-to-checkout buffer-file-name)]
 
-        ["Un-checkout" clearcase-uncheckout-current-buffer
+        ["Hijack" clearcase-hijack-current-buffer
+         :keys nil
+         :active (clearcase-file-ok-to-hijack buffer-file-name)]
+
+        ["Unhijack" clearcase-unhijack-current-buffer
+         :keys nil
+         :active (clearcase-file-ok-to-unhijack buffer-file-name)]
+
+        ["Uncheckout" clearcase-uncheckout-current-buffer
          :active (clearcase-file-ok-to-uncheckout buffer-file-name)]
 
         ["Make element" clearcase-mkelem-current-buffer
@@ -5520,6 +6388,10 @@ that mapped to non-nil."
         ["Describe file" clearcase-describe-current-buffer
          :active (not (clearcase-buffer-contains-version-p))]
 
+        ["Annotate version" clearcase-annotate-current-buffer
+         :keys nil
+         :active (clearcase-buffer-contains-version-p)]
+
         ["Show config-spec rule" clearcase-what-rule-current-buffer
          :active (clearcase-buffer-contains-version-p)]
 
@@ -5528,7 +6400,7 @@ that mapped to non-nil."
         ["Edit config-spec" clearcase-edcs-edit t]
 
         "---------------------------------"
-        (list "Compare (emacs)..."
+        (list "Compare (Emacs)..."
               ["Compare with predecessor" clearcase-ediff-pred-current-buffer
                :keys nil
                :active (clearcase-buffer-contains-version-p)]
@@ -5538,14 +6410,14 @@ that mapped to non-nil."
               ["Compare with named version" clearcase-ediff-named-version-current-buffer
                :keys nil
                :active (clearcase-buffer-contains-version-p)])
-        (list "Compare (applet)..."
-              ["Compare with predecessor" clearcase-applet-diff-pred-current-buffer
+        (list "Compare (GUI)..."
+              ["Compare with predecessor" clearcase-gui-diff-pred-current-buffer
                :keys nil
                :active (clearcase-buffer-contains-version-p)]
-              ["Compare with branch base" clearcase-applet-diff-branch-base-current-buffer
+              ["Compare with branch base" clearcase-gui-diff-branch-base-current-buffer
                :keys nil
                :active (clearcase-buffer-contains-version-p)]
-              ["Compare with named version" clearcase-applet-diff-named-version-current-buffer
+              ["Compare with named version" clearcase-gui-diff-named-version-current-buffer
                :keys nil
                :active (clearcase-buffer-contains-version-p)])
         (list "Compare (diff)..."
@@ -5561,7 +6433,7 @@ that mapped to non-nil."
         "---------------------------------"
         ["Browse versions (dired)" clearcase-browse-vtree-current-buffer
          :active (clearcase-file-ok-to-browse buffer-file-name)]
-        ["Vtree browser applet" clearcase-applet-vtree-browser-current-buffer
+        ["Vtree browser GUI" clearcase-gui-vtree-browser-current-buffer
          :keys nil
          :active (clearcase-buffer-contains-version-p)]
         "---------------------------------"
@@ -5603,22 +6475,22 @@ that mapped to non-nil."
         ["Set NO activity" clearcase-ucm-set-activity-none-current-dir
          :keys nil
          :active (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Rebase this stream" clearcase-applet-rebase
+        ["Rebase this stream" clearcase-gui-rebase
          :keys nil
          :active (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Deliver from this stream" clearcase-applet-deliver
+        ["Deliver from this stream" clearcase-gui-deliver
          :keys nil
          :active (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
         "---------------------------------"
-        (list "Applets"
-              ["ClearCase Explorer" clearcase-applet-clearexplorer
+        (list "ClearCase GUI"
+              ["ClearCase Explorer" clearcase-gui-clearexplorer
                :keys nil
                :active clearcase-on-mswindows]
-              ["Project Explorer" clearcase-applet-project-explorer
+              ["Project Explorer" clearcase-gui-project-explorer
                :keys nil]
-              ["Merge Manager" clearcase-applet-merge-manager
+              ["Merge Manager" clearcase-gui-merge-manager
                :keys nil]
-              ["Snapshot View Updater" clearcase-applet-snapshot-view-updater
+              ["Snapshot View Updater" clearcase-gui-snapshot-view-updater
                :keys nil])
         "---------------------------------"
 
@@ -5650,17 +6522,17 @@ that mapped to non-nil."
          (not clearcase-xemacs-p))
     (setq clearcase-menu-contents clearcase-menu-contents-minimised))
 
-;;}}}
+;;}}}1
 
 (if (>= emacs-major-version '20)
     (progn
       ;; Define the menu
       ;;
       (easy-menu-define
-       clearcase-menu
-       (list clearcase-mode-map)
-       "ClearCase menu"
-       clearcase-menu-contents)
+        clearcase-menu
+        (list clearcase-mode-map)
+        "ClearCase menu"
+        clearcase-menu-contents)
 
       (or clearcase-xemacs-p
           (add-to-list 'menu-bar-final-items 'ClearCase))))
@@ -5701,6 +6573,16 @@ that mapped to non-nil."
     (and file
          (clearcase-file-ok-to-uncheckout file))))
 
+(defun clearcase-dired-current-ok-to-hijack ()
+  (let ((file (dired-get-filename nil t)))
+    (and file
+         (clearcase-file-ok-to-hijack file))))
+
+(defun clearcase-dired-current-ok-to-unhijack ()
+  (let ((file (dired-get-filename nil t)))
+    (and file
+         (clearcase-file-ok-to-unhijack file))))
+
 (defun clearcase-dired-current-ok-to-mkelem ()
   (let ((file (dired-get-filename nil t)))
     (and file
@@ -5714,37 +6596,46 @@ that mapped to non-nil."
   "The maximum number of marked files in a Dired buffer when constructing
 the ClearCase menu.")
 
+;; nyi: speed these up by stopping check when a non-qualifying file is found
+;; Better:
+;;   - hook the menu constuction  and figure out what ops apply
+;;   - hook mark/unmark/move cursor
+
 (defun clearcase-dired-marked-ok-to-checkin ()
   (let ((files (dired-get-marked-files)))
     (or (> (length files) clearcase-dired-max-marked-files-to-check)
-        (apply (function clearcase-utl-or-func)
-               (mapcar
-                (function clearcase-file-ok-to-checkin)
-                files)))))
+        (clearcase-utl-every (function clearcase-file-ok-to-checkin)
+                             files))))
 
 (defun clearcase-dired-marked-ok-to-checkout ()
   (let ((files (dired-get-marked-files)))
     (or (> (length files) clearcase-dired-max-marked-files-to-check)
-        (apply (function clearcase-utl-or-func)
-               (mapcar
-                (function clearcase-file-ok-to-checkout)
-                files)))))
+        (clearcase-utl-every (function clearcase-file-ok-to-checkout)
+                             files))))
 
 (defun clearcase-dired-marked-ok-to-uncheckout ()
   (let ((files (dired-get-marked-files)))
     (or (> (length files) clearcase-dired-max-marked-files-to-check)
-        (apply (function clearcase-utl-or-func)
-               (mapcar
-                (function clearcase-file-ok-to-uncheckout)
-                files)))))
+        (clearcase-utl-every (function clearcase-file-ok-to-uncheckout)
+                             files))))
+
+(defun clearcase-dired-marked-ok-to-hijack ()
+  (let ((files (dired-get-marked-files)))
+    (or (> (length files) clearcase-dired-max-marked-files-to-check)
+        (clearcase-utl-every (function clearcase-file-ok-to-hijack)
+                             files))))
+
+(defun clearcase-dired-marked-ok-to-unhijack ()
+  (let ((files (dired-get-marked-files)))
+    (or (> (length files) clearcase-dired-max-marked-files-to-check)
+        (clearcase-utl-every (function clearcase-file-ok-to-unhijack)
+                             files))))
 
 (defun clearcase-dired-marked-ok-to-mkelem ()
   (let ((files (dired-get-marked-files)))
     (or (> (length files) clearcase-dired-max-marked-files-to-check)
-        (apply (function clearcase-utl-or-func)
-               (mapcar
-                (function clearcase-file-ok-to-mkelem)
-                files)))))
+        (clearcase-utl-every (function clearcase-file-ok-to-mkelem)
+                             files))))
 
 (defun clearcase-dired-current-dir-ok-to-checkin ()
   (let ((dir (dired-current-directory)))
@@ -5769,20 +6660,35 @@ the ClearCase menu.")
 
         ;; Current file
         ;;
-        ["Check-in file" clearcase-checkin-dired-files
+        ["Checkin file" clearcase-checkin-dired-files
          :keys nil
          :visible (and (< (clearcase-dired-mark-count) 2)
                        (clearcase-dired-current-ok-to-checkin))]
 
-        ["Check-out file" clearcase-checkout-dired-files
+        ["Edit checkout comment" clearcase-edit-checkout-comment-dired-file
+         :keys nil
+         :visible (and (< (clearcase-dired-mark-count) 2)
+                       (clearcase-dired-current-ok-to-checkin))]
+
+        ["Checkout file" clearcase-checkout-dired-files
          :keys nil
          :visible (and (< (clearcase-dired-mark-count) 2)
                        (clearcase-dired-current-ok-to-checkout))]
 
-        ["Un-check-out file" clearcase-uncheckout-dired-files
+        ["Uncheckout file" clearcase-uncheckout-dired-files
          :keys nil
          :visible (and (< (clearcase-dired-mark-count) 2)
                        (clearcase-dired-current-ok-to-uncheckout))]
+
+        ["Hijack file" clearcase-hijack-dired-files
+         :keys nil
+         :visible (and (< (clearcase-dired-mark-count) 2)
+                       (clearcase-dired-current-ok-to-hijack))]
+
+        ["Unhijack file" clearcase-unhijack-dired-files
+         :keys nil
+         :visible (and (< (clearcase-dired-mark-count) 2)
+                       (clearcase-dired-current-ok-to-unhijack))]
 
         ["Find checkouts" clearcase-find-checkouts-in-current-view t]
 
@@ -5792,20 +6698,30 @@ the ClearCase menu.")
 
         ;; Marked files
         ;;
-        ["Check-in marked files" clearcase-checkin-dired-files
+        ["Checkin marked files" clearcase-checkin-dired-files
          :keys nil
          :visible (and (>= (clearcase-dired-mark-count) 2)
                        (clearcase-dired-marked-ok-to-checkin))]
 
-        ["Check-out marked files" clearcase-checkout-dired-files
+        ["Checkout marked files" clearcase-checkout-dired-files
          :keys nil
          :visible (and (>= (clearcase-dired-mark-count) 2)
                        (clearcase-dired-marked-ok-to-checkout))]
 
-        ["Un-check-out marked files" clearcase-uncheckout-dired-files
+        ["Uncheckout marked files" clearcase-uncheckout-dired-files
          :keys nil
          :visible (and (>= (clearcase-dired-mark-count) 2)
                        (clearcase-dired-marked-ok-to-uncheckout))]
+
+        ["Hijack marked files" clearcase-hijack-dired-files
+         :keys nil
+         :visible (and (>= (clearcase-dired-mark-count) 2)
+                       (clearcase-dired-marked-ok-to-hijack))]
+
+        ["Unhijack marked files" clearcase-unhijack-dired-files
+         :keys nil
+         :visible (and (>= (clearcase-dired-mark-count) 2)
+                       (clearcase-dired-marked-ok-to-unhijack))]
 
         ["Make marked files elements" clearcase-mkelem-dired-files
          :keys nil
@@ -5815,20 +6731,23 @@ the ClearCase menu.")
 
         ;; Current directory
         ;;
-        ["Check-in current-dir" clearcase-dired-checkin-current-dir
+        ["Checkin current-dir" clearcase-dired-checkin-current-dir
          :keys nil
          :visible (clearcase-dired-current-dir-ok-to-checkin)]
 
-        ["Check-out current dir" clearcase-dired-checkout-current-dir
+        ["Checkout current dir" clearcase-dired-checkout-current-dir
          :keys nil
          :visible (clearcase-dired-current-dir-ok-to-checkout)]
 
-        ["Un-checkout current dir" clearcase-dired-uncheckout-current-dir
+        ["Uncheckout current dir" clearcase-dired-uncheckout-current-dir
          :keys nil
          :visible (clearcase-dired-current-dir-ok-to-uncheckout)]
 
         "---------------------------------"
         ["Describe file" clearcase-describe-dired-file
+         :visible t]
+
+        ["Annotate file" clearcase-annotate-dired-file
          :visible t]
 
         ["Show config-spec rule" clearcase-what-rule-dired-file
@@ -5838,7 +6757,7 @@ the ClearCase menu.")
         ["Edit config-spec" clearcase-edcs-edit t]
 
         "---------------------------------"
-        (list "Compare (emacs)..."
+        (list "Compare (Emacs)..."
               ["Compare with predecessor" clearcase-ediff-pred-dired-file
                :keys nil
                :visible t]
@@ -5848,14 +6767,14 @@ the ClearCase menu.")
               ["Compare with named version" clearcase-ediff-named-version-dired-file
                :keys nil
                :visible t])
-        (list "Compare (applet)..."
-              ["Compare with predecessor" clearcase-applet-diff-pred-dired-file
+        (list "Compare (GUI)..."
+              ["Compare with predecessor" clearcase-gui-diff-pred-dired-file
                :keys nil
                :visible t]
-              ["Compare with branch base" clearcase-applet-diff-branch-base-dired-file
+              ["Compare with branch base" clearcase-gui-diff-branch-base-dired-file
                :keys nil
                :visible t]
-              ["Compare with named version" clearcase-applet-diff-named-version-dired-file
+              ["Compare with named version" clearcase-gui-diff-named-version-dired-file
                :keys nil
                :visible t])
         (list "Compare (diff)..."
@@ -5871,7 +6790,7 @@ the ClearCase menu.")
         "---------------------------------"
         ["Browse versions (dired)" clearcase-browse-vtree-dired-file
          :visible (clearcase-dired-current-ok-to-browse)]
-        ["Vtree browser applet" clearcase-applet-vtree-browser-dired-file
+        ["Vtree browser GUI" clearcase-gui-vtree-browser-dired-file
          :keys nil
          :visible t]
         "---------------------------------"
@@ -5918,22 +6837,22 @@ the ClearCase menu.")
         ["Set NO activity" clearcase-ucm-set-activity-none-current-dir
          :keys nil
          :visible (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Rebase this stream" clearcase-applet-rebase
+        ["Rebase this stream" clearcase-gui-rebase
          :keys nil
          :visible (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Deliver from this stream" clearcase-applet-deliver
+        ["Deliver from this stream" clearcase-gui-deliver
          :keys nil
          :visible (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
         "---------------------------------"
-        (list "Applets"
-              ["ClearCase Explorer" clearcase-applet-clearexplorer
+        (list "ClearCase GUI"
+              ["ClearCase Explorer" clearcase-gui-clearexplorer
                :keys nil
                :visible clearcase-on-mswindows]
-              ["Project Explorer" clearcase-applet-project-explorer
+              ["Project Explorer" clearcase-gui-project-explorer
                :keys nil]
-              ["Merge Manager" clearcase-applet-merge-manager
+              ["Merge Manager" clearcase-gui-merge-manager
                :keys nil]
-              ["Snapshot View Updater" clearcase-applet-snapshot-view-updater
+              ["Snapshot View Updater" clearcase-gui-snapshot-view-updater
                :keys nil])
         "---------------------------------"
 
@@ -5963,20 +6882,35 @@ the ClearCase menu.")
 
         ;; Current file
         ;;
-        ["Check-in file" clearcase-checkin-dired-files
+        ["Checkin file" clearcase-checkin-dired-files
          :keys nil
          :active (and (< (clearcase-dired-mark-count) 2)
                       (clearcase-dired-current-ok-to-checkin))]
 
-        ["Check-out file" clearcase-checkout-dired-files
+        ["Edit checkout comment" clearcase-edit-checkout-comment-dired-file
+         :keys nil
+         :active (and (< (clearcase-dired-mark-count) 2)
+                      (clearcase-dired-current-ok-to-checkin))]
+
+        ["Checkout file" clearcase-checkout-dired-files
          :keys nil
          :active (and (< (clearcase-dired-mark-count) 2)
                       (clearcase-dired-current-ok-to-checkout))]
 
-        ["Un-check-out file" clearcase-uncheckout-dired-files
+        ["Uncheckout file" clearcase-uncheckout-dired-files
          :keys nil
          :active (and (< (clearcase-dired-mark-count) 2)
                       (clearcase-dired-current-ok-to-uncheckout))]
+
+        ["Hijack file" clearcase-hijack-dired-files
+         :keys nil
+         :active (and (< (clearcase-dired-mark-count) 2)
+                      (clearcase-dired-current-ok-to-hijack))]
+
+        ["Unhijack file" clearcase-unhijack-dired-files
+         :keys nil
+         :active (and (< (clearcase-dired-mark-count) 2)
+                      (clearcase-dired-current-ok-to-unhijack))]
 
         ["Make file an element" clearcase-mkelem-dired-files
          :active (and (< (clearcase-dired-mark-count) 2)
@@ -5984,20 +6918,30 @@ the ClearCase menu.")
 
         ;; Marked files
         ;;
-        ["Check-in marked files" clearcase-checkin-dired-files
+        ["Checkin marked files" clearcase-checkin-dired-files
          :keys nil
          :active (and (>= (clearcase-dired-mark-count) 2)
                       (clearcase-dired-marked-ok-to-checkin))]
 
-        ["Check-out marked files" clearcase-checkout-dired-files
+        ["Checkout marked files" clearcase-checkout-dired-files
          :keys nil
          :active (and (>= (clearcase-dired-mark-count) 2)
                       (clearcase-dired-marked-ok-to-checkout))]
 
-        ["Un-check-out marked files" clearcase-uncheckout-dired-files
+        ["Uncheckout marked files" clearcase-uncheckout-dired-files
          :keys nil
          :active (and (>= (clearcase-dired-mark-count) 2)
                       (clearcase-dired-marked-ok-to-uncheckout))]
+
+        ["Hijack marked files" clearcase-hijack-dired-files
+         :keys nil
+         :active (and (>= (clearcase-dired-mark-count) 2)
+                      (clearcase-dired-marked-ok-to-hijack))]
+
+        ["Unhijack marked files" clearcase-unhijack-dired-files
+         :keys nil
+         :active (and (>= (clearcase-dired-mark-count) 2)
+                      (clearcase-dired-marked-ok-to-unhijack))]
 
         ["Make marked files elements" clearcase-mkelem-dired-files
          :keys nil
@@ -6007,20 +6951,23 @@ the ClearCase menu.")
 
         ;; Current directory
         ;;
-        ["Check-in current-dir" clearcase-dired-checkin-current-dir
+        ["Checkin current-dir" clearcase-dired-checkin-current-dir
          :keys nil
          :active (clearcase-dired-current-dir-ok-to-checkin)]
 
-        ["Check-out current dir" clearcase-dired-checkout-current-dir
+        ["Checkout current dir" clearcase-dired-checkout-current-dir
          :keys nil
          :active (clearcase-dired-current-dir-ok-to-checkout)]
 
-        ["Un-checkout current dir" clearcase-dired-uncheckout-current-dir
+        ["Uncheckout current dir" clearcase-dired-uncheckout-current-dir
          :keys nil
          :active (clearcase-dired-current-dir-ok-to-uncheckout)]
 
         "---------------------------------"
         ["Describe file" clearcase-describe-dired-file
+         :active t]
+
+        ["Annotate file" clearcase-annotate-dired-file
          :active t]
 
         ["Show config-spec rule" clearcase-what-rule-dired-file
@@ -6030,7 +6977,7 @@ the ClearCase menu.")
         ["Edit config-spec" clearcase-edcs-edit t]
 
         "---------------------------------"
-        (list "Compare (emacs)..."
+        (list "Compare (Emacs)..."
               ["Compare with predecessor" clearcase-ediff-pred-dired-file
                :keys nil
                :active t]
@@ -6040,14 +6987,14 @@ the ClearCase menu.")
               ["Compare with named version" clearcase-ediff-named-version-dired-file
                :keys nil
                :active t])
-        (list "Compare (applet)..."
-              ["Compare with predecessor" clearcase-applet-diff-pred-dired-file
+        (list "Compare (GUI)..."
+              ["Compare with predecessor" clearcase-gui-diff-pred-dired-file
                :keys nil
                :active t]
-              ["Compare with branch base" clearcase-applet-diff-branch-base-dired-file
+              ["Compare with branch base" clearcase-gui-diff-branch-base-dired-file
                :keys nil
                :active t]
-              ["Compare with named version" clearcase-applet-diff-named-version-dired-file
+              ["Compare with named version" clearcase-gui-diff-named-version-dired-file
                :keys nil
                :active t])
         (list "Compare (diff)..."
@@ -6063,7 +7010,7 @@ the ClearCase menu.")
         "---------------------------------"
         ["Browse versions (dired)" clearcase-browse-vtree-dired-file
          :active (clearcase-dired-current-ok-to-browse)]
-        ["Vtree browser applet" clearcase-applet-vtree-browser-dired-file
+        ["Vtree browser GUI" clearcase-gui-vtree-browser-dired-file
          :keys nil
          :active t]
         "---------------------------------"
@@ -6110,22 +7057,22 @@ the ClearCase menu.")
         ["Set NO activity" clearcase-ucm-set-activity-none-current-dir
          :keys nil
          :active (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Rebase this stream" clearcase-applet-rebase
+        ["Rebase this stream" clearcase-gui-rebase
          :keys nil
          :active (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
-        ["Deliver from this stream" clearcase-applet-deliver
+        ["Deliver from this stream" clearcase-gui-deliver
          :keys nil
          :active (clearcase-vprop-ucm (clearcase-fprop-viewtag default-directory))]
         "---------------------------------"
-        (list "Applets"
-              ["ClearCase Explorer" clearcase-applet-clearexplorer
+        (list "ClearCase GUI"
+              ["ClearCase Explorer" clearcase-gui-clearexplorer
                :keys nil
                :active clearcase-on-mswindows]
-              ["Project Explorer" clearcase-applet-project-explorer
+              ["Project Explorer" clearcase-gui-project-explorer
                :keys nil]
-              ["Merge Manager" clearcase-applet-merge-manager
+              ["Merge Manager" clearcase-gui-merge-manager
                :keys nil]
-              ["Snapshot View Updater" clearcase-applet-snapshot-view-updater
+              ["Snapshot View Updater" clearcase-gui-snapshot-view-updater
                :keys nil])
         "---------------------------------"
 
@@ -6159,10 +7106,10 @@ the ClearCase menu.")
 (if (>= emacs-major-version '20)
     (progn
       (easy-menu-define
-       clearcase-dired-menu
-       (list clearcase-dired-mode-map)
-       "ClearCase Dired menu"
-       clearcase-dired-menu-contents)
+        clearcase-dired-menu
+        (list clearcase-dired-mode-map)
+        "ClearCase Dired menu"
+        clearcase-dired-menu-contents)
 
       (or clearcase-xemacs-p
           (add-to-list 'menu-bar-final-items 'ClearCase))))
@@ -6310,24 +7257,24 @@ looking for a cleartool executable. If found return the full pathname."
                             "cleartool.exe"
                           "cleartool"))
         (cleartool-path nil))
-     (catch 'found
-       (mapcar
-        (function (lambda (dir)
-                    (let ((f (expand-file-name (concat dir cleartool-name))))
-                      (if (file-executable-p f)
-                          (progn
-                            (setq cleartool-path f)
-                            (throw 'found t))))))
-        dir-list)
-       nil)
-     cleartool-path))
+    (catch 'found
+      (mapcar
+       (function (lambda (dir)
+                   (let ((f (expand-file-name (concat dir cleartool-name))))
+                     (if (file-executable-p f)
+                         (progn
+                           (setq cleartool-path f)
+                           (throw 'found t))))))
+       dir-list)
+      nil)
+    cleartool-path))
 
 (defun clearcase-non-lt-registry-server-online-p ()
   "Heuristic to determine if the local host is network-connected to
 its ClearCase servers. Used for a non-LT system."
 
   (let ((result nil)
-        (buf (get-buffer-create "*clearcase-lsregion*")))
+        (buf (get-buffer-create " *clearcase-lsregion*")))
     (save-excursion
       (set-buffer buf)
       (erase-buffer)
@@ -6354,6 +7301,7 @@ its ClearCase servers. Used for a non-LT system."
     ;; If servers are apparently not online, keep the
     ;; buffer around so we can see what lsregion reported.
     ;;
+    (sit-for 0.01); Fix by AJM to prevent kill-buffer claiming process still running
     (if result
         (kill-buffer buf))
     result))
@@ -6365,7 +7313,7 @@ its ClearCase servers. Used for a non-LT system."
 its ClearCase servers. Used for LT system."
 
   (let ((result nil)
-        (buf (get-buffer-create "*clearcase-lssite*")))
+        (buf (get-buffer-create " *clearcase-lssite*")))
     (save-excursion
       (set-buffer buf)
       (erase-buffer)
@@ -6389,10 +7337,11 @@ its ClearCase servers. Used for LT system."
         (condition-case nil
             (kill-process process)
           (error nil))))
-    
+
     ;; If servers are apparently not online, keep the
     ;; buffer around so we can see what lssite reported.
     ;;
+    (sit-for 0.01); Fix by AJM to prevent kill-buffer claiming process still running
     (if result
         (kill-buffer buf))
     result))
@@ -6440,7 +7389,7 @@ its ClearCase server(s)."
                       ;; 4. Schedule the asynchronous fetching of the view's properties
                       ;;    next time Emacs is idle enough.
                       ;;
-                      (clearcase-vprop-schedule-fetch (clearcase-fprop-viewtag filename))
+                      (clearcase-vprop-schedule-work (clearcase-fprop-viewtag filename))
 
                       ;; 5. Set backup policy
                       ;;
@@ -6525,7 +7474,7 @@ its ClearCase server(s)."
                 (progn
                   (clearcase-dired-mode 1)
                   (clearcase-fprop-get-properties default-directory)
-                  (clearcase-vprop-schedule-fetch (clearcase-fprop-viewtag default-directory))))
+                  (clearcase-vprop-schedule-work (clearcase-fprop-viewtag default-directory))))
             (setq clearcase-dired-mode
                   (concat " ClearCase:"
                           (clearcase-mode-line-buffer-id default-directory)))
@@ -6541,7 +7490,10 @@ its ClearCase server(s)."
   ;; If in clearcase-dired-mode, reformat the buffer.
   ;;
   (if clearcase-dired-mode
-      (clearcase-dired-reformat-buffer))
+      (progn
+        (clearcase-dired-reformat-buffer)
+          (if clearcase-dired-show-view
+              (clearcase-dired-insert-viewtag))))
   t)
 
 ;;}}}
@@ -6549,7 +7501,7 @@ its ClearCase server(s)."
 ;;{{{ A write-file-hook to auto-insert a version-string.
 
 ;; To use this, put a line containing this in the first 8 lines of your file:
-;;    ClearCase-version: </main/laptop/115>
+;;    ClearCase-version: </main/laptop/155>
 ;; and make sure that clearcase-version-stamp-active gets set to true at least
 ;; locally in the file.
 
@@ -6645,8 +7597,8 @@ argument then just change the read-only flag even if visiting a ClearCase
 version."
   (interactive "P")
   (cond (arg
-	 (toggle-read-only))
-	((and (clearcase-fprop-mtype buffer-file-name)
+     (toggle-read-only))
+    ((and (clearcase-fprop-mtype buffer-file-name)
               buffer-read-only
               (file-writable-p buffer-file-name)
               (/= 0 (user-uid)))
@@ -6811,15 +7763,15 @@ version."
         (inhibit-file-name-operation operation))
 
     (cond ((eq operation 'file-name-nondirectory)
-	   (file-name-nondirectory (clearcase-vxpath-element-part
-				    (car args))))
+       (file-name-nondirectory (clearcase-vxpath-element-part
+                    (car args))))
 
-	  ((eq operation 'file-name-directory)
-	   (file-name-directory (clearcase-vxpath-element-part
-				 (car args))))
+      ((eq operation 'file-name-directory)
+       (file-name-directory (clearcase-vxpath-element-part
+                 (car args))))
 
-	  (t
-	   (apply operation args)))))
+      (t
+       (apply operation args)))))
 
 ;;}}}
 
@@ -6880,15 +7832,15 @@ This is enabled/disabled by clearcase-integrate/clearcase-unintegrate."
   ;;
   (if clearcase-suppress-vc-within-mvfs
       (when clearcase-suppress-vc-within-mvfs
-	(ad-enable-advice 'vc-registered 'around 'clearcase-interceptor)
-	(ad-activate 'vc-registered)))
+    (ad-enable-advice 'vc-registered 'around 'clearcase-interceptor)
+    (ad-activate 'vc-registered)))
 
-;; Disabled for now. See comments above clearcase-vxpath-file-name-handler.
-;;
-;;   ;;    2.4 Add file name handler for version extended path names
-;;   ;;
-;;   (add-to-list 'file-name-handler-alist
-;;                (cons clearcase-vxpath-glue 'clearcase-vxpath-file-name-handler))
+  ;; Disabled for now. See comments above clearcase-vxpath-file-name-handler.
+  ;;
+  ;;   ;;    2.4 Add file name handler for version extended path names
+  ;;   ;;
+  ;;   (add-to-list 'file-name-handler-alist
+  ;;                (cons clearcase-vxpath-glue 'clearcase-vxpath-file-name-handler))
   )
 
 (defun clearcase-unintegrate ()
@@ -6952,7 +7904,7 @@ This is enabled/disabled by clearcase-integrate/clearcase-unintegrate."
         (if (stringp shell-ev-value)
             (if (not (executable-find shell-ev-value))
                 (setenv "SHELL" nil)))))
-  
+
   ;; Things have to be done here in a certain order.
   ;;
   ;; 1. Make sure cleartool is on the shell search PATH.
@@ -7001,7 +7953,7 @@ This is enabled/disabled by clearcase-integrate/clearcase-unintegrate."
               ;; ClearCase menubar entry.
               ;;
               (if clearcase-setview-viewtag
-                  (clearcase-vprop-schedule-fetch clearcase-setview-viewtag)))))))
+                  (clearcase-vprop-schedule-work clearcase-setview-viewtag)))))))
 
 (if (not clearcase-servers-online)
     (message "ClearCase apparently not online. ClearCase/Emacs integration not installed."))
@@ -7016,4 +7968,3 @@ This is enabled/disabled by clearcase-integrate/clearcase-unintegrate."
 ;; folded-file: t
 ;; clearcase-version-stamp-active: t
 ;; End:
-
