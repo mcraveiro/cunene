@@ -33,7 +33,9 @@
      (set-face-foreground diff-added-face "Green")
      (set-face-foreground diff-removed-face "Red")))
 
-(autoload 'magit-status "magit" "git mode" t)
+;; (autoload 'magit-status "magit" "git mode" t)
+(require 'magit)
+(require 'magit-svn)
 
 ;;
 ;; Key bindings

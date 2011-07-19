@@ -22,10 +22,9 @@
 ;; Hook
 (add-hook 'c-mode-common-hook
           (lambda ()
-            ;; indent function args properly
-            (c-set-offset 'arglist-intro '+)
+            (c-set-offset 'innamespace 0) ;; Do not indent namespaces.
+            (c-set-offset 'arglist-intro '+) ;; indent function args properly
             (c-set-offset 'arglist-cont-nonempty '+)
-            (c-set-offset 'innamespace 0)      ;; Do not indent namespaces.
             (c-toggle-hungry-state 1)          ;; use hungry delete.
             (auto-fill-mode 1)                 ;; auto fill comments
             (set (make-local-variable 'comment-auto-fill-only-comments))
