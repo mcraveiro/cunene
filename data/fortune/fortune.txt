@@ -7903,3 +7903,8 @@
 ;; reality of time limits, fixed costs, and the laws of nature.
 ;; -- Tom Davis, SGI
 %
+;; SQLite is not designed to replace Oracle. It is designed to
+;; replace fopen(). http://j.mp/sOJay
+%
+;; If we wish to count lines of code, we should not regard them as
+;; "lines produced" but as "lines spent -- Edsger Dijkstra 
