@@ -110,6 +110,7 @@
                      "cunene-scratch.el"
                      "cunene-semantic"
                      "cunene-smooth-scrolling"
+                     "cunene-shell-toggle.el"
                      "cunene-sql"
                      "cunene-ssh"
                      "cunene-swbuff"

@@ -45,6 +45,9 @@
 ;; do not ask for confirmation when creating new file or buffer
 (setq confirm-nonexistent-file-or-buffer nil)
 
+;; highlight incremental search
+(setq search-highlight t)
+
 ;; Time and date
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
@@ -373,9 +376,6 @@ text (with prefix arg don't indent)."
 
 ;; Intelligent completion based on open buffers.
 (global-set-key (kbd "M-/") 'hippie-expand)
-
-;; Start a shell
-(global-set-key (kbd "C-x m") (lambda () (interactive) (shell)))
 
 ;; Full screen
 (global-set-key (kbd "<f11>") 'fullscreen)
