@@ -240,7 +240,7 @@ File: magit.info,  Node: Untracked files,  Next: Staging and Committing,  Prev: 
 Untracked files are shown in the _Untracked files_ section.
 
    You can add an untracked file to the staging area with `s'.  If
-point is on the _Untracked files_ section title when you it `s', all
+point is on the _Untracked files_ section title when you hit `s', all
 untracked files are staged.
 
    Typing `C-u S' anywhere will also stage all untracked files,
@@ -253,7 +253,7 @@ directories, for example.  The `I' command is similar to `i' but will
 add the file to `.git/info/exclude' instead.
 
    To delete an untracked file forever, use `k'.  If point is on the
-_Untracked files_ section title when you it `k', all untracked files
+_Untracked files_ section title when you hit `k', all untracked files
 are deleted.
 
 
@@ -370,7 +370,7 @@ show twice as many entries. `C-u e' will show all entries, and given a
 numeric prefix argument, `e' will add this number of entries.
 
    You can move point to a commit and then cause various things to
-happen with it.  (The following commands work in any list of commit,
+happen with it.  (The following commands work in any list of commits,
 such as the one shown in the _Unpushed commits_ section.)
 
    Typing `RET' will pop up more information about the current commit
@@ -445,7 +445,7 @@ by their unique hash, the hash will be highlighted and you will be able
 to visit the referenced commit either by clicking on it or by moving
 your cursor onto it and pressing `RET'.
 
-   The commit buffer maintains a history of the commits that it's shown.
+   The commit buffer maintains a history of the commits it has shown.
 After visiting a referenced commit you can type `C-c C-b' to get back
 to where you came from.  To go forward in the history, type `C-c C-f'.
 There are also `[back]' and `[forward]' buttons at the bottom of the
@@ -482,7 +482,7 @@ File: magit.info,  Node: Tagging,  Next: Resetting,  Prev: Diffing,  Up: Top
 11 Tagging
 **********
 
-Typing `t t' will make a lighweight tag.  Typing `t T' will make an
+Typing `t t' will make a lighweight tag.  Typing `t a' will make an
 annotated tag.  It will put you in the normal `*magit-log-edit' buffer
 for writing commit messages, but typing `C-c C-c' in it will make the
 tag instead.  This is controlled by the `Tag' field that will be added
@@ -633,7 +633,7 @@ File: magit.info,  Node: Merging,  Next: Rebasing,  Prev: Wazzup,  Up: Top
 17 Merging
 **********
 
-Magit offers two ways to merge branches: manually and automatic.  A
+Magit offers two ways to merge branches: manual and automatic.  A
 manual merge will apply all changes to your working tree and staging
 area, but will not commit them, while an automatic merge will go ahead
 and commit them immediately.
@@ -645,7 +645,7 @@ remind you that the next commit will be a merge commit (with more than
 one parent).  If you want to abort a manual merge, just do a hard reset
 to HEAD with `X'.
 
-   Merges can fail if the two branches you merge want to introduce
+   Merges can fail if the two branches you want to merge introduce
 conflicting changes.  In that case, the automatic merge stops before the
 commit, essentially falling back to a manual merge.  You need to resolve
 the conflicts for example with `e' and stage the resolved files, for
@@ -760,7 +760,7 @@ if it doesn't exist already.  The local branch will be configured so
 that it pulls from the new remote branch.
 
    Typing `f f' will run `git fetch'.  It will prompt for the name of
-the remote to update if there are no default one.  Typing `f o' will
+the remote to update if there is no default one.  Typing `f o' will
 always prompt for the remote.  Typing `F F' will run `git pull'.  When
 you don't have a default branch configured to be pulled into the
 current one, you will be asked for it.
@@ -1137,10 +1137,10 @@ Node: Acknowledgments3005
 Node: Sections3629
 Node: Status6179
 Node: Untracked files8908
-Node: Staging and Committing9857
-Node: History13403
-Node: Reflogs16582
-Node: Commit Buffer16986
+Node: Staging and Committing9859
+Node: History13405
+Node: Reflogs16585
+Node: Commit Buffer16989
 Node: Diffing18315
 Node: Tagging19301
 Node: Resetting19750
@@ -1149,18 +1149,18 @@ Node: Branching22332
 Node: The Branch Manager23710
 Node: Wazzup24426
 Node: Merging25217
-Node: Rebasing26269
-Node: Rewriting27084
-Node: Pushing and Pulling30097
-Node: Submodules31843
-Node: Bisecting32263
-Node: Using Magit Extensions33478
-Node: Interfacing with Subversion33749
-Node: Interfacing with Topgit34317
-Node: Interfacing with StGit35345
-Node: Developing Extensions36343
-Node: Using Git Directly39215
-Node: Customization39586
+Node: Rebasing26267
+Node: Rewriting27082
+Node: Pushing and Pulling30095
+Node: Submodules31840
+Node: Bisecting32260
+Node: Using Magit Extensions33475
+Node: Interfacing with Subversion33746
+Node: Interfacing with Topgit34314
+Node: Interfacing with StGit35342
+Node: Developing Extensions36340
+Node: Using Git Directly39212
+Node: Customization39583
 
 End Tag Table
 

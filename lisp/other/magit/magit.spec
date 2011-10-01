@@ -1,5 +1,5 @@
 Name:		magit
-Version:	1.0.0-205-g12d3082-dirty
+Version:	
 Release:	1%{?dist}
 Summary:	An Emacs Extension for Git
 BuildArch: noarch
