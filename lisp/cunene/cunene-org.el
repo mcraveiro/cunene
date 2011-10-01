@@ -42,7 +42,7 @@
           (lambda ()
             (setq org-replace-disputed-keys t)
             (org-set-local 'yas/trigger-key [tab])
-            (define-key yas/keymap [tab] 'yas/next-field-group)))
+            ))
 
 ;; make windmove work in org-mode:
 (add-hook 'org-shiftup-final-hook 'windmove-up)
