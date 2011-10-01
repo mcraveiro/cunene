@@ -1,3 +1,4 @@
+# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
 #name : #ifndef XXX; #define XXX; #endif
 # --
 #ifndef $2_${1:`(upcase (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`_HPP}

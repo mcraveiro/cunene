@@ -1,11 +1,14 @@
+# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
 #name : prop (...) { ... }
 # --
 /**
- * @brief $0
+ * @brief $3
  */
 /*@{*/
-$2 $1() const { return(_$1); }
-void $1(const $2& value) { _$1 = value; }
+${1:int} $2() const { return(_$2); }
+void $2(const $1& value) { _$2 = value; }
 /*@}*/
 
-$2 _$1;
+private:
+$1 _$2;
+$0

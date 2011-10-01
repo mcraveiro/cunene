@@ -1,7 +1,8 @@
 # vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name: int main(argc, argv) { ... }
+#name : if (...) { ... } else { ... }
 # --
-int main(int argc, char *argv[]) {
+if (${1:condition}) {
+    $2
+} else {
     $0
-    return 0;
-}
+}         
