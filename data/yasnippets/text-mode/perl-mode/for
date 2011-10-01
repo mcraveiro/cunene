@@ -1,3 +1,4 @@
+# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
 #name : for (...) { ... }
 # --
 for (my \$${1:var} = 0; \$$1 < ${2:expression}; \$$1++) {
