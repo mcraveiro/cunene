@@ -1,34 +1,42 @@
-;;; Emacs Color theme based on the Tango Palette colors.
-;;; First derived from color-theme-tango.el,  created by danranx@gmail.com :
-;;; http://www.emacswiki.org/emacs/color-theme-tango.el
+;;; color-theme-tangotango.el --- Tango Palette color theme for Emacs.
 
-;; Copyright (C) 2010 Julien Barnier <julien@nozav.org>
+;; First derived from color-theme-tango.el,  created by danranx@gmail.com :
+;; http://www.emacswiki.org/emacs/color-theme-tango.el
 
-;; Project homepage : http://blog.nozav.org/post/2010/07/12/Updated-tangotango-emacs-color-theme
+;; Copyright (C) 2011 Julien Barnier <julien@nozav.org>
+
+;; Author: Julien Barnier
+;; Adapted-By: Yesudeep Mangalapilly
+;; Keywords: tango palette color theme emacs
+;; URL: https://github.com/juba/color-theme-tangotango
+;; Version: 0.0.3
+;; Package-Requires: ((color-theme "6.6.1"))
 
 ;; This file is NOT part of GNU Emacs.
+
+;; For screenshots and installation instructions :
+;; http://blog.nozav.org/post/2010/07/12/Updated-tangotango-emacs-color-theme
+
+;;; License:
 
 ;; This is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
 ;; Software Foundation; either version 2, or (at your option) any later
 ;; version.
-
-;; This file is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-;; General Public License for more details.
-
+;;
+;; This is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
 ;; You should have received a copy of the GNU General Public License
-;; along with Emacs; see the file COPYING, or type `C-h C-c'. If not,
-;; write to the Free Software Foundation at this address:
-
-;;   Free Software Foundation
-;;   51 Franklin Street, Fifth Floor
-;;   Boston, MA 02110-1301
-;;   USA
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+;; MA 02111-1307, USA.
 
 ;;; Code:
 
+;; color theme (requires http://www.emacswiki.org/cgi-bin/wiki?ColorTheme )
 (eval-when-compile
   (require 'color-theme))
 
@@ -45,7 +53,6 @@
      ((background-color . "#2e3434")
       (background-mode . dark)
       (border-color . "#888a85")
-      (cursor-color . "#fce94f")
       (foreground-color . "#eeeeec")
       (mouse-color . "#8ae234"))
      ((help-highlight-face . underline)
@@ -56,6 +63,7 @@
       (ibuffer-read-only-buffer-face . font-lock-type-face)
       (ibuffer-special-buffer-face . font-lock-keyword-face)
       (ibuffer-title-face . font-lock-type-face))
+     (cursor ((t (:background "#fce94f" :foreground "#222222"))))
      (highlight ((t (:background "brown4" :foreground nil))))
      (border ((t (:background "#888a85"))))
      (fringe ((t (:background "grey10"))))
@@ -86,7 +94,6 @@
      (isearch-lazy-highlight-face ((t (:foreground "#2e3436" :background "#e9b96e"))))
      (show-paren-match-face ((t (:foreground "#2e3436" :background "#73d216"))))
      (show-paren-mismatch-face ((t (:background "#ad7fa8" :foreground "#2e3436"))))
-     (minibuffer-prompt ((t (:foreground "#729fcf" :bold t))))
      (info-xref ((t (:foreground "#729fcf"))))
      (info-xref-visited ((t (:foreground "#ad7fa8"))))
      (diary-face ((t (:bold t :foreground "IndianRed"))))
@@ -116,46 +123,46 @@
      (gnus-cite-face-2 ((t (:foreground "sienna4"))))
      (gnus-cite-face-3 ((t (:foreground "khaki4"))))
      (gnus-cite-face-4 ((t (:foreground "PaleTurquoise4"))))
-     (gnus-group-mail-1-empty-face ((t (:foreground "light cyan"))))
-     (gnus-group-mail-1-face ((t (:bold t :foreground "light cyan"))))
-     (gnus-group-mail-2-empty-face ((t (:foreground "turquoise"))))
-     (gnus-group-mail-2-face ((t (:bold t :foreground "turquoise"))))
-     (gnus-group-mail-3-empty-face ((t (:foreground "#729fcf"))))
-     (gnus-group-mail-3-face ((t (:bold t :foreground "#edd400"))))
-     (gnus-group-mail-low-empty-face ((t (:foreground "dodger blue"))))
-     (gnus-group-mail-low-face ((t (:bold t :foreground "dodger blue"))))
-     (gnus-group-news-1-empty-face ((t (:foreground "light cyan"))))
-     (gnus-group-news-1-face ((t (:bold t :foreground "light cyan"))))
-     (gnus-group-news-2-empty-face ((t (:foreground "turquoise"))))
-     (gnus-group-news-2-face ((t (:bold t :foreground "turquoise"))))
-     (gnus-group-news-3-empty-face ((t (:foreground "#729fcf"))))
-     (gnus-group-news-3-face ((t (:bold t :foreground "#edd400"))))
-     (gnus-group-news-low-empty-face ((t (:foreground "dodger blue"))))
-     (gnus-group-news-low-face ((t (:bold t :foreground "dodger blue"))))
-     (gnus-header-name-face ((t (:bold t :foreground "#729fcf"))))
+     (gnus-group-mail-1-empty((t (:foreground "light cyan"))))
+     (gnus-group-mail-1((t (:bold t :foreground "light cyan"))))
+     (gnus-group-mail-2-empty((t (:foreground "turquoise"))))
+     (gnus-group-mail-2((t (:bold t :foreground "turquoise"))))
+     (gnus-group-mail-3-empty((t (:foreground "#729fcf"))))
+     (gnus-group-mail-3((t (:bold t :foreground "#edd400"))))
+     (gnus-group-mail-low-empty((t (:foreground "dodger blue"))))
+     (gnus-group-mail-low((t (:bold t :foreground "dodger blue"))))
+     (gnus-group-news-1-empty((t (:foreground "light cyan"))))
+     (gnus-group-news-1((t (:bold t :foreground "light cyan"))))
+     (gnus-group-news-2-empty((t (:foreground "turquoise"))))
+     (gnus-group-news-2((t (:bold t :foreground "turquoise"))))
+     (gnus-group-news-3-empty((t (:foreground "#729fcf"))))
+     (gnus-group-news-3((t (:bold t :foreground "#edd400"))))
+     (gnus-group-news-low-empty((t (:foreground "dodger blue"))))
+     (gnus-group-news-low((t (:bold t :foreground "dodger blue"))))
+     (gnus-header-name ((t (:bold t :foreground "#729fcf"))))
      (gnus-header-from ((t (:bold t :foreground "#edd400"))))
      (gnus-header-subject ((t (:foreground "#edd400"))))
      (gnus-header-content ((t (:italic t :foreground "#8ae234"))))
-     (gnus-header-newsgroups-face ((t (:italic t :bold t :foreground "LightSkyBlue3"))))
-     (gnus-signature-face ((t (:italic t :foreground "dark grey"))))
-     (gnus-summary-cancelled-face ((t (:background "black" :foreground "yellow"))))
-     (gnus-summary-high-ancient-face ((t (:bold t :foreground "rotal blue"))))
-     (gnus-summary-high-read-face ((t (:bold t :foreground "lime green"))))
-     (gnus-summary-high-ticked-face ((t (:bold t :foreground "tomato"))))
-     (gnus-summary-high-unread-face ((t (:bold t :foreground "white"))))
-     (gnus-summary-low-ancient-face ((t (:italic t :foreground "lime green"))))
-     (gnus-summary-low-read-face ((t (:italic t :foreground "royal blue"))))
-     (gnus-summary-low-ticked-face ((t (:italic t :foreground "dark red"))))
-     (gnus-summary-low-unread-face ((t (:italic t :foreground "white"))))
-     (gnus-summary-normal-ancient-face ((t (:foreground "royal blue"))))
-     (gnus-summary-normal-read-face ((t (:foreground "lime green"))))
-     (gnus-summary-normal-ticked-face ((t (:foreground "indian red"))))
-     (gnus-summary-normal-unread-face ((t (:foreground "white"))))
+     (gnus-header-newsgroups((t (:italic t :bold t :foreground "LightSkyBlue3"))))
+     (gnus-signature((t (:italic t :foreground "dark grey"))))
+     (gnus-summary-cancelled((t (:background "black" :foreground "yellow"))))
+     (gnus-summary-high-ancient((t (:bold t :foreground "rotal blue"))))
+     (gnus-summary-high-read((t (:bold t :foreground "lime green"))))
+     (gnus-summary-high-ticked((t (:bold t :foreground "tomato"))))
+     (gnus-summary-high-unread((t (:bold t :foreground "white"))))
+     (gnus-summary-low-ancient((t (:italic t :foreground "lime green"))))
+     (gnus-summary-low-read((t (:italic t :foreground "royal blue"))))
+     (gnus-summary-low-ticked((t (:italic t :foreground "dark red"))))
+     (gnus-summary-low-unread((t (:italic t :foreground "white"))))
+     (gnus-summary-normal-ancient((t (:foreground "royal blue"))))
+     (gnus-summary-normal-read((t (:foreground "lime green"))))
+     (gnus-summary-normal-ticked((t (:foreground "indian red"))))
+     (gnus-summary-normal-unread((t (:foreground "white"))))
      (gnus-summary-selected ((t (:background "brown4" :foreground "white"))))
-     (message-header-name-face ((t (:foreground "tomato"))))
-     (message-header-newsgroups-face ((t (:italic t :bold t :foreground "LightSkyBlue3"))))
-     (message-header-other-face ((t (:foreground "LightSkyBlue3"))))
-     (message-header-xheader-face ((t (:foreground "DodgerBlue3"))))
+     (message-header-name((t (:foreground "tomato"))))
+     (message-header-newsgroups((t (:italic t :bold t :foreground "LightSkyBlue3"))))
+     (message-header-other((t (:foreground "LightSkyBlue3"))))
+     (message-header-xheader((t (:foreground "DodgerBlue3"))))
      (message-header-subject ((t (:foreground "white"))))
      (message-header-to ((t (:foreground "white"))))
      (message-header-cc ((t (:foreground "white"))))
@@ -179,6 +186,7 @@
      (org-agenda-date-weekend ((t (:weight normal :foreground "dodger blue"))))
      (org-agenda-date-today ((t (:weight bold :foreground "#edd400"))))
      (anything-header ((t (:bold t :background "grey15" :foreground "#edd400"))))
+     (anything-candidate-number ((t (:background "#f57900" :foreground "black"))))
      (ess-jb-comment-face ((t (:background "#2e3436" :foreground "firebrick" :slant italic))))
      (ess-jb-hide-face ((t (:background "#2e3436" :foreground "#243436"))))
      (ess-jb-h1-face ((t (:height 1.6 :foreground "dodger blue" :slant normal))))
@@ -189,6 +197,37 @@
      (magit-header ((t (:foreground "#edd400"))))
      (magit-diff-add ((t (:foreground "#729fcf"))))
      (magit-item-highlight ((t (:weight extra-bold :inverse-video t))))
+     (diff-header ((t (:background "gray30"))))
+     (diff-index ((t (:foreground "#edd400" :bold t))))
+     (diff-file-header ((t (:foreground "#eeeeec" :bold t))))
+     (diff-hunk-header ((t (:foreground "#edd400"))))
+     (diff-added ((t (:foreground "#8ae234"))))
+     (diff-removed ((t (:foreground "#f57900"))))
+     (diff-context ((t (:foreground "#888a85"))))
+     (diff-refine-change ((t (:bold t :background "gray30"))))
+     (ediff-current-diff-A ((t (:background "#555753"))))
+     (ediff-current-diff-Ancestor ((t (:background "#555753"))))
+     (ediff-current-diff-B ((t (:background "#555753"))))
+     (ediff-current-diff-C ((t (:background "#555753"))))
+     (ediff-even-diff-A ((t (:background "gray30"))))
+     (ediff-even-diff-Ancestor ((t (:background "gray30"))))
+     (ediff-even-diff-B ((t (:background "gray30"))))
+     (ediff-even-diff-C ((t (:background "gray30"))))
+     (ediff-odd-diff-A ((t (:background "gray30"))))
+     (ediff-odd-diff-Ancestor ((t (:background "gray30"))))
+     (ediff-odd-diff-B ((t (:background "gray30"))))
+     (ediff-odd-diff-C ((t (:background "gray30"))))
+     (ediff-fine-diff-A ((t (:background "#222222"))))
+     (ediff-fine-diff-Ancestor ((t (:background "#222222"))))
+     (ediff-fine-diff-B ((t (:background "#222222"))))
+     (ediff-fine-diff-C ((t (:background "#222222"))))
+     (minibuffer-prompt ((t (:foreground "#729fcf" :bold t))))
+     (mumamo-background-chunk-major ((t (:background nil))))
+     (mumamo-background-chunk-submode1 ((t (:background "#2E3440"))))
+     (mumamo-background-chunk-submode2 ((t (:background "#2E4034"))))
+     (mumamo-background-chunk-submode3 ((t (:background "#343434"))))
 )))
 
 (provide 'color-theme-tangotango)
+
+;;; color-theme-tangotango.el ends here

@@ -16,12 +16,14 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 (add-to-list 'load-path (concat dotfiles-dir "/other/color-theme"))
 (add-to-list 'load-path (concat dotfiles-dir "/other/color-theme/themes"))
-;; (require 'zenburn)
-;; (color-theme-zenburn)
-;; (require 'color-theme-tangotango)
-;; (color-theme-tangotango)
 
 ;; (require 'color-theme)
-(setq color-theme-load-all-themes nil)
+;; (setq color-theme-load-all-themes nil)
+
+;; (require 'zenburn)
+;; (color-theme-zenburn)
+
+;; (require 'tango-theme)
+;; (color-theme-tango)
 
 
