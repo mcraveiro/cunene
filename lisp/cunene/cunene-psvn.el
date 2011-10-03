@@ -15,7 +15,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(autoload 'psvn "psvn" "Subversion mode." t)
+(require 'psvn)
 
 ;; show a green/red dot on the mode line.
 (setq svn-status-fancy-file-state-in-modeline t)

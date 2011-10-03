@@ -23,6 +23,7 @@
 (setq highline-whole-line nil)
 
 ;; Turn on local highlighting for a bunch of modes
+(add-hook 'svn-status-mode-hook 'highline-on)
 (add-hook 'dired-mode-hook 'highline-on)
 (add-hook 'ibuffer-hooks #'highline-on)
 (add-hook 'grep-setup-hook #'highline-on)
