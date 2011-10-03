@@ -116,6 +116,9 @@
 ;; Looks
 ;;
 
+;; re-display regardless of whether input is available.
+(setq redisplay-dont-pause t)
+
 (defun fontify-frame (frame)
   ;; good fonts:
   ;;
