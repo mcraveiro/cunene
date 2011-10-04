@@ -3,7 +3,7 @@
 ;; Copyright (C) 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: semantic-ectag-util.el,v 1.8 2010/04/09 02:01:20 zappo Exp $
+;; X-RCS: $Id: semantic-ectag-util.el,v 1.8 2010-04-09 02:01:20 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -141,7 +141,7 @@ The returned buffer will be recycled in future calls to this function."
       (setq str (save-excursion
 		  (set-buffer b)
 		  (goto-char (point-min))
-		  (if (re-search-forward "Exuberant Ctags \\([0-9.]+\\)," nil t)
+		  (if (re-search-forward "Exuberant Ctags \\([0-9.]+\\)\\(~svn[0-9]+\\)?," nil t)
 		      (match-string 1)
 		    nil)
 		  )

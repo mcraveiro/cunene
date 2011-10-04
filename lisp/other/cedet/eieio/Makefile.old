@@ -20,7 +20,7 @@
 #
 # Please send bug reports, etc. to zappo@gnu.org
 #
-# $Id: Makefile.old,v 1.5 1999/03/09 14:14:42 zappo Exp $
+# $Id: Makefile.old,v 1.5 1999-03-09 14:14:42 zappo Exp $
 
 
 VERSION=$(shell grep "Version: " eieio.el | cut -d" " -f3)

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2008, 2009 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: semantic-elp.el,v 1.17 2009/09/11 23:38:25 zappo Exp $
+;; X-RCS: $Id: semantic-elp.el,v 1.17 2009-09-11 23:38:25 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -239,7 +239,7 @@ You may also need `semantic-elp-include-path-list'.")
     semantic-analyze-scope-nested-tags
     semantic-analyze-scoped-types
     semantic-analyze-scoped-types
-    semantic-analyze-tag-prototype-p
+    semantic-tag-prototype-p
     semantic-analyze-scoped-type-parts
     semantic-calculate-scope
     semantic-ctxt-scoped-types

@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Marco Craveiro <marco@lorenz>
-;; Created: 2011-06-18 19:40:42+0100
+;; Created: 2011-10-04 23:30:01+0100
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 
@@ -48,6 +48,7 @@
      ("inline" . INLINE)
      ("virtual" . VIRTUAL)
      ("mutable" . MUTABLE)
+     ("explicit" . EXPLICIT)
      ("struct" . STRUCT)
      ("union" . UNION)
      ("enum" . ENUM)
@@ -130,6 +131,7 @@
      ("enum" summary "Enumeration Type Declaration: enum [name] { ... };")
      ("union" summary "Union Type Declaration: union [name] { ... };")
      ("struct" summary "Structure Type Declaration: struct [name] { ... };")
+     ("explicit" summary "Forbids implicit type conversion: explicit <constructor>")
      ("mutable" summary "Member Declaration Modifier: mutable <type> <name> ...")
      ("virtual" summary "Method Modifier: virtual <type> <name>(...) ...")
      ("inline" summary "Function Modifier: inline <return  type> <name>(...) {...};")
@@ -492,6 +494,12 @@
       )
      (template)
      (using)
+     (spp-include
+      ,(semantic-lambda
+	(semantic-tag
+	 (nth 0 vals)
+	 'include :inside-ns t))
+      )
      ( ;;EMPTY
       )
      ) ;; end namespacesubparts

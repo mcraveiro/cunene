@@ -3,7 +3,7 @@
 ;; Copyright (C) 2002, 2003, 2004, 2007 Richard Kim
 
 ;; Author: Marco Craveiro <marco@lorenz>
-;; Created: 2011-06-18 19:39:26+0100
+;; Created: 2011-10-04 23:29:58+0100
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 
@@ -67,8 +67,10 @@
      ("return" . RETURN)
      ("try" . TRY)
      ("while" . WHILE)
+     ("with" . WITH)
      ("yield" . YIELD))
    '(("yield" summary "Create a generator function")
+     ("with" summary "Start statement with an associated context object")
      ("while" summary "Start a 'while' loop")
      ("try" summary "Start of statements protected by exception handlers")
      ("return" summary "Return from a function")
@@ -109,6 +111,7 @@
      ("string"
       (STRING_LITERAL))
      ("punctuation"
+      (AT . "@")
       (BACKQUOTE . "`")
       (ASSIGN . "=")
       (COMMA . ",")
@@ -179,7 +182,7 @@
     (eval-when-compile
       (require 'wisent-comp))
     (wisent-compile-grammar
-     '((BACKSLASH NEWLINE INDENT DEDENT INDENT_BLOCK PAREN_BLOCK BRACE_BLOCK BRACK_BLOCK LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK LTLTEQ GTGTEQ EXPEQ DIVDIVEQ DIVDIV LTLT GTGT EXPONENT EQ GE LE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ AMPEQ OREQ HATEQ LTGT NE HAT LT GT AMP MULT DIV MOD PLUS MINUS PERIOD TILDE BAR COLON SEMICOLON COMMA ASSIGN BACKQUOTE STRING_LITERAL NUMBER_LITERAL NAME AND AS ASSERT BREAK CLASS CONTINUE DEF DEL ELIF ELSE EXCEPT EXEC FINALLY FOR FROM GLOBAL IF IMPORT IN IS LAMBDA NOT OR PASS PRINT RAISE RETURN TRY WHILE YIELD)
+     '((BACKSLASH NEWLINE INDENT DEDENT INDENT_BLOCK PAREN_BLOCK BRACE_BLOCK BRACK_BLOCK LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK LTLTEQ GTGTEQ EXPEQ DIVDIVEQ DIVDIV LTLT GTGT EXPONENT EQ GE LE PLUSEQ MINUSEQ MULTEQ DIVEQ MODEQ AMPEQ OREQ HATEQ LTGT NE HAT LT GT AMP MULT DIV MOD PLUS MINUS PERIOD TILDE BAR COLON SEMICOLON COMMA ASSIGN BACKQUOTE AT STRING_LITERAL NUMBER_LITERAL NAME AND AS ASSERT BREAK CLASS CONTINUE DEF DEL ELIF ELSE EXCEPT EXEC FINALLY FOR FROM GLOBAL IF IMPORT IN IS LAMBDA NOT OR PASS PRINT RAISE RETURN TRY WHILE WITH YIELD)
        nil
        (goal
 	((NEWLINE))
@@ -370,6 +373,7 @@
 	((while_stmt))
 	((for_stmt))
 	((try_stmt))
+	((with_stmt))
 	((funcdef))
 	((class_declaration)))
        (if_stmt
@@ -429,10 +433,36 @@
 	(nil)
 	((test zero_or_one_comma_test)
 	 nil))
+       (with_stmt
+	((WITH test COLON suite)
+	 (wisent-raw-tag
+	  (semantic-tag-new-code $1 nil)))
+	((WITH test with_var COLON suite)
+	 (wisent-raw-tag
+	  (semantic-tag-new-code $1 nil))))
+       (with_var
+	((AS expr)
+	 nil))
+       (decorator
+	((AT dotted_name varargslist_opt NEWLINE)
+	 (wisent-raw-tag
+	  (semantic-tag-new-function $2 "decorator" $3))))
+       (decorators
+	((decorator)
+	 (list $1))
+	((decorator decorators)
+	 (cons $1 $2)))
        (funcdef
 	((DEF NAME function_parameter_list COLON suite)
-	 (wisent-raw-tag
-	  (semantic-tag-new-function $2 nil $3))))
+	 (wisent-python-reconstitute-function-tag
+	  (wisent-raw-tag
+	   (semantic-tag-new-function $2 nil $3))
+	  $5))
+	((decorators DEF NAME function_parameter_list COLON suite)
+	 (wisent-python-reconstitute-function-tag
+	  (wisent-raw-tag
+	   (semantic-tag-new-function $3 nil $4 :decorators $1))
+	  $6)))
        (function_parameter_list
 	((PAREN_BLOCK)
 	 (let
@@ -458,9 +488,10 @@
 	  (semantic-tag-new-variable $2 nil nil))))
        (class_declaration
 	((CLASS NAME paren_class_list_opt COLON suite)
-	 (wisent-raw-tag
-	  (semantic-tag-new-type $2 $1 $5
-				 (cons $3 nil)))))
+	 (wisent-python-reconstitute-class-tag
+	  (wisent-raw-tag
+	   (semantic-tag-new-type $2 $1 $5
+				  (cons $3 nil))))))
        (paren_class_list_opt
 	(nil)
 	((paren_class_list)))
@@ -712,7 +743,8 @@
 (define-lex-string-type-analyzer wisent-python-wy--<punctuation>-string-analyzer
   "string analyzer for <punctuation> tokens."
   "\\(\\s.\\|\\s$\\|\\s'\\)+"
-  '((BACKQUOTE . "`")
+  '((AT . "@")
+    (BACKQUOTE . "`")
     (ASSIGN . "=")
     (COMMA . ",")
     (SEMICOLON . ";")

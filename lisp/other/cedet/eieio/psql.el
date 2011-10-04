@@ -4,7 +4,7 @@
 ;;
 ;; Author: <zappo@gnu.ai.mit.edu>
 ;; Version: 0.1
-;; RCS: $Id: psql.el,v 1.6 2001/01/11 18:50:35 zappo Exp $
+;; RCS: $Id: psql.el,v 1.6 2001-01-11 18:50:35 zappo Exp $
 ;; Keywords: OO postgres95 database
 ;;                                                                          
 ;; This program is free software; you can redistribute it and/or modify

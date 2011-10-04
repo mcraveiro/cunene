@@ -4,7 +4,7 @@
 ;;
 ;; Author: <zappo@gnu.org>
 ;; Version: 0.3
-;; RCS: $Id: tree.el,v 1.11 2005/09/30 20:18:32 zappo Exp $
+;; RCS: $Id: tree.el,v 1.11 2005-09-30 20:18:32 zappo Exp $
 ;; Keywords: OO, tree
 ;;                                                                          
 ;; This program is free software; you can redistribute it and/or modify

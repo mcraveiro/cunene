@@ -882,8 +882,8 @@ Step 2:
      `ede-turn-on-hook' turns on `ede-minor-mode'
 
 Step 3:
-     `ede-minor-mode' looks to see if BUFFER is assicated with any open
-     projects.  If not, it calls `ede-load-project-file' to find a
+     `ede-minor-mode' looks to see if BUFFER is associated with any
+     open projects.  If not, it calls `ede-load-project-file' to find a
      project associated with the current directory BUFFER is in.
 
 Step 4:
@@ -5298,65 +5298,65 @@ Node: Custom Locate27042
 Node: Extending EDE28521
 Node: Development Overview30385
 Node: Detecting a Project34788
-Node: User interface methods37836
-Node: Base project methods39064
-Node: EDE proj-project40429
-Node: Sourcecode objects41121
-Node: Compiler and Linker objects42862
-Node: Project45358
-Node: ede-project-placeholder45753
-Node: ede-project47808
-Node: ede-cpp-root-project57306
-Node: ede-emacs-project62263
-Node: ede-linux-project64031
-Node: ede-maven-project65796
-Node: ede-simple-project67392
-Node: ede-simple-base-project68646
-Node: ede-proj-project69185
-Node: project-am-makefile76094
-Node: ede-step-project78227
-Node: Targets82861
-Node: ede-target83999
-Node: ede-cpp-root-target90456
-Node: ede-emacs-target-c91372
-Node: ede-emacs-target-el92234
-Node: ede-emacs-target-misc92907
-Node: ede-linux-target-c93588
-Node: ede-linux-target-misc94454
-Node: ede-maven-target-java95137
-Node: ede-maven-target-c95820
-Node: ede-maven-target-misc96491
-Node: ede-simple-target97172
-Node: ede-proj-target97834
-Node: ede-proj-target-makefile104110
-Node: semantic-ede-proj-target-grammar107526
-Node: ede-proj-target-makefile-objectcode109234
-Node: ede-proj-target-makefile-archive111106
-Node: ede-proj-target-makefile-program112544
-Node: ede-proj-target-makefile-shared-object114751
-Node: ede-proj-target-elisp116773
-Node: ede-proj-target-elisp-autoloads118983
-Node: ede-proj-target-makefile-miscelaneous122664
-Node: ede-proj-target-makefile-info124179
-Node: ede-proj-target-aux126902
-Node: ede-proj-target-scheme127807
-Node: project-am-target128857
-Node: project-am-objectcode130756
-Node: project-am-program132204
-Node: project-am-lib133208
-Node: project-am-header134105
-Node: project-am-header-noinst135093
-Node: project-am-header-inst136074
-Node: project-am-lisp137045
-Node: project-am-texinfo138100
-Node: project-am-man139587
-Node: Sourcecode140606
-Node: ede-sourcecode140824
-Node: Compilers143520
-Node: ede-compilation-program143971
-Node: ede-compiler147241
-Node: ede-object-compiler150379
-Node: semantic-ede-grammar-compiler-class152579
-Node: ede-linker154466
+Node: User interface methods37837
+Node: Base project methods39065
+Node: EDE proj-project40430
+Node: Sourcecode objects41122
+Node: Compiler and Linker objects42863
+Node: Project45359
+Node: ede-project-placeholder45754
+Node: ede-project47809
+Node: ede-cpp-root-project57307
+Node: ede-emacs-project62264
+Node: ede-linux-project64032
+Node: ede-maven-project65797
+Node: ede-simple-project67393
+Node: ede-simple-base-project68647
+Node: ede-proj-project69186
+Node: project-am-makefile76095
+Node: ede-step-project78228
+Node: Targets82862
+Node: ede-target84000
+Node: ede-cpp-root-target90457
+Node: ede-emacs-target-c91373
+Node: ede-emacs-target-el92235
+Node: ede-emacs-target-misc92908
+Node: ede-linux-target-c93589
+Node: ede-linux-target-misc94455
+Node: ede-maven-target-java95138
+Node: ede-maven-target-c95821
+Node: ede-maven-target-misc96492
+Node: ede-simple-target97173
+Node: ede-proj-target97835
+Node: ede-proj-target-makefile104111
+Node: semantic-ede-proj-target-grammar107527
+Node: ede-proj-target-makefile-objectcode109235
+Node: ede-proj-target-makefile-archive111107
+Node: ede-proj-target-makefile-program112545
+Node: ede-proj-target-makefile-shared-object114752
+Node: ede-proj-target-elisp116774
+Node: ede-proj-target-elisp-autoloads118984
+Node: ede-proj-target-makefile-miscelaneous122665
+Node: ede-proj-target-makefile-info124180
+Node: ede-proj-target-aux126903
+Node: ede-proj-target-scheme127808
+Node: project-am-target128858
+Node: project-am-objectcode130757
+Node: project-am-program132205
+Node: project-am-lib133209
+Node: project-am-header134106
+Node: project-am-header-noinst135094
+Node: project-am-header-inst136075
+Node: project-am-lisp137046
+Node: project-am-texinfo138101
+Node: project-am-man139588
+Node: Sourcecode140607
+Node: ede-sourcecode140825
+Node: Compilers143521
+Node: ede-compilation-program143972
+Node: ede-compiler147242
+Node: ede-object-compiler150380
+Node: semantic-ede-grammar-compiler-class152580
+Node: ede-linker154467
 
 End Tag Table

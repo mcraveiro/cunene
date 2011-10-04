@@ -3,7 +3,7 @@
 ;; Copyright (C) 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: semantic-analyze-refs.el,v 1.10 2010/08/05 03:00:29 zappo Exp $
+;; X-RCS: $Id: semantic-analyze-refs.el,v 1.10 2010-08-05 03:00:29 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -108,7 +108,10 @@ Optional argument IN-BUFFER indicates that the returned tag should be in an acti
 	      (aDB (car ans))
 	      )
 	 (when (and (not (semantic-tag-prototype-p aT))
-		    (semantic-tag-similar-p tag aT :prototype-flag :parent))
+		    (semantic-tag-similar-p tag aT
+					    :prototype-flag
+					    :parent
+					    :typemodifiers))
 	   (when in-buffer (save-excursion (semantic-go-to-tag aT aDB)))
 	   (push aT impl))))
      allhits)
@@ -128,7 +131,10 @@ Optional argument IN-BUFFER indicates that the returned tag should be in an acti
 	      (aDB (car ans))
 	      )
 	 (when (and (semantic-tag-prototype-p aT)
-		    (semantic-tag-similar-p tag aT :prototype-flag :parent))
+		    (semantic-tag-similar-p tag aT
+					    :prototype-flag
+					    :parent
+					    :typemodifiers))
 	   (when in-buffer (save-excursion (semantic-go-to-tag aT aDB)))
 	   (push aT proto))))
      allhits)

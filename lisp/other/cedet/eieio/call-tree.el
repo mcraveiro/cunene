@@ -5,7 +5,7 @@
 ;;
 ;; Author: <zappo@gnu.ai.mit.edu>
 ;; Version: 0.1
-;; RCS: $Id: call-tree.el,v 1.6 2005/09/30 20:17:37 zappo Exp $
+;; RCS: $Id: call-tree.el,v 1.6 2005-09-30 20:17:37 zappo Exp $
 ;; Keywords: OO, tree, call-graph
 ;;                                                                          
 ;; This program is free software; you can redistribute it and/or modify

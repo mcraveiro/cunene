@@ -1369,6 +1369,9 @@ Used for SRecoder template files.
      Converts the filename into text that would be suitable as a
      class-name for the main class in the file.
 
+`CURRENT_PACKAGE'
+     Finds the occurance of "package" and gets its value.
+
 6.7.5.1 Argument :el
 ....................
 
@@ -1408,6 +1411,13 @@ additional variable `TAGDOC' is provided for each tag.
    The `TAGDOC' is filled with derived documentation from the tag in
 question, and that documentation is also reformatted to be mostly
 texinfo compatible.
+
+6.7.6 Argument :android
+-----------------------
+
+The `:android' argument pulls in information from your current project.
+
+   @TODO - add more here.
 
 
 File: srecode.info,  Node: Developing Template Functions,  Next: Template Naming Conventions,  Prev: Dictionaries,  Up: Top
@@ -1785,16 +1795,16 @@ Node: Base Arguments37796
 Node: Semantic Arguments41060
 Ref: srecode-semantic-selected-tag41698
 Node: Language Arguments43443
-Node: Developing Template Functions45532
-Ref: srecode-read-template-name47964
-Ref: srecode-table48343
-Ref: srecode-template-get-table48577
-Ref: srecode-insert-fcn49770
-Node: Template Naming Conventions49875
-Node: Inserting Tag Lists53547
-Ref: srecode-semantic-insert-tag54136
-Node: Application Writing55820
-Ref: srecode-load-tables-for-mode56749
-Node: Index57074
+Node: Developing Template Functions45758
+Ref: srecode-read-template-name48190
+Ref: srecode-table48569
+Ref: srecode-template-get-table48803
+Ref: srecode-insert-fcn49996
+Node: Template Naming Conventions50101
+Node: Inserting Tag Lists53773
+Ref: srecode-semantic-insert-tag54362
+Node: Application Writing56046
+Ref: srecode-load-tables-for-mode56975
+Node: Index57300
 
 End Tag Table

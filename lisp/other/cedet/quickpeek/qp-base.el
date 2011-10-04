@@ -3,7 +3,7 @@
 ;;; Copyright (C) 2000, 2001 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: qp-base.el,v 1.3 2005/09/30 20:42:01 zappo Exp $
+;; X-RCS: $Id: qp-base.el,v 1.3 2005-09-30 20:42:01 zappo Exp $
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

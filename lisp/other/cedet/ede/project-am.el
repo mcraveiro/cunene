@@ -5,7 +5,7 @@
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Version: 0.0.3
 ;; Keywords: project, make
-;; RCS: $Id: project-am.el,v 1.57 2010/07/18 15:00:04 safanaj Exp $
+;; RCS: $Id: project-am.el,v 1.57 2010-07-18 15:00:04 safanaj Exp $
 
 ;; This file is NOT part of GNU Emacs.
 

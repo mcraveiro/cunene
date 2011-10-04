@@ -4,7 +4,7 @@
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: tools
-;; X-RCS: $Id: quickpeek.el,v 1.9 2005/09/30 20:42:14 zappo Exp $
+;; X-RCS: $Id: quickpeek.el,v 1.9 2005-09-30 20:42:14 zappo Exp $
 
 (defvar quickpeek-version "0.5"
   "The current version of quickpeek.")

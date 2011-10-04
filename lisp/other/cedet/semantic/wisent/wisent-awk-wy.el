@@ -3,7 +3,7 @@
 ;; Copyright (C) 2002 David Ponce
 
 ;; Author: Marco Craveiro <marco@lorenz>
-;; Created: 2011-06-18 19:39:20+0100
+;; Created: 2011-10-04 23:29:53+0100
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

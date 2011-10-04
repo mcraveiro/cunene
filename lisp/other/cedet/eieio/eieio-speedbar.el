@@ -4,7 +4,7 @@
 ;; Copyright (C) 1999, 2000, 2001, 2002, 2005, 2007, 2008 Eric M. Ludlam
 ;;
 ;; Author: <zappo@gnu.org>
-;; RCS: $Id: eieio-speedbar.el,v 1.20 2008/09/29 00:20:17 zappo Exp $
+;; RCS: $Id: eieio-speedbar.el,v 1.20 2008-09-29 00:20:17 zappo Exp $
 ;; Keywords: oop, tools
 ;;
 ;; This program is free software; you can redistribute it and/or modify

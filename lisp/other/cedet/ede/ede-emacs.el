@@ -1,9 +1,9 @@
 ;;; ede-emacs.el --- Special project for Emacs
 
-;; Copyright (C) 2008, 2009, 2010 Eric M. Ludlam
+;; Copyright (C) 2008, 2009, 2010, 2011 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
-;; X-RCS: $Id: ede-emacs.el,v 1.12 2010/05/18 00:42:14 zappo Exp $
+;; X-RCS: $Id: ede-emacs.el,v 1.12 2010-05-18 00:42:14 zappo Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -94,6 +94,17 @@ emacs_beta_version=\\([0-9]+\\)")
 			  (match-string 2) "."
 			  (match-string 3)))
 	)
+       ((file-exists-p "sxemacs.pc.in")
+	(setq emacs "SXEmacs")
+	(insert-file-contents "sxemacs_version.m4")
+	(goto-char (point-min))
+	(re-search-forward "m4_define(\\[SXEM4CS_MAJOR_VERSION\\], \\[\\([0-9]+\\)\\])
+m4_define(\\[SXEM4CS_MINOR_VERSION\\], \\[\\([0-9]+\\)\\])
+m4_define(\\[SXEM4CS_BETA_VERSION\\], \\[\\([0-9]+\\)\\])")
+	(setq ver (concat (match-string 1) "."
+			  (match-string 2) "."
+			  (match-string 3)))
+	)
        ;; Insert other Emacs here...
 
        ;; Vaguely recent version of GNU Emacs?
@@ -115,16 +126,15 @@ Argument DIR is the directory it is created for.
 ROOTPROJ is nil, since there is only one project."
   (or (ede-emacs-file-existing dir)
       ;; Doesn't already exist, so lets make one.
-      (let* ((vertuple (ede-emacs-version dir)))
-	(ede-emacs-project (car vertuple)
-			   :name (car vertuple)
-			   :version (cdr vertuple)
-			   :directory (file-name-as-directory dir)
-			   :file (expand-file-name "src/emacs.c"
-						   dir)))
-      (ede-add-project-to-global-list this)
-      )
-  )
+      (let* ((vertuple (ede-emacs-version dir))
+	     (proj (ede-emacs-project
+		    (car vertuple)
+		    :name (car vertuple)
+		    :version (cdr vertuple)
+		    :directory (file-name-as-directory dir)
+		    :file (expand-file-name "src/emacs.c"
+					    dir))))
+	(ede-add-project-to-global-list proj))))
 
 ;;;###autoload
 (add-to-list 'ede-project-class-files

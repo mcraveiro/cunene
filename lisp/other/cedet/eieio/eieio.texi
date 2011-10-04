@@ -1,7 +1,7 @@
 
 \input texinfo   @c -*-texinfo-*-
 @c
-@c $Id: eieio.texi,v 1.67 2010/08/19 23:27:15 zappo Exp $
+@c $Id: eieio.texi,v 1.67 2010-08-19 23:27:15 zappo Exp $
 @c
 
 @c

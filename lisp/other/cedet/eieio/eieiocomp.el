@@ -19,7 +19,7 @@
 ;;
 ;; Please send bug reports, etc. to zappo@gnu.ai.mit.edu.
 ;;
-;; $Id: eieiocomp.el,v 1.3 2005/09/30 20:17:50 zappo Exp $
+;; $Id: eieiocomp.el,v 1.3 2005-09-30 20:17:50 zappo Exp $
 
 ;;; Code:
 (load-library "bytecomp")

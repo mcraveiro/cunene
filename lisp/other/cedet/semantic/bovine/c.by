@@ -7,7 +7,7 @@
 ;;         David Ponce <david@dponce.com>
 ;;         Klaus Berndl <klaus.berndl@sdm.de>
 ;;
-;; X-RCS: $Id: c.by,v 1.63 2010/08/05 03:01:00 zappo Exp $
+;; X-RCS: $Id: c.by,v 1.63 2010-08-05 03:01:00 zappo Exp $
 ;;
 ;; c.by is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -102,6 +102,8 @@
 %put VIRTUAL summary "Method Modifier: virtual <type> <name>(...) ..."
 %token MUTABLE "mutable"
 %put MUTABLE summary "Member Declaration Modifier: mutable <type> <name> ..."
+%token EXPLICIT "explicit"
+%put EXPLICIT summary "Forbids implicit type conversion: explicit <constructor>"
 
 %token STRUCT "struct"
 %put STRUCT summary "Structure Type Declaration: struct [name] { ... };"
@@ -374,6 +376,9 @@ namespacesubparts
  ;; PUBLIC or PRIVATE bits.  Ignore them for now.
   | template
   | using
+ ;; Includes inside namespaces
+  | spp-include
+    (TAG $1 'include :inside-ns t)
   | ;;EMPTY
   ;
 

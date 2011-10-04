@@ -4,7 +4,7 @@
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: syntax
-;; X-RCS: $Id: semantic.el,v 1.218 2010/04/18 21:43:41 zappo Exp $
+;; X-RCS: $Id: semantic.el,v 1.218 2010-04-18 21:43:41 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -33,12 +33,12 @@
 
 (eval-and-compile
   ;; Other package depend on this value at compile time via inversion.
-  (defvar semantic-version "2.0"
+  (defvar semantic-version "2.1beta"
     "Current version of Semantic."))
 
 (require 'working)
 (require 'assoc)
-(require 'semantic-tag)
+(require 'semantic-tag-ls)
 (require 'semantic-lex)
 (require 'inversion)
 

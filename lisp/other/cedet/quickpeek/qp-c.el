@@ -4,7 +4,7 @@
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
 ;; Keywords: tools
-;; X-RCS: $Id: qp-c.el,v 1.5 2005/09/30 20:42:05 zappo Exp $
+;; X-RCS: $Id: qp-c.el,v 1.5 2005-09-30 20:42:05 zappo Exp $
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

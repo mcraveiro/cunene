@@ -3,7 +3,7 @@
 ;; Copyright (C) 2005, 2007, 2008, 2009, 2010 Eric M. Ludlam
 
 ;; Author: Marco Craveiro <marco@lorenz>
-;; Created: 2011-06-18 19:40:46+0100
+;; Created: 2011-10-04 23:30:04+0100
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

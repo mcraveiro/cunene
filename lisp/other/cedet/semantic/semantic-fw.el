@@ -2,7 +2,7 @@
 
 ;;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Eric M. Ludlam
 
-;; X-CVS: $Id: semantic-fw.el,v 1.85 2010/05/04 23:25:34 zappo Exp $
+;; X-CVS: $Id: semantic-fw.el,v 1.85 2010-05-04 23:25:34 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -104,7 +104,6 @@
   (defalias 'semantic-overlay-buffer          'overlay-buffer)
   (defalias 'semantic-overlay-start           'overlay-start)
   (defalias 'semantic-overlay-end             'overlay-end)
-  (defalias 'semantic-overlay-size            'overlay-size)
   (defalias 'semantic-overlay-next-change     'next-overlay-change)
   (defalias 'semantic-overlay-previous-change 'previous-overlay-change)
   (defalias 'semantic-overlay-lists           'overlay-lists)

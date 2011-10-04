@@ -4,7 +4,7 @@
 ;; Copyright (C) 2005, 2006, 2008 Eric M. Ludlam
 ;;
 ;; Author: <zappo@gnu.org>
-;; CVS: $Id: eieio-xml.el,v 1.3 2008/09/29 00:21:05 zappo Exp $
+;; CVS: $Id: eieio-xml.el,v 1.3 2008-09-29 00:21:05 zappo Exp $
 ;; Keywords: oop, lisp, tools
 ;;
 ;; This program is free software; you can redistribute it and/or modify

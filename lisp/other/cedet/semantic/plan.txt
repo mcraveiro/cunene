@@ -1,6 +1,6 @@
 Semantic 2.0 plan:	-*- outline -*-
 
-* $Id: plan.txt,v 1.1 2002/02/26 18:14:12 zappo Exp $
+* $Id: plan.txt,v 1.1 2002-02-26 18:14:12 zappo Exp $
 
 * Goals:
   Brief description of goals for semantic 2.0

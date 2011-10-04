@@ -2,7 +2,7 @@ This is cedet.info, produced by makeinfo version 4.13 from cedet.texi.
 
 This manual documents CEDET, a collection of other tools.
 
-   Copyright (C) 2007, 2008, 2009, 2010 Eric M. Ludlam
+   Copyright (C) 2007, 2008, 2009, 2010, 2011 Eric M. Ludlam
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -47,12 +47,14 @@ the mailing list cedet-devel.net via the URL:
 
 * Overview::
 * Installation/Basic Configuration::
+* CEDET Context Menu::
 * JDEE Target::
 * ECB Target::
 * Project Management::
 * Code Completion::
 * Code Generation::
 * C++ Features::
+* Android Features::
 * GNU Global::
 * ID Utils::
 * CScope::
@@ -329,7 +331,7 @@ the Commentary section of the Emacs Lisp file.
      working to provide user feedback explaining a delay.
 
 
-File: cedet.info,  Node: Installation/Basic Configuration,  Next: JDEE Target,  Prev: Overview,  Up: Top
+File: cedet.info,  Node: Installation/Basic Configuration,  Next: CEDET Context Menu,  Prev: Overview,  Up: Top
 
 2 Installation and Basic Configuration
 **************************************
@@ -406,9 +408,31 @@ INSTALL file in the top level CEDET directory.
 
 
 
-File: cedet.info,  Node: JDEE Target,  Next: ECB Target,  Prev: Installation/Basic Configuration,  Up: Top
+File: cedet.info,  Node: CEDET Context Menu,  Next: JDEE Target,  Prev: Installation/Basic Configuration,  Up: Top
 
-3 JDEE Target
+3 CEDET Context Menu
+********************
+
+CEDET is a collection of different tools, but it includes a minor mode
+of it's own that enables a context menu.  If you enable CEDET's context
+menu by adding this to your `.emacs':
+
+     (global-cedet-m3-minor-mode 1)
+
+   Once enabled, you can activate the context menu by right-clicking
+(with `mouse-3').  You could bind this menu to a key with a command
+such as this which binds it to `C-c SPC':
+
+     (define-key cedet-m3-mode-map "\C-c " 'cedet-m3-menu-kbd)
+
+   The context menu pulls together helpful context aware suggestions
+from semantic, or templates to insert with SRecode.  It also suggests
+compilation steps to take from EDE.
+
+
+File: cedet.info,  Node: JDEE Target,  Next: ECB Target,  Prev: CEDET Context Menu,  Up: Top
+
+4 JDEE Target
 *************
 
 JDEE, or the Java Development Environment, depends on CEDET for both
@@ -435,10 +459,13 @@ in Java, you may want to enable this instead:
    See the *note Semantic Configuration: (semantic)Canned Configuration.
 section of the semantic manual for more details about these features.
 
+   @TODO - Add section on how to configure semanticdb-javap for
+extracting symbols and header info from .jar files for semantic.
+
 
 File: cedet.info,  Node: ECB Target,  Next: Project Management,  Prev: JDEE Target,  Up: Top
 
-4 ECB Target
+5 ECB Target
 ************
 
 ECB, or the Emacs Code Browser depends on CEDET for the semantic
@@ -462,7 +489,7 @@ section of the semantic manual for more details about these features.
 
 File: cedet.info,  Node: Project Management,  Next: Code Completion,  Prev: ECB Target,  Up: Top
 
-5 Project Management
+6 Project Management
 ********************
 
 If you are looking for CEDET to help you manage a project full of
@@ -503,7 +530,7 @@ projects structure.
 
 File: cedet.info,  Node: Code Completion,  Next: Code Generation,  Prev: Project Management,  Up: Top
 
-6 Code Completion
+7 Code Completion
 *****************
 
 Code Completion, or perhaps "Intellisense" is a difficult problem to
@@ -547,7 +574,7 @@ Completion Debugging.
 
 File: cedet.info,  Node: Code Generation,  Next: C++ Features,  Prev: Code Completion,  Up: Top
 
-7 Code Generation
+8 Code Generation
 *****************
 
 Code Generation, or the ability to automatically write code from some
@@ -566,15 +593,15 @@ Manual: (srecode)Quick Start;
 Template Writing: (screcode)Template Writing.
 
 
-File: cedet.info,  Node: C++ Features,  Next: GNU Global,  Prev: Code Generation,  Up: Top
+File: cedet.info,  Node: C++ Features,  Next: Android Features,  Prev: Code Generation,  Up: Top
 
-8 C++ Features
+9 C++ Features
 **************
 
 If you are using CEDET with C or C++, then there are a few C/C++
 specific options you may need to update.
 
-8.1 C Pre-processor
+9.1 C Pre-processor
 ===================
 
 C and C++ use pre-processor directives, and the semantic parser has
@@ -642,7 +669,7 @@ preprocessor list.
      this flag, you will need to delete any semanticdb cache files that
      may have been incorrectly parsed.
 
-8.2 System Include path
+9.2 System Include path
 =======================
 
 If you want the code-completion to work with C++ system header file,
@@ -654,7 +681,7 @@ C++ mode.
    Customizing this variable will allow you to setup your system
 include path and will update all files when you use custom to do it.
 
-8.3 EDE Setup
+9.3 EDE Setup
 =============
 
 For large C or C++ programs, it is important to setup EDE for it.
@@ -687,10 +714,140 @@ macro to the C pre-processor, see *note ede-cpp-root: (ede)the
 ede-cpp-root chapter.
 
 
-File: cedet.info,  Node: GNU Global,  Next: ID Utils,  Prev: C++ Features,  Up: Top
+File: cedet.info,  Node: Android Features,  Next: GNU Global,  Prev: C++ Features,  Up: Top
 
-9 GNU Global
-************
+10 Android Features
+*******************
+
+If you are building Android applications using CEDET, there are several
+features that can help with this task.
+
+   First, you need to download the android SDK.  You can get that from
+`http://developer.android.com/sdk/index.html'.  Make sure all the tools
+the android sdk needs has been installed.
+
+10.1 Create an Android project
+==============================
+
+The Android SDK has a command called `android' which is used to do
+several things, one of which is to create a template project directory
+hierarcy.  In order for Emacs to detect your SDK and find `android',
+you may need to configure the CEDET android support.
+
+ -- Function: cedet-android-sdk-root
+     The root to the android SDK.
+
+   You can then create a project from Emacs:
+
+ -- Function: cedet-android-create-project name package target
+          &optional dir
+     Create an android project with NAME.  Your activity class will be
+     created in the java PACKAGE.  You need to specify a TARGET, which
+     is a number specifying the desired type of package you intend to
+     build.  Create the project in optional DIR, or in the default
+     directory if not specified.  NAME will be used as the name of the
+     project.
+
+   It may be better, however, to let EDE do it for you instead by
+calling `ede-new'.  For example:
+
+     C-x C-f ~/subdir/newprojectdir RET     ; go to an empty directory
+     M-x ede-new RET                        ; Create the project.  Answer
+                                              questions like name, etc.
+
+10.2 EDE Setup
+==============
+
+EDE will automatically detect android projects created with the
+AndroidManifest.xml file.  The first time you visit a project, it is
+good to visit AndroidManifest.xml to make sure EDE will detect your
+project.  Sometimes it can fail to detect your project if you visit a
+sub-directory of your project first.
+
+   EDE provides the following conveniences for android projects:
+
+<C-c . e>
+     This will always jump to the AndroidManifest.xml file, which
+     doubles as the
+
+<C-c . c>
+<C-c . C>
+     This will compile your project using ant.  To change what type of
+     build you do, you will need to change the current configuration.
+
+<C-c . D>
+     Debug your project.  This will also start ddms, the debug proxy for
+     your android emulator or device.
+
+<C-c . E>
+     Visit a resource file from a buffer from a Java buffer.  Cursor
+     must be on the code representing the resource, such as:
+          R.layout.mylayout
+
+<c-c . A>
+     Visit a Java Activity buffer from the XML manifest file.  Cursor
+     must be in an activity element for Emacs to figure out which
+     activity to visit.
+
+<C-c . S>
+     Visit the strings.xml file from anywhere.
+
+<C-c . g>
+     Rescan the `AndroidManifest.xml' file for version, package, etc.
+
+   There are other items in the menu as well, such as calling layoutopt
+to debug your layout files or starting the ADB shell.
+
+   EDE supports different build configurations through the standard EDE
+configuration mode.  In the Project->Project Options menu, select
+"Default Configuration" and select one of the options.  These options
+map directly to the command line arguments of ant, so if you select
+"debug", then the compile command will be: `ant debug'.
+
+`debug'
+     Builds the project in debug mode.
+
+`install'
+     Builds the project in debug mode, and installs in your emulator or
+     device.
+
+`release'
+     Builds the project in release mode.
+
+10.3 ADB Features
+=================
+
+CEDET supports several calls to ADB, including the following:
+
+`cedet-android-adb-devices'
+     Show the list of devices available.
+
+`cedet-android-adb-version-check'
+     Check that the ADB install is supported by CEDET.
+
+`cedet-android-adb-shell'
+     Create a shell buffer in Emacs which provides a unix-like shell
+     into your running Android device or emulator.
+
+10.4 Android Sample Projects
+============================
+
+CEDET supports a handy way to find sample programs from the SDK.
+
+ -- Function: cedet-android-visit-sample sample
+     Visit SAMPLE code in the Android SDK samples directory.
+
+10.5 Android support for SRecode
+================================
+
+You can create macros for use with android.  Add the :android argument
+to your templates to get some android specific features.  See
+
+
+File: cedet.info,  Node: GNU Global,  Next: ID Utils,  Prev: Android Features,  Up: Top
+
+11 GNU Global
+*************
 
 Several tools in CEDET can support the use of GNU Global.  If you use
 GNU Global in your project, you should enable the use of it to enhance
@@ -710,8 +867,8 @@ file like this:
          ;; Configurations for GNU Global and CEDET
          )
 
-9.1 EDE and GNU Global
-======================
+11.1 EDE and GNU Global
+=======================
 
 The EDE project system can use GNU Global to accelerate finding files
 within a project.  The EDE command to `ede-find-file' bound to `C-c .
@@ -725,8 +882,8 @@ Something like this can work in your `.emacs' file.
            '(ede-locate-global
              ede-locate-base))
 
-9.2 semantic Database
-=====================
+11.2 semantic Database
+======================
 
 semantic can use GNU Global as a back end for database searches.  To
 enable it, use:
@@ -739,8 +896,8 @@ enable it, use:
 when pre-existing semantic database searches may not have parsed all
 your files.
 
-9.3 semantic
-============
+11.3 semantic
+=============
 
 The semantic symref tool can use GNU Global to local symbol references.
 This tool will automatically detect GNU Global and use it.  You can
@@ -755,7 +912,7 @@ search for references via the commands:
 
 File: cedet.info,  Node: ID Utils,  Next: CScope,  Prev: GNU Global,  Up: Top
 
-10 ID Utils
+12 ID Utils
 ***********
 
 Several tools in CEDET can support the use of ID Utils.  If you use ID
@@ -775,7 +932,7 @@ file like this:
          ;; Configurations for ID Utils and CEDET.
          )
 
-10.1 EDE and ID Utils
+12.1 EDE and ID Utils
 =====================
 
 The EDE project system can use ID Utils to accelerate finding files
@@ -790,7 +947,7 @@ Something like this can work in your `.emacs' file.
            '(ede-locate-idutils
              ede-locate-base))
 
-10.2 semantic
+12.2 semantic
 =============
 
 The semantic symref tool can use ID Utils to local symbol references.
@@ -806,7 +963,7 @@ search for references via the commands:
 
 File: cedet.info,  Node: CScope,  Next: Maintenance,  Prev: ID Utils,  Up: Top
 
-11 CScope
+13 CScope
 *********
 
 Several tools in CEDET can support the use of CScope.  If you use
@@ -826,7 +983,7 @@ like this:
          ;; Configurations for CScope and CEDET.
          )
 
-11.1 Detecting CScope
+13.1 Detecting CScope
 =====================
 
 CScope is detected by the presense of a `cscope.out' file at the ROOT
@@ -838,7 +995,7 @@ the same directory as your sources if you do not use EDE
    If you use CScope and need this feature, please consider fixing it.
 Contact the cedet-devel mailing list.
 
-11.2 EDE and CScope
+13.2 EDE and CScope
 ===================
 
 The EDE project system can use CScope to accelerate finding files
@@ -853,11 +1010,11 @@ Something like this can work in your `.emacs' file.
            '(ede-locate-cscope
              ede-locate-base))
 
-11.3 semantic Database
+13.3 semantic Database
 ======================
 
-semantic could use CScope as a back end for database searches, but this
-has not been implemented yet.
+semantic can use CScope as a back end for database searches.  To enable
+it, use:
 
      (semanticdb-enable-cscope-databases)
 
@@ -867,7 +1024,7 @@ has not been implemented yet.
 pre-existing semantic database searches may not have parsed all your
 files.
 
-11.4 semantic
+13.4 semantic
 =============
 
 The semantic symref tool can use CScope to local symbol references.
@@ -883,7 +1040,7 @@ for references via the commands:
 
 File: cedet.info,  Node: Maintenance,  Next: GNU Free Documentation License,  Prev: CScope,  Up: Top
 
-12 Maintenance
+14 Maintenance
 **************
 
 Most of the CEDET tools do their best to maintain their data files and
@@ -1279,31 +1436,36 @@ Index
 
 
 Tag Table:
-Node: Top911
-Node: Overview1940
-Node: EIEIO4851
-Node: Semantic5862
-Node: SRecode7178
-Node: Speedbar7665
-Node: EDE8615
-Node: COGRE9939
-Node: Other Library Functions10474
-Node: Installation/Basic Configuration13070
-Node: JDEE Target15625
-Node: ECB Target16574
-Node: Project Management17297
-Node: Code Completion18632
-Node: Code Generation20256
-Node: C++ Features21025
-Ref: semantic-lex-c-preprocessor-symbol-map21653
-Ref: semantic-lex-c-preprocessor-symbol-file23005
-Ref: semantic-c-obey-conditional-section-parsing-flag23598
-Ref: semantic-lex-c-nested-namespace-ignore-second23845
-Node: GNU Global26129
-Node: ID Utils28165
-Node: CScope29687
-Node: Maintenance32082
-Node: GNU Free Documentation License32492
-Node: Index52215
+Node: Top917
+Node: Overview1990
+Node: EIEIO4901
+Node: Semantic5912
+Node: SRecode7228
+Node: Speedbar7715
+Node: EDE8665
+Node: COGRE9989
+Node: Other Library Functions10524
+Node: Installation/Basic Configuration13120
+Node: CEDET Context Menu15682
+Node: JDEE Target16482
+Node: ECB Target17547
+Node: Project Management18270
+Node: Code Completion19605
+Node: Code Generation21229
+Node: C++ Features21998
+Ref: semantic-lex-c-preprocessor-symbol-map22632
+Ref: semantic-lex-c-preprocessor-symbol-file23984
+Ref: semantic-c-obey-conditional-section-parsing-flag24577
+Ref: semantic-lex-c-nested-namespace-ignore-second24824
+Node: Android Features27108
+Ref: cedet-android-sdk-root27903
+Ref: cedet-android-create-project28071
+Ref: cedet-android-visit-sample31256
+Node: GNU Global31519
+Node: ID Utils33567
+Node: CScope35089
+Node: Maintenance37463
+Node: GNU Free Documentation License37873
+Node: Index57596
 
 End Tag Table

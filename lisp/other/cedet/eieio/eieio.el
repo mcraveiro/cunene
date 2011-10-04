@@ -5,10 +5,10 @@
 ;; Copyright (C) 1995,1996,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010 Eric M. Ludlam
 ;;
 ;; Author: <zappo@gnu.org>
-;; RCS: $Id: eieio.el,v 1.197 2010/06/18 00:07:25 zappo Exp $
+;; RCS: $Id: eieio.el,v 1.197 2010-06-18 00:07:25 zappo Exp $
 ;; Keywords: OO, lisp
 
-(defvar eieio-version "1.3"
+(defvar eieio-version "1.4beta"
   "Current version of EIEIO.")
 
 ;;
@@ -795,6 +795,16 @@ OPTIONS-AND-DOC as the toplevel documentation for this class."
     (put cname 'variable-documentation
 	 (class-option-assoc options :documentation))
 
+    ;; Save the file location where this class is defined.
+    (let ((fname (if load-in-progress
+		     load-file-name
+		   buffer-file-name))
+	  loc)
+      (when fname
+	(when (string-match "\\.elc$" fname)
+	  (setq fname (substring fname 0 (1- (length fname)))))
+	(put cname 'class-location fname)))
+    
     ;; We have a list of custom groups.  Store them into the options.
     (let ((g (class-option-assoc options :custom-groups)))
       (mapc (lambda (cg) (add-to-list 'g cg)) groups)
@@ -1207,7 +1217,7 @@ IMPL is the symbol holding the method implementation."
   (let ((byte-compile-free-references nil)
 	(byte-compile-warnings nil)
 	)
-    (byte-compile-lambda
+    (byte-compile
      `(lambda (&rest local-args)
 	,doc-string
 	;; This is a cool cheat.  Usually we need to look up in the
@@ -1238,7 +1248,9 @@ IMPL is the symbol holding the method implementation."
 		  (eieio-generic-call-methodname ,(list 'quote method))
 		  (eieio-generic-call-arglst local-args)
 		  )
-	      (apply ,(list 'quote impl) local-args)
+	      ,(if (< emacs-major-version 24)
+		  `(apply ,(list 'quote impl) local-args)
+		`(apply #',impl local-args))
 	      ;(,impl local-args)
 	      ))))
      )
@@ -1258,12 +1270,12 @@ IMPL is the symbol holding the method implementation."
 
 (defun eieio-defgeneric (method doc-string)
   "Engine part to `defgeneric' macro defining METHOD with DOC-STRING."
-  (if (and (fboundp method) (not (generic-p method))
-	   (or (byte-code-function-p (symbol-function method))
-	       (not (eq 'autoload (car (symbol-function method)))))
-	   )
-      (error "You cannot create a generic/method over an existing symbol: %s"
-	     method))
+  (when (and (fboundp method) (not (generic-p method))
+	     (or (byte-code-function-p (symbol-function method))
+		 (not (eq 'autoload (car-safe (symbol-function method))))))
+    (error "You cannot create a generic/method over an existing symbol: %s"
+	   method))
+
   ;; Don't do this over and over.
   (unless (fboundp 'method)
     ;; This defun tells emacs where the first definition of this
@@ -2364,6 +2376,18 @@ CLASS is the class this method is associated with."
     (if (< key method-num-lists)
 	(let ((nsym (intern (symbol-name class) (aref emto key))))
 	  (fset nsym method)))
+    ;; Save the defmethod file location in a symbol property.
+    (let ((fname (if load-in-progress
+		     load-file-name
+		   buffer-file-name))
+	  loc)
+      (when fname
+	(when (string-match "\\.elc$" fname)
+	  (setq fname (substring fname 0 (1- (length fname)))))
+	(setq loc (get method-name 'method-locations))
+	(add-to-list 'loc
+		     (list class fname))
+	(put method-name 'method-locations loc)))
     ;; Now optimize the entire obarray
     (if (< key method-num-lists)
 	(let ((eieiomt-optimizing-obarray (aref emto key)))
@@ -2762,9 +2786,9 @@ this object."
     (princ (make-string (* eieio-print-depth 2) ? ))
     (princ "(")
     (princ (symbol-name (class-constructor (object-class this))))
-    (princ " \"")
-    (princ (object-name-string this))
-    (princ "\"\n")
+    (princ " ")
+    (prin1 (object-name-string this))
+    (princ "\n")
     ;; Loop over all the public slots
     (let ((publa (aref cv class-public-a))
 	  (publd (aref cv class-public-d))
