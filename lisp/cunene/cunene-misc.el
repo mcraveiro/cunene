@@ -126,7 +126,9 @@
   ;; - DejaVu Sans Mono Bold 10
   ;; - Droid Sans Mono Bold 15
   ;; - Monospace Bold 9
-  (set-frame-parameter frame 'font "Inconsolata Bold 16")
+  (if (not (eq system-type 'windows-nt))
+      (set-frame-parameter frame 'font "Inconsolata Bold 16")
+    (set-frame-parameter frame 'font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1"))
   (set-frame-parameter frame 'cursor-color "wheat")
   (set-frame-parameter frame 'foreground-color "wheat")
   (set-frame-parameter frame 'background-color "black")
@@ -438,3 +440,17 @@ text (with prefix arg don't indent)."
       (smerge-mode 1))))
 
 (add-hook 'find-file-hook 'sm-try-smerge t)
+
+(if (eq system-type 'windows-nt)
+    (progn (setq null-device "/dev/null")
+           (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
+           (add-hook 'comint-output-filter-functions
+                     'comint-watch-for-password-prompt nil t)
+           (setq explicit-shell-file-name "bash.exe")
+           ;; For subprocesses invoked via the shell
+           ;; (e.g., "shell -c command")
+           (setq shell-file-name explicit-shell-file-name)
+           
+           ;; (require 'cygwin-mount)
+           ;; (cygwin-mount-activate)
+           ))
