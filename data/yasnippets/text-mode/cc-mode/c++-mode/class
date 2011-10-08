@@ -1,9 +1,6 @@
 # vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
 #name : class ... { ... }
 # --
-/**
- * @brief $3
- */
 class ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`} {
 public:
     $1($2);
