@@ -16,11 +16,23 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; Enable Emacs Development Environment project management features
-(global-ede-mode 1)
+(global-ede-mode t)
 
 ;;
 ;; Projects
 ;;
+
+(ede-cpp-root-project "dogen"
+                      :name "Dogen Project"
+                      :file "~/Development/kitanda/dogen/git/CMakeLists.txt"
+                      :include-path '("/cpp/include")
+                      :system-include-path
+                      '("/usr/include/gtkmm-2.4"
+                        "/usr/include/glibmm-2.4")
+                      :spp-table
+                      '(("isUnix" . "")
+                        ("BOOST_TEST_DYN_LINK" . "")
+                        ("_MSC_VER" . "")))
 
 ;; Risk
 ;; (ede-cpp-root-project "Kitanda"
