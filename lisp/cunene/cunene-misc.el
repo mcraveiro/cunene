@@ -109,8 +109,10 @@
 ;;
 
 ;; send copied regions to the OS clipboard
-(setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+(if (<= emacs-major-version 23)
+    (progn
+      (setq x-select-enable-clipboard t)
+      (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)))
 
 ;;
 ;; Looks
