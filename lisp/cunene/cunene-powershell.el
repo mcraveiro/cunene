@@ -17,3 +17,5 @@
 
 (autoload 'powershell-mode "powershell-mode" "PowerShell Mode")
 (add-to-list 'auto-mode-alist '("\\.ps$" . powershell-mode))
+
+(load-file (concat dotfiles-dir "/other/utils/powershell.el"))
