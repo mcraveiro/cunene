@@ -39,6 +39,13 @@
 (setq ido-everywhere t)
 (setq ido-create-new-buffer 'always)
 (setq svn-status-use-ido-completion 1)
+(setq ido-create-new-buffer (quote never))
+(setq ido-enable-last-directory-history nil)
+(setq ido-enable-regexp nil)
+(setq ido-max-directory-size 300000)
+(setq ido-max-file-prompt-width 0.1)
+(setq ido-use-url-at-point t)
+(setq ido-use-virtual-buffers t)
 
 ;; Hooks
 
