@@ -7907,4 +7907,7 @@
 ;; replace fopen(). http://j.mp/sOJay
 %
 ;; If we wish to count lines of code, we should not regard them as
-;; "lines produced" but as "lines spent -- Edsger Dijkstra 
+;; "lines produced" but as "lines spent -- Edsger Dijkstra
+%
+;; The only way to comprehend what mathematicians mean by Infinity is
+;; to contemplate the extent of human stupidity -- Voltaire
