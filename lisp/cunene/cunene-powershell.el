@@ -15,7 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(add-to-list 'auto-mode-alist '("\\.\\(ps\\|ps1\\|psm1\\)$" . powershell-mode))
+(add-hook 'powershell-mode-hook #'(lambda () (setq autopair-dont-activate t)))
+
 (autoload 'powershell-mode "powershell-mode" "PowerShell Mode")
-(add-to-list 'auto-mode-alist '("\\.ps$" . powershell-mode))
 
 (load-file (concat dotfiles-dir "/other/utils/powershell.el"))
