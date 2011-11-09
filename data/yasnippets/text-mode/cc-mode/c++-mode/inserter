@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: equality operator
+# name: inserter operator
 # --
 inline std::ostream& operator<<(std::ostream& stream, const $1& value) {
     stream << "\"$1\": {"
