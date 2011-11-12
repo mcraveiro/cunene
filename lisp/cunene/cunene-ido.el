@@ -77,10 +77,10 @@
     (when file
       (find-file file))))
 
-(add-hook 'ido-setup-hook
-          (lambda ()
-            (setq ido-enable-flex-matching t)
-            (global-set-key "\M-x" 'ido-execute-command)))
+;; (add-hook 'ido-setup-hook
+;;           (lambda ()
+;;             (setq ido-enable-flex-matching t)
+;;             (global-set-key "\M-x" 'ido-execute-command)))
 
 
 ;;
