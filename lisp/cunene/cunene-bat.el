@@ -15,9 +15,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(autoload 'bat-mode "bat-mode" "DOS and WIndows BAT files" t)
+(autoload 'dos-mode "dos-mode" "DOS and WIndows BAT files" t)
 
 ;; Extensions for bat mode
-(add-to-list 'auto-mode-alist '("\\.[bB][aA][tT]$" . bat-mode))
-(add-to-list 'auto-mode-alist '("CONFIG\\." . bat-mode))
-(add-to-list 'auto-mode-alist '("AUTOEXEC\\." . bat-mode))
+(add-to-list 'auto-mode-alist '("\\.[bB][aA][tT]$" . dos-mode))
+(add-to-list 'auto-mode-alist '("\\.[cC][mM][dD]$" . dos-mode))
+(add-to-list 'auto-mode-alist '("CONFIG\\." . dos-mode))
+(add-to-list 'auto-mode-alist '("AUTOEXEC\\." . dos-mode))

@@ -45,7 +45,7 @@
                ("emacs-lisp" (or
                               (mode . emacs-lisp-mode)
                               (name . "^\\*Compile-Log\\*$")))
-               ("msdos" (mode . bat-generic-mode))
+               ("msdos" (mode . dos-mode))
                ("version control" (or
                                     (name . "^\\*svn-")
                                     (name . "^\\*vc")
