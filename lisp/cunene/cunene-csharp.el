@@ -14,6 +14,4 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 (autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
-(add-to-list 'auto-mode-alist '( "\\.cs\\'" . csharp-mode))
