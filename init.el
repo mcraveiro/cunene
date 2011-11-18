@@ -45,7 +45,7 @@
                      "cunene-auto-save"
                      "cunene-autopair"
                      "cunene-backup"
-                     "cunene-bat"
+                     "cunene-dos"
                      "cunene-bm"
                      "cunene-bongo"
                      "cunene-browse-kill-ring"
