@@ -22,8 +22,7 @@
 
 ;; What to highlight
 (setq whitespace-style
-      '(trailing lines space-before-tab tabs tab-mark
-                 indentation space-after-tab))
+      '(face tabs lines-tail space-before-tab empty space-after-tab tab-mark))
 
 ;; Indicate if empty lines exist at end of the buffer
 (set-default 'indicate-empty-lines t)
