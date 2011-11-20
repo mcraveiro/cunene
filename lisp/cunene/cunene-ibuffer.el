@@ -47,32 +47,32 @@
                               (name . "^\\*Compile-Log\\*$")))
                ("msdos" (mode . dos-mode))
                ("version control" (or
-                                    (name . "^\\*svn-")
-                                    (name . "^\\*vc")
-                                    (name . "^\\*cvs")
-                                    (name . "^\\*magit")))
-                ("system buffers" (or
-                          (name . "^\\*WoMan-Log\\*$")
-                          (name . "^\\*Apropos\\*$")
-                          (name . "^\\*Completions\\*$")
-                          (name . "^\\*Help\\*$")
-                          (name . "^\\*scratch\\*$")
-                          (name . "^\\*Messages\\*$")))
-                ("semantic" (or
-                             (mode . data-debug-mode)
-                             (name . "^\\*Lexer Output\\*$")))
-                ("latex" (mode . latex-mode))
-                ("web browsing" (mode . w3m-mode))
-                ("web development" (or
-                                    (mode . html-mode)
-                                    (mode . css-mode)))
-                ("documentation" (or
-                                  (mode . Info-mode)
-                                  (mode . apropos-mode)
-                                  (mode . woman-mode)
-                                  (mode . help-mode)
-                                  (mode . Man-mode)))
-))))
+                                   (name . "^\\*svn-")
+                                   (name . "^\\*vc")
+                                   (name . "^\\*cvs")
+                                   (name . "^\\*magit")))
+               ("system buffers" (or
+                                  (name . "^\\*WoMan-Log\\*$")
+                                  (name . "^\\*Apropos\\*$")
+                                  (name . "^\\*Completions\\*$")
+                                  (name . "^\\*Help\\*$")
+                                  (name . "^\\*scratch\\*$")
+                                  (name . "^\\*Messages\\*$")))
+               ("semantic" (or
+                            (mode . data-debug-mode)
+                            (name . "^\\*Lexer Output\\*$")))
+               ("latex" (mode . latex-mode))
+               ("web browsing" (mode . w3m-mode))
+               ("web development" (or
+                                   (mode . html-mode)
+                                   (mode . css-mode)))
+               ("documentation" (or
+                                 (mode . Info-mode)
+                                 (mode . apropos-mode)
+                                 (mode . woman-mode)
+                                 (mode . help-mode)
+                                 (mode . Man-mode)))
+               ))))
 
 (add-hook 'ibuffer-mode-hook
           (lambda ()
