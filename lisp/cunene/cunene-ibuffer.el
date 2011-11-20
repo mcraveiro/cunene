@@ -51,6 +51,7 @@
                                    (name . "^\\*vc")
                                    (name . "^\\*cvs")
                                    (name . "^\\*magit")))
+               ("remote-shell" (mode . ssh-mode))
                ("system buffers" (or
                                   (name . "^\\*WoMan-Log\\*$")
                                   (name . "^\\*Apropos\\*$")
