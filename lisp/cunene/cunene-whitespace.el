@@ -33,6 +33,7 @@
 (setq whitespace-global-modes nil)
 
 ;; Show whitespaces on these modes
+(add-hook 'tex-mode-hook 'whitespace-mode)
 (add-hook 'sql-mode-hook 'whitespace-mode)
 (add-hook 'ruby-mode-hook 'whitespace-mode)
 (add-hook 'diff-mode-hook 'whitespace-mode)
