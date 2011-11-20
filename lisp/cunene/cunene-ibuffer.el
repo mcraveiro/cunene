@@ -32,6 +32,10 @@
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
                ("bash" (mode . sh-mode))
+               ("latex" (mode . latex-mode))
+               ("emacs-lisp" (or
+                              (mode . emacs-lisp-mode)
+                              (name . "^\\*Compile-Log\\*$")))
                ("powershell" (or
                               (mode . powershell-mode)
                               (name . "^\\*PowerShell")))
@@ -42,9 +46,6 @@
                          (name . "^\\*compilation\\*$")))
                ("file management" (mode . dired-mode))
                ("org" (mode . org-mode))
-               ("emacs-lisp" (or
-                              (mode . emacs-lisp-mode)
-                              (name . "^\\*Compile-Log\\*$")))
                ("msdos" (mode . dos-mode))
                ("version control" (or
                                    (name . "^\\*svn-")
@@ -62,7 +63,6 @@
                ("semantic" (or
                             (mode . data-debug-mode)
                             (name . "^\\*Lexer Output\\*$")))
-               ("latex" (mode . latex-mode))
                ("web browsing" (mode . w3m-mode))
                ("web development" (or
                                    (mode . html-mode)
