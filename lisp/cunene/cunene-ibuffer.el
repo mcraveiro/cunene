@@ -61,6 +61,7 @@
                 ("semantic" (or
                              (mode . data-debug-mode)
                              (name . "^\\*Lexer Output\\*$")))
+                ("latex" (mode . latex-mode))
                 ("web browsing" (mode . w3m-mode))
                 ("web development" (or
                                     (mode . html-mode)
