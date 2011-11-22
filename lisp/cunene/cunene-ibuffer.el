@@ -58,6 +58,8 @@
                ("remote-shell" (mode . ssh-mode))
                ("snippets" (mode . snippet-mode))
                ("system buffers" (or
+                                  (name . "^\\*Kill Ring\\*$")
+                                  (name . "^\\*Proced\\*$")
                                   (name . "^\\*WoMan-Log\\*$")
                                   (name . "^\\*Apropos\\*$")
                                   (name . "^\\*Completions\\*$")
