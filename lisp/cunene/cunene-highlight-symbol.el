@@ -19,6 +19,6 @@
 (require 'highlight-symbol)
 
 ;; Key bindings
-(global-set-key (kbd "<f10>") 'highlight-symbol-at-point)
-(global-set-key (kbd "C-<f10>") 'highlight-symbol-next)
-(global-set-key (kbd "M-<f10>") 'highlight-symbol-prev)
+(global-set-key (kbd "<f12>") 'highlight-symbol-at-point)
+(global-set-key (kbd "C-<f12>") 'highlight-symbol-next)
+(global-set-key (kbd "M-<f12>") 'highlight-symbol-prev)

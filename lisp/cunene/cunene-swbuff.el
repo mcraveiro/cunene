@@ -19,5 +19,5 @@
 (require 'swbuff)
 
 ;; Cycle through buffers
-(global-set-key (kbd "<s-right>") 'swbuff-switch-to-next-buffer)
-(global-set-key (kbd "<s-left>") 'swbuff-switch-to-previous-buffer)
+(global-set-key (kbd "<f9>") 'swbuff-switch-to-next-buffer)
+(global-set-key (kbd "<f10>") 'swbuff-switch-to-previous-buffer)
