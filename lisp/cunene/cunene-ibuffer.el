@@ -32,7 +32,10 @@
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
                ("bash" (mode . sh-mode))
-               ("latex" (mode . latex-mode))
+               ("latex" (or
+                         (name . ".tex$")
+                         (mode . tex-mode)
+                         (mode . latex-mode)))
                ("emacs-lisp" (or
                               (mode . emacs-lisp-mode)
                               (name . "^\\*Compile-Log\\*$")))
@@ -53,6 +56,7 @@
                                    (name . "^\\*cvs")
                                    (name . "^\\*magit")))
                ("remote-shell" (mode . ssh-mode))
+               ("snippets" (mode . snippet-mode))
                ("system buffers" (or
                                   (name . "^\\*WoMan-Log\\*$")
                                   (name . "^\\*Apropos\\*$")
