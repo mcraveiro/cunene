@@ -27,10 +27,15 @@
                ("make" (mode . cmake-mode))
                ("ruby" (mode . ruby-mode))
                ("t4" (name . ".tt$"))
+               ("perl" (mode . perl-mode))
+               ("javascript" (or
+                              (mode . javascript-mode)
+                              (mode . js-mode)))
                ("xml" (mode . nxml-mode))
                ("sql" (or
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
+               ("patches" (mode . diff-mode))
                ("bash" (mode . sh-mode))
                ("latex" (or
                          (name . ".tex$")
@@ -39,6 +44,7 @@
                ("emacs-lisp" (or
                               (mode . emacs-lisp-mode)
                               (name . "^\\*Compile-Log\\*$")))
+               ("text files" (mode . text-mode))
                ("powershell" (or
                               (mode . powershell-mode)
                               (name . "^\\*PowerShell")))
@@ -47,7 +53,9 @@
                          (mode . grep-mode)
                          (mode . shell-mode)
                          (name . "^\\*compilation\\*$")))
-               ("file management" (mode . dired-mode))
+               ("file management" (or
+                                   (mode . dired-mode)
+                                   (mode . tar-mode)))
                ("org" (mode . org-mode))
                ("msdos" (mode . dos-mode))
                ("version control" (or
@@ -64,6 +72,7 @@
                                   (name . "^\\*Apropos\\*$")
                                   (name . "^\\*Completions\\*$")
                                   (name . "^\\*Help\\*$")
+                                  (name . "^\\*Dired log\\*$")
                                   (name . "^\\*scratch\\*$")
                                   (name . "^\\*Messages\\*$")))
                ("semantic" (or
