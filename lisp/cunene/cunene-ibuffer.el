@@ -52,6 +52,7 @@
                          (name . "^\\*Shell Command Output\\*$")
                          (mode . grep-mode)
                          (mode . shell-mode)
+                         (mode . ssh-mode)
                          (name . "^\\*compilation\\*$")))
                ("file management" (or
                                    (mode . dired-mode)
@@ -63,7 +64,6 @@
                                    (name . "^\\*vc")
                                    (name . "^\\*cvs")
                                    (name . "^\\*magit")))
-               ("remote-shell" (mode . ssh-mode))
                ("snippets" (mode . snippet-mode))
                ("system buffers" (or
                                   (name . "^\\*Kill Ring\\*$")
