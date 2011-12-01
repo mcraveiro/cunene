@@ -8,4 +8,5 @@ data/savehist
 data/saveplace
 data/semantic
 data/ac-comphist.dat
+data/persistent-scratch
 /.org-id-locations
