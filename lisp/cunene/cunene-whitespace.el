@@ -41,6 +41,7 @@
 (add-hook 'cmake-mode-hook 'whitespace-mode)
 (add-hook 'emacs-lisp-mode-hook 'whitespace-mode)
 (add-hook 'dos-mode-hook 'whitespace-mode)
+(add-hook 'org-mode-hook 'whitespace-mode)
 
 ;; disable whitespace in text-mode due to problems with orgmode.
 ;; (add-hook 'text-mode-hook 'whitespace-mode)
