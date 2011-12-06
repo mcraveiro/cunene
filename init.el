@@ -85,7 +85,7 @@
                      "cunene-ido"
                      "cunene-iedit"
                      "cunene-jira"
-                     "cunene-js2"
+                     "cunene-javascript"
                      "cunene-lisp"
                      "cunene-kitanda"
                      "cunene-magit"
