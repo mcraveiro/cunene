@@ -20,6 +20,9 @@
 (setq remember-annotation-functions '(org-remember-annotation))
 (setq remember-handler-functions '(org-remember-handler))
 
+;; preserve source code indentation on code blocks
+(setq org-src-preserve-indentation t)
+
 ;; (add-hook 'remember-mode-hook 'org-remember-apply-template)
 ;; (setq org-remember-templates
 ;;       '(("Bug" ?b "* BUG %?\n  %i\n  %a" "~/org/BUGS.org" "Bugs" (emacs-lisp-mode))
