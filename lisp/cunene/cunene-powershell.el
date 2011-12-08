@@ -16,7 +16,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (add-to-list 'auto-mode-alist '("\\.\\(ps\\|ps1\\|psm1\\)$" . powershell-mode))
-(add-hook 'powershell-mode-hook #'(lambda () (setq autopair-dont-activate t)))
 
 (autoload 'powershell-mode "powershell-mode" "PowerShell Mode")
 

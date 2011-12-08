@@ -31,3 +31,6 @@
 (put 'autopair-newline 'delete-selection t)
 
 (autopair-global-mode)
+
+(add-hook 'powershell-mode-hook #'(lambda () (setq autopair-dont-activate t)))
+(add-hook 'js2-mode-hook #'(lambda () (setq autopair-dont-activate t)))

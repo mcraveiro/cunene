@@ -30,6 +30,7 @@
                ("perl" (mode . perl-mode))
                ("javascript" (or
                               (mode . javascript-mode)
+                              (mode . js2-mode)
                               (mode . js-mode)))
                ("xml" (mode . nxml-mode))
                ("sql" (or
