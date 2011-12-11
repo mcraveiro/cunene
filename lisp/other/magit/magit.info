@@ -219,8 +219,8 @@ described in the previous section.
    The first section shows _Untracked files_, if there are any.  See
 *note Untracked files:: for more details.
 
-   Two section show your local changes.  They are explained fully in the
-next chapter, *note Staging and Committing::.
+   The next two sections show your local changes.  They are explained
+fully in the next chapter, *note Staging and Committing::.
 
    If the current branch is associated with a remote tracking branch,
 the status buffer shows the differences between the current branch and
@@ -325,6 +325,10 @@ determined by the `magit-commit-signoff' customization variable.
    Typing `C-c C-e' will toggle the `--allow-empty' option.  This
 allows you to make commits that serve as notes, without including any
 changes.
+
+   Typing `C-c C-t' will toggle the option to specify the name and
+email address for the commit's author.  The default is determined by
+the `user.name' and `user.email' git configuration settings.
 
    If you change your mind and don't want to go ahead with your commit
 while you are in the `*magit-log-edit*' buffer, you can just switch to
@@ -465,7 +469,7 @@ of a file in the status buffer that needs to be merged, you will be
 able to use Ediff as an interactive merge tool.  Otherwise, Ediff will
 simply show the two versions of the file.
 
-   To show the changes from you working tree to another revision, type
+   To show the changes from your working tree to another revision, type
 `d'.  To show the changes between two arbitrary revisions, type `D'.
 
    You can use `a' within the diff output to apply the changes to your
@@ -1136,31 +1140,31 @@ Node: Introduction1533
 Node: Acknowledgments3005
 Node: Sections3629
 Node: Status6179
-Node: Untracked files8908
-Node: Staging and Committing9859
-Node: History13405
-Node: Reflogs16585
-Node: Commit Buffer16989
-Node: Diffing18315
-Node: Tagging19301
-Node: Resetting19750
-Node: Stashing21274
-Node: Branching22332
-Node: The Branch Manager23710
-Node: Wazzup24426
-Node: Merging25217
-Node: Rebasing26267
-Node: Rewriting27082
-Node: Pushing and Pulling30095
-Node: Submodules31840
-Node: Bisecting32260
-Node: Using Magit Extensions33475
-Node: Interfacing with Subversion33746
-Node: Interfacing with Topgit34314
-Node: Interfacing with StGit35342
-Node: Developing Extensions36340
-Node: Using Git Directly39212
-Node: Customization39583
+Node: Untracked files8918
+Node: Staging and Committing9869
+Node: History13613
+Node: Reflogs16793
+Node: Commit Buffer17197
+Node: Diffing18523
+Node: Tagging19510
+Node: Resetting19959
+Node: Stashing21483
+Node: Branching22541
+Node: The Branch Manager23919
+Node: Wazzup24635
+Node: Merging25426
+Node: Rebasing26476
+Node: Rewriting27291
+Node: Pushing and Pulling30304
+Node: Submodules32049
+Node: Bisecting32469
+Node: Using Magit Extensions33684
+Node: Interfacing with Subversion33955
+Node: Interfacing with Topgit34523
+Node: Interfacing with StGit35551
+Node: Developing Extensions36549
+Node: Using Git Directly39421
+Node: Customization39792
 
 End Tag Table
 
