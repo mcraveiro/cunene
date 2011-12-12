@@ -10,3 +10,4 @@ data/semantic
 data/ac-comphist.dat
 data/persistent-scratch
 /.org-id-locations
+xhtml-loader.rnc
