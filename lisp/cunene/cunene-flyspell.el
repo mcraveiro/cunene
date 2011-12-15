@@ -26,9 +26,14 @@
   (interactive)
   (flyspell-mode 1))
 
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-(add-hook 'c-mode-common-hook 'flyspell-prog-mode)
-(add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
-(add-hook 'sql-mode-hook 'flyspell-prog-mode)
-(add-hook 'LaTeX-mode-hook 'turn-on-flyspell)
-(add-hook 'cmake-mode-hook 'flyspell-prog-mode)
+;; we don't have ispell/aspell on windows atm, so disable flyspell
+(if (not (eq system-type 'windows-nt))
+    (progn
+      (add-hook 'text-mode-hook 'turn-on-flyspell)
+      (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+      (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
+      (add-hook 'sql-mode-hook 'flyspell-prog-mode)
+      (add-hook 'LaTeX-mode-hook 'turn-on-flyspell)
+      (add-hook 'cmake-mode-hook 'flyspell-prog-mode)
+      )
+  )
