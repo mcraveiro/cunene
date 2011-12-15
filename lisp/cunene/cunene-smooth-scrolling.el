@@ -22,3 +22,5 @@
 (setq scroll-conservatively 0)
 (setq scroll-preserve-screen-position nil)
 (setq scroll-step 1)
+(put 'scroll-left 'disabled nil)
+(put 'scroll-right 'disabled nil)
