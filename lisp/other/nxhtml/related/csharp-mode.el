@@ -417,7 +417,7 @@ Each list item should be a regexp matching a single identifier.")
 ;;                (cons "C#" (c-lang-const c-mode-menu csharp)))
 
 ;;; Autoload mode trigger
-(add-to-list 'auto-mode-alist '("\\.cs" . csharp-mode))
+(add-to-list 'auto-mode-alist '("\\.cs$" . csharp-mode))
 
 ;; Custom variables
 (defcustom csharp-mode-hook nil
