@@ -8,3 +8,6 @@ column total format 999,999,999
 set feedback ON
 alter session set nls_date_format = 'yyyy-mm-dd hh:mi:ssPM';
 set tab off
+
+-- format numbers properly in SQL Plus
+set numf 999999999.99999
