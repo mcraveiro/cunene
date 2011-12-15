@@ -18,6 +18,7 @@
 ;; add w3m to load path.
 (add-to-list 'load-path (concat dotfiles-dir "/other/emacs-w3m"))
 (require 'w3m)
+(require 'w3m-extension)
 
 ;; enable normal behaviour for function keys
 (define-key w3m-mode-map [down] 'next-line)
