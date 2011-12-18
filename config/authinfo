@@ -1,0 +1,1 @@
+machine imap.gmail.com login EMAIL_ACCOUNT@gmail.com password PASSWORD port 993
