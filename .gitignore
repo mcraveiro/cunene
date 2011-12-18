@@ -9,5 +9,6 @@ data/saveplace
 data/semantic
 data/ac-comphist.dat
 data/persistent-scratch
+data/gnus/cache/active
 /.org-id-locations
 xhtml-loader.rnc

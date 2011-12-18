@@ -32,6 +32,7 @@
 (add-hook 'vc-git-log-view-mode-hook #'highline-on)
 ;; (add-hook 'log-view-hook #'highline-mode-on)
 (add-hook 'find-dired-mode-hook #'highline-mode-on)
+(add-hook 'gnus-summary-mode-hook 'highline-local-mode)
 
 ;; Turn on local highlighting for list-buffers
 (defadvice list-buffers (after highlight-line activate)

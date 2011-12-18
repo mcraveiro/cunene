@@ -78,6 +78,7 @@
                      "cunene-full-ack.el"
                      "cunene-fullscreen"
                      "cunene-grep"
+                     "cunene-gnus"
                      "cunene-gprof"
                      "cunene-hs"
                      "cunene-highlight-symbol"
