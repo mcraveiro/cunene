@@ -28,6 +28,7 @@
 
 ;; find html files with w3m
 (global-set-key (kbd "C-c w") 'w3m-find-file)
+(global-set-key (kbd "C-c C-s") 'w3m-search)
 
 ;; allow cookies
 (setq w3m-use-cookies t)
