@@ -80,6 +80,18 @@
                             (mode . data-debug-mode)
                             (name . "^\\*Lexer Output\\*$")))
                ("web browsing" (mode . w3m-mode))
+               ("music" (or
+                         (mode . bongo-playlist-mode)
+                         (mode . bongo-library-mode)))
+               ("mail" (or
+                        (mode . gnus-group-mode)
+                        (mode . gnus-summary-mode)
+                        (mode . gnus-article-mode)
+                        (name . "^\\*Bongo Playlist\\*$")
+                        (name . "^\\*imap log\\*$")
+                        (name . "^\\*gnus trace\\*$")
+                        (name . "^\\*nnimap imap.")
+                        ))
                ("web development" (or
                                    (mode . html-mode)
                                    (mode . css-mode)))
