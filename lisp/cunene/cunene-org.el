@@ -14,6 +14,8 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+(require 'ob-gnuplot)
+
 (setq org-directory (concat datafiles-dir "/org"))
 (setq org-default-notes-file (concat datafiles-dir "/org/todo.org"))
 
@@ -44,17 +46,68 @@
 (add-hook 'org-mode-hook
           (lambda ()
             (setq org-replace-disputed-keys t)
+            (setq org-CUA-compatible t)
             (org-set-local 'yas/trigger-key [tab])
             ))
 
 ;; make windmove work in org-mode:
-;; (add-hook 'org-shiftup-final-hook 'windmove-up)
-;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
-;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
-;; (add-hook 'org-shiftright-final-hook 'windmove-right)
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 
 (setq org-todo-keywords
       '((sequence "TODO" "STARTED" "WAITING" "VERIFY" "|" "DONE")))
 
 ;; avoid using keys already taken by other modes such as pc-select
 (setq org-replace-disputed-keys t)
+
+;; Resume clocking tasks when emacs is restarted
+(org-clock-persistence-insinuate)
+
+;; Number of clock tasks to remember in history.
+(setq org-clock-history-length 100)
+
+;; Resume clocking task on clock-in if the clock is open
+(setq org-clock-in-resume t)
+
+;; log time when marking task as done
+(setq org-log-done 'time)
+
+;; Clock out when moving task to a done state
+(setq org-clock-out-when-done t)
+
+(defun bh/clock-in-to-started (kw)
+  "Switch task from TODO or NEXT to STARTED when clocking in.
+Skips capture tasks."
+  (if (and (member (org-get-todo-state) (list "TODO" "NEXT"))
+           (not (and (boundp 'org-capture-mode) org-capture-mode)))
+      "STARTED"))
+
+;; Change task to STARTED when clocking in
+(setq org-clock-in-switch-to-state 'bh/clock-in-to-started)
+
+;; Separate drawers for clocking and logs
+;; (setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
+
+;; Save clock data and state changes and notes in the LOGBOOK drawer
+;; (setq org-clock-into-drawer t)
+
+;; Sometimes I change tasks I'm clocking quickly - this removes
+;; clocked tasks with 0:00 duration
+(setq org-clock-out-remove-zero-time-clocks t)
+
+;; Save the running clock and all clock history when exiting Emacs,
+;; load it on startup
+(setq org-clock-persist (quote history))
+
+;; Enable auto clock resolution for finding open clocks
+(setq org-clock-auto-clock-resolution (quote when-no-clock-is-running))
+
+;; Include current clocking task in clock reports
+(setq org-clock-report-include-clocking-task t)
+
+(defun insert-org-timestamp()
+  "Insert a time-stamp in org mode format"
+  (interactive)
+  (insert (format-time-string "[%Y-%m-%e %H:%M:%S]" (current-time))))
