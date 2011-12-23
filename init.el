@@ -80,6 +80,7 @@
                      "cunene-grep"
                      "cunene-gnus"
                      "cunene-gprof"
+                     "cunene-gnuplot"
                      "cunene-hs"
                      "cunene-highlight-symbol"
                      "cunene-highline"

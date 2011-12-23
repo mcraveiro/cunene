@@ -1,0 +1,36 @@
+diff --git a/debian/patches/450_gnuplot.el_make-local-hook.dpatch b/debian/patches/450_gnuplot.el_make-local-hook.dpatch
+new file mode 100755
+index 0000000..47766ff
+/dev/null
++++ b/debian/patches/450_gnuplot.el_make-local-hook.dpatch
+@@ -0,0 +1,29 @@
++#! /bin/sh /usr/share/dpatch/dpatch-run
++## 450_gnuplot.el_make-local-hook.dpatch by Agustin Martin Domingo 
++##
++## All lines beginning with `## DP:' are a description of the patch.
++## DP: 'local does not automatically make hook buffer-local in XEmacs.
++
++For XEmacs we need to explicitly make a hook buffer local by means of
++(make-local-hook). For FSF Emacs passing non-nil as local option will
++automatically do this. For FSF Emacs 24 (make-local-hook) is no longer
++provided as of 2010-10-03 (bzr r101741). Use it conditionally for
++XEmacs and explicitly put 'local instead of t for clarity.
++
++@DPATCH@
++diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' gnuplot-mode~/gnuplot.el gnuplot-mode/gnuplot.el
++ gnuplot-mode~/gnuplot.el	2010-10-14 15:44:53.000000000 +0200
+++++ gnuplot-mode/gnuplot.el	2010-10-14 15:45:56.000000000 +0200
++@@ -1863,8 +1863,10 @@
++ (process-kill-without-query gnuplot-process nil)
++ (save-excursion
++ (set-buffer gnuplot-buffer)
++-	 (make-local-hook 'kill-buffer-hook)
++-	 (add-hook 'kill-buffer-hook 'gnuplot-close-down nil t)
+++	 ;; 'local does not automatically make hook buffer-local in XEmacs.
+++ (if (featurep 'xemacs)
+++ (make-local-hook 'kill-buffer-hook))
+++ (add-hook 'kill-buffer-hook 'gnuplot-close-down nil 'local)
++ (gnuplot-comint-start-function)
++ (make-local-variable 'comint-output-filter-functions)
++ (setq comint-output-filter-functions
+1.7.1
