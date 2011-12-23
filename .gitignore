@@ -12,3 +12,4 @@ data/persistent-scratch
 data/gnus/cache/active
 /.org-id-locations
 xhtml-loader.rnc
+org-clock-save.el
