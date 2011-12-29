@@ -1,0 +1,52 @@
+Content-Type: application/x-bongo-library
+
+"
+"
+#("  [Bongo logo]
+" 2 14 (rear-nonsticky (display) display (image :type pbm :file "/home/marco/.emacs.d/lisp/other/bongo/bongo-logo.pbm" :foreground "Plum" :background nil)))
+"
+"
+#("  Welcome to Bongo, the buffer-oriented media player!
+" 0 53 (face (bongo-comment)))
+"
+"
+#("  This is a Bongo library buffer.  It's empty now, but in a
+" 0 59 (face (bongo-comment)))
+#("  few moments it could hold your entire media collection ---
+" 0 60 (face (bongo-comment)))
+#("  or just the parts that you are currently interested in.
+" 0 57 (face (bongo-comment)))
+"
+"
+#("  To insert local media files or directories, use `i'.
+" 0 51 (face (bongo-comment)) 51 52 (face (bongo-comment bold)) 52 54 (face (bongo-comment)))
+#("  To insert the URL of a media file or stream, use `I u RET'.
+" 0 52 (face (bongo-comment)) 52 59 (face (bongo-comment bold)) 59 61 (face (bongo-comment)))
+#("  To insert other things, use `I TAB' to list possibilities.
+" 0 31 (face (bongo-comment)) 31 36 (face (bongo-comment bold)) 36 60 (face (bongo-comment)))
+"
+"
+#("  To enqueue tracks in the nearest playlist buffer, use `e'.
+" 0 57 (face (bongo-comment)) 57 58 (face (bongo-comment bold)) 58 60 (face (bongo-comment)))
+#("  To hop to the nearest playlist buffer, use `h'.
+" 0 46 (face (bongo-comment)) 46 47 (face (bongo-comment bold)) 47 49 (face (bongo-comment)))
+"
+"
+#("  Enabled backends: mpg123, VLC, ogg123
+" 0 20 (face (bongo-comment)) 20 26 (face (bongo-comment bold) bongo-enabled-backends-list t) 26 28 (face (bongo-comment) bongo-enabled-backends-list t) 28 31 (face (bongo-comment bold) bongo-enabled-backends-list t) 31 33 (face (bongo-comment) bongo-enabled-backends-list t) 33 39 (face (bongo-comment bold) bongo-enabled-backends-list t))
+#("  To modify this list, customize `bongo-enabled-backends'.
+" 0 23 (face (bongo-comment)) 23 32 (help-args (bongo-enabled-backends) category help-customize-variable-button button (t) face (underline bongo-comment)) 32 58 (face (bongo-comment)))
+"
+"
+#("  Bongo is free software licensed under the GNU GPL.
+" 0 52 (face (bongo-comment)))
+#("  Report bugs to <bongo-devel@nongnu.org>.
+" 0 42 (face (bongo-comment)))
+"
+"
+#("    SomaFM: Drone Zone
+" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/lisp/other/bongo/uri-track-icon.png" :type png :background "black")) 4 22 (face bongo-track-title mouse-face highlight follow-link t) 22 23 (bongo-file-name "http://streamer-ntc-aa03.somafm.com:80/stream/1032" bongo-uri-title "SomaFM: Drone Zone"))
+#("    SomaFM: Groove Salad
+" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/lisp/other/bongo/uri-track-icon.png" :type png :background "black")) 4 24 (follow-link t mouse-face highlight face bongo-track-title) 24 25 (bongo-file-name "http://streamer-ntc-aa03.somafm.com:80/stream/1018" bongo-uri-title "SomaFM: Groove Salad"))
+#("    SomaFM: Mission Control
+" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/lisp/other/bongo/uri-track-icon.png" :type png :background "black")) 4 27 (follow-link t mouse-face highlight face bongo-track-title) 27 28 (bongo-file-name "http://mp1.somafm.com:2020" bongo-uri-title "SomaFM: Mission Control"))

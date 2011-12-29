@@ -1,7 +1,7 @@
 # vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
 #name : tick
 # --
-#+TITLE: ${2:`(upcase (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`}
+#+TITLE: ${2:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
 #+OPTIONS: date:nil author:nil toc:nil
 #+LINK_UP: ../kanban_board.html
 #+LINK_HOME: ../../../index.html
