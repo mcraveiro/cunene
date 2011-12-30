@@ -393,8 +393,10 @@ text (with prefix arg don't indent)."
 (require 'windmove)
 (require 'framemove)
 
-;; use meta instead of shift
-(windmove-default-keybindings 'meta)
+(global-set-key (kbd "C-c C-<left>")  'windmove-left)
+(global-set-key (kbd "C-c C-<right>") 'windmove-right)
+(global-set-key (kbd "C-c C-<up>")    'windmove-up)
+(global-set-key (kbd "C-c C-<down>")  'windmove-down)
 (setq framemove-hook-into-windmove t)
 
 ;; confirm exit

@@ -50,12 +50,6 @@
             (org-set-local 'yas/trigger-key [tab])
             ))
 
-;; make windmove work in org-mode:
-(add-hook 'org-shiftup-final-hook 'windmove-up)
-(add-hook 'org-shiftleft-final-hook 'windmove-left)
-(add-hook 'org-shiftdown-final-hook 'windmove-down)
-(add-hook 'org-shiftright-final-hook 'windmove-right)
-
 (setq org-todo-keywords
       '((sequence "TODO" "STARTED" "WAITING" "VERIFY" "|" "DONE")))
 
