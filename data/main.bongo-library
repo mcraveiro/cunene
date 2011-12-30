@@ -50,3 +50,5 @@ Content-Type: application/x-bongo-library
 " 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/lisp/other/bongo/uri-track-icon.png" :type png :background "black")) 4 24 (follow-link t mouse-face highlight face bongo-track-title) 24 25 (bongo-file-name "http://streamer-ntc-aa03.somafm.com:80/stream/1018" bongo-uri-title "SomaFM: Groove Salad"))
 #("    SomaFM: Mission Control
 " 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/lisp/other/bongo/uri-track-icon.png" :type png :background "black")) 4 27 (follow-link t mouse-face highlight face bongo-track-title) 27 28 (bongo-file-name "http://mp1.somafm.com:2020" bongo-uri-title "SomaFM: Mission Control"))
+#("    SmoothBeats
+" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/lisp/other/bongo/uri-track-icon.png" :type png :background "black")) 4 15 (face bongo-track-title mouse-face highlight follow-link t) 15 16 (bongo-file-name "http://scfire-mtc-aa05.stream.aol.com:80/stream/1012" bongo-uri-title "SmoothBeats"))
