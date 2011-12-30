@@ -28,5 +28,6 @@
                 (regexp-history           . 60)
                 (regexp-search-ring       . 20)
                 (search-ring              . 20)
+                (kill-ring              . 20)
                 (shell-command-history    . 50)
                 register-alist)))
