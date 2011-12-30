@@ -38,6 +38,7 @@
                        (name . "^\\*SQL")))
                ("patches" (mode . diff-mode))
                ("bash" (mode . sh-mode))
+               ("awk" (mode . awk-mode))
                ("latex" (or
                          (name . ".tex$")
                          (mode . tex-mode)
@@ -75,6 +76,7 @@
                                   (name . "^\\*Help\\*$")
                                   (name . "^\\*Dired log\\*$")
                                   (name . "^\\*scratch\\*$")
+                                  (name . "^\\*gnuplot\\*$")
                                   (name . "^\\*Messages\\*$")))
                ("semantic" (or
                             (mode . data-debug-mode)
