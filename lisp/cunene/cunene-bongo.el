@@ -18,4 +18,5 @@
 ;; Add bongo to load path.
 (add-to-list 'load-path (concat dotfiles-dir "/other/bongo"))
 
-(autoload 'bongo "bongo" "Bongo music player." t)
+(require 'bongo)
+;; (autoload 'bongo "bongo" "Bongo music player." t)
