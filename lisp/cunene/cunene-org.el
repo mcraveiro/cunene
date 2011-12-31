@@ -105,3 +105,14 @@ Skips capture tasks."
   "Insert a time-stamp in org mode format"
   (interactive)
   (insert (format-time-string "[%Y-%m-%e %H:%M:%S]" (current-time))))
+
+;; let babel evaluate without asking
+(setq org-confirm-babel-evaluate nil)
+
+;; enabled languages for org-babel code blocks
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (sh . t)
+   (gnuplot . t)
+   (R . t)))
