@@ -475,3 +475,79 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (deactivate-mark nil))
 (define-key global-map [remap exchange-point-and-mark]
   'exchange-point-and-mark-no-activate)
+
+
+(defun space2underscore-region (start end)
+  "Replace space by underscore in region."
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (search-forward " " nil t) (replace-match "_")) ) )
+
+(defun underscore2space-region (start end)
+  "Replace underscore by space in region."
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (search-forward "_" nil t) (replace-match " ")) ))
+
+(defun replace-underscore-space-toggle ()
+  "Replace underscore/space in the current region or line.
+If the current line contains more “_” char than space,
+then replace them to space, else replace space to _.
+If there's a text selection, work on the selected text."
+  (interactive)
+  (let (li bds)
+    (setq bds
+          (if (region-active-p)
+              (cons (region-beginning) (region-end))
+            (bounds-of-thing-at-point 'line)))
+    (setq li (buffer-substring-no-properties (car bds) (cdr bds)))
+    (if (> (count 32 li) (count 95 li))
+        (progn (replace-string " " "_" nil (car bds) (cdr bds)))
+      (progn (replace-string "_" " " nil (car bds) (cdr bds))))))
+
+(defun cycle-hyphen-underscore-space ()
+  "Cyclically replace {underscore, space, hypen} chars current
+ line or text selection.  When called repeatedly, this command
+ cycles the {“ ”, “_”, “-”} characters."
+  (interactive)
+  ;; this function sets a property 「'state」. Possible values are 0
+  ;; to length of charList.
+  (let (mainText charList p1 p2 currentState nextState changeFrom
+             changeTo startedWithRegion-p )
+
+    (if (region-active-p)
+        (progn
+          (setq startedWithRegion-p t )
+          (setq p1 (region-beginning))
+          (setq p2 (region-end))
+          )
+      (progn (setq startedWithRegion-p nil )
+             (setq p1 (line-beginning-position))
+             (setq p2 (line-end-position)) ) )
+
+    (setq charList (list " " "_" "-" ))
+
+    (setq currentState
+          (if (get 'cycle-hyphen-underscore-space 'state)
+              (get 'cycle-hyphen-underscore-space 'state) 0))
+    (setq nextState (% (+ currentState (length charList) 1) (length charList)))
+
+    (setq changeFrom (nth currentState charList))
+    (setq changeTo (nth nextState charList))
+
+    (setq mainText
+          (replace-regexp-in-string changeFrom changeTo
+                                    (buffer-substring-no-properties p1 p2)))
+    (delete-region p1 p2)
+    (insert mainText)
+
+    (put 'cycle-hyphen-underscore-space 'state nextState)
+
+    (when startedWithRegion-p
+      (goto-char p2)
+      (set-mark p1)
+      (setq deactivate-mark nil))))
