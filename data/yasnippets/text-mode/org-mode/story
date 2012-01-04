@@ -1,5 +1,6 @@
 # vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
 #name : story
+# expand-env: ((yas/indent-line nil))
 # --
 #+TITLE: ${2:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
 #+OPTIONS: date:nil author:nil toc:nil
