@@ -108,7 +108,7 @@ Skips capture tasks."
 (defun insert-org-timestamp()
   "Insert a time-stamp in org mode format"
   (interactive)
-  (insert (format-time-string "[%Y-%m-%e %H:%M:%S]" (current-time))))
+  (insert (format-time-string "[%Y-%m-%d %H:%M:%S]" (current-time))))
 
 ;; let babel evaluate without asking
 (setq org-confirm-babel-evaluate nil)
