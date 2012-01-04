@@ -483,7 +483,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (save-restriction
     (narrow-to-region start end)
     (goto-char (point-min))
-    (while (search-forward " " nil t) (replace-match "_")) ) )
+    (while (search-forward " " nil t) (replace-match "_"))))
 
 (defun underscore2space-region (start end)
   "Replace underscore by space in region."
@@ -491,7 +491,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (save-restriction
     (narrow-to-region start end)
     (goto-char (point-min))
-    (while (search-forward "_" nil t) (replace-match " ")) ))
+    (while (search-forward "_" nil t) (replace-match " "))))
 
 (defun replace-underscore-space-toggle ()
   "Replace underscore/space in the current region or line.
