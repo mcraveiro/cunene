@@ -85,6 +85,16 @@
 ;;           (lambda ()
 ;;             (local-set-key "\M-W" 'w3m-copy-url-at-point)))
 
+(defun my-w3m-rename-buffer (url)
+  "Renames the current buffer to be the current URL"
+  (rename-buffer url t))
+(add-hook 'w3m-display-hook 'my-w3m-rename-buffer)
+
+(add-hook 'w3m-display-hook
+          (lambda (url)
+            (let ((buffer-read-only nil))
+              (delete-trailing-whitespace))))
+
 ;; save state
 (defun w3m-register-desktop-save ()
   "Set `desktop-save-buffer' to a function returning the current URL."
