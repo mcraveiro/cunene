@@ -36,3 +36,9 @@
 ;; Mark related options
 (setq pc-select-meta-moves-sexps t)
 (setq pc-select-selection-keys-only t)
+
+;; time in seconds to delay before overriding prefix key. bump it up
+;; by quite a bit as we don't really use the typical windows copy and
+;; paste shortcuts (Ctrl-C, Ctrl-V, etc) and these overrides cause a
+;; lot of pain on modes such as org-mode, etc.
+(setq cua-prefix-override-inhibit-delay 1)
