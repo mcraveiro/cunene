@@ -1,0 +1,14 @@
+# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
+#name : doc
+# expand-env: ((yas/indent-line nil))
+# --
+#+TITLE: ${2:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
+#+OPTIONS: date:nil toc:nil author:nil num:nil
+#+LINK_HOME: $3/index.html
+#+STYLE: <link rel="stylesheet" type="text/css" href="$3/site.css" />
+
+* Introduction
+
+$0
+
+* References
