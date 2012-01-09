@@ -14,6 +14,24 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+(autoload 'ediff-files "ediff")
+(autoload 'ediff-buffers "ediff")
+
+(setq ediff-split-window-function
+      (if (> (frame-width) 150)
+          'split-window-horizontally
+        'split-window-vertically))
+
+(setq diff-switches "-u")
+(setq ediff-custom-diff-options "-U3")
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+(add-hook 'ediff-startup-hook 'ediff-toggle-wide-display)
+(add-hook 'ediff-cleanup-hook 'ediff-toggle-wide-display)
+(add-hook 'ediff-suspend-hook 'ediff-toggle-wide-display)
+
 (defvar ediff-do-hexl-diff nil
   "variable used to store trigger for doing diff in hexl-mode")
 
