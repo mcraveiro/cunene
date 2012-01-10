@@ -48,6 +48,9 @@
 ;; highlight incremental search
 (setq search-highlight t)
 
+;; repeat pop mark command without the need for C-u
+(setq set-mark-command-repeat-pop t)
+
 ;; Time and date
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
