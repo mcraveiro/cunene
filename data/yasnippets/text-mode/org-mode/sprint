@@ -1,0 +1,65 @@
+# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
+#name : story
+# expand-env: ((yas/indent-line nil))
+# --
+#+TITLE: ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
+#+OPTIONS: date:nil toc:nil author:nil num:nil
+#+LINK_UP: kanban_board.html
+#+LINK_HOME: ../../index.html
+#+STYLE: <link rel="stylesheet" type="text/css" href="../../site.css" />
+* Status
+
+- Length: $2 days
+- Start date: ${3:`(insert-org-timestamp)`}
+- Stories:
+  - $4
+
+* Burndown Chart
+
+#+srcname: sprint_calendar
+#+begin_src sh :session :exports none
+./agile_format_sprint.sh ${5:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}.org |
+gawk -f agile_generate_sprint_calendar.awk -v sprint_length=$2 \
+-v sprint_start_date="$3"
+#+end_src
+
+#+ATTR_HTML: border="2" rules="all" frame="border"
+#+results: sprint_calendar
+|       Date | Day | Expected | Actual |
+| 2011-12-17 |   0 |       20 |     20 |
+| 2011-12-18 |   1 |       18 |     20 |
+| 2011-12-19 |   2 |       17 |     20 |
+| 2011-12-20 |   3 |       15 |     17 |
+| 2011-12-21 |   4 |       14 |     17 |
+| 2011-12-22 |   5 |       12 |     17 |
+| 2011-12-23 |   6 |       11 |     14 |
+| 2011-12-24 |   7 |       10 |     14 |
+| 2011-12-25 |   8 |        8 |     14 |
+| 2011-12-26 |   9 |        7 |     14 |
+| 2011-12-27 |  10 |        5 |     14 |
+| 2011-12-28 |  11 |        4 |     13 |
+| 2011-12-29 |  12 |        2 |     11 |
+| 2011-12-30 |  13 |        0 |     10 |
+
+#+srcname: burndown_chart
+#+begin_src gnuplot :var data=sprint_calendar :exports none :file $1_burndown.png
+reset
+set termoption dash
+set terminal png font "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf" 14
+set title "Sprint 1 Burndown Chart"
+set auto x
+set border linewidth 1.5
+set style line 1 linecolor rgb "red" linetype 2 linewidth 3 pointtype 1
+set style line 2 linecolor rgb "orange" linetype 2 linewidth 3 pointtype 1
+set ylabel "Story Points"
+set yrange [0:22]
+set ytics 0,1,22
+set xlabel "Time"
+set xrange col(1)
+set xtics 0,1,15
+plot data using 3 title col(3) linestyle 1 with lines, \
+data using 4 title col(4) linestyle 2 with lines
+#+end_src
+
+#+ATTR_HTML: width="800" title="Action!" align="center"
+[[file:$5_burndown.png]]
