@@ -129,7 +129,9 @@
   ;; - Droid Sans Mono Bold 15
   ;; - Monospace Bold 9
   (if (not (eq system-type 'windows-nt))
-      (set-frame-parameter frame 'font "Inconsolata Bold 16")
+      (if (< (frame-width) 100)
+          (set-frame-parameter frame 'font "Inconsolata Bold 12")
+        (set-frame-parameter frame 'font "Inconsolata Bold 16"))
     (set-frame-parameter frame 'font "-outline-Consolas-normal-r-normal-normal-14-97-96-96-c-*-iso8859-1"))
   (set-frame-parameter frame 'cursor-color "wheat")
   (set-frame-parameter frame 'foreground-color "wheat")
