@@ -25,7 +25,6 @@
 
 (setq diff-switches "-u")
 (setq ediff-custom-diff-options "-U3")
-(setq ediff-split-window-function 'split-window-horizontally)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
 (add-hook 'ediff-startup-hook 'ediff-toggle-wide-display)

@@ -70,6 +70,7 @@
                      "cunene-eassist"
                      "cunene-ecb"
                      "cunene-ede"
+                     "cunene-ediff"
                      "cunene-edef"
                      "cunene-eiffel"
                      "cunene-ffap"
