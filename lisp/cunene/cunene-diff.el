@@ -20,10 +20,10 @@
 ;;
 ;; diff the current buffer with the file contents
 ;;
-(defun my-diff-current-buffer-with-disk ()
-  "Compare the current buffer with it's disk file."
-  (interactive)
-  (diff-buffer-with-file (current-buffer)))
+;; (defun my-diff-current-buffer-with-disk ()
+;;   "Compare the current buffer with it's disk file."
+;;   (interactive)
+;;   (diff-buffer-with-file (current-buffer)))
 
 ;; Key bindings
-(global-set-key (kbd "C-c C-d") 'my-diff-current-buffer-with-disk)
+;; (global-set-key (kbd "C-c C-d") 'my-diff-current-buffer-with-disk)
