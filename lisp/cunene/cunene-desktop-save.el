@@ -15,8 +15,19 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Desktop mode
+;; location of desktop files
+(setq desktop-dirname (concat datafiles-dir "/desktop/")
+      desktop-base-file-name "emacs.desktop"
+      desktop-base-lock-name "lock"
+      desktop-path (list desktop-dirname)
+      desktop-save t
+      desktop-files-not-to-save "^$" ;reload tramp paths
+      desktop-load-locked-desktop nil)
+
+;; enable desktop mode
 (desktop-save-mode 1)
+
+;; what to save
 (setq desktop-globals-to-save
       (append '((extended-command-history . 30)
                 (file-name-history        . 100)

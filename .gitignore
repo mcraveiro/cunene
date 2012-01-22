@@ -13,3 +13,5 @@ data/gnus/cache/active
 /.org-id-locations
 xhtml-loader.rnc
 org-clock-save.el
+data/desktop/emacs.desktop
+data/desktop/lock
