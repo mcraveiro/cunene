@@ -1,6 +1,6 @@
 ;;; ede-android.el --- Support Android code projects
 ;;
-;; Copyright (C) 2011 Eric M. Ludlam
+;; Copyright (C) 2011, 2012 Eric M. Ludlam
 ;;
 ;; Author: Eric M. Ludlam <eric@siege-engine.com>
 ;;
@@ -86,15 +86,15 @@ ROOTPROJ is nil, since there is only one project."
 	)))
 
 ;;;###autoload
-(add-to-list 'ede-project-class-files
-	     (ede-project-autoload "android"
-	      :name "ANDROID ROOT"
-	      :file 'ede-android
-	      :proj-file "AndroidManifest.xml"
-	      :load-type 'ede-android-load
-	      :class-sym 'ede-android-project
-	      :new-p t)
-	     t)
+(ede-add-project-autoload
+ (ede-project-autoload "android"
+		       :name "ANDROID ROOT"
+		       :file 'ede-android
+		       :proj-file "AndroidManifest.xml"
+		       :load-type 'ede-android-load
+		       :class-sym 'ede-android-project
+		       :new-p t
+		       :safe-p t))
 
 ;;; CLASSES
 ;;

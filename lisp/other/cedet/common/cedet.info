@@ -2,7 +2,7 @@ This is cedet.info, produced by makeinfo version 4.13 from cedet.texi.
 
 This manual documents CEDET, a collection of other tools.
 
-   Copyright (C) 2007, 2008, 2009, 2010, 2011 Eric M. Ludlam
+   Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012 Eric M. Ludlam
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -767,13 +767,14 @@ sub-directory of your project first.
    EDE provides the following conveniences for android projects:
 
 <C-c . e>
-     This will always jump to the AndroidManifest.xml file, which
-     doubles as the
+     This will always jump to the AndroidManifest.xml file.
 
 <C-c . c>
 <C-c . C>
      This will compile your project using ant.  To change what type of
      build you do, you will need to change the current configuration.
+     You can select a configuration such as install or release from the
+     Project menu.
 
 <C-c . D>
      Debug your project.  This will also start ddms, the debug proxy for
@@ -841,7 +842,7 @@ CEDET supports a handy way to find sample programs from the SDK.
 ================================
 
 You can create macros for use with android.  Add the :android argument
-to your templates to get some android specific features.  See
+to your templates to get some android specific features.
 
 
 File: cedet.info,  Node: GNU Global,  Next: ID Utils,  Prev: Android Features,  Up: Top
@@ -1436,36 +1437,36 @@ Index
 
 
 Tag Table:
-Node: Top917
-Node: Overview1990
-Node: EIEIO4901
-Node: Semantic5912
-Node: SRecode7228
-Node: Speedbar7715
-Node: EDE8665
-Node: COGRE9989
-Node: Other Library Functions10524
-Node: Installation/Basic Configuration13120
-Node: CEDET Context Menu15682
-Node: JDEE Target16482
-Node: ECB Target17547
-Node: Project Management18270
-Node: Code Completion19605
-Node: Code Generation21229
-Node: C++ Features21998
-Ref: semantic-lex-c-preprocessor-symbol-map22632
-Ref: semantic-lex-c-preprocessor-symbol-file23984
-Ref: semantic-c-obey-conditional-section-parsing-flag24577
-Ref: semantic-lex-c-nested-namespace-ignore-second24824
-Node: Android Features27108
-Ref: cedet-android-sdk-root27903
-Ref: cedet-android-create-project28071
-Ref: cedet-android-visit-sample31256
-Node: GNU Global31519
-Node: ID Utils33567
-Node: CScope35089
-Node: Maintenance37463
-Node: GNU Free Documentation License37873
-Node: Index57596
+Node: Top923
+Node: Overview1996
+Node: EIEIO4907
+Node: Semantic5918
+Node: SRecode7234
+Node: Speedbar7721
+Node: EDE8671
+Node: COGRE9995
+Node: Other Library Functions10530
+Node: Installation/Basic Configuration13126
+Node: CEDET Context Menu15688
+Node: JDEE Target16488
+Node: ECB Target17553
+Node: Project Management18276
+Node: Code Completion19611
+Node: Code Generation21235
+Node: C++ Features22004
+Ref: semantic-lex-c-preprocessor-symbol-map22638
+Ref: semantic-lex-c-preprocessor-symbol-file23990
+Ref: semantic-c-obey-conditional-section-parsing-flag24583
+Ref: semantic-lex-c-nested-namespace-ignore-second24830
+Node: Android Features27114
+Ref: cedet-android-sdk-root27909
+Ref: cedet-android-create-project28077
+Ref: cedet-android-visit-sample31327
+Node: GNU Global31585
+Node: ID Utils33633
+Node: CScope35155
+Node: Maintenance37529
+Node: GNU Free Documentation License37939
+Node: Index57662
 
 End Tag Table

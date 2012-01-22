@@ -2,7 +2,7 @@ This is eieio.info, produced by makeinfo version 4.13 from eieio.texi.
 
 This manual documents CEDET, a collection of other tools.
 
-   Copyright (C) 2007, 2008, 2009, 2010 Eric M. Ludlam
+   Copyright (C) 2007, 2008, 2009, 2010, 2012 Eric M. Ludlam
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -1285,9 +1285,13 @@ have several additional methods that aid in maintaining them.
      header line comment from the class allocated slot if one is not
      provided.
 
- -- Function: eieio-persistent-read filename
-     Read FILENAME which contains an `eieio-persistent' object
-     previously written with `eieio-persistent-save'.
+ -- Function: eieio-persistent-read filename &optional class
+          allow-subclass
+     Read a persistent object from FILENAME, and return it.  Signal an
+     error if the object in FILENAME is not a constructor for CLASS.
+     Optional ALLOW-SUBCLASS says that it is ok for
+     `eieio-peristent-read' to load in subclasses of class instead of
+     being pendantic."
 
 
 File: eieio.info,  Node: eieio-named,  Next: eieio-speedbar,  Prev: eieio-persistent,  Up: Base Classes
@@ -1843,7 +1847,7 @@ Function Index
 * eieio-customize-object:                Customizing.          (line 15)
 * eieio-persistent-path-relative on eieio-persistent: eieio-persistent.
                                                                (line 30)
-* eieio-persistent-read:                 eieio-persistent.     (line 41)
+* eieio-persistent-read:                 eieio-persistent.     (line 42)
 * eieio-persistent-save on eieio-persistent: eieio-persistent. (line 26)
 * eieio-speedbar-child-description on eieio-speedbar: eieio-speedbar.
                                                                (line 48)
@@ -1908,63 +1912,63 @@ Function Index
 
 
 Tag Table:
-Node: Top859
-Node: Quick Start2572
-Node: Introduction5788
-Node: Building Classes7645
-Node: Inheritance10214
-Node: Slot Options12514
-Node: Class Options17989
-Node: Making New Objects20657
-Ref: make-instance22081
-Node: Accessing Slots22753
-Ref: oref23977
-Ref: oref-default24190
-Ref: slot-value24610
-Ref: set-slot-value24775
-Ref: object-add-to-list25232
-Ref: object-remove-from-list25624
-Ref: with-slots25873
-Node: Writing Methods26859
-Node: Generics27603
-Node: Methods28851
-Ref: call-next-method31838
-Ref: next-method-p32273
-Node: Static Methods32612
-Node: Method Invocation33276
-Node: Predicates34634
-Ref: find-class35035
-Ref: class-p35241
-Ref: slot-exists-p35361
-Ref: slot-boundp35444
-Node: Association Lists38366
-Ref: object-assoc38724
-Node: Customizing39693
-Node: Introspection42140
-Node: Base Classes42817
-Node: eieio-instance-inheritor43553
-Node: eieio-instance-tracker44820
-Node: eieio-singleton46277
-Node: eieio-persistent46705
-Node: eieio-named48602
-Node: eieio-speedbar48928
-Node: Browsing52761
-Node: Class Values53543
-Node: Documentation54042
-Node: Default Superclass55667
-Node: Initialization56806
-Node: Basic Methods57879
-Ref: clone58130
-Ref: object-print58448
-Node: Signal Handling59775
-Ref: slot-missing60267
-Ref: slot-unbound60958
-Ref: no-applicable-method61650
-Ref: no-next-method62015
-Node: Signals62383
-Node: Naming Conventions64000
-Node: CLOS compatibility65230
-Node: Wish List68100
-Node: Function Index68875
+Node: Top865
+Node: Quick Start2578
+Node: Introduction5794
+Node: Building Classes7651
+Node: Inheritance10220
+Node: Slot Options12520
+Node: Class Options17995
+Node: Making New Objects20663
+Ref: make-instance22087
+Node: Accessing Slots22759
+Ref: oref23983
+Ref: oref-default24196
+Ref: slot-value24616
+Ref: set-slot-value24781
+Ref: object-add-to-list25238
+Ref: object-remove-from-list25630
+Ref: with-slots25879
+Node: Writing Methods26865
+Node: Generics27609
+Node: Methods28857
+Ref: call-next-method31844
+Ref: next-method-p32279
+Node: Static Methods32618
+Node: Method Invocation33282
+Node: Predicates34640
+Ref: find-class35041
+Ref: class-p35247
+Ref: slot-exists-p35367
+Ref: slot-boundp35450
+Node: Association Lists38372
+Ref: object-assoc38730
+Node: Customizing39699
+Node: Introspection42146
+Node: Base Classes42823
+Node: eieio-instance-inheritor43559
+Node: eieio-instance-tracker44826
+Node: eieio-singleton46283
+Node: eieio-persistent46711
+Node: eieio-named48817
+Node: eieio-speedbar49143
+Node: Browsing52976
+Node: Class Values53758
+Node: Documentation54257
+Node: Default Superclass55882
+Node: Initialization57021
+Node: Basic Methods58094
+Ref: clone58345
+Ref: object-print58663
+Node: Signal Handling59990
+Ref: slot-missing60482
+Ref: slot-unbound61173
+Ref: no-applicable-method61865
+Ref: no-next-method62230
+Node: Signals62598
+Node: Naming Conventions64215
+Node: CLOS compatibility65445
+Node: Wish List68315
+Node: Function Index69090
 
 End Tag Table

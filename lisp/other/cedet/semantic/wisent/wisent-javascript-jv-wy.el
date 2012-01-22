@@ -3,7 +3,7 @@
 ;; Copyright (C) 2005-2011 Free Software Foundation, Inc.
 
 ;; Author: Marco Craveiro <marco@lorenz>
-;; Created: 2011-10-04 23:29:59+0100
+;; Created: 2012-01-22 13:18:25+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 
