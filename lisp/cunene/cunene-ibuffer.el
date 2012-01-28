@@ -24,7 +24,10 @@
                ("c++" (mode . c++-mode))
                ("csharp" (mode . csharp-mode))
                ("java" (mode . java-mode))
-               ("make" (mode . cmake-mode))
+               ("make" (or
+                        (mode . cmake-mode)
+                        (mode . makefile-mode)
+                        (mode . makefile-gmake-mode)))
                ("ruby" (mode . ruby-mode))
                ("t4" (name . ".tt$"))
                ("perl" (mode . perl-mode))
