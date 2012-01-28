@@ -17,10 +17,12 @@
 
 ;; Visual bookmarks mode
 (require 'bm)
-(provide 'bm-ext)
 
 ;; Put bookmarks on the fringe
 (setq bm-highlight-style 'bm-highlight-only-fringe)
+
+;; cycle across buffers
+(setq bm-cycle-all-buffers t)
 
 ;;
 ;; Key bindings
