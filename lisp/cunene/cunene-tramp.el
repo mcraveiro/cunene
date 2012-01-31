@@ -18,3 +18,5 @@
 
 ;; cache file
 (setq tramp-persistency-file-name (concat datafiles-dir "/tramp"))
+
+(setq tramp-default-method "pscp")

@@ -21,3 +21,34 @@
 (add-to-list 'auto-mode-alist '("\\.xsd$" . nxml-mode))
 (setq nxml-child-indent tab-width)
 (setq nxml-slash-auto-complete-flag t)
+
+(add-to-list
+ 'auto-mode-alist
+ (cons
+  (concat "\\."
+          (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss") t) "\\'")
+  'nxml-mode))
+
+(unify-8859-on-decoding-mode)
+
+(setq magic-mode-alist
+      (cons '("<＼＼?xml " . nxml-mode)
+            magic-mode-alist))
+
+(fset 'xml-mode 'nxml-mode)
+
+;;; Use nxml-mode instead of sgml, xml or html mode.
+(mapc
+ (lambda (pair)
+   (if (or (eq (cdr pair) 'xml-mode)
+           (eq (cdr pair) 'sgml-mode)
+           (eq (cdr pair) 'html-mode))
+       (setcdr pair 'nxml-mode)))
+ magic-mode-alist)
+
+(add-hook 'hack-local-variables-hook
+          (lambda ()
+            (save-excursion
+              (when (search-forward-regexp "^<\\?xml" 6 0)
+                (nxml-mode)
+                ))))
