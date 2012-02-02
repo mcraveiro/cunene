@@ -73,6 +73,7 @@
                      "cunene-ediff"
                      "cunene-edef"
                      "cunene-eiffel"
+                     "cunene-expand-region"
                      "cunene-ffap"
                      "cunene-fixme"
                      "cunene-flyspell"
