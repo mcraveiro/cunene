@@ -481,7 +481,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (define-key global-map [remap exchange-point-and-mark]
   'exchange-point-and-mark-no-activate)
 
-
 (defun space2underscore-region (start end)
   "Replace space by underscore in region."
   (interactive "r")
@@ -610,3 +609,28 @@ Returns nil if no differences found, 't otherwise."
 (add-hook 'kill-buffer-hook 'kill-associated-diff-buf)
 
 (global-set-key (kbd "C-c d") 'diff-buffer-with-associated-file)
+
+(defun de-context-kill (arg)
+  "Kill buffer"
+  (interactive "p")
+  (if (and (buffer-modified-p)
+             buffer-file-name
+             (not (string-match "\\*.*\\*" (buffer-name)))
+             ;; erc buffers will be automatically saved
+             (not (eq major-mode 'erc-mode))
+             (= 1 arg))
+    (let ((differences 't))
+      (when (file-exists-p buffer-file-name)
+        (setq differences (diff-buffer-with-associated-file)))
+
+      (if (y-or-n-p (format "Buffer %s modified; Kill anyway? " buffer-file-name))
+          (progn
+            (set-buffer-modified-p nil)
+            (kill-buffer (current-buffer)))))
+    (if (and (boundp 'gnuserv-minor-mode)
+           gnuserv-minor-mode)
+        (gnuserv-edit)
+      (set-buffer-modified-p nil)
+      (kill-buffer (current-buffer)))))
+
+(global-set-key (kbd "C-x k") 'de-context-kill)
