@@ -2,10 +2,10 @@
 #name : doc
 # expand-env: ((yas/indent-line nil))
 # --
-#+TITLE: ${2:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
-#+OPTIONS: date:nil toc:nil author:nil num:nil
-#+LINK_HOME: $3/index.html
-#+STYLE: <link rel="stylesheet" type="text/css" href="$3/site.css" />
+#+title: ${2:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
+#+options: date:nil toc:nil author:nil num:nil
+#+link_home: $3/index.html
+#+style: <link rel="stylesheet" type="text/css" href="$3/site.css" />
 
 * Introduction
 

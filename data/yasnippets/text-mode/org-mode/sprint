@@ -2,11 +2,11 @@
 #name : story
 # expand-env: ((yas/indent-line nil))
 # --
-#+TITLE: ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
-#+OPTIONS: date:nil toc:nil author:nil num:nil
-#+LINK_UP: kanban_board.html
-#+LINK_HOME: ../../index.html
-#+STYLE: <link rel="stylesheet" type="text/css" href="../../site.css" />
+#+title: ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
+#+options: date:nil toc:nil author:nil num:nil
+#+link_up: kanban_board.html
+#+link_home: ../../index.html
+#+style: <link rel="stylesheet" type="text/css" href="../../site.css" />
 * Status
 
 - Length: $2 days
