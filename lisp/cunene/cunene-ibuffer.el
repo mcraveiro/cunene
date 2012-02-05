@@ -1,4 +1,4 @@
-;;; Marco's .emacs, copied largely from starterkit and Alex Ott's.
+;;; Marco's .emacs, copied largely from starterkit and Alex Tot's.
 
 ;; Copyright (C) 2009  Marco Craveiro
 ;;
@@ -22,6 +22,9 @@
 (setq ibuffer-saved-filter-groups
       (quote (("home"
                ("c++" (mode . c++-mode))
+               ("fsharp" (or
+                          (mode . inferior-fsharp-mode)
+                          (mode . fsharp-mode)))
                ("csharp" (mode . csharp-mode))
                ("java" (mode . java-mode))
                ("make" (or
