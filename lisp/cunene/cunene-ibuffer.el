@@ -74,6 +74,8 @@
                                    (name . "^\\*magit")))
                ("snippets" (mode . snippet-mode))
                ("system buffers" (or
+                                  (name . "^\\*Bookmark List\\*$")
+                                  (name . "^\\*RE-Builder\\*$")
                                   (name . "^\\*Kill Ring\\*$")
                                   (name . "^\\*Proced\\*$")
                                   (name . "^\\*WoMan-Log\\*$")
