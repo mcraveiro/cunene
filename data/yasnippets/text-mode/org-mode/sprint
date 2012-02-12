@@ -7,24 +7,28 @@
 #+link_up: kanban_board.html
 #+link_home: ../../index.html
 #+style: <link rel="stylesheet" type="text/css" href="../../site.css" />
-* Status
+
+* Overview
 
 - Length: $2 days
 - Start date: ${3:`(insert-org-timestamp)`}
-- Stories:
-  - $4
+
+* Kanban Board
+ 
+#+ATTR_HTML: border="2" rules="all" frame="border"
+| Not Started | Analysis | Implementation | Testing | Completed                             |
 
 * Burndown Chart
 
-#+srcname: sprint_calendar
+#+srcname: ${5:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}_calendar
 #+begin_src sh :session :exports none
-./agile_format_sprint.sh ${5:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}.org |
+./agile_format_sprint.sh $5.org |
 gawk -f agile_generate_sprint_calendar.awk -v sprint_length=$2 \
 -v sprint_start_date="$3"
 #+end_src
 
 #+ATTR_HTML: border="2" rules="all" frame="border"
-#+results: sprint_calendar
+#+results: $5_calendar
 |       Date | Day | Expected | Actual |
 | 2011-12-17 |   0 |       20 |     20 |
 | 2011-12-18 |   1 |       18 |     20 |
@@ -42,11 +46,11 @@ gawk -f agile_generate_sprint_calendar.awk -v sprint_length=$2 \
 | 2011-12-30 |  13 |        0 |     10 |
 
 #+srcname: burndown_chart
-#+begin_src gnuplot :var data=sprint_calendar :exports none :file $1_burndown.png
+#+begin_src gnuplot :var data=$5_calendar :exports none :file $5_burndown.png
 reset
 set termoption dash
 set terminal png font "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf" 14
-set title "Sprint 1 Burndown Chart"
+set title "$1 Burndown Chart"
 set auto x
 set border linewidth 1.5
 set style line 1 linecolor rgb "red" linetype 2 linewidth 3 pointtype 1
