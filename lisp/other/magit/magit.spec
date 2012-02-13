@@ -1,11 +1,11 @@
 Name:		magit
-Version:	1.0.0-320-ge72f015
+Version:	
 Release:	1%{?dist}
 Summary:	An Emacs Extension for Git
 BuildArch: noarch
 Group:		Development/Tools
 License:	GPLv3
-URL:		http://zagadka.vm.bytemark.co.uk/magit
+URL:		http://magit.github.com/magit/
 Source0:	%{url}/%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 

@@ -1,11 +1,11 @@
 ;;; magit-svn.el --- git-svn plug-in for Magit
 
-;; Copyright (C) 2008, 2009  Marius Vollmer
-;; Copyright (C) 2008  Linh Dang
 ;; Copyright (C) 2008  Alex Ott
-;; Copyright (C) 2008  Marcin Bachry
 ;; Copyright (C) 2009  Alexey Voinov
 ;; Copyright (C) 2009  John Wiegley
+;; Copyright (C) 2008  Linh Dang
+;; Copyright (C) 2008  Marcin Bachry
+;; Copyright (C) 2008, 2009  Marius Vollmer
 ;; Copyright (C) 2010  Yann Hodique
 ;;
 ;; Magit is free software; you can redistribute it and/or modify it
@@ -65,9 +65,21 @@
 (defun magit-svn-enabled ()
   (not (null (magit-svn-get-ref-info t))))
 
+(defun magit-svn-expand-braces-in-branches (branch)
+  (if (not (string-match "\\(.+\\){\\(.+,.+\\)}\\(.*\\):\\(.*\\)\\\*" branch))
+      (list branch)
+    (let ((prefix (match-string 1 branch))
+          (suffix (match-string 3 branch))
+          (rhs (match-string 4 branch))
+          (pieces (split-string (match-string 2 branch) ",")))
+      (mapcar (lambda (p) (concat prefix p suffix ":" rhs p)) pieces))))
+
 (defun magit-svn-get-local-ref (url)
-  (let ((branches (cons (magit-get "svn-remote" "svn" "fetch")
+  (let* ((branches (cons (magit-get "svn-remote" "svn" "fetch")
                         (magit-get-all "svn-remote" "svn" "branches")))
+         (branches (apply 'nconc
+                          (mapcar 'magit-svn-expand-braces-in-branches
+                                  branches)))
         (base-url (magit-get "svn-remote" "svn" "url"))
         (result nil))
     (while branches
@@ -170,6 +182,7 @@ If USE-CACHE is non nil, use the cached information."
   nil
   "Git SVN extension menu"
   '("Git SVN"
+    :visible magit-svn-mode
     ["Create branch" magit-svn-create-branch (magit-svn-enabled)]
     ["Rebase" magit-svn-rebase (magit-svn-enabled)]
     ["Fetch" magit-svn-remote-update (magit-svn-enabled)]
@@ -178,14 +191,6 @@ If USE-CACHE is non nil, use the cached information."
 (easy-menu-add-item 'magit-mode-menu
                     '("Extensions")
                     magit-svn-extension-menu)
-
-(add-hook 'magit-after-insert-unpulled-commits-hook
-          (lambda () (magit-insert-svn-unpulled t)))
-
-(add-hook 'magit-after-insert-unpushed-commits-hook
-          (lambda () (magit-insert-svn-unpushed t)))
-
-(add-hook 'magit-remote-string-hook 'magit-svn-remote-string)
 
 ;; add the group and its keys
 (progn
@@ -201,7 +206,35 @@ If USE-CACHE is non nil, use the cached information."
   ;; generate and bind the menu popup function
   (magit-key-mode-generate 'svn))
 
-(define-key magit-mode-map (kbd "N") 'magit-key-mode-popup-svn)
+(defvar magit-svn-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "N") 'magit-key-mode-popup-svn)
+    map))
+
+;;;###autoload
+(define-minor-mode magit-svn-mode "SVN support for Magit"
+  :lighter " SVN" :require 'magit-svn :keymap 'magit-svn-mode-map
+  (or (derived-mode-p 'magit-mode)
+      (error "This mode only makes sense with magit"))
+  (let ((unpulled-hook (lambda () (magit-insert-svn-unpulled t)))
+        (unpushed-hook (lambda () (magit-insert-svn-unpushed t)))
+        (remote-hook 'magit-svn-remote-string))
+    (if magit-svn-mode
+        (progn
+          (add-hook 'magit-after-insert-unpulled-commits-hook unpulled-hook nil t)
+          (add-hook 'magit-after-insert-unpushed-commits-hook unpushed-hook nil t)
+          (add-hook 'magit-remote-string-hook remote-hook nil t))
+      (progn
+        (remove-hook 'magit-after-insert-unpulled-commits-hook unpulled-hook t)
+        (remove-hook 'magit-after-insert-unpushed-commits-hook unpushed-hook t)
+        (remove-hook 'magit-remote-string-hook remote-hook t)))
+    (when (called-interactively-p 'any)
+      (magit-refresh))))
+
+;;;###autoload
+(defun turn-on-magit-svn ()
+  "Unconditionally turn on `magit-svn-mode'."
+  (magit-svn-mode 1))
 
 (provide 'magit-svn)
 ;;; magit-svn.el ends here

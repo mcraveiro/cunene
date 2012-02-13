@@ -5,8 +5,8 @@ START-INFO-DIR-ENTRY
 * Magit: (magit).        Using Git from Emacs with Magit.
 END-INFO-DIR-ENTRY
 
-   Copyright (C) 2008, 2009, 2011 Marius Vollmer et al. (See the header
-of magit.el for the lengthy list of Magit contributors.)
+   Copyright (C) 2008, 2009, 2010, 2011 Magit contributors. (See the
+header of magit.el for the lengthy list of Magit contributors.)
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -54,6 +54,7 @@ compatibility are still welcome.
 * Using Magit Extensions::
 * Using Git Directly::
 * Customization::
+* Frequently Asked Questions::
 
 
 File: magit.info,  Node: Introduction,  Next: Acknowledgments,  Prev: Top,  Up: Top
@@ -94,7 +95,9 @@ File: magit.info,  Node: Acknowledgments,  Next: Sections,  Prev: Introduction, 
 2 Acknowledgments
 *****************
 
-From day one of the first Magit announcement, John Wiegley has
+Marius Vollmer started the whole project.  Thanks !
+
+   From day one of the first Magit announcement, John Wiegley has
 contributed numerous fixes, UI improvements, and new features.  Thanks!
 
    Linh Dang and Christian Neukirchen also contributed from day one.
@@ -249,8 +252,12 @@ together with all changes to the tracked files.
    You can instruct Git to ignore them by typing `i'.  This will add
 the filename to the `.gitignore' file.  Typing `C-u i' will ask you for
 the name of the file to ignore.  This is useful to ignore whole
-directories, for example.  The `I' command is similar to `i' but will
-add the file to `.git/info/exclude' instead.
+directories, for example.  In this case, the minibuffer's future history
+(accessible with `M-n') contains predefined values (such as wildcards)
+that might be of interest. If prefix argument is negative (for example
+after typing `C-- i'), the prompt proposes wildcard by default.  The
+`I' command is similar to `i' but will add the file to
+`.git/info/exclude' instead.
 
    To delete an untracked file forever, use `k'.  If point is on the
 _Untracked files_ section title when you hit `k', all untracked files
@@ -285,6 +292,10 @@ hunks belonging to that diff are moved at the same time.
 in the region are staged or unstaged.  (This works line by line: if the
 beginning of a line is in the region it is included in the changes,
 otherwise it is not.)
+
+   To change the size of the hunks, you can type `+' or `-' to increase
+and decrease, respectively.  Typing `0' will reset the hunk size to the
+default.
 
    Typing `C-u s' will ask you for a name of a file to be staged, for
 example to stage files that are hidden.
@@ -761,7 +772,10 @@ current branch, you will be prompted as well.  Typing `P P' will only
 push the current branch to the remote.  In other words, it will run
 `git push <remote> <branch>'.  The branch will be created in the remote
 if it doesn't exist already.  The local branch will be configured so
-that it pulls from the new remote branch.
+that it pulls from the new remote branch. If you give a double prefix
+argument to `P P', you will be prompted in addition for the target
+branch to push to.  In other words, it will run `git push <remote>
+<branch>:<target>'.
 
    Typing `f f' will run `git fetch'.  It will prompt for the name of
 the remote to update if there is no default one.  Typing `f o' will
@@ -841,15 +855,54 @@ File: magit.info,  Node: Using Magit Extensions,  Next: Using Git Directly,  Pre
 
 * Menu:
 
+* Activating extensions::
 * Interfacing with Subversion::
 * Interfacing with Topgit::
 * Interfacing with StGit::
 * Developing Extensions::
 
 
-File: magit.info,  Node: Interfacing with Subversion,  Next: Interfacing with Topgit,  Up: Using Magit Extensions
+File: magit.info,  Node: Activating extensions,  Next: Interfacing with Subversion,  Up: Using Magit Extensions
 
-23.1 Interfacing with Subversion
+23.1 Activating extensions
+==========================
+
+Magit comes with a couple of shipped extensions that allow interaction
+with `git-svn', `topgit' and `stgit'. See following sections for
+specific details on how to use them.
+
+   Extensions can be activated globally or on a per-repository basis.
+Since those extensions are implemented as minor modes, one can use for
+example `M-x magit-topgit-mode' to toggle the `topgit' extension,
+making the corresponding section and commands (un)available.
+
+   In order to do that automatically (and for every repository), one can
+use for example:
+
+     (add-hook 'magit-mode-hook 'turn-on-magit-topgit)
+
+   Magit also allows configuring different extensions, based on the git
+repository configuration.
+
+     (add-hook 'magit-mode-hook 'magit-load-config-extensions)
+
+   This will read git configuration variables and activate the relevant
+extensions.
+
+   For example, after running the following commands, the `topgit'
+extension will be loaded for every repository, while the `svn' one will
+be loaded only for the current one.
+
+     $ git config --global --add magit.extension topgit
+     $ git config --add magit.extension svn
+
+   Note the `--add' flag, which means that each extension gets its own
+line in the `config' file.
+
+
+File: magit.info,  Node: Interfacing with Subversion,  Next: Interfacing with Topgit,  Prev: Activating extensions,  Up: Using Magit Extensions
+
+23.2 Interfacing with Subversion
 ================================
 
 Typing `N r' runs `git svn rebase', typing `N c' runs `git svn dcommit'
@@ -863,7 +916,7 @@ the user will also be prompted for a branch to search in.
 
 File: magit.info,  Node: Interfacing with Topgit,  Next: Interfacing with StGit,  Prev: Interfacing with Subversion,  Up: Using Magit Extensions
 
-23.2 Interfacing with Topgit
+23.3 Interfacing with Topgit
 ============================
 
 Topgit (http://repo.or.cz/r/topgit.git) is a patch queue manager that
@@ -887,7 +940,7 @@ in case of conflicts.
 
 File: magit.info,  Node: Interfacing with StGit,  Next: Developing Extensions,  Prev: Interfacing with Topgit,  Up: Using Magit Extensions
 
-23.3 Interfacing with StGit
+23.4 Interfacing with StGit
 ===========================
 
 StGit (http://www.procode.org/stgit) is a Python application providing
@@ -910,7 +963,7 @@ commands let you perform the respective StGit operations.
 
 File: magit.info,  Node: Developing Extensions,  Prev: Interfacing with StGit,  Up: Using Magit Extensions
 
-23.4 Developing Extensions
+23.5 Developing Extensions
 ==========================
 
 Magit provides a generic mechanism to allow cooperation with Git-related
@@ -985,6 +1038,25 @@ systems, such as foreign VCS, patch systems,…
      take place in the "Extensions" submenu.
 
 
+   It is suggested that Magit extensions authors stick to the
+convention of making extensions minor modes. This has many advantages,
+including the fact that users are able to toggle extensions, and that
+it's easy to configure a specific set of extensions for a given
+repository.
+
+   Shipped extensions can serve as an example of how to develop new
+extensions.
+
+   Basically a `foo' extension should provide a `magit-foo-mode' minor
+mode, as well as a `turn-on-magit-foo' function.  The main task of the
+minor mode is to register/unregister the various hooks that the
+extension requires. The registered actions on the other hand can be
+left alone and activated globally, since they can be run only on
+displayed items, which won't happen when the minor mode is off.
+
+   Don't forget to call `magit-refresh' when the minor mode is toggled
+interactively, so that the relevant sections can be shown or hidden.
+
 
 File: magit.info,  Node: Using Git Directly,  Next: Customization,  Prev: Using Magit Extensions,  Up: Top
 
@@ -997,7 +1069,7 @@ it, and refresh the status buffer.  The output can be viewed by typing
 `$'.
 
 
-File: magit.info,  Node: Customization,  Prev: Using Git Directly,  Up: Top
+File: magit.info,  Node: Customization,  Next: Frequently Asked Questions,  Prev: Using Git Directly,  Up: Top
 
 25 Customization
 ****************
@@ -1132,39 +1204,128 @@ The following variables can be used to adapt Magit to your workflow:
      Convention prefix for topic branch creation.
 
 
+
+File: magit.info,  Node: Frequently Asked Questions,  Prev: Customization,  Up: Top
+
+26 Frequently Asked Questions
+*****************************
+
+* Menu:
+
+* FAQ - Changes::
+* FAQ 1 - Troubleshooting::
+* FAQ 2 - Display issues::
+
+
+File: magit.info,  Node: FAQ - Changes,  Next: FAQ 1 - Troubleshooting,  Up: Frequently Asked Questions
+
+26.1 Changes
+============
+
+   * v1.1: Changed the way extensions work. Previously, they were
+     enabled unconditionally once the library was loaded. Now they are
+     minor modes that need to be activated explicitly (potentially on a
+     per-repository basis). See *note Activating extensions::.
+
+
+
+File: magit.info,  Node: FAQ 1 - Troubleshooting,  Next: FAQ 2 - Display issues,  Prev: FAQ - Changes,  Up: Frequently Asked Questions
+
+26.2 Troubleshooting
+====================
+
+* Menu:
+
+* FAQ 1-1::    How do I get raw error messages from git?
+
+
+File: magit.info,  Node: FAQ 1-1,  Up: FAQ 1 - Troubleshooting
+
+26.2.1 Question 1.1
+-------------------
+
+How do I get raw error messages from git?
+
+Answer
+......
+
+If a command goes wrong, you can hit `$' to access the git process
+buffer. There, the entire trace for the latest operation is available.
+
+
+File: magit.info,  Node: FAQ 2 - Display issues,  Prev: FAQ 1 - Troubleshooting,  Up: Frequently Asked Questions
+
+26.3 Display issues
+===================
+
+* Menu:
+
+* FAQ 2-1::    How do I fix international characters display?
+
+
+File: magit.info,  Node: FAQ 2-1,  Up: FAQ 2 - Display issues
+
+26.3.1 Question 2.1
+-------------------
+
+How do I fix international characters display?
+
+Answer
+......
+
+Please make sure your Magit buffer uses a compatible coding system.  In
+the particular case of file names, git itself quotes them by default.
+You can disable this with one of the following approaches:
+
+     $ git config core.quotepath false
+
+   or
+
+     (setq magit-git-standard-options (append magit-git-standard-options
+                                              '("-c" "core.quotepath=false")))
+
+   The latter might not work in old versions of git.
+
 
 
 Tag Table:
-Node: Top636
-Node: Introduction1533
-Node: Acknowledgments3005
-Node: Sections3629
-Node: Status6179
-Node: Untracked files8918
-Node: Staging and Committing9869
-Node: History13613
-Node: Reflogs16793
-Node: Commit Buffer17197
-Node: Diffing18523
-Node: Tagging19510
-Node: Resetting19959
-Node: Stashing21483
-Node: Branching22541
-Node: The Branch Manager23919
-Node: Wazzup24635
-Node: Merging25426
-Node: Rebasing26476
-Node: Rewriting27291
-Node: Pushing and Pulling30304
-Node: Submodules32049
-Node: Bisecting32469
-Node: Using Magit Extensions33684
-Node: Interfacing with Subversion33955
-Node: Interfacing with Topgit34523
-Node: Interfacing with StGit35551
-Node: Developing Extensions36549
-Node: Using Git Directly39421
-Node: Customization39792
+Node: Top640
+Node: Introduction1568
+Node: Acknowledgments3040
+Node: Sections3720
+Node: Status6270
+Node: Untracked files9009
+Node: Staging and Committing10213
+Node: History14111
+Node: Reflogs17291
+Node: Commit Buffer17695
+Node: Diffing19021
+Node: Tagging20008
+Node: Resetting20457
+Node: Stashing21981
+Node: Branching23039
+Node: The Branch Manager24417
+Node: Wazzup25133
+Node: Merging25924
+Node: Rebasing26974
+Node: Rewriting27789
+Node: Pushing and Pulling30802
+Node: Submodules32729
+Node: Bisecting33149
+Node: Using Magit Extensions34364
+Node: Activating extensions34661
+Node: Interfacing with Subversion36045
+Node: Interfacing with Topgit36643
+Node: Interfacing with StGit37671
+Node: Developing Extensions38669
+Node: Using Git Directly42447
+Node: Customization42818
+Node: Frequently Asked Questions47362
+Node: FAQ - Changes47593
+Node: FAQ 1 - Troubleshooting48001
+Node: FAQ 1-148249
+Node: FAQ 2 - Display issues48553
+Node: FAQ 2-148782
 
 End Tag Table
 
