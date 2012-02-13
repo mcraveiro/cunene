@@ -46,9 +46,6 @@
        (setcdr pair 'nxml-mode)))
  magic-mode-alist)
 
-(add-hook 'hack-local-variables-hook
-          (lambda ()
-            (save-excursion
-              (when (search-forward-regexp "^<\\?xml" 6 0)
-                (nxml-mode)
-                ))))
+(setq magic-mode-alist
+      (cons '("<\\?xml " . nxml-mode)
+            magic-mode-alist))
