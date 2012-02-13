@@ -154,6 +154,11 @@ save all modified buffers without asking."
                  (const :tag "Ask" t)
                  (const :tag "Save without asking" dontask)))
 
+(defcustom magit-use-highlights t
+  "Use highlights in diff buffer."
+  :group 'magit
+  :type 'boolean)
+
 (defcustom magit-save-some-buffers-predicate
   'magit-save-buffers-predicate-tree-only
   "A predicate function to decide whether to save a buffer.
@@ -1821,7 +1826,7 @@ Refinements can be undone with `magit-unrefine-section'."
 (defun magit-highlight-section ()
   "Highlight current section if it has a type."
   (let ((section (magit-current-section)))
-    (when (not (eq section magit-highlighted-section))
+    (when (and magit-use-highlights (not (eq section magit-highlighted-section)))
       (when magit-highlighted-section
         ;; remove any refinement from previous hunk
         (magit-unrefine-section magit-highlighted-section))
