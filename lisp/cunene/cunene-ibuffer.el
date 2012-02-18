@@ -38,6 +38,7 @@
                               (mode . javascript-mode)
                               (mode . js2-mode)
                               (mode . js-mode)))
+               ("php" (mode . php-mode))
                ("xml" (mode . nxml-mode))
                ("sql" (or
                        (mode . sql-mode)
