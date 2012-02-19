@@ -15,7 +15,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(add-to-list 'load-path (concat dotfiles-dir "/other/org-mode"))
+(add-to-list 'load-path (concat dotfiles-dir "/other/org-mode/lisp"))
 (load-file (concat dotfiles-dir "/other/org-mode/lisp/org-install.el"))
 
 (require 'ob-gnuplot)
