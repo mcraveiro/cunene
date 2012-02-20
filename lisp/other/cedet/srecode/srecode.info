@@ -1137,13 +1137,13 @@ Sets up variables about the current user.
      Value of the Emacs function `user-full-name'
 
 `EMAIL'
-     Current Emacs users email address.
+     Current Emacs user's email address.
 
 `LOGIN'
-     Current Emacs users login name.
+     Current Emacs user's login name.
 
 `UID'
-     Current Emacs users login name.
+     Current Emacs user's login ID.
 
 `EMACSINITFILE'
      This Emacs sessions' init file.
@@ -1198,10 +1198,10 @@ Sets up variables with the current date and time.
 Sets up variables with details about the current file.
 
 `FILENAME'
-     The filename with out the directory part of the current buffer.
+     The filename without the directory part of the current buffer.
 
 `FILE'
-     The filename with out the directory or extension
+     The filename without the directory or extension
 
 `EXTENSION'
      The filename extension.
@@ -1792,19 +1792,19 @@ Node: Querying a Dictionary36410
 Ref: srecode-dictionary-lookup-name36917
 Node: Template Argument Dictionary Entries37170
 Node: Base Arguments37796
-Node: Semantic Arguments41060
-Ref: srecode-semantic-selected-tag41698
-Node: Language Arguments43443
-Node: Developing Template Functions45758
-Ref: srecode-read-template-name48190
-Ref: srecode-table48569
-Ref: srecode-template-get-table48803
-Ref: srecode-insert-fcn49996
-Node: Template Naming Conventions50101
-Node: Inserting Tag Lists53773
-Ref: srecode-semantic-insert-tag54362
-Node: Application Writing56046
-Ref: srecode-load-tables-for-mode56975
-Node: Index57300
+Node: Semantic Arguments41059
+Ref: srecode-semantic-selected-tag41697
+Node: Language Arguments43442
+Node: Developing Template Functions45757
+Ref: srecode-read-template-name48189
+Ref: srecode-table48568
+Ref: srecode-template-get-table48802
+Ref: srecode-insert-fcn49995
+Node: Template Naming Conventions50100
+Node: Inserting Tag Lists53772
+Ref: srecode-semantic-insert-tag54361
+Node: Application Writing56045
+Ref: srecode-load-tables-for-mode56974
+Node: Index57299
 
 End Tag Table

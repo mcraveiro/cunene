@@ -1,9 +1,9 @@
 ;;; wisent-python-wy.el --- Generated parser support file
 
-;; Copyright (C) 2002, 2003, 2004, 2007 Richard Kim
+;; Copyright (C) 2002, 2003, 2004, 2007, 2012 Richard Kim
 
 ;; Author: Marco Craveiro <marco@lorenz>
-;; Created: 2012-01-22 13:18:24+0000
+;; Created: 2012-02-20 20:40:33+0000
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 
@@ -320,8 +320,10 @@
 	 (wisent-raw-tag
 	  (semantic-tag-new-include $2 nil))))
        (dotted_as_name_list
-	((dotted_as_name))
-	((dotted_as_name_list COMMA dotted_as_name)))
+	((dotted_as_name_list COMMA dotted_as_name)
+	 (cons $3 $1))
+	((dotted_as_name)
+	 (list $1)))
        (star_or_import_as_name_list
 	((MULT)
 	 nil)

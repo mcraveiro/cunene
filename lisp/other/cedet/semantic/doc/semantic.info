@@ -34,8 +34,8 @@ Semantic Manual
 
 semantic is a program for Emacs which includes, at its core, a lexer,
 and two compiler compilers (bovinator and wisent).  Additional tools
-include, support for imenu, speedbar, whichfunc, eldoc, hippie-expand,
-and several other build in tools.
+include, support for imenu, speedbar, which-func, eldoc, hippie-expand,
+and several other built-in tools.
 
 The core utility is the parser infrastructure which allows different
 types of parsers to be linked into the system.  Two build in parsers
@@ -1296,44 +1296,44 @@ Index
 
 Tag Table:
 Node: Top1105
-Node: Overview1996
-Node: Semantic Components6180
-Node: Installation/Basic Configuration7600
-Node: Canned Configuration8212
-Ref: semantic-load-enable-minimum-features8798
-Ref: semantic-enable-all-exuberent-ctags-support9952
-Ref: semantic-load-enable-code-helpers10614
-Ref: semantic-load-enable-gaudy-code-helpers11947
-Ref: semantic-load-enable-excessive-code-helpers13162
-Ref: semantic-load-enable-semantic-debugging-helpers13683
-Node: Search Optimization14288
-Node: Parsing Optimization17894
-Ref: semantic-inhibit-functions18494
-Node: Semantic manuals19784
-Node: Semantic Internals20605
-Node: Parser code21335
-Node: Tag handling23089
-Node: Semanticdb24758
-Node: Analyzer26850
-Node: Tools28773
-Node: Tests30450
-Node: Glossary30908
-Ref: BNF31065
-Ref: bovinate31264
-Ref: bovine lambda31353
-Ref: bovine parser31536
-Ref: context31662
-Ref: LALR31671
-Ref: lexer31677
-Ref: LL31891
-Ref: nonterminal31895
-Ref: overloadable32086
-Ref: parser32194
-Ref: tag32247
-Ref: token32592
-Ref: token stream32710
-Ref: wisent parser32789
-Node: GNU Free Documentation License32956
-Node: Index52676
+Node: Overview1997
+Node: Semantic Components6181
+Node: Installation/Basic Configuration7601
+Node: Canned Configuration8213
+Ref: semantic-load-enable-minimum-features8799
+Ref: semantic-enable-all-exuberent-ctags-support9953
+Ref: semantic-load-enable-code-helpers10615
+Ref: semantic-load-enable-gaudy-code-helpers11948
+Ref: semantic-load-enable-excessive-code-helpers13163
+Ref: semantic-load-enable-semantic-debugging-helpers13684
+Node: Search Optimization14289
+Node: Parsing Optimization17895
+Ref: semantic-inhibit-functions18495
+Node: Semantic manuals19785
+Node: Semantic Internals20606
+Node: Parser code21336
+Node: Tag handling23090
+Node: Semanticdb24759
+Node: Analyzer26851
+Node: Tools28774
+Node: Tests30451
+Node: Glossary30909
+Ref: BNF31066
+Ref: bovinate31265
+Ref: bovine lambda31354
+Ref: bovine parser31537
+Ref: context31663
+Ref: LALR31672
+Ref: lexer31678
+Ref: LL31892
+Ref: nonterminal31896
+Ref: overloadable32087
+Ref: parser32195
+Ref: tag32248
+Ref: token32593
+Ref: token stream32711
+Ref: wisent parser32790
+Node: GNU Free Documentation License32957
+Node: Index52677
 
 End Tag Table

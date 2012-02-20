@@ -144,11 +144,11 @@ File: semantic-langdev.info,  Node: Semantic Overload Mechanism,  Next: Semantic
 2.1 Semantic Overload Mechanism
 ===============================
 
-one of semantic's goals is to provide a framework for supporting a wide
-range of languages.  writing parsers for some languages are very
+One of semantic's goals is to provide a framework for supporting a wide
+range of languages.  Writing parsers for some languages are very
 simple, e.g., any dialect of lisp family such as emacs-lisp and scheme.
-parsers for many languages can be written in context free grammars such
-as c, java, python, etc.  on the other hand, it is impossible to
+Parsers for many languages can be written in context free grammars such
+as c, java, python, etc.  On the other hand, it is impossible to
 specify context free grammars for other languages such as texinfo.  Yet
 semantic already provides parsers for all these languages.
 
@@ -168,14 +168,14 @@ step is represented by an Emacs-Lisp function.  Some of these are
 Many built-in semantic functions are declared as being over-loadable,
 i.e., functions that do reasonable things for most languages, but can
 be customized to suit the particular needs of a given language.  All
-over-loadable functions then can easily be over-ridden if necessary.
+over-loadable functions then can easily be overridden if necessary.
 The rest of this section provides details on this overloading mechanism.
 
 Over-loadable functions are created by defining functions with the
 `define-overloadable-function' macro rather than the usual `defun'.
 `define-overloadable-function' is a thin wrapper around `defun' that
 sets up the function so that it can be overloaded.  An over-loadable
-function then can be over-ridden in one of two ways:
+function then can be overridden in one of two ways:
 `define-mode-overload-implementation' and
 `semantic-install-function-overrides'.
 
@@ -218,11 +218,11 @@ One way to overload `semantic-parse-region' is via
 The above function is from the texinfo parser support.
 
 The call to `semantic-install-function-overrides' above indicates that
-`semantic-texi-parse-region' is to over-ride the default implementation
+`semantic-texi-parse-region' is to override the default implementation
 of `semantic-parse-region'.  Note the use of `parse-region' symbol
 which is `semantic-parse-region' without the leading semantic- prefix.
 
-Another way to over-ride a built-in semantic function is via
+Another way to override a built-in semantic function is via
 `define-mode-overload-implementation'.  An example from
 `wisent-python.el' file is shown below.
 
@@ -235,7 +235,7 @@ Another way to over-ride a built-in semantic function is via
          (semantic-parse-region-default
           start end nonterminal depth returnonerror)))
 
-The above declaration over-rides `semantic-parse-region' so that for
+The above declaration overrides `semantic-parse-region' so that for
 buffers whose major mode is `python-mode', the code specified above is
 executed rather than the default implementation.
 
@@ -654,7 +654,7 @@ analyzer construction macros.  The root construction macro is:
      expressions at compile time.  While forms are running, the
      following variables will be locally bound:
      `semantic-lex-analysis-bounds' - The bounds of the current
-     analysis.                    of the form (START . END)
+     analysis.                    Of the form (START . END)
      `semantic-lex-maximum-depth' - The maximum depth of semantic-list
                      for the current analysis.
      `semantic-lex-current-depth' - The current depth of
@@ -1184,7 +1184,7 @@ interactively steps over the rules in your grammar file.
      Parse the current buffer and run in debug mode.
 
 Once the parser is activated in this mode, the current tag cache is
-flushed, and the parser started.  At each stage in the LALR parser, the
+flushed, and the parser started.  At each stage in the LL parser, the
 current rule, and match step is highlighted in your parser source
 buffer.  In a second window, the text being parsed is shown, and the
 lexical token found is highlighted.  A clue of the current stack of
@@ -1881,50 +1881,50 @@ Node: Top1143
 Node: Tag Structure2249
 Node: Language Support Overview4215
 Node: Semantic Overload Mechanism5476
-Node: Semantic Parser Structure10684
-Node: Application API Structure10986
-Node: Semantic Analyzer Support12492
-Node: Writing Lexers12654
-Ref: semantic-lex13502
-Node: Lexer Overview14706
-Node: Lexer Output15941
-Node: Lexer Construction19798
-Ref: define-lex20203
-Node: Lexer Built In Analyzers21058
-Node: Lexer Analyzer Construction24556
-Node: Keywords28827
-Node: Keyword Properties30402
-Node: Writing Parsers31282
-Node: External Parsers32766
-Node: Grammar Programming Environment33365
-Node: Parsing a language file33919
-Ref: semantic-fetch-tags34293
-Ref: semantic-fetch-available-tags35063
-Ref: semantic-clear-toplevel-cache35513
-Node: Parser Backend Support35671
-Node: Example Backend File36473
-Node: Tag Expansion38753
-Ref: semantic-tag-expand-function39082
-Node: Debugging40733
-Node: Lexical Debugging41237
-Ref: semantic-lex-debug41653
-Node: Parser Output tools42128
-Ref: semantic-show-unmatched-syntax-mode42627
-Ref: semantic-show-tag-boundaries-mode43562
-Ref: semantic-highlight-by-attribute-mode44200
-Ref: bovinate44910
-Node: Bovine Parser Debugging45144
-Ref: semantic-debug45618
-Node: Wisent Parser Debugging47132
-Node: Overlay Debugging47522
-Ref: semantic-tag-components-with-overlays48243
-Node: Incremental Parser Debugging48987
-Ref: semantic-highlight-edits-mode49756
-Ref: semantic-show-parser-state-mode50491
-Ref: semantic-edits-verbose-flag51508
-Node: Semantic 1.4 Doc51643
-Node: Parser Error Handling53414
-Node: GNU Free Documentation License53607
-Node: Index73348
+Node: Semantic Parser Structure10679
+Node: Application API Structure10981
+Node: Semantic Analyzer Support12487
+Node: Writing Lexers12649
+Ref: semantic-lex13497
+Node: Lexer Overview14701
+Node: Lexer Output15936
+Node: Lexer Construction19793
+Ref: define-lex20198
+Node: Lexer Built In Analyzers21053
+Node: Lexer Analyzer Construction24551
+Node: Keywords28822
+Node: Keyword Properties30397
+Node: Writing Parsers31277
+Node: External Parsers32761
+Node: Grammar Programming Environment33360
+Node: Parsing a language file33914
+Ref: semantic-fetch-tags34288
+Ref: semantic-fetch-available-tags35058
+Ref: semantic-clear-toplevel-cache35508
+Node: Parser Backend Support35666
+Node: Example Backend File36468
+Node: Tag Expansion38748
+Ref: semantic-tag-expand-function39077
+Node: Debugging40728
+Node: Lexical Debugging41232
+Ref: semantic-lex-debug41648
+Node: Parser Output tools42123
+Ref: semantic-show-unmatched-syntax-mode42622
+Ref: semantic-show-tag-boundaries-mode43557
+Ref: semantic-highlight-by-attribute-mode44195
+Ref: bovinate44905
+Node: Bovine Parser Debugging45139
+Ref: semantic-debug45613
+Node: Wisent Parser Debugging47125
+Node: Overlay Debugging47515
+Ref: semantic-tag-components-with-overlays48236
+Node: Incremental Parser Debugging48980
+Ref: semantic-highlight-edits-mode49749
+Ref: semantic-show-parser-state-mode50484
+Ref: semantic-edits-verbose-flag51501
+Node: Semantic 1.4 Doc51636
+Node: Parser Error Handling53407
+Node: GNU Free Documentation License53600
+Node: Index73341
 
 End Tag Table
