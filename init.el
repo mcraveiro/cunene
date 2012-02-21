@@ -90,6 +90,7 @@
                      "cunene-ibuffer"
                      "cunene-ido"
                      "cunene-iedit"
+                     "cunene-folding"
                      "cunene-jira"
                      "cunene-javascript"
                      "cunene-lisp"
