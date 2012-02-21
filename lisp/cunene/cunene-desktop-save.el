@@ -21,7 +21,12 @@
       desktop-base-lock-name "lock"
       desktop-path (list desktop-dirname)
       desktop-save t
-      desktop-files-not-to-save "^$" ;reload tramp paths
+      desktop-files-not-to-save "^$" ; reload tramp paths
+      desktop-restore-eager 0
+      desktop-lazy-idle-delay 0
+      desktop-lazy-verbose nil
+      desktop-save-buffer t  ; saves buffer "status" (point, mark, etc) too
+      desktop-load-locked-desktop t
       desktop-load-locked-desktop nil)
 
 ;; enable desktop mode
@@ -42,3 +47,12 @@
                 (kill-ring                . 20)
                 (shell-command-history    . 50)
                 register-alist)))
+
+;; only use desktop mode and timers on server
+(when (and (>= emacs-major-version 23) (daemonp))
+  ;; save history and desktop periodically, since emacs is often killed,
+  ;; not quite nicely.
+  (run-with-timer 300 300
+                  (lambda () (desktop-save-in-desktop-dir)
+                    (savehist-save)
+                    (message nil))))  ; clear the "Desktop saved in..." message
