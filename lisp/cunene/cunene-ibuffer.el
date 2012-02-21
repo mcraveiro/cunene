@@ -53,7 +53,10 @@
                ("emacs-lisp" (or
                               (mode . emacs-lisp-mode)
                               (name . "^\\*Compile-Log\\*$")))
-               ("text files" (mode . text-mode))
+               ("text files" (or
+                              (mode . conf-unix-mode)
+                              (mode . conf-space-mode)
+                              (mode . text-mode)))
                ("powershell" (or
                               (mode . powershell-mode)
                               (name . "^\\*PowerShell")))
@@ -75,6 +78,7 @@
                                    (name . "^\\*magit")))
                ("snippets" (mode . snippet-mode))
                ("system buffers" (or
+                                  (name . "^\\*tramp")
                                   (name . "^\\*Bookmark List\\*$")
                                   (name . "^\\*RE-Builder\\*$")
                                   (name . "^\\*Kill Ring\\*$")
