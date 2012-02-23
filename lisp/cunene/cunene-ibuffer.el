@@ -43,7 +43,9 @@
                ("sql" (or
                        (mode . sql-mode)
                        (name . "^\\*SQL")))
-               ("patches" (mode . diff-mode))
+               ("patches" (or
+                           (name . "^\\*Assoc file dif")
+                           (mode . diff-mode)))
                ("bash" (mode . sh-mode))
                ("awk" (mode . awk-mode))
                ("latex" (or
@@ -53,10 +55,6 @@
                ("emacs-lisp" (or
                               (mode . emacs-lisp-mode)
                               (name . "^\\*Compile-Log\\*$")))
-               ("text files" (or
-                              (mode . conf-unix-mode)
-                              (mode . conf-space-mode)
-                              (mode . text-mode)))
                ("powershell" (or
                               (mode . powershell-mode)
                               (name . "^\\*PowerShell")))
@@ -93,6 +91,7 @@
                                   (name . "^\\*Messages\\*$")))
                ("semantic" (or
                             (mode . data-debug-mode)
+                            (name . "^\\*Parser Output\\*$")
                             (name . "^\\*Lexer Output\\*$")))
                ("web browsing" (mode . w3m-mode))
                ("music" (or
@@ -116,6 +115,10 @@
                                  (mode . woman-mode)
                                  (mode . help-mode)
                                  (mode . Man-mode)))
+               ("text files" (or
+                              (mode . conf-unix-mode)
+                              (mode . conf-space-mode)
+                              (mode . text-mode)))
                ))))
 
 (add-hook 'ibuffer-mode-hook
