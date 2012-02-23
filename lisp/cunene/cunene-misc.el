@@ -556,6 +556,8 @@ If there's a text selection, work on the selected text."
       (set-mark p1)
       (setq deactivate-mark nil))))
 
+(global-set-key (kbd "C-c C--") 'cycle-hyphen-underscore-space)
+
 (defun diff-buffer-with-associated-file ()
   "View the differences between BUFFER and its associated file.
 This requires the external program \"diff\" to be in your `exec-path'.
@@ -608,7 +610,7 @@ Returns nil if no differences found, 't otherwise."
 
 (add-hook 'kill-buffer-hook 'kill-associated-diff-buf)
 
-(global-set-key (kbd "C-c d") 'diff-buffer-with-associated-file)
+(global-set-key (kbd "C-c C-d") 'diff-buffer-with-associated-file)
 
 (defun de-context-kill (arg)
   "Kill buffer"
