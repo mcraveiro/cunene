@@ -22,6 +22,7 @@
 (add-hook 'c-mode-common-hook 'hs-minor-mode)
 (add-hook 'perl-mode-hook 'hs-minor-mode)
 (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+(add-hook 'js2-mode-hook 'hs-minor-mode)
 
 (global-set-key (kbd "C-<tab>") 'hs-toggle-hiding)
 
