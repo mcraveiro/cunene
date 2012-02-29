@@ -58,9 +58,12 @@
                ("powershell" (or
                               (mode . powershell-mode)
                               (name . "^\\*PowerShell")))
+               ("grep" (or
+                         (name . "^\\*Occur\\*$")
+                         (name . "^\\*Moccur\\*$")
+                         (mode . grep-mode)))
                ("shell" (or
                          (name . "^\\*Shell Command Output\\*$")
-                         (mode . grep-mode)
                          (mode . shell-mode)
                          (mode . ssh-mode)
                          (name . "^\\*compilation\\*$")))
@@ -77,6 +80,8 @@
                ("snippets" (mode . snippet-mode))
                ("system buffers" (or
                                   (name . "^\\*tramp")
+                                  (name . "^\\*Proced log\\*$")
+                                  (name . "^\\*Ediff Registry\\*$")
                                   (name . "^\\*Bookmark List\\*$")
                                   (name . "^\\*RE-Builder\\*$")
                                   (name . "^\\*Kill Ring\\*$")
