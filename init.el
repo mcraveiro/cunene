@@ -132,6 +132,7 @@
                      "cunene-winner"
                      "cunene-whitespace"
                      "cunene-yasnippet"
+                     "cunene-wget"
                      )
       )
 
