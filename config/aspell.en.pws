@@ -1,8 +1,11 @@
-personal_ws-1.1 en 7 
+personal_ws-1.1 en 10 
 structs
 multi
 STL
 FIXME
+whitespace
+Whitespace
+emacs
 namespace
 kitanda
 namespaces
