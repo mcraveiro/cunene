@@ -21,7 +21,7 @@
 (require 'ob-gnuplot)
 
 (setq org-directory (concat datafiles-dir "/org"))
-(setq org-default-notes-file "~/Development/kitanda/git/doc/agile/stories/raw_notes.org")
+(setq org-default-notes-file "~/Development/kitanda/kitanda/doc/agile/stories/raw_notes.org")
 
 (setq remember-annotation-functions '(org-remember-annotation))
 (setq remember-handler-functions '(org-remember-handler))
