@@ -94,6 +94,7 @@
                      "cunene-jira"
                      "cunene-javascript"
                      "cunene-lisp"
+                     "cunene-log4j"
                      "cunene-kitanda"
                      "cunene-magit"
                      "cunene-markdown"
