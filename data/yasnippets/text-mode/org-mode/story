@@ -4,7 +4,7 @@
 # --
 #+title: ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
 #+options: date:nil author:nil toc:nil
-#+link_up: ../kanban_board.html
+#+link_up: ../../../index.html
 #+link_home: ../../../index.html
 #+style: <link rel="stylesheet" type="text/css" href="../../../site.css" />
 
@@ -16,13 +16,13 @@
 | Implementer   | [[mailto:${4:`(replace-regexp-in-string "@" "@" user-mail-address)`}][${5:`(user-full-name)`}]]           |
 | Date Reported | ${6:`(insert-org-timestamp)`}  |
 | Tags          | [$7] |
-|               |                          |
+| Story Points  |                          |
 
 * Description
 
 $0
 
-* Story Points
+* Tasks
 
 **
 
