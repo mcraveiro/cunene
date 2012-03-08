@@ -28,4 +28,4 @@ $0
 
 * Git commits
 
-- [[http://kitanda.dnsdynamic.com/gitweb/gitweb.cgi?p%3Dkitanda&a%3Dsearch&st%3Dcommit&s%3D${8:`(buffer-file-name)`][Commits in master]]
+- [[http://kitanda.linkpc.net/gitweb/gitweb.cgi?p%3Dkitanda&a%3Dsearch&st%3Dcommit&s%3D${8:`(buffer-file-name)`][Commits in master]]
