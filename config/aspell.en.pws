@@ -1,4 +1,4 @@
-personal_ws-1.1 en 26
+personal_ws-1.1 en 29
 structs
 multi
 STL
@@ -25,3 +25,5 @@ Kanban
 namespaces
 timeboxed
 login
+gitweb
+cdash
