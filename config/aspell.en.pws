@@ -1,5 +1,6 @@
-personal_ws-1.1 en 31
+personal_ws-1.1 en 28 
 structs
+repos
 multi
 STL
 bugfix
@@ -8,24 +9,21 @@ Kimbundu
 API
 whitespace
 emacs
+postgres
+gitweb
+screenshots
 makefiles
 workflow
 namespace
 doxygen
 freezed
-Kitanda's
-screenshots
-workflow
-namespace
-doxygen
 kitanda's
+Kitanda's
 kitanda
 benchmarking
+kanban
 Kanban
 namespaces
 timeboxed
-login
-gitweb
 cdash
-repos
-kanban
+login
