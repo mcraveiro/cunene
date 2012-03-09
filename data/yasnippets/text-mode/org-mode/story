@@ -10,13 +10,13 @@
 
 * About
 
-#+ATTR_HTML: border="2" rules="all" frame="border"
+#+attr_html: border="2" rules="all" frame="border"
 |---------------+--------------------------|
 | Reporter      | [[mailto:${2:`(replace-regexp-in-string "@" "@" user-mail-address)`}][${3:`(user-full-name)`}]]           |
 | Implementer   | [[mailto:${4:`(replace-regexp-in-string "@" "@" user-mail-address)`}][${5:`(user-full-name)`}]]           |
 | Date Reported | ${6:`(insert-org-timestamp)`}  |
 | Tags          | [$7] |
-| Story Points  |                          |
+| Story Points  | $9                         |
 
 * Description
 
