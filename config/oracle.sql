@@ -34,3 +34,6 @@ order by table_name;
 select cast(column_name AS varchar2(30)) column_name, cast(data_type as varchar2(50)) data_type
 from all_tab_cols
 where table_name=upper('TABLE_NAME');
+
+-- get db name:
+SELECT ora_database_name FROM dual;
