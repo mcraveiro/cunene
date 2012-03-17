@@ -35,6 +35,7 @@
 ;; List of customisation files
 ;; FIXME: use load directory.
 (setq cunene-files '(
+                     "cunene-angry-fruit-salad"
                      "cunene-uniquify"
                      "cunene-auto-complete"
                      "cunene-elpa"
