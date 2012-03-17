@@ -79,7 +79,10 @@
   (sql-connect-preset 'musseque))
 
 ;; Increase column width for SqlServer.
-(setq sql-ms-options (quote ("-w" "8000" "-n")))
+;; (setq sql-ms-options (quote ("-w" "8000" "-n")))
+;; (setq sql-ms-program "sqlcmd")
+(setq sql-ms-program "osql")
+(setq sql-ms-options (quote ("-w" "8000")))
 
 ;; Create informative buffer names
 (add-hook 'sql-interactive-mode-hook
