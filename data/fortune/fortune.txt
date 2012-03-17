@@ -7911,3 +7911,6 @@
 %
 ;; The only way to comprehend what mathematicians mean by Infinity is
 ;; to contemplate the extent of human stupidity -- Voltaire
+%
+;; Financial genius is a short memory and a rising market -- John
+;; Galbraith
