@@ -25,6 +25,7 @@
                ("fsharp" (or
                           (mode . inferior-fsharp-mode)
                           (mode . fsharp-mode)))
+               ("logs" (mode . log4j-mode))
                ("csharp" (mode . csharp-mode))
                ("java" (mode . java-mode))
                ("make" (or
