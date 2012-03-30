@@ -81,6 +81,7 @@
                      "cunene-full-ack"
                      "cunene-fullscreen"
                      "cunene-fsharp"
+                     "cunene-git"
                      "cunene-grep"
                      "cunene-gnus"
                      "cunene-gprof"
