@@ -610,7 +610,7 @@ Returns nil if no differences found, 't otherwise."
 
 (add-hook 'kill-buffer-hook 'kill-associated-diff-buf)
 
-(global-set-key (kbd "C-c C-d") 'diff-buffer-with-associated-file)
+(global-set-key (kbd "C-c C-=") 'diff-buffer-with-associated-file)
 
 (defun de-context-kill (arg)
   "Kill buffer"
