@@ -49,3 +49,9 @@
     (ediff3 (buffer-file-name (nth 0 marked-files))
             (buffer-file-name (nth 1 marked-files))
             (buffer-file-name (nth 2 marked-files)))))
+
+(add-hook
+ 'dired-before-readin-hook
+ '(lambda ()
+    (when (file-remote-p default-directory)
+      (setq dired-actual-switches "-al"))))

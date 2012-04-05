@@ -15,8 +15,12 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 ;; cache file
 (setq tramp-persistency-file-name (concat datafiles-dir "/tramp"))
 
-(setq tramp-default-method "pscp")
+;; buffer with tramp session
+(setq tramp-debug-buffer t)
+(setq tramp-verbose 10)
+
+;; use scp to copy files
+(setq tramp-default-method "ssh")

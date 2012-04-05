@@ -19,3 +19,21 @@
 ;; use pcomplete for completions
 ;; (define-key shell-mode-map (kbd "TAB") 'pcomplete)
 ;; (add-hook 'shell-mode-hook 'pcomplete-shell-setup)
+
+;; add path to mini-buffer
+(defun add-mode-line-dirtrack ()
+   (add-to-list 'mode-line-buffer-identification
+                '(:propertize (" " default-directory " "))))
+
+;; (add-hook 'shell-mode-hook 'add-mode-line-dirtrack)
+
+(eval-after-load 'shell
+  '(progn
+     (defadvice comint-send-input (before expand-input activate)
+       "Expand input before sending"
+       (expand-abbrev))
+     (add-hook 'shell-mode-hook
+               (lambda ()
+                 (setq shell-dirtrackp nil)
+                 (dirtrack-mode t)
+                 (setq show-trailing-whitespace nil)))))

@@ -184,13 +184,15 @@ how ssh X display tunelling interacts with frames on remote displays."
 
   (let* ((process-connection-type ssh-process-connection-type)
          (args (ssh-parse-words input-args))
-	 (host (car args))
-	 (user (or (car (cdr (member "-l" args)))
-                   (user-login-name)))
+         (host-parts (split-string (car args) "@"))
+         (host (car (last host-parts)))
+         (user (or (cadr (member "-l" args))
+                  (if (= 2 (length host-parts)) (car host-parts))
+                  (user-login-name)))
          (buffer-name (if (string= user (user-login-name))
                           (format "*ssh-%s*" host)
                         (format "*ssh-%s@%s*" user host)))
-	 proc)
+    proc)
 
     (and ssh-explicit-args
          (setq args (append ssh-explicit-args args)))

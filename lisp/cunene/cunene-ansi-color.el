@@ -20,3 +20,4 @@
 
 ;; Shell hook
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'ssh-mode-hook 'ansi-color-for-comint-mode-on)

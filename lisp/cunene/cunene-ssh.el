@@ -16,3 +16,18 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (autoload 'ssh "ssh" "SSH mode." t)
+
+;; (add-hook 'ssh-mode-hook 'ssh-directory-tracking-mode)
+;; (setq ssh-directory-tracking-mode t)
+
+(eval-after-load 'ssh
+  '(progn
+     (add-hook 'ssh-mode-hook
+               (lambda ()
+                 (shell-dirtrack-mode t)
+                 (setq dirtrackp nil)
+                 (setq show-trailing-whitespace nil)))
+
+     (defadvice ssh (around ssh-always-local first activate)
+       (let ((default-directory "~/"))
+         ad-do-it))))
