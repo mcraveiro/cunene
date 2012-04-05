@@ -25,7 +25,7 @@
    (add-to-list 'mode-line-buffer-identification
                 '(:propertize (" " default-directory " "))))
 
-;; (add-hook 'shell-mode-hook 'add-mode-line-dirtrack)
+(add-hook 'shell-mode-hook 'add-mode-line-dirtrack)
 
 (eval-after-load 'shell
   '(progn
