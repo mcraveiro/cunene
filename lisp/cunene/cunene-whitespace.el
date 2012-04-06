@@ -33,6 +33,7 @@
 (setq whitespace-global-modes nil)
 
 ;; Show whitespaces on these modes
+(add-hook 'sh-mode-hook 'whitespace-mode)
 (add-hook 'snippet-mode-hook 'whitespace-mode)
 (add-hook 'tex-mode-hook 'whitespace-mode)
 (add-hook 'sql-mode-hook 'whitespace-mode)
