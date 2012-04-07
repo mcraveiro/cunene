@@ -16,6 +16,8 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;; hideshow for programming
 (require 'hideshow)
+
+;; open block when doing a search
 (setq hs-isearch-open t)
 
 (add-hook 'java-mode-hook 'hs-minor-mode)
@@ -23,6 +25,8 @@
 (add-hook 'perl-mode-hook 'hs-minor-mode)
 (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
 (add-hook 'js2-mode-hook 'hs-minor-mode)
+(add-hook 'lisp-mode-hook 'hs-minor-mode)
+(add-hook 'sh-mode-hook 'hs-minor-mode)
 
 (global-set-key (kbd "C-<tab>") 'hs-toggle-hiding)
 
@@ -110,4 +114,3 @@ again, I haven't see that as a problem."
                   )
                 hs-special-modes-alist)
           )
-
