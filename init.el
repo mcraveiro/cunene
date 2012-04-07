@@ -116,6 +116,7 @@
                      "cunene-rainbow"
                      "cunene-recentf"
                      "cunene-ruby"
+                     "cunene-rudel"
                      "cunene-savehist"
                      "cunene-saveplace"
                      "cunene-scratch"
