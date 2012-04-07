@@ -15,4 +15,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(require 'folding)
+(setq safe-local-variable-values (quote ((folded-file . t))))
+(folding-add-to-marks-list 'sh-mode "# {{{" "# }}}")
 (folding-mode-add-find-file-hook)
