@@ -43,8 +43,10 @@
 ;; (setq org-tab-follows-link t)
 
 ;; provide org-mode link functionality for all buffers.
-(global-set-key (kbd "C-c l") 'org-insert-link-global)
-(global-set-key (kbd "C-c o") 'org-open-at-point-global)
+(global-set-key (kbd "C-c C-l") 'org-insert-link-global)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c i") 'org-id-get-create)
+(global-set-key (kbd "C-c C-o") 'org-open-at-point-global)
 
 ;; disable keys already taken by other modes
 (add-hook 'org-mode-hook
