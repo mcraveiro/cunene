@@ -17,6 +17,7 @@
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ;; MA 02110-1301, USA.
 (add-to-list 'load-path (concat dotfiles-dir "/other/rudel"))
+(add-to-list 'load-path (concat dotfiles-dir "/other/rudel/obby"))
 (require 'rudel-mode)
 (require 'rudel-obby)
 (global-rudel-minor-mode)
