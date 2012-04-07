@@ -17,3 +17,6 @@
 
 ;; Enable Emacs Development Environment project management features
 (global-ede-mode t)
+
+(semantic-add-system-include "/usr/local/kitanda/include" 'c-mode)
+(semantic-add-system-include "/usr/local/kitanda/include" 'c++-mode)
