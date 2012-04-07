@@ -73,3 +73,6 @@
 
 ;; Add boost directory
 ;; (semantic-add-system-include "~/local/include/boost-1.41" 'c++-mode)
+
+;; enable semantic folding
+(global-semantic-folding-mode t)
