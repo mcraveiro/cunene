@@ -15,7 +15,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(setq safe-local-variable-values (quote ((sql-product . postgres))))
+;; do not warn when setting file mode to SQL product specific
+(add-to-list 'safe-local-variable-values '(sql-product . postgres))
 
 ;; directory for SQL data files
 (setq sql-datafiles-dir (concat datafiles-dir "/sql/"))
