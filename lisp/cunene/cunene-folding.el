@@ -30,7 +30,7 @@
 (folding-mode-add-find-file-hook)
 (global-set-key (kbd "M-s i") folding-mode-prefix-map)
 (folding-add-to-marks-list 'ruby-mode "# {{{" "# }}}" nil t)
-(folding-add-to-marks-list 'sh-mode "# {{{" "# }}}")
+(folding-add-to-marks-list 'sh-mode "# {{{" "# }}}" nil t)
 (define-key folding-mode-prefix-map (kbd "i") 'folding-shift-in)
 (define-key folding-mode-prefix-map (kbd "o") 'folding-shift-out)
 (define-key folding-mode-prefix-map (kbd "<SPC>") 'folding-context-next-action)
