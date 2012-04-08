@@ -63,7 +63,6 @@
                      "cunene-compile"
                      "cunene-csharp"
                      "cunene-cua"
-                     "cunene-desktop-save"
                      "cunene-diff"
                      "cunene-dired"
                      "cunene-doxymacs"
@@ -137,6 +136,7 @@
                      "cunene-whitespace"
                      "cunene-yasnippet"
                      "cunene-wget"
+                     "cunene-desktop-save" ;; must be last
                      )
       )
 
