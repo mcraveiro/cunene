@@ -42,6 +42,12 @@
 ;; (setq org-return-follows-link t)
 ;; (setq org-tab-follows-link t)
 
+;; unset disputed keys on other modes
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (local-unset-key (kbd "C-c C-o")) ; trigger for `sh-while-getopts'
+            ))
+
 ;; provide org-mode link functionality for all buffers.
 (global-set-key (kbd "C-c C-l") 'org-insert-link-global)
 (global-set-key (kbd "C-c l") 'org-store-link)
