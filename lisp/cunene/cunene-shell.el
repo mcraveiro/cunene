@@ -25,8 +25,6 @@
    (add-to-list 'mode-line-buffer-identification
                 '(:propertize (" " default-directory " "))))
 
-(add-hook 'shell-mode-hook 'add-mode-line-dirtrack)
-
 (eval-after-load 'shell
   '(progn
      (defadvice comint-send-input (before expand-input activate)
@@ -34,6 +32,5 @@
        (expand-abbrev))
      (add-hook 'shell-mode-hook
                (lambda ()
-                 (setq shell-dirtrackp nil)
-                 (dirtrack-mode t)
+                 (add-mode-line-dirtrack)
                  (setq show-trailing-whitespace nil)))))
