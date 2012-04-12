@@ -18,4 +18,4 @@
 ;; MA 02110-1301, USA.
 
 (require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+(define-key global-map (kbd "C-c C-#") 'ace-jump-mode)
