@@ -113,6 +113,9 @@ Skips capture tasks."
 ;; Include current clocking task in clock reports
 (setq org-clock-report-include-clocking-task t)
 
+;; File paths should always be relative
+(setq org-link-file-path-type 'relative)
+
 (defun insert-org-timestamp()
   "Insert a time-stamp in org mode format"
   (interactive)
