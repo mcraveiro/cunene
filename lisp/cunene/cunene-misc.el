@@ -73,6 +73,9 @@
   (tooltip-mode -1)
   (tool-bar-mode -1))
 
+;; disable stack traces on errors (the annoying backtrace buffer)
+(setq stack-trace-on-error nil)
+
 ;; coding system
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
