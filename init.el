@@ -71,6 +71,7 @@
                      "cunene-eassist"
                      "cunene-ecb"
                      "cunene-ede"
+                     "cunene-ede-ibuffer"
                      "cunene-ediff"
                      "cunene-edef"
                      "cunene-eiffel"
