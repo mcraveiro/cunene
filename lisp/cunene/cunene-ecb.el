@@ -16,7 +16,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; hack for emacs 24
-(setq stack-trace-on-error t)
+(setq stack-trace-on-error nil)
 
 ;; Add ecb to load path.
 (add-to-list 'load-path (concat dotfiles-dir "/other/ecb"))
