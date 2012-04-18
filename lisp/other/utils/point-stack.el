@@ -46,5 +46,4 @@
     (goto-char (cadar point-stack-forward-stack))
     (setq point-stack-forward-stack (cdr point-stack-forward-stack))))
 
-
 (provide 'point-stack)
