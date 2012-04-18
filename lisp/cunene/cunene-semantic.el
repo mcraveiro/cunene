@@ -76,3 +76,16 @@
 
 ;; enable semantic folding
 (global-semantic-folding-mode)
+
+;; Implementing my own copy of this function since it is required by
+;; semantic-ia-fast-jump but this function is not defined in etags.el
+;; of GNU emacs
+(require 'etags)
+(unless (fboundp 'push-tag-mark)
+  (defun push-tag-mark ()
+    "Push the current position to the ring of markers so that
+    \\[pop-tag-mark] can be used to come back to current position."
+    (interactive)
+    (ring-insert find-tag-marker-ring (point-marker))
+    )
+  )
