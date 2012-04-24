@@ -78,6 +78,7 @@
                      "cunene-expand-region"
                      "cunene-ffap"
                      "cunene-fixme"
+                     "cunene-flymake"
                      "cunene-flyspell"
                      "cunene-full-ack"
                      "cunene-fullscreen"
