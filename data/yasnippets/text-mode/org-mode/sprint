@@ -7,44 +7,41 @@
 #+link_up: ../../index.html
 #+link_home: ../../index.html
 #+style: <link rel="stylesheet" type="text/css" href="../../site.css" />
+#+todo: NOT_STARTED ANALYSIS IMPLEMENTATION TESTING | COMPLETED CANCELLED
+#+tags: story(s) epic(e) task(t)
 
 * About
 
 - Length: $2 days
 - Start date: ${3:`(insert-org-timestamp)`}
 
-* Scrum Board
+* Stories
 
-#+ATTR_HTML: border="2" rules="all" frame="border"
-| Not Started | Analysis | Implementation | Testing | Completed                             |
-
-* Burndown Chart
-
-#+srcname: ${5:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}_calendar
 #+attr_html: border="2" rules="all" frame="border"
-#+results: $5_calendar
-|       Date | Day | Expected | Actual |
-|            |     |          |        |
+#+begin: clocktable :maxlevel 2 :scope subtree
+#+end:
 
-#+srcname: burndown_chart
-#+begin_src gnuplot :var data=$5_calendar :exports none :file $5_burndown.png
-reset
-set termoption dash
-set terminal png font "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf" 14
-set title "$1 Burndown Chart"
-set auto x
-set border linewidth 1.5
-set style line 1 linecolor rgb "red" linetype 2 linewidth 3 pointtype 1
-set style line 2 linecolor rgb "orange" linetype 2 linewidth 3 pointtype 1
-set ylabel "Story Points"
-set yrange [0:22]
-set ytics 0,1,22
-set xlabel "Time"
-set xrange col(1)
-set xtics 0,1,15
-plot data using 3 title col(3) linestyle 1 with lines, \
-data using 4 title col(4) linestyle 2 with lines
-#+end_src
+** JS
 
-#+ATTR_HTML: width="800" title="Action!" align="center"
-[[file:$5_burndown.png]]
+#+attr_html: border="2" rules="all" frame="border"
+#+begin: clocktable :maxlevel 2 :scope subtree
+#+end:
+
+*** Grooming                                                          :story:
+*** Board updating                                                    :story:
+
+** MC
+
+#+attr_html: border="2" rules="all" frame="border"
+#+begin: clocktable :maxlevel 2 :scope subtree
+#+end:
+
+*** Grooming                                                          :story:
+*** Board updating                                                    :story:
+
+** Common Stories
+
+#+begin: clocktable :maxlevel 4 :scope subtree
+#+end:
+
+*** Standup Meet
