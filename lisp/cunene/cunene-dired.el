@@ -19,7 +19,7 @@
 (require 'dired-single)
 
 ;; Dired switches
-(setq dired-listing-switches "-lX")
+(setq dired-listing-switches "-l")
 (setq list-directory-brief-switches "-CF")
 
 (defun my-dired-init ()
@@ -54,4 +54,4 @@
  'dired-before-readin-hook
  '(lambda ()
     (when (file-remote-p default-directory)
-      (setq dired-actual-switches "-al"))))
+      (setq dired-actual-switches "-l"))))
