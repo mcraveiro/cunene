@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: if
+# --
+if [ "${1:$?}" ${2:-ne} "${3:$OS_SUCCESS}" ]; then
+    $0
+fi
