@@ -28,6 +28,15 @@
 (add-hook 'lisp-mode-hook 'hs-minor-mode)
 (add-hook 'sh-mode-hook 'hs-minor-mode)
 
+(add-to-list 'hs-special-modes-alist
+             '(nxml-mode
+               "<!--\\|<[^/>]*[^/]>"                    ;; regexp for start block
+               "-->\\|</[^/>]*[^/]>"                    ;; regexp for end block
+
+               "<!--"                                   ;; regexp for comment start. (need this??)
+               sgml-skip-tag-forward
+               nil))
+
 (global-set-key (kbd "C-<tab>") 'hs-toggle-hiding)
 
 (defun csharp-hs-forward-sexp (&optional arg)
