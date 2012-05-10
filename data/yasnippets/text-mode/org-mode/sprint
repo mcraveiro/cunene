@@ -8,12 +8,15 @@
 #+link_home: ../../index.html
 #+style: <link rel="stylesheet" type="text/css" href="../../site.css" />
 #+todo: NOT_STARTED ANALYSIS IMPLEMENTATION TESTING | COMPLETED CANCELLED
-#+tags: story(s) epic(e) task(t)
+#+tags: story(s) epic(e) task(t) note(n) spike(p)
 
 * About
 
-- Length: $2 days
-- Start date: ${3:`(insert-org-timestamp)`}
+- *Length*: $2 days
+- *Start date*: ${3:`(insert-org-timestamp)`}
+- *Total Story Points*: $4
+- *Cancelled Story Points*:
+- *Sprint goal*: $5
 
 * Stories
 
@@ -24,7 +27,7 @@
 ** JS
 
 #+attr_html: border="2" rules="all" frame="border"
-#+begin: clocktable :maxlevel 2 :scope subtree
+#+begin: clocktable :maxlevel 4 :scope subtree
 #+end:
 
 *** Grooming                                                          :story:
@@ -33,7 +36,7 @@
 ** MC
 
 #+attr_html: border="2" rules="all" frame="border"
-#+begin: clocktable :maxlevel 2 :scope subtree
+#+begin: clocktable :maxlevel 4 :scope subtree
 #+end:
 
 *** Grooming                                                          :story:
@@ -44,4 +47,43 @@
 #+begin: clocktable :maxlevel 4 :scope subtree
 #+end:
 
-*** Standup Meet
+*** Standup Meet                                                      :story:
+*** Code reviews                                                      :story:
+*** Sprint Planning                                                   :story:
+*** Demo Day                                                          :story:
+*** Sprint Review                                                     :story:
+
+* Burndown chart
+
+#+srcname: ${6:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}_calendar
+#+attr_html: border="2" rules="all" frame="border"
+#+results: $6_calendar
+|       Date | Expected | Actual |
+| $3 |      $4 |    $4 |
+
+#+srcname: burndown_chart
+#+begin_src gnuplot :var data=$6_calendar :exports none :file $6_burndown.png
+reset
+set termoption dash
+set terminal png font "/usr/share/fonts/truetype/inconsolata/Inconsolata.otf" 14
+set title "$1 Burndown Chart"
+set auto x
+set border linewidth 1.5
+set style line 1 linecolor rgb "red" linetype 2 linewidth 3 pointtype 1
+set style line 2 linecolor rgb "orange" linetype 2 linewidth 3 pointtype 1
+set ylabel "Story Points"
+set yrange [0:140]
+set ytics 0,15,140
+set xlabel "Time"
+set xrange col(1)
+set xtics 0,1,15
+plot data using 2 title col(2) linestyle 1 with lines, \
+data using 3 title col(3) linestyle 2 with lines
+#+end_src
+
+#+results:
+[[file:$6_burndown.png]]
+
+#+attr_html: width="800" title="Action!" align="center"
+#+results:
+[[file:$6_burndown.png]]
