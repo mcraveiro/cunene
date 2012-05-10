@@ -89,3 +89,6 @@
     (ring-insert find-tag-marker-ring (point-marker))
     )
   )
+
+(global-set-key (kbd "C-c C-g") 'semantic-symref)
+(global-set-key (kbd "C-c C-f") 'semantic-symref-symbol)
