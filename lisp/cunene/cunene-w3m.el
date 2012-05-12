@@ -115,3 +115,7 @@
 
 (add-to-list 'desktop-buffer-mode-handlers
              '(w3m-mode . w3m-restore-desktop-buffer))
+
+;; give a unique number to all links on a page
+(autoload 'w3m-link-numbering-mode "w3m-lnum" nil t)
+(add-hook 'w3m-mode-hook 'w3m-link-numbering-mode)
