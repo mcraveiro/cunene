@@ -116,6 +116,13 @@
 (add-to-list 'desktop-buffer-mode-handlers
              '(w3m-mode . w3m-restore-desktop-buffer))
 
-;; give a unique number to all links on a page
-(autoload 'w3m-link-numbering-mode "w3m-lnum" nil t)
-(add-hook 'w3m-mode-hook 'w3m-link-numbering-mode)
+(defun my-w3m-go-to-linknum ()
+  "Turn on link numbers and ask for one to go to."
+  (interactive)
+  (let ((active w3m-link-numbering-mode))
+    (when (not active) (w3m-link-numbering-mode))
+    (unwind-protect
+        (w3m-move-numbered-anchor (read-number "Anchor number: "))
+      (when (not active) (w3m-link-numbering-mode)))))
+
+(define-key w3m-mode-map "f" 'my-w3m-go-to-linknum)
