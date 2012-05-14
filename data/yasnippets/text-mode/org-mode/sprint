@@ -7,7 +7,7 @@
 #+link_up: ../../index.html
 #+link_home: ../../index.html
 #+style: <link rel="stylesheet" type="text/css" href="../../site.css" />
-#+todo: NOT_STARTED ANALYSIS IMPLEMENTATION TESTING | COMPLETED CANCELLED
+#+todo: ANALYSIS IMPLEMENTATION TESTING | COMPLETED CANCELLED
 #+tags: story(s) epic(e) task(t) note(n) spike(p)
 
 * About
