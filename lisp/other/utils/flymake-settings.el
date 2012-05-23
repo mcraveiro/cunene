@@ -44,11 +44,16 @@
                       (concat "CHK_SOURCES=" source)
                       "SYNTAX_CHECK_MODE=1"
                       "check-syntax"))
-        (list (if (string= (file-name-extension source) "c") "gcc" "g++")
+        (list
+         (if (string= (file-name-extension source) "c") "gcc" "/usr/local/pfh/bin/g++-4.7")
               (list "-o"
                     "/dev/null"
                     "-fsyntax-only"
                     "-Wall"
+                    "-isystem /usr/local/pfh/include"
+                    "-std=c++11"
+                    (concat "-I" (file-truename "~/Development/kitanda/kitanda/code/cpp/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/output/code/cpp/include"))
                     source)))))
 
   (defun flymake-simple-make-gcc-init-impl (create-temp-f use-relative-base-dir use-relative-source build-file-name get-cmdline-f)
