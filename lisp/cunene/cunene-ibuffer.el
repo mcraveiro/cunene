@@ -81,6 +81,7 @@
                ("snippets" (mode . snippet-mode))
                ("system buffers" (or
                                   (name . "^\\*tramp")
+                                  (name . "^\\*debug tramp")
                                   (name . "^\\*Proced log\\*$")
                                   (name . "^\\*Ediff Registry\\*$")
                                   (name . "^\\*Bookmark List\\*$")
