@@ -38,10 +38,10 @@
 (global-srecode-minor-mode 1)
 (global-semantic-mru-bookmark-mode 1)
 (global-semantic-idle-completions-mode nil)
-(require 'semantic-decorate-include)
+(require 'semantic/decorate/include)
 
 ;; gcc setup
-(require 'semantic-gcc)
+(provide 'semantic/bovine/gcc)
 
 (setq-mode-local c-mode semanticdb-find-default-throttle
                  '(project unloaded system recursive))
@@ -49,7 +49,7 @@
                  '(project unloaded system recursive))
 
 ;; smart complitions
-(require 'semantic-ia)
+(require 'semantic/ia)
 
 ;; Additional include directories
 ;; (semantic-add-system-include "~/code/boost/boost" 'c++-mode)
@@ -75,7 +75,7 @@
 ;; (semantic-add-system-include "~/local/include/boost-1.41" 'c++-mode)
 
 ;; enable semantic folding
-(global-semantic-folding-mode)
+;; (global-semantic-folding-mode)
 
 ;; Implementing my own copy of this function since it is required by
 ;; semantic-ia-fast-jump but this function is not defined in etags.el
