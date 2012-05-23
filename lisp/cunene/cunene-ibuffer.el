@@ -79,7 +79,7 @@
                                    (name . "^\\*cvs")
                                    (name . "^\\*magit")))
                ("snippets" (mode . snippet-mode))
-               ("system buffers" (or
+               ("system" (or
                                   (name . "^\\*tramp")
                                   (name . "^\\*debug tramp")
                                   (name . "^\\*Proced log\\*$")
@@ -87,6 +87,8 @@
                                   (name . "^\\*Bookmark List\\*$")
                                   (name . "^\\*RE-Builder\\*$")
                                   (name . "^\\*Kill Ring\\*$")
+                                  (name . "^\\*Calendar\\*$")
+                                  (name . "^\\*icalendar-errors\\*$")
                                   (name . "^\\*Proced\\*$")
                                   (name . "^\\*WoMan-Log\\*$")
                                   (name . "^\\*Apropos\\*$")
