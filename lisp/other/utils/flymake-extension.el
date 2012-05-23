@@ -221,13 +221,13 @@ Except don't display message when no error or waring."
 (push '(".+\\.h$" flymake-c-init) flymake-allowed-file-name-masks)
 
 ;; C++ mode.
-(defun flymake-c++-init ()
-  (flymake-simple-make-init-impl 'flymake-create-temp-inplace t t (file-name-nondirectory buffer-file-name) 'flymake-get-c++-cmdline))
+;; (defun flymake-c++-init ()
+;;   (flymake-simple-make-init-impl 'flymake-create-temp-inplace t t (file-name-nondirectory buffer-file-name) 'flymake-get-c++-cmdline))
 
-(defun flymake-get-c++-cmdline (source base-dir)
-  (list "g++" (list "-Wall" (concat base-dir source))))
+;; (defun flymake-get-c++-cmdline (source base-dir)
+;;   (list "g++" (list "-Wall" (concat base-dir source))))
 
-(push '(".+\\.cpp$" flymake-c++-init) flymake-allowed-file-name-masks)
+;; (push '(".+\\.cpp$" flymake-c++-init) flymake-allowed-file-name-masks)
 
 ;; Java mode.
 (defun flymake-java-init ()
