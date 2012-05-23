@@ -26,7 +26,7 @@
 
 ;; ensure we can check C++ header files
 (add-to-list 'flymake-allowed-file-name-masks
-             '("\\.hpp\\'" flymake-c++-init))
+             '("\\.hpp\\'" flymake-simple-make-gcc-init))
 
 ;; insure flymake errors get plopped into the *Messages* buffer
 (setq flymake-log-level 3)
