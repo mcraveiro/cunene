@@ -20,3 +20,7 @@
 
 (semantic-add-system-include "/usr/local/kitanda/include" 'c-mode)
 (semantic-add-system-include "/usr/local/kitanda/include" 'c++-mode)
+(add-to-list 'ede-project-directories
+             (file-truename "~/Development/kitanda/kitanda"))
+(add-to-list 'ede-project-directories
+             (file-truename "~/.emacs.d"))
