@@ -19,6 +19,14 @@
 
 (require 'flymake)
 (require 'flymake-settings)
+(require 'flymake-extension)
+
+;; display errors as a show tip
+(setq flymake-extension-use-showtip t)
+
+;; ensure we can check C++ header files
+(add-to-list 'flymake-allowed-file-name-masks
+             '("\\.hpp\\'" flymake-c++-init))
 
 ;; insure flymake errors get plopped into the *Messages* buffer
 (setq flymake-log-level 3)
