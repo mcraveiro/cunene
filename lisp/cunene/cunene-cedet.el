@@ -16,4 +16,4 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; Cedet code completion tools
-(load-file (concat dotfiles-dir "/other/cedet/common/cedet.el"))
+(load-file (concat dotfiles-dir "/other/cedet/cedet-devel-load.el"))
