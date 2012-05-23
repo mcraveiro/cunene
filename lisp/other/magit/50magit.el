@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads (magit-status) "magit" "magit.el" (20281 36134))
+;;;### (autoloads (magit-status) "magit" "magit.el" (20412 43496))
 ;;; Generated autoloads from magit.el
 
 (autoload 'magit-status "magit" "\
@@ -20,8 +20,19 @@ user input.
 
 ;;;***
 
+;;;### (autoloads (magit-blame-mode) "magit-blame" "magit-blame.el"
+;;;;;;  (20412 43496))
+;;; Generated autoloads from magit-blame.el
+
+(autoload 'magit-blame-mode "magit-blame" "\
+Display blame information inline.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads (turn-on-magit-stgit magit-stgit-mode) "magit-stgit"
-;;;;;;  "magit-stgit.el" (20281 36134))
+;;;;;;  "magit-stgit.el" (20412 43496))
 ;;; Generated autoloads from magit-stgit.el
 
 (autoload 'magit-stgit-mode "magit-stgit" "\
@@ -37,7 +48,7 @@ Unconditionally turn on `magit-stgit-mode'.
 ;;;***
 
 ;;;### (autoloads (turn-on-magit-svn magit-svn-mode) "magit-svn"
-;;;;;;  "magit-svn.el" (20281 36134))
+;;;;;;  "magit-svn.el" (20412 43496))
 ;;; Generated autoloads from magit-svn.el
 
 (autoload 'magit-svn-mode "magit-svn" "\
@@ -53,7 +64,7 @@ Unconditionally turn on `magit-svn-mode'.
 ;;;***
 
 ;;;### (autoloads (turn-on-magit-topgit magit-topgit-mode) "magit-topgit"
-;;;;;;  "magit-topgit.el" (20281 36134))
+;;;;;;  "magit-topgit.el" (20412 43496))
 ;;; Generated autoloads from magit-topgit.el
 
 (autoload 'magit-topgit-mode "magit-topgit" "\
@@ -68,8 +79,8 @@ Unconditionally turn on `magit-topgit-mode'.
 
 ;;;***
 
-;;;### (autoloads (rebase-mode) "rebase-mode" "rebase-mode.el" (20281
-;;;;;;  36134))
+;;;### (autoloads (rebase-mode) "rebase-mode" "rebase-mode.el" (20412
+;;;;;;  43496))
 ;;; Generated autoloads from rebase-mode.el
 
 (autoload 'rebase-mode "rebase-mode" "\
@@ -87,7 +98,7 @@ running 'man git-rebase' at the command line) for details.
 ;;;***
 
 ;;;### (autoloads nil nil ("magit-bisect.el" "magit-key-mode.el"
-;;;;;;  "magit-pkg.el" "magit-wip.el") (20281 36163 756418))
+;;;;;;  "magit-pkg.el" "magit-wip.el") (20412 43516 38106))
 
 ;;;***
 
