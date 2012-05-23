@@ -19,11 +19,13 @@
 (add-to-list 'load-path (concat dotfiles-dir "/other/yasnippet"))
 
 (require 'yasnippet)
-(yas/initialize)
 
 ;; Personal snippet directory
+(setq yas/snippet-dirs (concat datafiles-dir "/yasnippets"))
 (yas/load-directory (concat datafiles-dir "/yasnippets"))
 
 ;; for GPL snippet
 (setq user-full-name "Marco Craveiro")
 (setq user-mail-address "marco.craveiro@gmail.com")
+
+(yas/initialize)
