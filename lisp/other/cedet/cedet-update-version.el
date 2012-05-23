@@ -3,7 +3,6 @@
 ;;; Copyright (C) 2005, 2006 Eric M. Ludlam
 
 ;; Author: Eric M. Ludlam <zappo@gnu.org>
-;; X-RCS: $Id: cedet-update-version.el,v 1.4 2006-02-08 04:17:01 zappo Exp $
 
 ;; This file is not part of GNU Emacs.
 
@@ -35,6 +34,12 @@
 ;;; Code:
 (if (not (featurep 'cedet))
     (error "You need to have cedet loaded to manage the update versions"))
+
+(require 'semantic/find)
+(require 'semantic/decorate)
+(semantic-mode 1)
+(global-ede-mode 1)
+(setq ede-project-directories t)
 
 (defun cuv-load-package-file (package)
   "Get the file name for PACKAGE."
