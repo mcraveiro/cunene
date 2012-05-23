@@ -21,8 +21,11 @@
 (require 'yasnippet)
 
 ;; Personal snippet directory
+(setq yas/root-directory (concat datafiles-dir "/yasnippets"))
 (setq yas/snippet-dirs (concat datafiles-dir "/yasnippets"))
-(yas/load-directory (concat datafiles-dir "/yasnippets"))
+
+;; Load the snippets
+(yas/load-directory yas/root-directory)
 
 ;; for GPL snippet
 (setq user-full-name "Marco Craveiro")
