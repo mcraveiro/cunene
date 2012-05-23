@@ -18,9 +18,10 @@
 ;; MA 02110-1301, USA.
 
 (require 'flymake)
+(require 'flymake-settings)
 
 ;; insure flymake errors get plopped into the *Messages* buffer
-(setq flymake-log-level 0)
+(setq flymake-log-level 3)
 
 ;; change fonts
 (custom-set-faces
