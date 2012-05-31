@@ -50,6 +50,7 @@
                     "/dev/null"
                     "-fsyntax-only"
                     "-Wall"
+                    "-isystem /usr/include/libxml2"
                     "-isystem /usr/local/pfh/include"
                     "-std=c++11"
                     (concat "-I" (file-truename "~/Development/kitanda/kitanda/code/cpp/include"))
