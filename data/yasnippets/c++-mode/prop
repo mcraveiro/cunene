@@ -4,6 +4,5 @@
 ${1:int} $2() const { return($2_); }
 void $2(const $1& value) { $2_ = value; }
 
-private:
 $1 $2_;
 $0
