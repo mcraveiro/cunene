@@ -3,8 +3,15 @@
 # --
 class ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`} {
 public:
+    $1() = default;
+    $1(const $1&) = default;
+    ~$1() = default;
+    $1($1&&) = default;
+    $1& operator=(const $1&) = default;
+
+public:
     $1($2);
-    virtual ~$1();
+
 public:
     $0
 private:
