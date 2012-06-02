@@ -28,7 +28,7 @@
 (add-to-list 'flymake-allowed-file-name-masks
              '("\\.hpp\\'" flymake-simple-make-gcc-init))
 
-;; insure flymake errors get plopped into the *Messages* buffer
+;; ensure flymake errors get plopped into the *Messages* buffer
 (setq flymake-log-level 3)
 
 ;; change fonts
@@ -47,6 +47,6 @@
 
 ;; Using lwarn might be kind of annoying on its own, popping up windows and
 ;; what not. If you prefer to recieve the warnings in the mini-buffer, use:
-(defun flymake-display-warning (warning)
-  "Display a warning to the user, using lwarn"
-  (message warning))
+;; (defun flymake-display-warning (warning)
+;;   "Display a warning to the user, using lwarn"
+;;   (message warning))
