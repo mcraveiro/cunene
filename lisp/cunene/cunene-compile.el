@@ -34,6 +34,9 @@
 ;; Only go to error messages
 (setq compilation-skip-threshold 2)
 
+;; If a compilation buffer is already open, use it
+(setq-default display-buffer-reuse-frames t)
+
 ;;
 ;; support for microsoft and mono compilation errors
 ;;
