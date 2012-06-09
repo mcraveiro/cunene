@@ -38,7 +38,7 @@
                      "cunene-ace-jump"
                      "cunene-angry-fruit-salad"
                      "cunene-uniquify"
-                     "cunene-auto-complete"
+                     ;; "cunene-auto-complete"
                      "cunene-elpa"
                      "cunene-misc"
                      "cunene-abbrev"
