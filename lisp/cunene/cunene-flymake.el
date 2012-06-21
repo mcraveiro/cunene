@@ -22,7 +22,7 @@
 (require 'flymake-extension)
 
 ;; display errors as a show tip
-(setq flymake-extension-use-showtip t)
+(setq flymake-extension-use-showtip nil)
 
 ;; ensure we can check C++ header files
 (add-to-list 'flymake-allowed-file-name-masks

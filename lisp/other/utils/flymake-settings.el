@@ -48,9 +48,9 @@ makes)."
 
 (defvar flymake-mode-map (make-sparse-keymap))
 
-(autoload 'flymake-find-file-hook "flymake" "" t)
+;; (autoload 'flymake-find-file-hook "flymake" "" t)
 
-(add-hook 'find-file-hook 'flymake-find-file-hook)
+;; (add-hook 'find-file-hook 'flymake-find-file-hook)
 
 (defun flymake-settings ()
   "Settings for `flymake'."
