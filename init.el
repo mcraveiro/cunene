@@ -135,7 +135,7 @@
                      "cunene-tramp"
                      "cunene-visual-basic"
                      "cunene-w3m"
-                     "cunene-winner"
+                     ;; "cunene-winner"
                      "cunene-whitespace"
                      "cunene-yasnippet"
                      "cunene-wget"
