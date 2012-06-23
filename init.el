@@ -136,6 +136,7 @@
                      "cunene-visual-basic"
                      "cunene-w3m"
                      ;; "cunene-winner"
+                     "cunene-workgroups"
                      "cunene-whitespace"
                      "cunene-yasnippet"
                      "cunene-wget"
