@@ -50,3 +50,13 @@
 ;; (defun flymake-display-warning (warning)
 ;;   "Display a warning to the user, using lwarn"
 ;;   (message warning))
+
+(defun cunene/flymake-find-file-hook ()
+  (if (and (string-match "kitanda" buffer-file-name)
+         (string= major-mode "c++-mode"))
+      (when (and (not (local-variable-p 'flymake-mode (current-buffer)))
+               (flymake-can-syntax-check-file buffer-file-name))
+        (flymake-mode)
+        (flymake-log 3 "automatically turned ON flymake mode"))))
+
+(add-hook 'find-file-hook 'cunene/flymake-find-file-hook)
