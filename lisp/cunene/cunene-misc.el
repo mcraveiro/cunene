@@ -375,7 +375,7 @@ text (with prefix arg don't indent)."
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
 ;; Comment region with programming language syntax.
-(global-set-key (kbd "C-c C-c") 'comment-region)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
 ;; Set the mark
 (global-set-key (kbd "C-x SPC") 'set-mark-command)
