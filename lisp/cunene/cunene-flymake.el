@@ -60,3 +60,6 @@
         (flymake-log 3 "automatically turned ON flymake mode"))))
 
 (add-hook 'find-file-hook 'cunene/flymake-find-file-hook)
+
+;; make flymake back-off a bit
+(setq flymake-no-changes-timeout 5)
