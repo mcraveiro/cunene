@@ -1,0 +1,115 @@
+;;;; Emacs Bookmark Format Version 1 ;;;;
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("sdcpp"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/dogen/backend/cpp/")
+ (front-context-string . "cpp_backend.cpp\n")
+ (rear-context-string . "15 Jun 30 00:02 ")
+ (position . 169))
+("idcpp"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/dogen/backends/cpp/")
+ (front-context-string . "formatters\n  drw")
+ (rear-context-string . "96 Jun 30 00:02 ")
+ (position . 442))
+("sut"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/test/")
+ (front-context-string)
+ (rear-context-string . "50 asserter.cpp\n")
+ (position . 176))
+("bash"
+ (filename . "~/Development/kitanda/kitanda/code/bash/")
+ (front-context-string . "CMakeLists.txt\n ")
+ (rear-context-string . "15 May  7 08:15 ")
+ (position . 150))
+("doc"
+ (filename . "~/Development/kitanda/kitanda/doc/")
+ (front-context-string . "agile\n  -rw-r--r")
+ (rear-context-string . "96 Jul  2 10:30 ")
+ (position . 144))
+("sutd"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/test_data/")
+ (front-context-string . "class_in_a_packa")
+ (rear-context-string . "98 Jun 30 00:52 ")
+ (position . 169))
+("ctest@lorenz"
+ (filename . "/ssh:ctest@lorenz:/home/ctest/")
+ (front-context-string . "CTest.cmake -> /")
+ (rear-context-string . "34 May  3 18:37 ")
+ (position . 91))
+("sds"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/dogen/spec/")
+ (front-context-string . "cpp_backend_spec")
+ (rear-context-string . "64 Jun 30 00:52 ")
+ (position . 162))
+("kostd"
+ (filename . "~/Development/kitanda/output/stage/test_data/")
+ (front-context-string . "classes_in_a_pac")
+ (rear-context-string . "96 Jun 30 01:09 ")
+ (position . 153))
+("kosb"
+ (filename . "~/Development/kitanda/output/stage/bin/")
+ (front-context-string . "comms_spec\n  -rw")
+ (rear-context-string . "97 Jul  2 08:39 ")
+ (position . 155))
+("ko"
+ (filename . "~/Development/kitanda/output/")
+ (front-context-string . "build\n  -rw-r--r")
+ (rear-context-string . "96 Jun  5 17:56 ")
+ (position . 140))
+("kk"
+ (filename . "~/Development/kitanda/kitanda/")
+ (front-context-string . "build\n  -rw-r--r")
+ (rear-context-string . "96 May  3 12:00 ")
+ (position . 140))
+("idc"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/dogen/config/")
+ (front-context-string . "troubleshooting_")
+ (rear-context-string . "02 Jul  2 07:31 ")
+ (position . 582))
+("sdc"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/dogen/config/")
+ (front-context-string . "cpp_settings.cpp")
+ (rear-context-string . "11 Jul  2 07:31 ")
+ (position . 165))
+("ius"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/serialization/")
+ (front-context-string)
+ (rear-context-string . "lable 395746012\n")
+ (position . 127))
+("su"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/")
+ (front-context-string . "CMakeLists.txt\n ")
+ (rear-context-string . "04 Feb 17 19:39 ")
+ (position . 159))
+("sus"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/spec/")
+ (front-context-string . "asserter_spec.cp")
+ (rear-context-string . "02 Jun 29 06:28 ")
+ (position . 165))
+("id"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/dogen/")
+ (front-context-string . "backends\n  -rw-r")
+ (rear-context-string . "96 Jun 16 01:44 ")
+ (position . 169))
+("i"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/")
+ (front-context-string . "comms\n  drwxr-xr")
+ (rear-context-string . "96 May 30 10:11 ")
+ (position . 164))
+("sd"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/dogen/")
+ (front-context-string . "backend\n  -rw-r-")
+ (rear-context-string . "96 Jun 14 15:01 ")
+ (position . 157))
+("s"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/")
+ (front-context-string . "comms\n  drwxr-xr")
+ (rear-context-string . "96 Feb 17 19:39 ")
+ (position . 151))
+("td"
+ (filename . "~/Development/kitanda/output/stage/test_data/")
+ (front-context-string . "tds_manager_good")
+ (rear-context-string . "96 Jun 28 07:54 ")
+ (position . 397))
+)
