@@ -37,7 +37,7 @@
 (setq cunene-files '(
                      "cunene-ace-jump"
                      "cunene-angry-fruit-salad"
-                     "cunene-bookmark"
+                     ; "cunene-bookmark"
                      "cunene-uniquify"
                      ;; "cunene-auto-complete"
                      "cunene-elpa"
