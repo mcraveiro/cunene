@@ -2,7 +2,52 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("sdcpp"
+(("suser"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/serialization/")
+ (front-context-string . "archive_types.cp")
+ (rear-context-string . "98 Jul  2 19:04 ")
+ (position . 172))
+("sus	"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/utility/serialization/archive_types.hpp")
+ (front-context-string . "#endif\n\n#include")
+ (rear-context-string . "0)\n#pragma once\n")
+ (position . 403))
+("iuser"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/utility/serialization/")
+ (front-context-string . "archive_types.hp")
+ (rear-context-string . "18 Jul  2 08:54 ")
+ (position . 184))
+("iutd"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/utility/test_data/")
+ (front-context-string . "class_in_a_packa")
+ (rear-context-string . "12 Jun 30 00:52 ")
+ (position . 181))
+("iuf"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/utility/filesystem/")
+ (front-context-string . "file.hpp\n  -rw-r")
+ (rear-context-string . "15 Jun 28 12:50 ")
+ (position . 182))
+("idv"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/dogen/views/")
+ (front-context-string . "file_view.hpp\n  ")
+ (rear-context-string . "37 Jul  3 11:22 ")
+ (position . 174))
+("sdv"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/src/dogen/views/")
+ (front-context-string . "file_view.cpp\n  ")
+ (rear-context-string . "94 Jul  3 10:50 ")
+ (position . 162))
+("kos"
+ (filename . "~/Development/kitanda/output/stage/")
+ (front-context-string)
+ (rear-context-string . "96 Jun  5 17:56 ")
+ (position . 299))
+("iut"
+ (filename . "~/Development/kitanda/kitanda/code/cpp/include/kitanda/utility/test/")
+ (front-context-string . "macros.hpp\n  -rw")
+ (rear-context-string . "71 May 30 17:52 ")
+ (position . 360))
+("sdcpp"
  (filename . "~/Development/kitanda/kitanda/code/cpp/src/dogen/backend/cpp/")
  (front-context-string . "cpp_backend.cpp\n")
  (rear-context-string . "15 Jun 30 00:02 ")
@@ -72,11 +117,6 @@
  (front-context-string . "cpp_settings.cpp")
  (rear-context-string . "11 Jul  2 07:31 ")
  (position . 165))
-("ius"
- (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/serialization/")
- (front-context-string)
- (rear-context-string . "lable 395746012\n")
- (position . 127))
 ("su"
  (filename . "~/Development/kitanda/kitanda/code/cpp/src/utility/")
  (front-context-string . "CMakeLists.txt\n ")
@@ -108,8 +148,8 @@
  (rear-context-string . "96 Feb 17 19:39 ")
  (position . 151))
 ("td"
- (filename . "~/Development/kitanda/output/stage/test_data/")
- (front-context-string . "tds_manager_good")
- (rear-context-string . "96 Jun 28 07:54 ")
- (position . 397))
+ (filename . "~/Development/kitanda/kitanda/test_data/")
+ (front-context-string . "CMakeLists.txt\n ")
+ (rear-context-string . "57 Jun 28 17:35 ")
+ (position . 148))
 )
