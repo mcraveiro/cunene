@@ -32,6 +32,18 @@
 
 *** Grooming                                                          :story:
 *** Board updating                                                    :story:
+*** Blog post (10)                                                    :story:
+*** C++ personal study (10)                                           :story:
+**** Day 0 (1)                                                        :task:
+**** Day 1 (1)                                                        :task:
+**** Day 2 (1)                                                        :task:
+**** Day 3 (1)                                                        :task:
+**** Day 4 (1)                                                        :task:
+**** Day 5 (1)                                                        :task:
+**** Day 6 (1)                                                        :task:
+**** Day 7 (1)                                                        :task:
+**** Day 8 (1)                                                        :task:
+**** Day 9 (1)                                                        :task:
 
 ** MC
 
@@ -41,18 +53,52 @@
 
 *** Grooming                                                          :story:
 *** Board updating                                                    :story:
-
-** Common Stories
+*** C++ mentoring (10)                                                :story:
+*** Blog post (10)                                                    :story:
 
 #+begin: clocktable :maxlevel 4 :scope subtree
 #+end:
 
-*** Standup Meet                                                      :story:
-*** Code reviews                                                      :story:
-*** Sprint Planning                                                   :story:
-*** Demo Day                                                          :story:
-*** Sprint Review                                                     :story:
+** PG
 
+#+attr_html: border="2" rules="all" frame="border"
+#+begin: clocktable :maxlevel 4 :scope subtree
+#+end:
+
+** Common Stories
+
+#+attr_html: border="2" rules="all" frame="border"
+#+begin: clocktable :maxlevel 4 :scope subtree
+#+end:
+
+*** Standup Meet (10)                                                 :story:
+**** Day 0 (1)                                                        :task:
+**** Day 1 (1)                                                        :task:
+**** Day 2 (1)                                                        :task:
+**** Day 3 (1)                                                        :task:
+**** Day 4 (1)                                                        :task:
+**** Day 5 (1)                                                        :task:
+**** Day 6 (1)                                                        :task:
+**** Day 7 (1)                                                        :task:
+**** Day 8 (1)                                                        :task:
+**** Day 9 (1)                                                        :task:
+
+*** COMPLETED Build checking (5)                                      :story:
+**** COMPLETED First week (3)                                         :task:
+**** COMPLETED Second week (2)                                        :task:
+*** Code reviews (5)                                                  :story:
+*** Sprint Planning (5)                                               :story:
+*** Demo Day (20)                                                     :story:
+**** Previous demo finishing                                          :spike:
+***** Video editing (rendering and exporting)                         :task:
+***** Upload video                                                    :task:
+**** Work on technological platform                                   :task:
+**** Sprint demo work                                                 :task:
+**** Demo script                                                      :task:
+***** Core demo ideas
+*** Sprint Review                                                     :story:
+**** What we did good in this iteration
+**** What we can improve in the next iterations
 * Burndown chart
 
 #+srcname: ${6:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}_calendar
