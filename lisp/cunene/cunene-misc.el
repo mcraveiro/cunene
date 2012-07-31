@@ -160,6 +160,7 @@
 
 ;; Highlight as much as possible
 (setq font-lock-maximum-decoration t)
+(setq font-lock-maximum-size nil)
 
 ;;
 ;; New lines
