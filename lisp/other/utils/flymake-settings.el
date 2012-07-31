@@ -81,6 +81,7 @@ makes)."
                     "-isystem /usr/local/pfh/include"
                     "-std=c++11"
                     (concat "-I" (file-truename "~/Development/kitanda/kitanda/code/cpp/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/output/gcc-4.7/code/cpp/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/output/code/cpp/include"))
                     source)))))
 
