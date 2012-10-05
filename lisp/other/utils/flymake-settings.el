@@ -80,9 +80,32 @@ makes)."
                     "-isystem /usr/include/libxml2"
                     "-isystem /usr/local/pfh/include"
                     "-std=c++11"
-                    (concat "-I" (file-truename "~/Development/kitanda/kitanda/code/cpp/include"))
-                    (concat "-I" (file-truename "~/Development/kitanda/output/gcc-4.7/code/cpp/include"))
-                    (concat "-I" (file-truename "~/Development/kitanda/output/code/cpp/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/dia/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/sml/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/utility/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/generator/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/driver/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/all_primitives/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/class_in_a_package/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/class_without_attributes/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/class_without_package/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/stand_alone_class/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/classes_in_a_package/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/classes_inout_package/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/classes_without_package/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/compressed/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/disable_cmakelists/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/disable_complete_constructor/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/disable_facet_folders/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/disable_model_package/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/enable_facet_domain/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/enable_facet_hash/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/enable_facet_io/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/enable_facet_serialization/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/two_layers_with_objects/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/config/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/utility/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/dmp/include"))
                     source)))))
 
   (defun flymake-simple-make-gcc-init-impl (create-temp-f use-relative-base-dir use-relative-source build-file-name get-cmdline-f)
@@ -107,6 +130,7 @@ Use CREATE-TEMP-F for creating temp copy."
 
   (setq flymake-allowed-file-name-masks
         '(("\\.\\(?:c\\(?:pp\\|xx\\|\\+\\+\\)?\\|CC\\)\\'" flymake-simple-make-gcc-init)
+          ("\\.\\(?:h\\(?:pp\\|xx\\|\\+\\+\\)?\\|HH\\)\\'" flymake-simple-make-gcc-init)
           ("\\.xml\\'" flymake-xml-init)
           ("\\.html?\\'" flymake-xml-init)
           ("\\.cs\\'" flymake-simple-make-init)
