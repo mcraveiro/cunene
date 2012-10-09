@@ -106,6 +106,9 @@ makes)."
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/config/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/utility/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/dmp/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/split_project/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/prototype/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/trivial_inheritance/include"))
                     source)))))
 
   (defun flymake-simple-make-gcc-init-impl (create-temp-f use-relative-base-dir use-relative-source build-file-name get-cmdline-f)
