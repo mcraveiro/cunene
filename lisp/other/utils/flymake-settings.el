@@ -78,6 +78,8 @@ makes)."
                     "-fsyntax-only"
                     "-Wall"
                     "-isystem /usr/include/libxml2"
+                    "-isystem /usr/include/gtkmm-2.4"
+                    "-isystem /usr/include/glibmm-2.4"
                     "-isystem /usr/local/pfh/include"
                     "-std=c++11"
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/dia/include"))
@@ -111,16 +113,24 @@ makes)."
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/trivial_inheritance/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/trivial_association/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/std_model/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/boost_model/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/comments/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/enumeration/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/exception/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/config/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/comms/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/driver/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/daemon/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/protocol/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/utility/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/risk/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/creris/projects/credit_risk/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/creris/projects/wire/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/creris/projects/processor/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/creris/projects/batcher/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/creris/projects/utility/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/creris/projects/disruptor/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/output/creris/stage/include/"))
                     source)))))
 
   (defun flymake-simple-make-gcc-init-impl (create-temp-f use-relative-base-dir use-relative-source build-file-name get-cmdline-f)
