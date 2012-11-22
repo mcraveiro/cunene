@@ -118,6 +118,7 @@ makes)."
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/enumeration/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/exception/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/test_model_sanitizer/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/entity_service_value/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/config/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/comms/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/driver/include"))
