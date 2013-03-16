@@ -21,8 +21,8 @@
 ;; always show the gutter
 (setq git-gutter:always-show-gutter t)
 
-(global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
-(global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
+;; (global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
+;; (global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
 
 ;; Jump to next/previous hunk
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
