@@ -77,10 +77,25 @@ makes)."
                     "/dev/null"
                     "-fsyntax-only"
                     "-Wall"
-                    "-isystem /usr/include/libxml2"
-                    "-isystem /usr/include/gtkmm-2.4"
-                    "-isystem /usr/include/glibmm-2.4"
-                    "-isystem /usr/local/pfh/include"
+                    "-isystem/usr/include/libxml2"
+                    "-isystem/usr/include/sigc++-2.0"
+                    "-isystem/usr/lib/x86_64-linux-gnu/sigc++-2.0/include"
+                    "-isystem/usr/include/gtkmm-2.4"
+                    "-isystem/usr/include/glibmm-2.4"
+                    "-isystem/usr/local/pfh/include"
+                    "-isystem/usr/include/glib-2.0"
+                    "-isystem/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+                    "-isystem/usr/lib/x86_64-linux-gnu/glibmm-2.4/include"
+                    "-isystem/usr/lib/gtkmm-2.4/include/"
+                    "-isystem/usr/lib/gdkmm-2.4/include/"
+                    "-isystem/usr/lib/pangomm-1.4/include"
+                    "-isystem/usr/include/gdkmm-2.4"
+                    "-isystem/usr/include/gtk-3.0"
+                    "-isystem/usr/include/pango-1.0/"
+                    "-isystem/usr/include/cairo/"
+                    "-isystem/usr/include/gdk-pixbuf-2.0"
+                    "-isystem/usr/include/cairomm-1.0/"
+                    "-isystem/usr/lib/cairomm-1.0/"
                     "-std=c++11"
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/dia/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/sml/include"))
@@ -119,7 +134,7 @@ makes)."
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/exception/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/test_model_sanitizer/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/entity_service_value/include"))
-                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/odb/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/database/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/config/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/comms/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/driver/include"))
@@ -136,6 +151,10 @@ makes)."
                     (concat "-I" (file-truename "~/Development/kitanda/creris/projects/conjure/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/creris/projects/conjure/src"))
                     (concat "-I" (file-truename "~/Development/kitanda/output/creris/stage/include/"))
+                    (concat "-I" (file-truename "~/Development/kitanda/hedgr/projects/controller/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/hedgr/projects/gtk/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/hedgr/projects/presentation/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/hedgr/projects/utility/include"))
                     source)))))
 
   (defun flymake-simple-make-gcc-init-impl (create-temp-f use-relative-base-dir use-relative-source build-file-name get-cmdline-f)
