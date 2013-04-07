@@ -126,3 +126,10 @@
       (when (not active) (w3m-link-numbering-mode)))))
 
 (define-key w3m-mode-map "f" 'my-w3m-go-to-linknum)
+
+;; Google Lucky
+(defun w3m-lucky (what)
+  "Use Google Lucky search for WHAT."
+  (interactive "sGoogle Lucky: ")
+  (w3m-goto-url-new-session (concat "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&q="
+                                    (w3m-url-encode-string what))))
