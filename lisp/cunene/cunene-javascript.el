@@ -15,8 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 (autoload 'js2-mode "js2-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+(autoload 'json-mode "json-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . json-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
 (setq js2-basic-offset 2)
 (setq js2-bounce-indent-p t)
