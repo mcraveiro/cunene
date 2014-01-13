@@ -153,6 +153,7 @@ makes)."
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/sml_to_om/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/dia_to_sml/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/eos_serialization/include"))
+                    (concat "-I" (file-truename "~/Development/kitanda/dogen/projects/formatters/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/config/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/comms/include"))
                     (concat "-I" (file-truename "~/Development/kitanda/dirien/projects/driver/include"))
