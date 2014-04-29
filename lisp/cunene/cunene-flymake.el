@@ -52,7 +52,7 @@
 ;;   (message warning))
 
 (defun cunene/flymake-find-file-hook ()
-  (if (and (string-match "kitanda" buffer-file-name)
+  (if (and (string-match "DomainDrivenConsulting" buffer-file-name)
          (string= major-mode "c++-mode"))
       (when (and (not (local-variable-p 'flymake-mode (current-buffer)))
                (flymake-can-syntax-check-file buffer-file-name))
