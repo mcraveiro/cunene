@@ -154,6 +154,8 @@ makes)."
                     (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dogen/projects/dia_to_sml/include"))
                     (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dogen/projects/eos_serialization/include"))
                     (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dogen/projects/formatters/include"))
+                    (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dogen/projects/knit/include"))
+                    (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dogen/projects/knitter/include"))
                     (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dirien/projects/config/include"))
                     (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dirien/projects/comms/include"))
                     (concat "-I" (file-truename "~/Development/DomainDrivenConsulting/dirien/projects/driver/include"))
