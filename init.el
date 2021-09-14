@@ -1,158 +1,83 @@
-;;; Marco's .emacs, copied largely from starterkit and Alex Ott's.
+;;; init.el --- My Emacs configuration -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009  Marco Craveiro
+;; Copyright (C) 2021 Marco Craveiro
+
+;; Author: Marco Craveiro <marco.craveiro@gmail.com>
+;; Created: February 22, 2021
+;; Homepage: https://github.com/mcraveiro/cunene
+
+;; This program is free software. You can redistribute it and/or modify it under
+;; the terms of the Do What The Fuck You Want To Public License, version 2 as
+;; published by Sam Hocevar.
 ;;
-;; init.el is free software; you can redistribute it and/or modify it
-;; under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.
 ;;
-;; Cunene is distributed in the hope that it will be useful, but WITHOUT
-;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-;; or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
-;; License for more details.
+;; You should have received a copy of the Do What The Fuck You Want To Public
+;; License along with this program. If not, see http://www.wtfpl.net/.
+
+;;; Commentary:
+
+;; Following lines load an Org file and build the configuration code out of it.
+
+;;; Code:
+
+(setq-default
+ load-prefer-newer t                    ;; Load newest version of lisp code.
+ package-enable-at-startup nil          ;; Use installed packages after init file.
+ package-native-compile t               ;; Use native compilation.
+ org-src-preserve-indentation t         ;; Do not add indentation to src blocks.
+ )
+
+(setq-default
+ default-frame-alist
+ '(
+   (fullscreen . fullboth)              ;; Maximise window
+   (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
+   (left-fringe . 3)                    ;; Thin left fringe
+   (menu-bar-lines . 0)                 ;; No menu bar
+   (right-divider-width . 1)            ;; Thin vertical window divider
+   (right-fringe . 3)                   ;; Thin right fringe
+   (tool-bar-lines . 0)                 ;; No tool bar
+   (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
+
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with init.el.  If not, see <http://www.gnu.org/licenses/>.
+;; Configuration specific to startup.
+;;
+(let
+    (
+     ;; (default-directory user-emacs-directory) ;; FIXME: for now whilst fixing .emacs.
+     (file-name-handler-alist nil)      ;; Remove special handlers on startup.
+     (gc-cons-percentage .6)
+     (gc-cons-threshold most-positive-fixnum)
+     (read-process-output-max (* 1024 1024)))
 
-;; Top level directory
-(setq toplevel-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+  ;; Disable that pesky echo message
+  (setq inhibit-startup-echo-area-message user-login-name)
 
-;; Top level directory for all the lisp code.
-(setq dotfiles-dir (concat toplevel-dir "lisp"))
+  ;; Mark safe variables early so that tangling won't break
+  (put 'after-save-hook 'safe-local-variable
+       (lambda (value) (equal value '(org-babel-tangle t))))
+  (put 'display-line-numbers-width 'safe-local-variable 'integerp)
 
-;; Top level data directory
-(setq datafiles-dir (concat toplevel-dir "data"))
-(if (not (file-accessible-directory-p datafiles-dir))
-    (make-directory datafiles-dir))
+  ;; Tangle and compile if necessary only, then load the configuration
+  (let* ((.org "cunene.org")
+         (.el (concat (file-name-sans-extension .org) ".el"))
+         (modification-time
+          (file-attribute-modification-time (file-attributes .org))))
+    (require 'org-macs)
+    (unless (org-file-newer-than-p .el modification-time)
+      (require 'ob-tangle)
+      (org-babel-tangle-file .org .el "emacs-lisp")
+      (byte-compile-file .el))
+    (load-file .el))
 
-;; Directory for all of my customisations.
-(setq cunene-dir (concat dotfiles-dir "/cunene/"))
+  ;; Set the working directory to home regardless of where Emacs was started from
+  (cd "~/")
 
-;; Add other modes to load path.
-(add-to-list 'load-path (concat dotfiles-dir "/other/utils"))
+  ;; Collect garbage when all else is done
+  (garbage-collect)
+  )
 
-;; List of customisation files
-;; FIXME: use load directory.
-(setq cunene-files '(
-                     "cunene-ace-jump"
-                     "cunene-angry-fruit-salad"
-                     ; "cunene-bookmark"
-                     "cunene-uniquify"
-                     "cunene-clang"
-                     ;; "cunene-auto-complete"
-                     "cunene-elpa"
-                     "cunene-misc"
-                     "cunene-abbrev"
-                     "cunene-ansi-color"
-                     "cunene-anything"
-                     "cunene-ascii-table"
-                     "cunene-auto-save"
-                     "cunene-autopair"
-                     "cunene-backup"
-                     "cunene-dos"
-                     "cunene-bm"
-                     "cunene-bongo"
-                     "cunene-browse-kill-ring"
-                     "cunene-c"
-                     "cunene-camel-case"
-                     "cunene-cdb-gud"
-                     "cunene-cedet"
-                     "cunene-color-theme"
-                     "cunene-clearcase"
-                     "cunene-cl"
-                     "cunene-chm-view"
-                     "cunene-cmake"
-                     "cunene-compile"
-                     "cunene-csharp"
-                     "cunene-cua"
-                     "cunene-diff"
-                     "cunene-dired"
-                     "cunene-doxymacs"
-                     "cunene-delim-kill.el"
-                     "cunene-eassist"
-                     "cunene-ecb"
-                     "cunene-ede"
-                     "cunene-ede-ibuffer"
-                     "cunene-ediff"
-                     "cunene-edef"
-                     "cunene-eiffel"
-                     "cunene-expand-region"
-                     "cunene-ffap"
-                     "cunene-fixme"
-                     "cunene-flymake"
-                     "cunene-flyspell"
-                     "cunene-full-ack"
-                     "cunene-fullscreen"
-                     "cunene-fsharp"
-                     "cunene-git"
-                     "cunene-grep"
-                     "cunene-gnus"
-                     "cunene-gprof"
-                     "cunene-gnuplot"
-                     "cunene-git-gutter"
-                     "cunene-hs"
-                     "cunene-highlight-symbol"
-                     "cunene-highline"
-                     "cunene-ibuffer"
-                     "cunene-ido"
-                     "cunene-iedit"
-                     "cunene-folding"
-                     "cunene-jira"
-                     "cunene-javascript"
-                     "cunene-lisp"
-                     "cunene-log4j"
-                     "cunene-kitanda"
-                     "cunene-magit"
-                     "cunene-markdown"
-                     "cunene-mo-git-blame"
-                     "cunene-mic-paren"
-                     "cunene-moccur"
-                     "cunene-mpg123"
-                     "cunene-multi-terminal"
-                     "cunene-muse"
-                     "cunene-nxhtml"
-                     "cunene-nxml"
-                     "cunene-org"
-                     "cunene-pretty"
-                     "cunene-point-stack"
-                     "cunene-powershell"
-                     "cunene-psvn"
-                     "cunene-rainbow"
-                     "cunene-recentf"
-                     "cunene-ruby"
-                     "cunene-rudel"
-                     "cunene-savehist"
-                     "cunene-saveplace"
-                     "cunene-scratch"
-                     "cunene-semantic"
-                     "cunene-smooth-scrolling"
-                     "cunene-smex"
-                     "cunene-shell"
-                     "cunene-shell-toggle"
-                     "cunene-sql"
-                     "cunene-ssh"
-                     "cunene-swbuff"
-                     "cunene-t4"
-                     "cunene-text"
-                     "cunene-tramp"
-                     "cunene-visual-basic"
-                     "cunene-w3m"
-                     ;; "cunene-winner"
-                     "cunene-workgroups"
-                     "cunene-whitespace"
-                     "cunene-yasnippet"
-                     "cunene-wget"
-                     "cunene-desktop-save" ;; must be last
-                     )
-      )
-
-;; Load the customisation files
-(while cunene-files
-  (load (concat cunene-dir (car cunene-files)))
-  (setq cunene-files (cdr cunene-files)))
-
-;; Make sure fortune and fullscreen are the last thing to execute
-(fortune)
-(fullscreen)
-(message "Cunene v0.0.1 - Emacs configuration done.")
+;;; init.el ends here
