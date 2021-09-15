@@ -1,0 +1,277 @@
+#+TITLE: Cunene
+#+AUTHOR: Marco Craveiro
+#+PROPERTY: header-args :results silent
+
+* Requirements
+
+Things we need to remember to change:
+
+- remove the C-arrows behaviour in org-ref when on top of a cite.
+- org-mode use of M-arrows.
+
+* Preamble
+
+#+begin_src emacs-lisp
+;;; cunene.el --- Cunene: My emacs configuration
+;;
+;; Copyright © 2021 Marco Craveiro
+;;
+;; Author: Marco Craveiro <marco_craveiro@gmail.com>
+;; URL: https://github.com/mcraveiro/prelude
+;; Version: 0.0.0
+;; Keywords: convenience
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; General editor configuration
+
+;;; License:
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License
+;; as published by the Free Software Foundation; either version 3
+;; of the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Code:
+#+end_src
+
+* Identity
+
+#+begin_src emacs-lisp
+(setq user-full-name "Marco Craveiro")
+(setq user-mail-address "marco.craveiro@gmail.com")
+#+end_src
+
+* Cache
+
+Use =.cache/= to contain local data. This is to avoid littering in the Emacs
+directory with an ever-growing number of packages used on a daily basis.
+
+#+begin_src emacs-lisp
+(defconst cunene/cache-directory
+  (expand-file-name (concat user-emacs-directory ".cache/"))
+  "Directory where all cache files should be saved")
+
+(defun cunene/cache-concat (name)
+  "Return the absolute path of NAME under `cunene/cache-directory'."
+  (let* ((directory (file-name-as-directory cunene/cache-directory))
+         (path (convert-standard-filename (concat directory name))))
+    (make-directory (file-name-directory path) t)
+    path))
+#+end_src
+ 
+#+begin_src emacs-lisp
+(with-eval-after-load 'request
+  (setq-default request-storage-directory (cunene/cache-concat "request/")))
+(with-eval-after-load 'tramp
+  (setq-default tramp-persistency-file-name (cunene/cache-concat "tramp.eld")))
+(with-eval-after-load 'url
+  (setq-default url-configuration-directory (cunene/cache-concat "url/")))
+
+;; Moving the location of packages causes weird bootstrapping errors.
+;; (with-eval-after-load 'package
+;;   (setq-default package-user-dir (cunene/cache-concat "packages/")))
+#+end_src
+
+* Backup files
+
+#+begin_src emacs-lisp
+(defvar cunene/backup-directory (cunene/cache-concat "backups"))
+
+(if (not (file-exists-p cunene/backup-directory))
+    (make-directory cunene/backup-directory t))
+
+(setq backup-directory-alist `(("." . ,cunene/backup-directory)))
+#+end_src
+
+* Package Management
+
+| =package=     | Built-in                                |
+| =use-package= | https://github.com/jwiegley/use-package |
+
+Setup package sources. Trying to setup a secure set of
+sources.
+
+Links:
+
+- [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][Your editor is malware]]
+
+#+begin_src emacs-lisp
+(require 'package)
+(setq package-archives
+      '(("gnu" . "https://elpa.gnu.org/packages/")
+      ("melpa" . "https://melpa.org/packages/")))
+
+(package-initialize)
+#+end_src
+
+Install the =use-package= dependency.
+
+Links:
+
+- [[https://github.com/jwiegley/use-package/issues/202][#202: use-package-always-defer]]
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'use-package
+  (setq-default
+   use-package-always-defer nil     ;; Let auto-loading be managed by package.el
+   use-package-always-ensure t))    ;; Install packages if not present in the system
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package t))
+
+(eval-when-compile
+  (require 'use-package))
+#+end_src
+
+* Better Defaults
+
+Here are what I consider better defaults as per my own experience.
+
+#+begin_src emacs-lisp
+(setq-default
+ ad-redefinition-action 'accept         ; Silence warnings for redefinition
+ auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
+ cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
+ custom-unlispify-menu-entries nil      ; Prefer kebab-case for titles
+ custom-unlispify-tag-names nil         ; Prefer kebab-case for symbols
+ delete-by-moving-to-trash t            ; Delete files to trash
+ fill-column 80                         ; Set width for automatic line breaks
+ help-window-select t                   ; Focus new help windows when opened
+ indent-tabs-mode nil                   ; Stop using tabs to indent
+ inhibit-startup-screen t               ; Disable start-up screen
+ initial-scratch-message ""             ; Empty the initial *scratch* buffer
+ mouse-yank-at-point t                  ; Yank at point rather than pointer
+ read-process-output-max (* 1024 1024)  ; Increase read size per process
+ recenter-positions '(5 top bottom)     ; Set re-centering positions
+ scroll-conservatively 101              ; Avoid recentering when scrolling far
+ scroll-margin 2                        ; Add a margin when scrolling vertically
+ select-enable-clipboard t              ; Merge system's and Emacs' clipboard
+ sentence-end-double-space nil          ; Use a single space after dots
+ show-help-function nil                 ; Disable help text everywhere
+ tab-always-indent 'complete            ; Tab indents first then tries completions
+ tab-width 4                            ; Smaller width for tab characters
+ uniquify-buffer-name-style 'forward    ; Uniquify buffer names
+ warning-minimum-level :error           ; Skip warning buffers
+ window-combination-resize t            ; Resize windows proportionally
+ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
+(blink-cursor-mode 0)                   ; Prefer a still cursor
+(delete-selection-mode 1)               ; Replace region when inserting text
+(fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
+(global-subword-mode 1)                 ; Iterate through CamelCase words
+(mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
+(put 'downcase-region 'disabled nil)    ; Enable downcase-region
+(put 'upcase-region 'disabled nil)      ; Enable upcase-region
+(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+#+END_SRC
+
+* Garbage collection
+
+#+begin_src emacs-lisp
+(setq-default
+ gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
+#+end_src
+
+Garbage-collect on focus-out, Emacs /should/ feel snappier overall.
+
+#+begin_src emacs-lisp
+(add-function :after after-focus-change-function
+  (defun cunene/garbage-collect-maybe ()
+    (unless (frame-focus-state)
+      (garbage-collect))))
+#+end_src
+
+* Themes
+
+| =Doom One= | https://github.com/hlissner/emacs-doom-themes |
+
+#+begin_src emacs-lisp
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+)
+#+end_src
+
+* Fullscreen
+
+Enable fullscreen. Given there are differences in meaning for /fullscreen/
+between window managers, the following tree aims to provide a pain-free
+experience with regard to fullscreen in most setups.
+
+In the case of macOS, fullscreen means Emacs will occupy a dedicated workspace
+so we want to maximize it instead. Works best with titlebar-less frames.
+
+#+begin_src emacs-lisp
+(pcase window-system
+  ('w32 (set-frame-parameter nil 'fullscreen 'fullboth))
+  (_ (set-frame-parameter nil 'fullscreen 'maximized)))
+#+end_src
+
+* Regular Expressions Builder
+
+| =reb= | Built-in |
+
+Setup REB.
+
+Links:
+
+- [[https://www.masteringemacs.org/article/re-builder-interactive-regexp-builder][re-builder: the Interactive regexp builder]]
+
+#+begin_src emacs-lisp
+(require 're-builder)
+(setq reb-re-syntax 'string)        ;; No need for double-slashes
+#+end_src
+
+Use REB with query replace regex.
+
+Links:
+
+- [[https://www.reddit.com/r/emacs/comments/mxqm4u/how_to_combine_the_power_of_rebuilder_with/gvsbbid/][How to combine the power of re-builder with query-replace-regexp?]]
+
+#+begin_src emacs-lisp
+(defun reb-replace-regexp (&optional delimited)
+  "Run `query-replace-regexp' with the contents of re-builder. With
+   non-nil optional argument DELIMITED, only replace matches
+   surrounded by word boundaries."
+  (interactive "P")
+  (reb-update-regexp)
+  (let* ((re (reb-target-binding reb-regexp))
+	 (re-printed (with-output-to-string (print re)))
+	 (replacement (read-from-minibuffer
+		       (format "Replace regexp %s with: "
+			       (substring re-printed 1
+					  (1- (length re-printed)))))))
+    (with-current-buffer reb-target-buffer
+      (query-replace-regexp re replacement delimited))))
+
+(define-key reb-mode-map (kbd "C-M-%") 'reb-replace-regexp)
+#+end_src
+
+* Postamble
+
+#+begin_src emacs-lisp
+;;; cunene.el ends here
+#+end_src
