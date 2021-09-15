@@ -9,6 +9,16 @@ Things we need to remember to change:
 - remove the C-arrows behaviour in org-ref when on top of a cite.
 - org-mode use of M-arrows.
 
+** Current Tasks
+
+- plant uml is not configured correctly.
+- no flycheck in plantuml
+- stray files:
+
+: .emacs-buffers
+: transient/
+: projectile-bookmarks.eld
+
 * Preamble
 
 #+begin_src emacs-lisp
@@ -221,6 +231,7 @@ Links:
                            (mode . js2-mode)
                            (mode . js-mode)))
             ("php" (mode . php-mode))
+            ("org" (mode . org-mode))
             ("xml" (mode . nxml-mode))
             ("sql" (or
                     (mode . sql-mode)
@@ -263,6 +274,7 @@ Links:
                       (name . "^\\*Shell Command Output\\*$")
                       (mode . shell-mode)
                       (mode . ssh-mode)
+                      (mode . eshell-mode)
                       (name . "^\\*compilation\\*$")))
             ("file management" (or
                                 (mode . dired-mode)
@@ -474,12 +486,8 @@ Garbage-collect on focus-out, Emacs /should/ feel snappier overall.
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-dark+ t)
-
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
-  ;; or for treemacs users
-  ;; (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-  (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
 )
@@ -1082,6 +1090,11 @@ section for now.
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
+
+(use-package ibuffer-projectile
+  :ensure t
+  :after projectile
+)
 #+end_src
 
 ** Synax Checking
@@ -1098,7 +1111,9 @@ section for now.
 (use-package plantuml-mode
   :ensure t
   :mode "\\.plantuml\\'"
-  :custom (plantuml-indent-level 4)
+  :custom
+  (plantuml-indent-level 4)
+  (image-auto-resize nil)
   :config
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
   (if (eq window-system 'w32)
@@ -1110,7 +1125,7 @@ section for now.
   :ensure t
   :after (plantuml flycheck)
   :init (flycheck-plantuml-setup)
-  :custom (image-auto-resize nil))
+  :custom )
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))

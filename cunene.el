@@ -158,6 +158,7 @@
                            (mode . js2-mode)
                            (mode . js-mode)))
             ("php" (mode . php-mode))
+            ("org" (mode . org-mode))
             ("xml" (mode . nxml-mode))
             ("sql" (or
                     (mode . sql-mode)
@@ -200,6 +201,7 @@
                       (name . "^\\*Shell Command Output\\*$")
                       (mode . shell-mode)
                       (mode . ssh-mode)
+                      (mode . eshell-mode)
                       (name . "^\\*compilation\\*$")))
             ("file management" (or
                                 (mode . dired-mode)
