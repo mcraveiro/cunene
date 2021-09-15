@@ -1,0 +1,20 @@
+#+TITLE: Cunene
+#+AUTHOR: Marco Craveiro
+
+This repository contains my personal Emacs configuration. It is
+heavily based on others - copy and paste, mainly. The sources are
+referenced at the end.
+
+* References
+
+- [[https://github.com/angrybacon/dotemacs][dotemacs]]: Literate config by [[https://github.com/angrybacon][Mathieu Marques]].
+- [[https://github.com/jamiecollinson/dotfiles][dotfiles]]: Literate config by [[https://github.com/jamiecollinson][Jamie Collinson]].
+- [[https://github.com/credmp/emacs-config][emacs-config]]: Literate config by Arjen Wiersma.
+
+* Trying it
+
+You can test this init without changing your configuration:
+
+#+begin_src sh
+emacs --no-init-file -l ./init.el
+#+end_src
