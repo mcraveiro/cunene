@@ -1,6 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : -import([]).
-#contributor : hitesh <hitesh.jasani@gmail.com>
-# --
--import(${1:lists}, [${2:map/2, sum/1}]).
-$0

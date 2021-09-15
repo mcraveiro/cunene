@@ -1,7 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : Benchmark.bmbm(...) do ... end
-#group : general
-# --
-Benchmark.bmbm(${1:10}) do |x|
-  $0
-end

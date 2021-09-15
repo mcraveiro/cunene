@@ -1,7 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : upto(...) { |n| ... }
-#group : control structure
-# --
-upto(${n}) { |${i}|
-  $0
-}

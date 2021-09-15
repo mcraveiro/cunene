@@ -1,6 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : -export([]).
-#contributor : hitesh <hitesh.jasani@gmail.com>
-# --
--export([${1:start/0}]).
-$0

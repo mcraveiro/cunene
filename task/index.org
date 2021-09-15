@@ -1,9 +1,0 @@
-* Archived
-* Current
-** [[file:objects/fd3380fa-4892-11e0-9e12-0024543e5f84.org][insert-date does not add leading zeros to numbers less than 10]]
-** [[file:objects/0a4dd808-4893-11e0-b66e-0024543e5f84.org][disable auto-complete-mode in shell buffers]]
-** [[file:objects/6815caa6-4bb6-11e0-b85b-0024543e5f84.org][add auto-indent on paste to nxml]]
-** [[file:objects/b25e4fd4-4bb6-11e0-8b89-0024543e5f84.org][use submodules to pickup modes which are on git]]
-* Future
-* Uncategorised
-

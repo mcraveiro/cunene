@@ -1,6 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#contributor : Anders Bach Nielsen <abachn@abachn.net>
-#name : DocType XHTML 1.0 Strict
-#group : meta
-# --
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

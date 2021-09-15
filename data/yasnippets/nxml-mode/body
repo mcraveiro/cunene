@@ -1,7 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#contributor : Anders Bach Nielsen <abachn@abachn.net>
-#name : <body>...</body>
-# --
-<body$1>
-  $0
-</body>

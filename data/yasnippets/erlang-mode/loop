@@ -1,9 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : loop(...) -> receive _ -> loop(...) end.
-# --
-${1:loop}($2) ->
-    receive
-	${3:_} ->
-	    $1($2)
-    end.
-$0

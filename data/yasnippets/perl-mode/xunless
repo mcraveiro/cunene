@@ -1,4 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : ... unless ...
-# --
-${1:expression} unless ${2:condition}

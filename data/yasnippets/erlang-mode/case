@@ -1,6 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : case ... of ... end
-# --
-case $1 of
-    $0
-end

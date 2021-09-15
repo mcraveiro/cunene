@@ -1,6 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#contributor : Jimmy Wu <frozenthrone88@gmail.com>
-#group : meta
-#name : <meta name="..." content="..." />
-# --
-<meta name="${1:generator}" content="${2:content}" />

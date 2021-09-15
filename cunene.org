@@ -87,6 +87,12 @@ directory with an ever-growing number of packages used on a daily basis.
 
 * Backup files
 
+Control where emacs places the pesky backup files.
+
+Links:
+
+- [[https://newbedev.com/how-do-i-control-how-emacs-makes-backup-files][How do I control how Emacs makes backup files?]]
+
 #+begin_src emacs-lisp
 (defvar cunene/backup-directory (cunene/cache-concat "backups"))
 
@@ -94,6 +100,26 @@ directory with an ever-growing number of packages used on a daily basis.
     (make-directory cunene/backup-directory t))
 
 (setq backup-directory-alist `(("." . ,cunene/backup-directory)))
+
+(setq make-backup-files t               ;; Backup of a file the first time it is saved.
+      backup-by-copying t               ;; Don't clobber symlinks.
+      version-control t                 ;; Version numbers for backup files.
+      vc-make-backup-files t            ;; Backup files even if under version control.
+      delete-old-versions t             ;; delete excess backup files silently.
+      delete-by-moving-to-trash t       ;; Move deleted files to trash.
+      kept-old-versions 6               ;; oldest versions to keep when a new numbered backup is made
+      kept-new-versions 9               ;; newest versions to keep when a new numbered backup is made
+      auto-save-default t               ;; auto-save every buffer that visits a file
+      auto-save-timeout 20              ;; number of seconds idle time before auto-save
+      auto-save-interval 200)           ;; number of keystrokes between auto-saves
+
+;; sensitive data
+(setq auto-mode-alist
+      (append
+       (list
+        '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode)
+        )
+       auto-mode-alist))
 #+end_src
 
 * Package Management
@@ -268,6 +294,145 @@ Links:
       (query-replace-regexp re replacement delimited))))
 
 (define-key reb-mode-map (kbd "C-M-%") 'reb-replace-regexp)
+#+end_src
+
+* Key discoverability 
+
+If you type a prefix key (such as =C-x r=) and wait some time then display
+window with keys that can follow.
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :config
+  (which-key-mode))
+#+end_src
+
+* Development
+
+Configuration related to programming.
+
+** Version Control
+
+| =git-commit=         | https://github.com/magit/magit/blob/master/lisp/git-commit.el |
+| =git-gutter-fringe=  | https://github.com/emacsorphanage/git-gutter-fringe           |
+| =gitattributes-mode= | https://github.com/magit/git-modes#gitattributes-mode         |
+| =gitconfig-mode=     | https://github.com/magit/git-modes#gitconfig-mode             |
+| =gitignore-mode=     | https://github.com/magit/git-modes#gitignore-mode             |
+| =magit=              | https://github.com/magit/magit                                |
+| =pinentry=           | https://elpa.gnu.org/packages/pinentry.html                   |
+| =transient=          | https://github.com/magit/transient                            |
+
+Auto-fill commit messages.
+
+#+begin_src emacs-lisp
+(use-package git-commit
+  :hook
+  (git-commit-mode . (lambda () (setq-local fill-column 72))))
+#+end_src
+
+Display indicators in the left fringe for Git changes.
+
+#+begin_src emacs-lisp
+(use-package git-gutter-fringe
+  :preface
+  (defun cunene/git-gutter-enable ()
+    (when-let* ((buffer (buffer-file-name))
+                (backend (vc-backend buffer)))
+      (require 'git-gutter)
+      (require 'git-gutter-fringe)
+      (git-gutter-mode 1)))
+  :hook
+  (after-change-major-mode . cunene/git-gutter-enable)
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [255] nil nil '(center t))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [255 255 255 255] nil nil 'bottom)
+  (define-fringe-bitmap 'git-gutter-fr:modified [255] nil nil '(center t)))
+#+end_src
+
+Major modes for Git-specific files.
+
+#+begin_src emacs-lisp
+(use-package gitattributes-mode)
+(use-package gitconfig-mode)
+(use-package gitignore-mode)
+#+end_src
+
+Magit provides Git facilities directly from within Emacs.
+
+#+begin_quote
+Magit is an interface to the version control system Git, implemented as an Emacs
+package. Magit aspires to be a complete Git porcelain. While we cannot (yet)
+claim that Magit wraps and improves upon each and every Git command, it is
+complete enough to allow even experienced Git users to perform almost all of
+their daily version control tasks directly from within Emacs. While many fine
+Git clients exist, only Magit and Git itself deserve to be called porcelains.
+
+--- Jonas Bernoulli
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package magit
+  :bind
+  (:map magit-file-section-map
+   ("<return>" . magit-diff-visit-file-other-window)
+   :map magit-hunk-section-map
+   ("<return>" . magit-diff-visit-file-other-window)
+   :map magit-status-mode-map
+   ("M-1" . nil)
+   ("M-2" . nil)
+   ("M-3" . nil)
+   ("M-4" . nil))
+  :hook
+  (magit-post-stage-hook . cunene/magit-recenter)
+  :custom
+  (epg-pinentry-mode 'loopback)
+  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (magit-diff-highlight-hunk-region-functions
+   '(magit-diff-highlight-hunk-region-using-face))
+  (magit-diff-refine-hunk 'all)
+  (magit-module-sections-nested nil)
+  (magit-section-initial-visibility-alist
+   '((modules . show) (stashes . show) (unpulled . show) (unpushed . show)))
+  :config
+  (magit-add-section-hook
+   'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
+  (remove-hook 'magit-section-highlight-hook #'magit-section-highlight))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun cunene/magit-recenter ()
+  "Recenter the current hunk at 25% from the top of the window."
+  (when (magit-section-match 'hunk)
+    (let ((top (max 0 scroll-margin (truncate (/ (window-body-height) 4)))))
+      (message "%s" top)
+      (save-excursion
+        (magit-section-goto (magit-current-section))
+        (recenter top)))))
+#+end_src
+
+Start =pinentry= in order for Emacs to be able to prompt for passphrases when
+necessary.
+
+#+begin_src emacs-lisp
+(use-package pinentry
+  :hook
+  (after-init . pinentry-start))
+#+end_src
+
+Transient is the package behind the modal maps and prefixes depicted in Magit.
+It is currently used by Magit only in my configuration so it will stay in this
+section for now.
+
+#+begin_src emacs-lisp
+(use-package transient
+  :init
+  (setq-default
+   transient-history-file (cunene/cache-concat "transient/history.el")
+   transient-levels-file (cunene/cache-concat "transient/levels.el")
+   transient-values-file (cunene/cache-concat "transient/values.el"))
+  :custom
+  (transient-default-level 5)
+  (transient-mode-line-format nil))
 #+end_src
 
 * Postamble

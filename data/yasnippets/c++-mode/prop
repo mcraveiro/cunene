@@ -1,8 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : prop (...) { ... }
-# --
-${1:int} $2() const { return($2_); }
-void $2(const $1& value) { $2_ = value; }
-
-$1 $2_;
-$0

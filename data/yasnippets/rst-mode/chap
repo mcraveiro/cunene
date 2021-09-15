@@ -1,7 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : Chapter title
-# --
-${1:Chapter}
-${1:$(make-string (string-width text) ?\=)}
-
-$0

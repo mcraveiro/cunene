@@ -25,6 +25,7 @@
 
 (setq-default
  load-prefer-newer t                    ;; Load newest version of lisp code.
+ ;; mode-line-format nil                ;; No mode line format
  package-enable-at-startup nil          ;; Use installed packages after init file.
  package-native-compile t               ;; Use native compilation.
  org-src-preserve-indentation t         ;; Do not add indentation to src blocks.
@@ -32,26 +33,30 @@
 
 (setq-default
  default-frame-alist
- '(
-   (fullscreen . fullboth)              ;; Maximise window
+ '((background-color . "#101010")       ;; Default background color
+   (foreground-color . "#FAFAFA")       ;; Default foreground color
+   (fullscreen . maximized)             ;; Maximize the window by default
    (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
-   (left-fringe . 3)                    ;; Thin left fringe
+   (left-fringe . 8)                    ;; Thin left fringe
    (menu-bar-lines . 0)                 ;; No menu bar
    (right-divider-width . 1)            ;; Thin vertical window divider
-   (right-fringe . 3)                   ;; Thin right fringe
+   (right-fringe . 8)                   ;; Thin right fringe
    (tool-bar-lines . 0)                 ;; No tool bar
+   ;; (undecorated . t)                    ;; Remove extraneous X decorations
    (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
 
 ;;
 ;; Configuration specific to startup.
 ;;
+
 (let
     (
-     ;; (default-directory user-emacs-directory) ;; FIXME: for now whilst fixing .emacs.
+     (default-directory user-emacs-directory) ;; FIXME: Start in the emacs directory.
      (file-name-handler-alist nil)      ;; Remove special handlers on startup.
      (gc-cons-percentage .6)
      (gc-cons-threshold most-positive-fixnum)
-     (read-process-output-max (* 1024 1024)))
+     (read-process-output-max (* 1024 1024))
+     )
 
   ;; Disable that pesky echo message
   (setq inhibit-startup-echo-area-message user-login-name)
@@ -81,3 +86,15 @@
   )
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(doom-themes use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

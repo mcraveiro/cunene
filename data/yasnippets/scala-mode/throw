@@ -1,5 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#Author : Jonas Bonèr <jonas@jonasboner.com>
-#name : throw new Exception
-# --
-throw new ${1:Exception}(${2:msg}) $0

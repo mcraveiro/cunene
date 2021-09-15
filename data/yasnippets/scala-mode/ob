@@ -1,5 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#Author : Jonas Bonèr <jonas@jonasboner.com>
-#name : object name extends T
-# --
-object ${1:name} extends ${2:type} $0

@@ -1,5 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : if __name__ == '__main__': ...
-# --
-if __name__ == '__main__':
-    $0

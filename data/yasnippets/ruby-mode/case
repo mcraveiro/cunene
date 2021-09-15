@@ -1,8 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : case ... end
-#group : general
-# --
-case ${1:object}
-when ${2:condition}
-  $0
-end

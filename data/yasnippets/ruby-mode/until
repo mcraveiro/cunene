@@ -1,7 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : until ... end
-#group: control structure
-# --
-until ${condition}
-  $0
-end

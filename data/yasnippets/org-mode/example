@@ -1,7 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : example
-# expand-env: ((yas/indent-line nil))
-# --
-#+begin_example
-$0
-#+end_example

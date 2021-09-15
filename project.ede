@@ -1,7 +1,0 @@
-;; -*- mode: emacs-lisp; tab-width: 4; indent-tabs-mode: nil -*-
-(ede-cpp-root-project
- "Cunene"
- :name "Cunene Project"
- :version "0.0.1"
- :file "project.ede"
- )

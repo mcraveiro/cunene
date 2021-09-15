@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: equality operator
-# --
-bool operator==(const $1& rhs) const {
-    $0
-}

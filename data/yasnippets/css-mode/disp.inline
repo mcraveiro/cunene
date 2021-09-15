@@ -1,5 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#contributor : rejeep <johan.rejeep@gmail.com>
-#name : display: inline
-# --
-dislpay: inline;

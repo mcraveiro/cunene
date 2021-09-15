@@ -1,6 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : do { ... } while (...)
-# --
-do {
-    $0
-} while (${1:condition});

@@ -1,8 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#contributor : Jimmy Wu <frozenthrone88@gmail.com>
-#name : <table ...>...</table>
-#group : table
-# --
-<table width="$1" cellspacing="$2" cellpadding="$3" border="$4">
-  $0
-</table>

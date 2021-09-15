@@ -1,5 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : each_with_index { |e, i| ... }
-#group : collections
-# --
-each_with_index { |${e}, ${i}| $0 }

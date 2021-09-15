@@ -1,4 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : v.begin(), v.end()
-# --
-${1:v}.begin(), $1.end

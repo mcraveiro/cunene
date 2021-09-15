@@ -1,7 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : if ... -> ... ; true -> ... end
-# --
-if
-    $1 -> $2;
-    true -> $0
-end

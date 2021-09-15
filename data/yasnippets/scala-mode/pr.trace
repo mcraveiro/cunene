@@ -1,5 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#Author : Jonas Bonèr <jonas@jonasboner.com>
-#name : println("obj: " + obj)
-# --
-println("${1:obj}: " + ${1:obj}) $0

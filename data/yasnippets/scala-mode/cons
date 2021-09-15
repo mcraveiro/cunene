@@ -1,5 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#Author : Jonas Bonèr <jonas@jonasboner.com>
-#name : element1 :: element2
-# --
-${1:element1} :: ${2:element2} $0

@@ -1,9 +1,0 @@
-# vim: set sw=4: -*- mode: snippet; tab-width: 4; indent-tabs-mode: nil -*- */
-#name : include Comparable; def <=> ... end
-#group : definitions
-# --
-include Comparable
-
-def <=> other
-  $0
-end
