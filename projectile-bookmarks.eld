@@ -1,0 +1,1 @@
+("~/Development/emacs/cunene/" "/work/DomainDrivenConsulting/masd/dogen/integration/" "~/.emacs.d.old/")

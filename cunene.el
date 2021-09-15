@@ -37,7 +37,7 @@
 
 (defconst cunene/cache-directory
   (expand-file-name (concat user-emacs-directory ".cache/"))
-  "Directory where all cache files should be saved")
+  "Directory where all cache files should be saved.")
 
 (defun cunene/cache-concat (name)
   "Return the absolute path of NAME under `cunene/cache-directory'."
@@ -103,6 +103,189 @@
 (eval-when-compile
   (require 'use-package))
 
+(use-package ibuffer
+  :bind
+  (:map ibuffer-mode-map
+	("/ e" . ibuffer-filter-by-ede-project)
+	("% e" . ibuffer-mark-by-ede-project-regexp)
+	("s e" . ibuffer-do-sort-by-ede-project))
+  :config
+  (progn
+    (global-set-key (kbd "<f5>") 'ibuffer) ;; Shortcut for ibuffer
+    (when (display-graphic-p) ;; Display buffer icons on GUI
+      (define-ibuffer-column icon (:name " ")
+	(let ((icon (if (and buffer-file-name
+                             (all-the-icons-match-to-alist buffer-file-name
+                                                           all-the-icons-regexp-icon-alist))
+			(all-the-icons-icon-for-file (file-name-nondirectory buffer-file-name)
+                                                     :height 0.9 :v-adjust -0.05)
+                      (all-the-icons-icon-for-mode major-mode :height 0.9 :v-adjust -0.05))))
+          (if (symbolp icon)
+              (setq icon (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.9 :v-adjust -0.05))
+            icon))))
+    (add-hook 'ibuffer-mode-hook ;; Setup filter groups
+              '(lambda ()
+		 (ibuffer-auto-mode 1)
+		 (ibuffer-switch-to-saved-filter-groups "home")
+		 (ibuffer-do-sort-by-filename/process))))
+
+  :custom
+  (ibuffer-formats '((mark modified read-only locked
+                           " " (icon 2 2 :left :elide) (name 18 18 :left :elide)
+                           " " (size 9 -1 :right)
+                           " " (mode 16 16 :left :elide) " " filename-and-process)
+                     (mark " " (name 16 -1) " " filename)))
+  (ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
+  (ibuffer-show-empty-filter-groups nil) ;; Remove empty groups
+  (ibuffer-expert t) ;; Enable expert mode
+  (ibuffer-saved-filter-groups ;; Group buffers
+   (quote (("home"
+            ("c++" (mode . c++-mode))
+            ("python" (or
+                       (mode . python-mode)
+                       (name . "^\\*Python\\*$")))
+            ("fsharp" (or
+                       (mode . inferior-fsharp-mode)
+                       (mode . fsharp-mode)))
+            ("csharp" (mode . csharp-mode))
+            ("java" (mode . java-mode))
+            ("kotlin" (mode . kotlin-mode))
+            ("ruby" (mode . ruby-mode))
+            ("perl" (mode . perl-mode))
+            ("json" (mode . json-mode))
+            ("javascript" (or
+                           (mode . javascript-mode)
+                           (mode . js2-mode)
+                           (mode . js-mode)))
+            ("php" (mode . php-mode))
+            ("xml" (mode . nxml-mode))
+            ("sql" (or
+                    (mode . sql-mode)
+                    (name . "^\\*SQL")))
+            ("make" (or
+                     (mode . cmake-mode)
+                     (mode . makefile-mode)
+                     (mode . makefile-gmake-mode)))
+            ("t4" (name . ".tt$"))
+            ("Dogen - Stitch" (or
+                               (mode . headtail-mode)
+                               (name . ".stitch$")))
+            ("bash" (mode . sh-mode))
+            ("awk" (mode . awk-mode))
+            ("latex" (or
+                      (name . ".tex$")
+                      (name . ".texi$")
+                      (mode . tex-mode)
+                      (mode . latex-mode)))
+            ("markdown" (or
+                         (mode . markdown-mode)
+                         (mode . gfm-mode)))
+            ("emacs-lisp" (or
+                           (mode . emacs-lisp-mode)
+                           (name . "^\\*Compile-Log\\*$")))
+            ("powershell" (or
+                           (mode . powershell-mode)
+                           (name . "^\\*PowerShell")))
+            ("logs" (or
+                     (mode . log4j-mode)
+                     (mode . logview-mode)))
+            ("grep" (or
+                     (name . "^\\*Occur\\*$")
+                     (name . "^\\*Moccur\\*$")
+                     (mode . grep-mode)))
+            ("irc" (or
+                    (mode . erc-list-mode)
+                    (mode . erc-mode)))
+            ("shell" (or
+                      (name . "^\\*Shell Command Output\\*$")
+                      (mode . shell-mode)
+                      (mode . ssh-mode)
+                      (name . "^\\*compilation\\*$")))
+            ("file management" (or
+                                (mode . dired-mode)
+                                (mode . tar-mode)))
+            ("org" (mode . org-mode-))
+            ("text files" (or
+                           (mode . conf-unix-mode)
+                           (mode . conf-space-mode)
+                           (mode . text-mode)))
+            ("yaml" (mode . yaml-mode))
+            ("msdos" (mode . dos-mode))
+            ("patches" (or
+                        (name . "^\\*Assoc file dif")
+                        (mode . diff-mode)))
+            ("version control" (or
+                                (name . "^\\*svn-")
+                                (name . "^\\*vc")
+                                (name . "^\\*cvs")
+                                (name . "^\\magit")))
+            ("snippets" (mode . snippet-mode))
+            ("semantic" (or
+                         (mode . data-debug-mode)
+                         (name . "^\\*Parser Output\\*$")
+                         (name . "^\\*Lexer Output\\*$")))
+            ("web browsing" (or
+                             (mode . w3m-mode)
+                             (mode . twittering-mode)))
+            ("music" (or
+                      (mode . bongo-playlist-mode)
+                      (mode . bongo-library-mode)))
+            ("mail" (or
+                     (mode . gnus-group-mode)
+                     (mode . gnus-summary-mode)
+                     (mode . gnus-article-mode)
+                     (name . "^\\*imap log\\*$")
+                     (name . "^\\*gnus trace\\*$")
+                     (name . "^\\*nnimap imap.")))
+            ("web development" (or
+                                (mode . html-mode)
+                                (mode . css-mode)))
+            ("documentation" (or
+                              (mode . Info-mode)
+                              (mode . apropos-mode)
+                              (mode . woman-mode)
+                              (mode . help-mode)
+                              (mode . Man-mode)))
+            ("system" (or
+                       (name . "^\\*Packages\\*$")
+                       (name . "^\\*helm M-x\\*$")
+                       (name . "^\\*helm mini\\*$")
+                       (name . "^\\*helm projectile\\*$")
+                       (name . "^\\*RTags Log\\*$")
+                       (name . "^\\**RTags Diagnostics\\*$")
+                       (name . "^\\*tramp")
+                       (name . "^\\**input/output of")
+                       (name . "^\\**threads of")
+                       (name . "^\\**breakpoints of")
+                       (name . "^\\**Flycheck")
+                       (name . "^\\**sx-search-result*")
+                       (name . "^\\**gud-dogen.knit")
+                       (name . "^\\**Warnings*")
+                       (name . "^\\*debug tramp")
+                       (name . "^\\*Proced log\\*$")
+                       (name . "^\\*Ediff Registry\\*$")
+                       (name . "^\\*Bookmark List\\*$")
+                       (name . "^\\*RE-Builder\\*$")
+                       (name . "^\\*Kill Ring\\*$")
+                       (name . "^\\*Calendar\\*$")
+                       (name . "^\\*icalendar-errors\\*$")
+                       (name . "^\\*Proced\\*$")
+                       (name . "^\\*WoMan-Log\\*$")
+                       (name . "^\\*Apropos\\*$")
+                       (name . "^\\*Completions\\*$")
+                       (name . "^\\*Help\\*$")
+                       (name . "^\\*Dired log\\*$")
+                       (name . "^\\*scratch\\*$")
+                       (name . "^\\*gnuplot\\*$")
+                       (name . "^\\*Flycheck errors\\*$")
+                       (name . "^\\*compdb:")
+                       (name . "^\\*Backtrace\\*$")
+                       (name . "^\\*Messages\\*$")))
+            ("Treemacs" (or
+                         (name . "^Treemacs Update")
+                         (name . "^\\*nnimap imap.")))
+            )))))
+
 (setq-default
  ad-redefinition-action 'accept         ; Silence warnings for redefinition
  auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
@@ -138,6 +321,43 @@
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 
+(use-package eshell
+  :after esh-mode
+  :bind (:map eshell-mode-map
+              ("C-p" . eshell-previous-matching-input-from-input)
+              ("C-n" . eshell-next-matching-input-from-input)
+              ([up] . previous-line)
+              ([down] . next-line))
+  :custom
+  (eshell-directory-name (cunene/cache-concat "eshell"))
+  :config
+  (defalias 'ff 'find-file))
+
+(use-package eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
+
+;; (setq eshell-prompt-regexp "^[^#$\n]*[#$] "
+;;       eshell-prompt-function
+;;       (lambda nil
+;;         (concat
+;;          "[" (user-login-name) "@" (system-name) " "
+;;          (if (string= (eshell/pwd) (getenv "HOME"))
+;;              "~" (eshell/basename (eshell/pwd)))
+;;          "]"
+;;          (if (= (user-uid) 0) "# " "$ "))))
+
+;; Dired switches
+(setq-default dired-listing-switches "-l")
+(setq-default list-directory-brief-switches "-CF")
+
+(add-hook
+ 'dired-before-readin-hook
+ '(lambda ()
+    (when (file-remote-p default-directory)
+      (setq dired-actual-switches "-l"))))
+
 (setq-default
  gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
 
@@ -150,16 +370,21 @@
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+  (load-theme 'doom-dark+ t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  ;; (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
 )
+
+(use-package all-the-icons)
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
 
 (pcase window-system
   ('w32 (set-frame-parameter nil 'fullscreen 'fullboth))
@@ -169,9 +394,10 @@
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
 
 (defun reb-replace-regexp (&optional delimited)
-  "Run `query-replace-regexp' with the contents of re-builder. With
-   non-nil optional argument DELIMITED, only replace matches
-   surrounded by word boundaries."
+  "Run `query-replace-regexp' with the contents of `re-builder'.
+
+With non-nil optional argument DELIMITED, only replace matches
+surrounded by word boundaries."
   (interactive "P")
   (reb-update-regexp)
   (let* ((re (reb-target-binding reb-regexp))
@@ -188,6 +414,304 @@
 (use-package which-key
   :config
   (which-key-mode))
+
+(defvar-local cunene/hydra-super-body nil)
+
+(defun cunene/hydra-heading (&rest headings)
+  "Format HEADINGS to look pretty in a hydra docstring."
+  (concat "\n "
+          (mapconcat (lambda (heading)
+                       (propertize (format "%-18s" heading) 'face 'shadow))
+                     headings
+                     nil)))
+
+(defun cunene/hydra-set-super ()
+  "Set the super key for hydra."
+  (when-let* ((suffix "-mode")
+              (position (- (length suffix)))
+              (mode (symbol-name major-mode))
+              (name (if (string= suffix (substring mode position))
+                        (substring mode 0 position)
+                      mode))
+              (body (intern (format "hydra-%s/body" name))))
+    (when (functionp body)
+      (setq cunene/hydra-super-body body))))
+
+(defun cunene/hydra-super-maybe ()
+  "Set super conditionally."
+  (interactive)
+  (if cunene/hydra-super-body
+      (funcall cunene/hydra-super-body)
+    (user-error "Error: cunene/hydra-super: cunene/hydra-super-body is not set")))
+
+(use-package hydra
+  :bind
+  ("C-c a" . hydra-applications/body)
+  ("C-c d" . hydra-dates/body)
+  ("C-c e" . hydra-eyebrowse/body)
+  ("C-c f" . hydra-spotify/body)
+  ("C-c g" . hydra-git/body)
+  ("C-c o" . cunene/hydra-super-maybe)
+  ("C-c p" . hydra-projectile/body)
+  ("C-c s" . hydra-system/body)
+  ("C-c u" . hydra-ui/body)
+  :custom
+  (hydra-default-hint nil))
+
+(defhydra hydra-applications (:color teal)
+  (concat (cunene/hydra-heading "Applications" "Launch" "Shell") "
+ _q_ quit            _i_ erc             _T_ eshell             ^^
+")
+  ("q" nil)
+  ("i" erc)
+  ("T" (eshell t)))
+
+(global-set-key (kbd "s-w") #'delete-window)
+(global-set-key (kbd "s-W") #'kill-this-buffer)
+
+;; (use-package desktop+
+;;   :ensure t
+;;   :commands (desktop-create desktop-load)
+;;   :init
+;;   (eval-after-load "desktop+"
+;;     '(defun desktop+--set-frame-title ()
+;;        (message "desktop+ set in initialization to not write to frame title")))
+;;   :config
+;;   (require 'desktop+)
+;;   (setq desktop+-special-buffer-handlers
+;;         '(org-agenda-mode shell-mode compilation-mode eshell-mode)))
+
+;; (setq-default desktop+-base-dir (cunene/cache-concat "desktops/"))
+
+(use-package desktop
+  :ensure nil
+  :hook
+  (after-init . desktop-read)
+  (after-init . desktop-save-mode)
+  :custom
+  (desktop-base-file-name (cunene/cache-concat "desktop"))
+  (desktop-base-lock-name (cunene/cache-concat "desktop.lock"))
+  (desktop-restore-eager 4)
+  (desktop-restore-forces-onscreen nil)
+  (desktop-restore-frames t))
+
+(use-package shackle
+  :hook
+  (after-init . shackle-mode)
+  :custom
+  (shackle-inhibit-window-quit-on-same-windows t)
+  (shackle-rules '((help-mode :same t)
+                   (helpful-mode :same t)
+                   (process-menu-mode :same t)))
+  (shackle-select-reused-windows t))
+
+(defun cunene/ignore-error-wrapper (fn)
+  "Funtion return new function that ignore errors.
+The function FN wraps a function with `ignore-errors' macro."
+  (lexical-let ((fn fn))
+    (lambda ()
+      (interactive)
+      (ignore-errors
+        (funcall fn)))))
+
+(use-package windmove
+  :ensure nil
+  :bind
+  (
+   ([s-left] . windmove-left)
+   ([s-down] . windmove-down)
+   ([s-up] . windmove-up)
+   ([s-right] . windmove-right)
+   )
+)
+
+(use-package winner
+  :ensure nil
+  :hook
+  (after-init . winner-mode))
+
+(use-package org
+  :ensure nil
+  :bind
+  (:map org-mode-map
+   ("<C-return>" . nil)
+   ("<C-tab>" . cunene/org-cycle-parent))
+  :hook
+  (org-mode . cunene/hydra-set-super)
+  :custom
+  (org-adapt-indentation nil)
+  (org-confirm-babel-evaluate nil)
+  (org-cycle-separator-lines 0)
+  (org-descriptive-links t)
+  (org-edit-src-content-indentation 0)
+  (org-edit-src-persistent-message nil)
+  (org-fontify-done-headline t)
+  (org-fontify-quote-and-verse-blocks t)
+  (org-fontify-whole-heading-line t)
+  (org-return-follows-link t)
+  (org-src-tab-acts-natively t)
+  (org-src-window-setup 'current-window)
+  (org-startup-truncated nil)
+  (org-support-shift-select 'always)
+  :config
+  (require 'ob-shell)
+  (add-to-list 'org-babel-load-languages '(shell . t))
+  (modify-syntax-entry ?' "'" org-mode-syntax-table)
+  (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name)
+  (with-eval-after-load 'evil
+    (evil-define-key* 'motion org-mode-map
+      (kbd "C-j") #'cunene/org-show-next-heading-tidily
+      (kbd "C-k") #'cunene/org-show-previous-heading-tidily)))
+
+(defun cunene/org-cycle-parent (argument)
+  "Go to the nearest parent heading and execute `org-cycle'.
+
+ARGUMENT determines the visible heading."
+  (interactive "p")
+  (if (org-at-heading-p)
+      (outline-up-heading argument)
+    (org-previous-visible-heading argument))
+  (org-cycle))
+
+(defun cunene/org-show-next-heading-tidily ()
+  "Show next entry, keeping other entries closed."
+  (interactive)
+  (if (save-excursion (end-of-line) (outline-invisible-p))
+      (progn (org-show-entry) (outline-show-children))
+    (outline-next-heading)
+    (unless (and (bolp) (org-at-heading-p))
+      (org-up-heading-safe)
+      (outline-hide-subtree)
+      (user-error "Boundary reached"))
+    (org-overview)
+    (org-reveal t)
+    (org-show-entry)
+    (outline-show-children)))
+
+(defun cunene/org-show-previous-heading-tidily ()
+  "Show previous entry, keeping other entries closed."
+  (interactive)
+  (let ((pos (point)))
+    (outline-previous-heading)
+    (unless (and (< (point) pos) (bolp) (org-at-heading-p))
+      (goto-char pos)
+      (outline-hide-subtree)
+      (user-error "Boundary reached"))
+    (org-overview)
+    (org-reveal t)
+    (org-show-entry)
+    (outline-show-children)))
+
+(defun cunene/org-src-buffer-name (name &rest _)
+  "Simple buffer name.
+!NAME is the name of the buffer."
+  (format "*%s*" name))
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay        0.5
+          treemacs-directory-name-transformer      #'identity
+          treemacs-display-in-side-window          t
+          treemacs-eldoc-display                   t
+          treemacs-file-event-delay                5000
+          treemacs-file-extension-regex            treemacs-last-period-regex-value
+          treemacs-file-follow-delay               0.5
+          treemacs-file-name-transformer           #'identity
+          treemacs-follow-after-init               t
+          treemacs-expand-after-init               t
+          treemacs-git-command-pipe                ""
+          treemacs-goto-tag-strategy               'refetch-index
+          treemacs-indentation                     2
+          treemacs-indentation-string              " "
+          treemacs-is-never-other-window           nil
+          treemacs-max-git-entries                 5000
+          treemacs-missing-project-action          'ask
+          treemacs-move-forward-on-expand          nil
+          treemacs-no-png-images                   nil
+          treemacs-no-delete-other-windows         t
+          treemacs-project-follow-cleanup          nil
+          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                        'left
+          treemacs-read-string-input               'from-child-frame
+          treemacs-recenter-distance               0.1
+          treemacs-recenter-after-file-follow      t
+          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-project-jump     'always
+          treemacs-recenter-after-project-expand   'on-distance
+          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+          treemacs-show-cursor                     nil
+          treemacs-show-hidden-files               t
+          treemacs-silent-filewatch                nil
+          treemacs-silent-refresh                  nil
+          treemacs-sorting                         'alphabetic-asc
+          treemacs-select-when-already-in-treemacs 'move-back
+          treemacs-space-between-root-nodes        t
+          treemacs-tag-follow-cleanup              t
+          treemacs-tag-follow-delay                1.5
+          treemacs-text-scale                      nil
+          treemacs-user-mode-line-format           nil
+          treemacs-user-header-line-format         nil
+          treemacs-width                           35
+          treemacs-width-is-initially-locked       t
+          treemacs-text-scale                      -1
+          treemacs-workspace-switch-cleanup        nil)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (treemacs-hide-gitignored-files-mode nil))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-evil
+  :after (treemacs evil)
+  :ensure t)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :after (treemacs dired)
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :ensure t
+  :config (treemacs-set-scope-type 'Perspectives))
+
+(use-package treemacs-all-the-icons)
+(treemacs-load-theme "all-the-icons")
 
 (use-package git-commit
   :hook
@@ -261,5 +785,37 @@
   :custom
   (transient-default-level 5)
   (transient-mode-line-format nil))
+
+(use-package projectile
+  :ensure t
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ("s-p" . projectile-command-map)
+              ("C-c p" . projectile-command-map)))
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+(use-package plantuml-mode
+  :ensure t
+  :mode "\\.plantuml\\'"
+  :custom (plantuml-indent-level 4)
+  :config
+  (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
+  (if (eq window-system 'w32)
+      (setq plantuml-jar-path "C:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar"
+            plantuml-default-exec-mode 'jar)
+    (setq plantuml-default-exec-mode 'executable)))
+
+(use-package flycheck-plantuml
+  :ensure t
+  :after (plantuml flycheck)
+  :init (flycheck-plantuml-setup)
+  :custom (image-auto-resize nil))
+
+(with-eval-after-load "org"
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
 ;;; cunene.el ends here

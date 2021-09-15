@@ -33,8 +33,10 @@
 
 (setq-default
  default-frame-alist
- '((background-color . "#101010")       ;; Default background color
-   (foreground-color . "#FAFAFA")       ;; Default foreground color
+ '(
+   ;; (background-color . "#101010")       ;; Default background color
+   ;; (foreground-color . "#FAFAFA")       ;; Default foreground color
+   (font . "Source Code Pro 10")           ;; Font to use
    (fullscreen . maximized)             ;; Maximize the window by default
    (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
    (left-fringe . 8)                    ;; Thin left fringe
@@ -91,7 +93,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(doom-themes use-package)))
+ '(custom-safe-themes
+   '("1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" default))
+ '(package-selected-packages '(eshell-git-prompt doom-themes use-package))
+ '(safe-local-variable-values
+   '((org-roam-directory . "/work/DomainDrivenConsulting/masd/dogen/integration")
+     (projectile-project-compilation-cmd . "FROZEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/frozen/master/projects DOGEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/dogen/integration/projects CPP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/cpp_ref_impl/master/projects CSHARP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/csharp_ref_impl/master/Src PATH=/home/marco/local/cmake-3.15.3-Linux-x86_64/bin:$PATH CMAKE_TOOLCHAIN_FILE=/work/DomainDrivenConsulting/masd/vcpkg/masd/scripts/buildsystems/vcpkg.cmake /work/DomainDrivenConsulting/masd/dogen/integration/build/scripts/build.linux.sh Release 6 clang11")
+     (projectile-project-test-cmd . "FROZEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/frozen/master/projects DOGEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/dogen/integration/projects CPP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/cpp_ref_impl/master/projects CSHARP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/csharp_ref_impl/master/Src PATH=/home/marco/local/cmake-3.15.3-Linux-x86_64/bin:$PATH CMAKE_TOOLCHAIN_FILE=/work/DomainDrivenConsulting/masd/vcpkg/masd/scripts/buildsystems/vcpkg.cmake /work/DomainDrivenConsulting/masd/dogen/integration/build/scripts/build.linux.sh Release 6 clang11 rat")
+     (projectile-project-run-cmd . "FROZEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/frozen/master/projects DOGEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/dogen/integration/projects CPP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/cpp_ref_impl/master/projects CSHARP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/csharp_ref_impl/master/Src PATH=/home/marco/local/cmake-3.15.3-Linux-x86_64/bin:$PATH CMAKE_TOOLCHAIN_FILE=/work/DomainDrivenConsulting/masd/vcpkg/masd/scripts/buildsystems/vcpkg.cmake /work/DomainDrivenConsulting/masd/dogen/integration/build/scripts/build.linux.sh Release 6 clang11 gao")
+     (projectile-project-name . "dogen - integration")
+     (projectile-project-type . "cmake")
+     (flycheck-disabled-checkers emacs-lisp-checkdoc))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
