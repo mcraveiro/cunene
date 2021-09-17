@@ -19,6 +19,11 @@ Things we need to remember to change:
 : transient/
 : projectile-bookmarks.eld
 
+** Missing modes
+
+- undo tree
+- bookmarks
+
 * Preamble
 
 #+begin_src emacs-lisp
@@ -57,14 +62,18 @@ Things we need to remember to change:
 ;;; Code:
 #+end_src
 
-* Identity
+* Core
+
+Basic configuration.
+
+** Identity
 
 #+begin_src emacs-lisp
 (setq user-full-name "Marco Craveiro")
 (setq user-mail-address "marco.craveiro@gmail.com")
 #+end_src
 
-* Cache
+** Caching
 
 Use =.cache/= to contain local data. This is to avoid littering in the Emacs
 directory with an ever-growing number of packages used on a daily basis.
@@ -95,7 +104,7 @@ directory with an ever-growing number of packages used on a daily basis.
 ;;   (setq-default package-user-dir (cunene/cache-concat "packages/")))
 #+end_src
 
-* Backup files
+** Backup files
 
 Control where emacs places the pesky backup files.
 
@@ -132,7 +141,7 @@ Links:
        auto-mode-alist))
 #+end_src
 
-* Package Management
+** Package Management
 
 | =package=     | Built-in                                |
 | =use-package= | https://github.com/jwiegley/use-package |
@@ -173,7 +182,246 @@ Links:
   (require 'use-package))
 #+end_src
 
-* IBuffer
+* Quality of Life
+
+Changes to core behaviour to make life better.
+
+** Garbage collection
+
+Improvements to default GC.
+
+#+begin_src emacs-lisp
+(setq-default
+ gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
+#+end_src
+
+Garbage-collect on focus-out, Emacs /should/ feel snappier overall.
+
+#+begin_src emacs-lisp
+(add-function :after after-focus-change-function
+  (defun cunene/garbage-collect-maybe ()
+    (unless (frame-focus-state)
+      (garbage-collect))))
+#+end_src
+
+** Better Defaults
+
+Here are what I consider better defaults as per my own experience.
+
+#+begin_src emacs-lisp
+(setq-default
+ ad-redefinition-action 'accept         ; Silence warnings for redefinition
+ auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
+ cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
+ custom-unlispify-menu-entries nil      ; Prefer kebab-case for titles
+ custom-unlispify-tag-names nil         ; Prefer kebab-case for symbols
+ delete-by-moving-to-trash t            ; Delete files to trash
+ fill-column 80                         ; Set width for automatic line breaks
+ help-window-select t                   ; Focus new help windows when opened
+ indent-tabs-mode nil                   ; Stop using tabs to indent
+ inhibit-startup-screen t               ; Disable start-up screen
+ initial-scratch-message ""             ; Empty the initial *scratch* buffer
+ mouse-yank-at-point t                  ; Yank at point rather than pointer
+ read-process-output-max (* 1024 1024)  ; Increase read size per process
+ recenter-positions '(5 top bottom)     ; Set re-centering positions
+ scroll-conservatively 101              ; Avoid recentering when scrolling far
+ scroll-margin 2                        ; Add a margin when scrolling vertically
+ select-enable-clipboard t              ; Merge system's and Emacs' clipboard
+ sentence-end-double-space nil          ; Use a single space after dots
+ show-help-function nil                 ; Disable help text everywhere
+ tab-always-indent 'complete            ; Tab indents first then tries completions
+ tab-width 4                            ; Smaller width for tab characters
+ uniquify-buffer-name-style 'forward    ; Uniquify buffer names
+ warning-minimum-level :error           ; Skip warning buffers
+ window-combination-resize t            ; Resize windows proportionally
+ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
+(blink-cursor-mode 0)                   ; Prefer a still cursor
+(delete-selection-mode 1)               ; Replace region when inserting text
+(fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
+(global-subword-mode 1)                 ; Iterate through CamelCase words
+(mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
+(put 'downcase-region 'disabled nil)    ; Enable downcase-region
+(put 'upcase-region 'disabled nil)      ; Enable upcase-region
+(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+#+end_src
+
+
+
+** Useful overrides
+
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+** Key discoverability 
+
+If you type a prefix key (such as =C-x r=) and wait some time then display
+window with keys that can follow.
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :config
+  (which-key-mode))
+#+end_src
+
+** Fullscreen
+
+Enable fullscreen. Given there are differences in meaning for /fullscreen/
+between window managers, the following tree aims to provide a pain-free
+experience with regard to fullscreen in most setups.
+
+In the case of macOS, fullscreen means Emacs will occupy a dedicated workspace
+so we want to maximize it instead. Works best with titlebar-less frames.
+
+#+begin_src emacs-lisp
+(pcase window-system
+  ('w32 (set-frame-parameter nil 'fullscreen 'fullboth))
+  (_ (set-frame-parameter nil 'fullscreen 'maximized)))
+#+end_src
+
+** Themes
+
+| =Doom One= | https://github.com/hlissner/emacs-doom-themes |
+
+#+begin_src emacs-lisp
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-dark+ t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+)
+#+end_src
+
+Doom modeline.
+
+Links:
+
+- [[https://github.com/seagle0128/doom-modeline][doom-modeline GH]]
+
+#+begin_src emacs-lisp
+(use-package all-the-icons)
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+  :config (setq doom-modeline-buffer-file-name-style 'relative-to-project)
+#+end_src
+
+
+** Hydra
+
+*** Hydra: Bootstrap
+
+#+begin_src emacs-lisp
+(defvar-local cunene/hydra-super-body nil)
+
+(defun cunene/hydra-set-super ()
+  "Set the super key for hydra."
+  (when-let* ((suffix "-mode")
+              (position (- (length suffix)))
+              (mode (symbol-name major-mode))
+              (name (if (string= suffix (substring mode position))
+                        (substring mode 0 position)
+                      mode))
+              (body (intern (format "hydra-%s/body" name))))
+    (when (functionp body)
+      (setq cunene/hydra-super-body body))))
+
+(defun cunene/hydra-super-maybe ()
+  "Set super conditionally."
+  (interactive)
+  (if cunene/hydra-super-body
+      (funcall cunene/hydra-super-body)
+    (user-error "Error: cunene/hydra-super: cunene/hydra-super-body is not set")))
+
+(use-package hydra
+  :bind
+  ("C-c a" . hydra-applications/body)
+  ("C-c d" . hydra-dates/body)
+  ("C-c e" . hydra-eyebrowse/body)
+  ("C-c f" . hydra-spotify/body)
+  ("C-c g" . hydra-git/body)
+  ("C-c o" . cunene/hydra-super-maybe)
+  ("C-c p" . hydra-projectile/body)
+  ("C-c s" . hydra-system/body)
+  ("C-c u" . hydra-ui/body)
+  :custom
+  (hydra-default-hint nil))
+#+end_src
+
+*** Hydra: Applications
+
+Group commands for high-level applications.
+
+#+begin_src emacs-lisp
+(defhydra hydra-applications (:color teal)
+  (concat (cunene/hydra-heading "Applications" "Launch" "Shell") "
+ _q_ quit            _i_ erc             _T_ eshell             ^^
+")
+  ("q" nil)
+  ("i" erc)
+  ("T" (eshell t)))
+#+end_src
+
+* Features
+** Regular Expressions
+
+| =reb= | Built-in |
+
+Setup REB.
+
+Links:
+
+- [[https://www.masteringemacs.org/article/re-builder-interactive-regexp-builder][re-builder: the Interactive regexp builder]]
+
+#+begin_src emacs-lisp
+(require 're-builder)
+(setq reb-re-syntax 'string)        ;; No need for double-slashes
+#+end_src
+
+Use REB with query replace regex.
+
+Links:
+
+- [[https://www.reddit.com/r/emacs/comments/mxqm4u/how_to_combine_the_power_of_rebuilder_with/gvsbbid/][How to combine the power of re-builder with query-replace-regexp?]]
+
+#+begin_src emacs-lisp
+(defun reb-replace-regexp (&optional delimited)
+  "Run `query-replace-regexp' with the contents of `re-builder'.
+
+With non-nil optional argument DELIMITED, only replace matches
+surrounded by word boundaries."
+  (interactive "P")
+  (reb-update-regexp)
+  (let* ((re (reb-target-binding reb-regexp))
+	 (re-printed (with-output-to-string (print re)))
+	 (replacement (read-from-minibuffer
+		       (format "Replace regexp %s with: "
+			       (substring re-printed 1
+					  (1- (length re-printed)))))))
+    (with-current-buffer reb-target-buffer
+      (query-replace-regexp re replacement delimited))))
+
+(define-key reb-mode-map (kbd "C-M-%") 'reb-replace-regexp)
+#+end_src
+
+** Dired
+
+#+begin_src emacs-lisp
+
+;; Dired switches
+(setq-default dired-listing-switches "-l")
+(setq-default list-directory-brief-switches "-CF")
+
+(add-hook
+ 'dired-before-readin-hook
+ '(lambda ()
+    (when (file-remote-p default-directory)
+      (setq dired-actual-switches "-l"))))
+#+end_src
+
+** IBuffer
 
 #+begin_src emacs-lisp
 (use-package ibuffer
@@ -362,281 +610,6 @@ Links:
             )))))
 #+end_src
 
-* Better Defaults
-
-Here are what I consider better defaults as per my own experience.
-
-#+begin_src emacs-lisp
-(setq-default
- ad-redefinition-action 'accept         ; Silence warnings for redefinition
- auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
- cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
- custom-unlispify-menu-entries nil      ; Prefer kebab-case for titles
- custom-unlispify-tag-names nil         ; Prefer kebab-case for symbols
- delete-by-moving-to-trash t            ; Delete files to trash
- fill-column 80                         ; Set width for automatic line breaks
- help-window-select t                   ; Focus new help windows when opened
- indent-tabs-mode nil                   ; Stop using tabs to indent
- inhibit-startup-screen t               ; Disable start-up screen
- initial-scratch-message ""             ; Empty the initial *scratch* buffer
- mouse-yank-at-point t                  ; Yank at point rather than pointer
- read-process-output-max (* 1024 1024)  ; Increase read size per process
- recenter-positions '(5 top bottom)     ; Set re-centering positions
- scroll-conservatively 101              ; Avoid recentering when scrolling far
- scroll-margin 2                        ; Add a margin when scrolling vertically
- select-enable-clipboard t              ; Merge system's and Emacs' clipboard
- sentence-end-double-space nil          ; Use a single space after dots
- show-help-function nil                 ; Disable help text everywhere
- tab-always-indent 'complete            ; Tab indents first then tries completions
- tab-width 4                            ; Smaller width for tab characters
- uniquify-buffer-name-style 'forward    ; Uniquify buffer names
- warning-minimum-level :error           ; Skip warning buffers
- window-combination-resize t            ; Resize windows proportionally
- x-stretch-cursor t)                    ; Stretch cursor to the glyph width
-(blink-cursor-mode 0)                   ; Prefer a still cursor
-(delete-selection-mode 1)               ; Replace region when inserting text
-(fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
-(global-subword-mode 1)                 ; Iterate through CamelCase words
-(mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
-(put 'downcase-region 'disabled nil)    ; Enable downcase-region
-(put 'upcase-region 'disabled nil)      ; Enable upcase-region
-(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
-#+end_src
-
-* Shells
-
-** Eshell
-
-Links:
-
-- [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][Mastering Eshell]]
-
-Todo:
-
-- [[https://emacs.stackexchange.com/questions/18564/merge-history-from-multiple-eshells][Merge history from multiple eshells]]
-
-#+begin_src emacs-lisp
-(use-package eshell
-  :after esh-mode
-  :bind (:map eshell-mode-map
-              ("C-p" . eshell-previous-matching-input-from-input)
-              ("C-n" . eshell-next-matching-input-from-input)
-              ([up] . previous-line)
-              ([down] . next-line))
-  :custom
-  (eshell-directory-name (cunene/cache-concat "eshell"))
-  :config
-  (defalias 'ff 'find-file))
-
-(use-package eshell-git-prompt
-  :after eshell
-  :config
-  (eshell-git-prompt-use-theme 'powerline))
-
-;; (setq eshell-prompt-regexp "^[^#$\n]*[#$] "
-;;       eshell-prompt-function
-;;       (lambda nil
-;;         (concat
-;;          "[" (user-login-name) "@" (system-name) " "
-;;          (if (string= (eshell/pwd) (getenv "HOME"))
-;;              "~" (eshell/basename (eshell/pwd)))
-;;          "]"
-;;          (if (= (user-uid) 0) "# " "$ "))))
-
-#+end_src
-
-* Dired
-
-#+begin_src emacs-lisp
-
-;; Dired switches
-(setq-default dired-listing-switches "-l")
-(setq-default list-directory-brief-switches "-CF")
-
-(add-hook
- 'dired-before-readin-hook
- '(lambda ()
-    (when (file-remote-p default-directory)
-      (setq dired-actual-switches "-l"))))
-#+end_src
-
-* Garbage collection
-
-#+begin_src emacs-lisp
-(setq-default
- gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
-#+end_src
-
-Garbage-collect on focus-out, Emacs /should/ feel snappier overall.
-
-#+begin_src emacs-lisp
-(add-function :after after-focus-change-function
-  (defun cunene/garbage-collect-maybe ()
-    (unless (frame-focus-state)
-      (garbage-collect))))
-#+end_src
-
-* Themes
-
-| =Doom One= | https://github.com/hlissner/emacs-doom-themes |
-
-#+begin_src emacs-lisp
-(use-package doom-themes
-  :config
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-dark+ t)
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-)
-#+end_src
-
-Doom modeline.
-
-Links:
-
-- [[https://github.com/seagle0128/doom-modeline][doom-modeline GH]]
-
-#+begin_src emacs-lisp
-(use-package all-the-icons)
-(use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode))
-#+end_src
-
-* Fullscreen
-
-Enable fullscreen. Given there are differences in meaning for /fullscreen/
-between window managers, the following tree aims to provide a pain-free
-experience with regard to fullscreen in most setups.
-
-In the case of macOS, fullscreen means Emacs will occupy a dedicated workspace
-so we want to maximize it instead. Works best with titlebar-less frames.
-
-#+begin_src emacs-lisp
-(pcase window-system
-  ('w32 (set-frame-parameter nil 'fullscreen 'fullboth))
-  (_ (set-frame-parameter nil 'fullscreen 'maximized)))
-#+end_src
-
-* Regular Expressions Builder
-
-| =reb= | Built-in |
-
-Setup REB.
-
-Links:
-
-- [[https://www.masteringemacs.org/article/re-builder-interactive-regexp-builder][re-builder: the Interactive regexp builder]]
-
-#+begin_src emacs-lisp
-(require 're-builder)
-(setq reb-re-syntax 'string)        ;; No need for double-slashes
-#+end_src
-
-Use REB with query replace regex.
-
-Links:
-
-- [[https://www.reddit.com/r/emacs/comments/mxqm4u/how_to_combine_the_power_of_rebuilder_with/gvsbbid/][How to combine the power of re-builder with query-replace-regexp?]]
-
-#+begin_src emacs-lisp
-(defun reb-replace-regexp (&optional delimited)
-  "Run `query-replace-regexp' with the contents of `re-builder'.
-
-With non-nil optional argument DELIMITED, only replace matches
-surrounded by word boundaries."
-  (interactive "P")
-  (reb-update-regexp)
-  (let* ((re (reb-target-binding reb-regexp))
-	 (re-printed (with-output-to-string (print re)))
-	 (replacement (read-from-minibuffer
-		       (format "Replace regexp %s with: "
-			       (substring re-printed 1
-					  (1- (length re-printed)))))))
-    (with-current-buffer reb-target-buffer
-      (query-replace-regexp re replacement delimited))))
-
-(define-key reb-mode-map (kbd "C-M-%") 'reb-replace-regexp)
-#+end_src
-
-* Key discoverability 
-
-If you type a prefix key (such as =C-x r=) and wait some time then display
-window with keys that can follow.
-
-#+begin_src emacs-lisp
-(use-package which-key
-  :config
-  (which-key-mode))
-#+end_src
-
-* Hydra
-
-** Hydra: Bootstrap
-
-#+begin_src emacs-lisp
-(defvar-local cunene/hydra-super-body nil)
-
-(defun cunene/hydra-heading (&rest headings)
-  "Format HEADINGS to look pretty in a hydra docstring."
-  (concat "\n "
-          (mapconcat (lambda (heading)
-                       (propertize (format "%-18s" heading) 'face 'shadow))
-                     headings
-                     nil)))
-
-(defun cunene/hydra-set-super ()
-  "Set the super key for hydra."
-  (when-let* ((suffix "-mode")
-              (position (- (length suffix)))
-              (mode (symbol-name major-mode))
-              (name (if (string= suffix (substring mode position))
-                        (substring mode 0 position)
-                      mode))
-              (body (intern (format "hydra-%s/body" name))))
-    (when (functionp body)
-      (setq cunene/hydra-super-body body))))
-
-(defun cunene/hydra-super-maybe ()
-  "Set super conditionally."
-  (interactive)
-  (if cunene/hydra-super-body
-      (funcall cunene/hydra-super-body)
-    (user-error "Error: cunene/hydra-super: cunene/hydra-super-body is not set")))
-
-(use-package hydra
-  :bind
-  ("C-c a" . hydra-applications/body)
-  ("C-c d" . hydra-dates/body)
-  ("C-c e" . hydra-eyebrowse/body)
-  ("C-c f" . hydra-spotify/body)
-  ("C-c g" . hydra-git/body)
-  ("C-c o" . cunene/hydra-super-maybe)
-  ("C-c p" . hydra-projectile/body)
-  ("C-c s" . hydra-system/body)
-  ("C-c u" . hydra-ui/body)
-  :custom
-  (hydra-default-hint nil))
-#+end_src
-
-** Hydra: Applications
-
-Group commands for high-level applications.
-
-#+begin_src emacs-lisp
-(defhydra hydra-applications (:color teal)
-  (concat (cunene/hydra-heading "Applications" "Launch" "Shell") "
- _q_ quit            _i_ erc             _T_ eshell             ^^
-")
-  ("q" nil)
-  ("i" erc)
-  ("T" (eshell t)))
-#+end_src
-
-* Features
 
 ** Buffers and Windows
 
@@ -952,6 +925,57 @@ ARGUMENT determines the visible heading."
 (treemacs-load-theme "all-the-icons")
 #+end_src
 
+** Completion
+
+#+begin_src emacs-lisp
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  (vertico-cycle t)) ;; enable cycling for `vertico-next' and `vertico-previous'.
+
+;; Use the `orderless' completion style. Additionally enable
+;; `partial-completion' for file path expansion. `partial-completion' is
+;; important for wildcard support. Multiple files can be opened at once
+;; with `find-file' if you enter a wildcard. You may also give the
+;; `initials' completion style a try.
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; Alternatively try `consult-completing-read-multiple'.
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+#+end_src
+
 * Development
 
 Configuration related to programming.
@@ -1125,12 +1149,61 @@ section for now.
   :ensure t
   :after (plantuml flycheck)
   :init (flycheck-plantuml-setup)
-  :custom )
+)
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
 #+end_src
+
+* External
+
+Interaction with the outside world.
+
+** Shells
+
+*** Eshell
+
+Links:
+
+- [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][Mastering Eshell]]
+
+Todo:
+
+- [[https://emacs.stackexchange.com/questions/18564/merge-history-from-multiple-eshells][Merge history from multiple eshells]]
+
+#+begin_src emacs-lisp
+(use-package eshell
+  :after esh-mode
+  :bind (:map eshell-mode-map
+              ("C-p" . eshell-previous-matching-input-from-input)
+              ("C-n" . eshell-next-matching-input-from-input)
+              ([up] . previous-line)
+              ([down] . next-line))
+  :custom
+  (eshell-directory-name (cunene/cache-concat "eshell"))
+  :config
+  (defalias 'ff 'find-file))
+
+(use-package eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
+
+;; (setq eshell-prompt-regexp "^[^#$\n]*[#$] "
+;;       eshell-prompt-function
+;;       (lambda nil
+;;         (concat
+;;          "[" (user-login-name) "@" (system-name) " "
+;;          (if (string= (eshell/pwd) (getenv "HOME"))
+;;              "~" (eshell/basename (eshell/pwd)))
+;;          "]"
+;;          (if (= (user-uid) 0) "# " "$ "))))
+
+#+end_src
+
+
+
 
 * Postamble
 

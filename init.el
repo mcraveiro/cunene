@@ -48,6 +48,17 @@
    (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
 
 ;;
+;; Hydra method, needs to evaluate before we can load the main init.
+;;
+(defun cunene/hydra-heading (&rest headings)
+  "Format HEADINGS to look pretty in a hydra docstring."
+  (concat "\n "
+          (mapconcat (lambda (heading)
+                       (propertize (format "%-18s" heading) 'face 'shadow))
+                     headings
+                     nil)))
+
+;;
 ;; Configuration specific to startup.
 ;;
 

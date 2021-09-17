@@ -103,6 +103,148 @@
 (eval-when-compile
   (require 'use-package))
 
+(setq-default
+ gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
+
+(add-function :after after-focus-change-function
+  (defun cunene/garbage-collect-maybe ()
+    (unless (frame-focus-state)
+      (garbage-collect))))
+
+(setq-default
+ ad-redefinition-action 'accept         ; Silence warnings for redefinition
+ auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
+ cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
+ custom-unlispify-menu-entries nil      ; Prefer kebab-case for titles
+ custom-unlispify-tag-names nil         ; Prefer kebab-case for symbols
+ delete-by-moving-to-trash t            ; Delete files to trash
+ fill-column 80                         ; Set width for automatic line breaks
+ help-window-select t                   ; Focus new help windows when opened
+ indent-tabs-mode nil                   ; Stop using tabs to indent
+ inhibit-startup-screen t               ; Disable start-up screen
+ initial-scratch-message ""             ; Empty the initial *scratch* buffer
+ mouse-yank-at-point t                  ; Yank at point rather than pointer
+ read-process-output-max (* 1024 1024)  ; Increase read size per process
+ recenter-positions '(5 top bottom)     ; Set re-centering positions
+ scroll-conservatively 101              ; Avoid recentering when scrolling far
+ scroll-margin 2                        ; Add a margin when scrolling vertically
+ select-enable-clipboard t              ; Merge system's and Emacs' clipboard
+ sentence-end-double-space nil          ; Use a single space after dots
+ show-help-function nil                 ; Disable help text everywhere
+ tab-always-indent 'complete            ; Tab indents first then tries completions
+ tab-width 4                            ; Smaller width for tab characters
+ uniquify-buffer-name-style 'forward    ; Uniquify buffer names
+ warning-minimum-level :error           ; Skip warning buffers
+ window-combination-resize t            ; Resize windows proportionally
+ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
+(blink-cursor-mode 0)                   ; Prefer a still cursor
+(delete-selection-mode 1)               ; Replace region when inserting text
+(fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
+(global-subword-mode 1)                 ; Iterate through CamelCase words
+(mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
+(put 'downcase-region 'disabled nil)    ; Enable downcase-region
+(put 'upcase-region 'disabled nil)      ; Enable upcase-region
+(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+
+(use-package which-key
+  :config
+  (which-key-mode))
+
+(pcase window-system
+  ('w32 (set-frame-parameter nil 'fullscreen 'fullboth))
+  (_ (set-frame-parameter nil 'fullscreen 'maximized)))
+
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-dark+ t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+)
+
+(use-package all-the-icons)
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+  :config (setq doom-modeline-buffer-file-name-style 'relative-to-project)
+
+(defvar-local cunene/hydra-super-body nil)
+
+(defun cunene/hydra-set-super ()
+  "Set the super key for hydra."
+  (when-let* ((suffix "-mode")
+              (position (- (length suffix)))
+              (mode (symbol-name major-mode))
+              (name (if (string= suffix (substring mode position))
+                        (substring mode 0 position)
+                      mode))
+              (body (intern (format "hydra-%s/body" name))))
+    (when (functionp body)
+      (setq cunene/hydra-super-body body))))
+
+(defun cunene/hydra-super-maybe ()
+  "Set super conditionally."
+  (interactive)
+  (if cunene/hydra-super-body
+      (funcall cunene/hydra-super-body)
+    (user-error "Error: cunene/hydra-super: cunene/hydra-super-body is not set")))
+
+(use-package hydra
+  :bind
+  ("C-c a" . hydra-applications/body)
+  ("C-c d" . hydra-dates/body)
+  ("C-c e" . hydra-eyebrowse/body)
+  ("C-c f" . hydra-spotify/body)
+  ("C-c g" . hydra-git/body)
+  ("C-c o" . cunene/hydra-super-maybe)
+  ("C-c p" . hydra-projectile/body)
+  ("C-c s" . hydra-system/body)
+  ("C-c u" . hydra-ui/body)
+  :custom
+  (hydra-default-hint nil))
+
+(defhydra hydra-applications (:color teal)
+  (concat (cunene/hydra-heading "Applications" "Launch" "Shell") "
+ _q_ quit            _i_ erc             _T_ eshell             ^^
+")
+  ("q" nil)
+  ("i" erc)
+  ("T" (eshell t)))
+
+(require 're-builder)
+(setq reb-re-syntax 'string)        ;; No need for double-slashes
+
+(defun reb-replace-regexp (&optional delimited)
+  "Run `query-replace-regexp' with the contents of `re-builder'.
+
+With non-nil optional argument DELIMITED, only replace matches
+surrounded by word boundaries."
+  (interactive "P")
+  (reb-update-regexp)
+  (let* ((re (reb-target-binding reb-regexp))
+	 (re-printed (with-output-to-string (print re)))
+	 (replacement (read-from-minibuffer
+		       (format "Replace regexp %s with: "
+			       (substring re-printed 1
+					  (1- (length re-printed)))))))
+    (with-current-buffer reb-target-buffer
+      (query-replace-regexp re replacement delimited))))
+
+(define-key reb-mode-map (kbd "C-M-%") 'reb-replace-regexp)
+
+;; Dired switches
+(setq-default dired-listing-switches "-l")
+(setq-default list-directory-brief-switches "-CF")
+
+(add-hook
+ 'dired-before-readin-hook
+ '(lambda ()
+    (when (file-remote-p default-directory)
+      (setq dired-actual-switches "-l"))))
+
 (use-package ibuffer
   :bind
   (:map ibuffer-mode-map
@@ -287,186 +429,6 @@
                          (name . "^Treemacs Update")
                          (name . "^\\*nnimap imap.")))
             )))))
-
-(setq-default
- ad-redefinition-action 'accept         ; Silence warnings for redefinition
- auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
- cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
- custom-unlispify-menu-entries nil      ; Prefer kebab-case for titles
- custom-unlispify-tag-names nil         ; Prefer kebab-case for symbols
- delete-by-moving-to-trash t            ; Delete files to trash
- fill-column 80                         ; Set width for automatic line breaks
- help-window-select t                   ; Focus new help windows when opened
- indent-tabs-mode nil                   ; Stop using tabs to indent
- inhibit-startup-screen t               ; Disable start-up screen
- initial-scratch-message ""             ; Empty the initial *scratch* buffer
- mouse-yank-at-point t                  ; Yank at point rather than pointer
- read-process-output-max (* 1024 1024)  ; Increase read size per process
- recenter-positions '(5 top bottom)     ; Set re-centering positions
- scroll-conservatively 101              ; Avoid recentering when scrolling far
- scroll-margin 2                        ; Add a margin when scrolling vertically
- select-enable-clipboard t              ; Merge system's and Emacs' clipboard
- sentence-end-double-space nil          ; Use a single space after dots
- show-help-function nil                 ; Disable help text everywhere
- tab-always-indent 'complete            ; Tab indents first then tries completions
- tab-width 4                            ; Smaller width for tab characters
- uniquify-buffer-name-style 'forward    ; Uniquify buffer names
- warning-minimum-level :error           ; Skip warning buffers
- window-combination-resize t            ; Resize windows proportionally
- x-stretch-cursor t)                    ; Stretch cursor to the glyph width
-(blink-cursor-mode 0)                   ; Prefer a still cursor
-(delete-selection-mode 1)               ; Replace region when inserting text
-(fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
-(global-subword-mode 1)                 ; Iterate through CamelCase words
-(mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
-(put 'downcase-region 'disabled nil)    ; Enable downcase-region
-(put 'upcase-region 'disabled nil)      ; Enable upcase-region
-(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
-
-(use-package eshell
-  :after esh-mode
-  :bind (:map eshell-mode-map
-              ("C-p" . eshell-previous-matching-input-from-input)
-              ("C-n" . eshell-next-matching-input-from-input)
-              ([up] . previous-line)
-              ([down] . next-line))
-  :custom
-  (eshell-directory-name (cunene/cache-concat "eshell"))
-  :config
-  (defalias 'ff 'find-file))
-
-(use-package eshell-git-prompt
-  :after eshell
-  :config
-  (eshell-git-prompt-use-theme 'powerline))
-
-;; (setq eshell-prompt-regexp "^[^#$\n]*[#$] "
-;;       eshell-prompt-function
-;;       (lambda nil
-;;         (concat
-;;          "[" (user-login-name) "@" (system-name) " "
-;;          (if (string= (eshell/pwd) (getenv "HOME"))
-;;              "~" (eshell/basename (eshell/pwd)))
-;;          "]"
-;;          (if (= (user-uid) 0) "# " "$ "))))
-
-;; Dired switches
-(setq-default dired-listing-switches "-l")
-(setq-default list-directory-brief-switches "-CF")
-
-(add-hook
- 'dired-before-readin-hook
- '(lambda ()
-    (when (file-remote-p default-directory)
-      (setq dired-actual-switches "-l"))))
-
-(setq-default
- gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
-
-(add-function :after after-focus-change-function
-  (defun cunene/garbage-collect-maybe ()
-    (unless (frame-focus-state)
-      (garbage-collect))))
-
-(use-package doom-themes
-  :config
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-dark+ t)
-
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; or for treemacs users
-  ;; (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-  (doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-)
-
-(use-package all-the-icons)
-(use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode))
-
-(pcase window-system
-  ('w32 (set-frame-parameter nil 'fullscreen 'fullboth))
-  (_ (set-frame-parameter nil 'fullscreen 'maximized)))
-
-(require 're-builder)
-(setq reb-re-syntax 'string)        ;; No need for double-slashes
-
-(defun reb-replace-regexp (&optional delimited)
-  "Run `query-replace-regexp' with the contents of `re-builder'.
-
-With non-nil optional argument DELIMITED, only replace matches
-surrounded by word boundaries."
-  (interactive "P")
-  (reb-update-regexp)
-  (let* ((re (reb-target-binding reb-regexp))
-	 (re-printed (with-output-to-string (print re)))
-	 (replacement (read-from-minibuffer
-		       (format "Replace regexp %s with: "
-			       (substring re-printed 1
-					  (1- (length re-printed)))))))
-    (with-current-buffer reb-target-buffer
-      (query-replace-regexp re replacement delimited))))
-
-(define-key reb-mode-map (kbd "C-M-%") 'reb-replace-regexp)
-
-(use-package which-key
-  :config
-  (which-key-mode))
-
-(defvar-local cunene/hydra-super-body nil)
-
-(defun cunene/hydra-heading (&rest headings)
-  "Format HEADINGS to look pretty in a hydra docstring."
-  (concat "\n "
-          (mapconcat (lambda (heading)
-                       (propertize (format "%-18s" heading) 'face 'shadow))
-                     headings
-                     nil)))
-
-(defun cunene/hydra-set-super ()
-  "Set the super key for hydra."
-  (when-let* ((suffix "-mode")
-              (position (- (length suffix)))
-              (mode (symbol-name major-mode))
-              (name (if (string= suffix (substring mode position))
-                        (substring mode 0 position)
-                      mode))
-              (body (intern (format "hydra-%s/body" name))))
-    (when (functionp body)
-      (setq cunene/hydra-super-body body))))
-
-(defun cunene/hydra-super-maybe ()
-  "Set super conditionally."
-  (interactive)
-  (if cunene/hydra-super-body
-      (funcall cunene/hydra-super-body)
-    (user-error "Error: cunene/hydra-super: cunene/hydra-super-body is not set")))
-
-(use-package hydra
-  :bind
-  ("C-c a" . hydra-applications/body)
-  ("C-c d" . hydra-dates/body)
-  ("C-c e" . hydra-eyebrowse/body)
-  ("C-c f" . hydra-spotify/body)
-  ("C-c g" . hydra-git/body)
-  ("C-c o" . cunene/hydra-super-maybe)
-  ("C-c p" . hydra-projectile/body)
-  ("C-c s" . hydra-system/body)
-  ("C-c u" . hydra-ui/body)
-  :custom
-  (hydra-default-hint nil))
-
-(defhydra hydra-applications (:color teal)
-  (concat (cunene/hydra-heading "Applications" "Launch" "Shell") "
- _q_ quit            _i_ erc             _T_ eshell             ^^
-")
-  ("q" nil)
-  ("i" erc)
-  ("T" (eshell t)))
 
 (global-set-key (kbd "s-w") #'delete-window)
 (global-set-key (kbd "s-W") #'kill-this-buffer)
@@ -715,6 +677,53 @@ ARGUMENT determines the visible heading."
 (use-package treemacs-all-the-icons)
 (treemacs-load-theme "all-the-icons")
 
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  (vertico-cycle t)) ;; enable cycling for `vertico-next' and `vertico-previous'.
+
+;; Use the `orderless' completion style. Additionally enable
+;; `partial-completion' for file path expansion. `partial-completion' is
+;; important for wildcard support. Multiple files can be opened at once
+;; with `find-file' if you enter a wildcard. You may also give the
+;; `initials' completion style a try.
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; Alternatively try `consult-completing-read-multiple'.
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+
 (use-package git-commit
   :hook
   (git-commit-mode . (lambda () (setq-local fill-column 72))))
@@ -796,6 +805,11 @@ ARGUMENT determines the visible heading."
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
 
+(use-package ibuffer-projectile
+  :ensure t
+  :after projectile
+)
+
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
@@ -803,7 +817,9 @@ ARGUMENT determines the visible heading."
 (use-package plantuml-mode
   :ensure t
   :mode "\\.plantuml\\'"
-  :custom (plantuml-indent-level 4)
+  :custom
+  (plantuml-indent-level 4)
+  (image-auto-resize nil)
   :config
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
   (if (eq window-system 'w32)
@@ -815,9 +831,36 @@ ARGUMENT determines the visible heading."
   :ensure t
   :after (plantuml flycheck)
   :init (flycheck-plantuml-setup)
-  :custom (image-auto-resize nil))
+)
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+
+(use-package eshell
+  :after esh-mode
+  :bind (:map eshell-mode-map
+              ("C-p" . eshell-previous-matching-input-from-input)
+              ("C-n" . eshell-next-matching-input-from-input)
+              ([up] . previous-line)
+              ([down] . next-line))
+  :custom
+  (eshell-directory-name (cunene/cache-concat "eshell"))
+  :config
+  (defalias 'ff 'find-file))
+
+(use-package eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
+
+;; (setq eshell-prompt-regexp "^[^#$\n]*[#$] "
+;;       eshell-prompt-function
+;;       (lambda nil
+;;         (concat
+;;          "[" (user-login-name) "@" (system-name) " "
+;;          (if (string= (eshell/pwd) (getenv "HOME"))
+;;              "~" (eshell/basename (eshell/pwd)))
+;;          "]"
+;;          (if (= (user-uid) 0) "# " "$ "))))
 
 ;;; cunene.el ends here
