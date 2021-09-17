@@ -48,6 +48,13 @@
    (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
 
 ;;
+;; All packages we could not find in the repositories are stored here.
+;;
+(defvar cunene/vendor-packages
+  (expand-file-name "~/.emacs.d/vendor")
+  "Location for third-party packages.")
+
+;;
 ;; Hydra method, needs to evaluate before we can load the main init.
 ;;
 (defun cunene/hydra-heading (&rest headings)
@@ -106,7 +113,8 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" default))
- '(package-selected-packages '(eshell-git-prompt doom-themes use-package))
+ '(org-link-descriptive t nil nil "Customized with use-package org")
+ '(package-selected-packages '(vertico-quick eshell-git-prompt doom-themes use-package))
  '(safe-local-variable-values
    '((org-roam-directory . "/work/DomainDrivenConsulting/masd/dogen/integration")
      (projectile-project-compilation-cmd . "FROZEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/frozen/master/projects DOGEN_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/dogen/integration/projects CPP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/cpp_ref_impl/master/projects CSHARP_REF_IMPL_PROJECTS_DIRECTORY=/work/DomainDrivenConsulting/masd/csharp_ref_impl/master/Src PATH=/home/marco/local/cmake-3.15.3-Linux-x86_64/bin:$PATH CMAKE_TOOLCHAIN_FILE=/work/DomainDrivenConsulting/masd/vcpkg/masd/scripts/buildsystems/vcpkg.cmake /work/DomainDrivenConsulting/masd/dogen/integration/build/scripts/build.linux.sh Release 6 clang11")

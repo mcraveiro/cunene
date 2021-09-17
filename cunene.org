@@ -655,8 +655,8 @@ configurations.
 (require 'desktop)
 (desktop-save-mode 1)
 (setq history-length 250
-      desktop-base-file-name (cunene/cache-concat "desktop")
-      desktop-base-lock-name (cunene/cache-concat "desktop.lock")
+      desktop-base-file-name (cunene/cache-concat "desktop/desktop")
+      desktop-base-lock-name (cunene/cache-concat "desktop/desktop.lock")
       desktop-restore-eager 4
       desktop-restore-forces-onscreen nil
       desktop-restore-frames t)
@@ -957,6 +957,14 @@ ARGUMENT determines the visible heading."
   (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
   (vertico-cycle t)) ;; enable cycling for `vertico-next' and `vertico-previous'.
 
+;; from vendor directory.
+(use-package vertico-quick
+  :load-path cunene/vendor-packages
+  :bind
+  (:map vertico-map
+        ("M-q" . vertico-quick-insert)
+        ("C-q" . vertico-quick-exit)))
+
 ;; Use the `orderless' completion style. Additionally enable
 ;; `partial-completion' for file path expansion. `partial-completion' is
 ;; important for wildcard support. Multiple files can be opened at once
@@ -972,7 +980,9 @@ ARGUMENT determines the visible heading."
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
-  (savehist-mode))
+  (savehist-mode)
+  :custom
+  (savehist-file (cunene/cache-concat "savehist/history")))
 
 ;; A few more useful configurations...
 (use-package emacs
