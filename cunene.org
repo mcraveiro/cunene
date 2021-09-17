@@ -13,8 +13,6 @@ Things we need to remember to change:
 
 - stray files:
 
-: .emacs-buffers
-: transient/
 : projectile-bookmarks.eld
 
 ** Missing modes
@@ -1138,6 +1136,8 @@ section for now.
 ** Project Management
 
 #+begin_src emacs-lisp
+(setq-default projectile-known-projects-file
+              (cunene/cache-concat "projectile/bookmarks.eld"))
 (use-package projectile
   :ensure t
   :init

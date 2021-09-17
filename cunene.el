@@ -824,6 +824,8 @@ ARGUMENT determines the visible heading."
   (transient-default-level 5)
   (transient-mode-line-format nil))
 
+(setq-default projectile-known-projects-file
+              (cunene/cache-concat "projectile/bookmarks.eld"))
 (use-package projectile
   :ensure t
   :init
