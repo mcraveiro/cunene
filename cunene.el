@@ -834,6 +834,14 @@ Also returns nil if pid is nil."
   (when (not (cunene/emacs-process-p ad-return-value))
     (setq ad-return-value nil)))
 
+(use-package windswap
+  :demand
+  :bind
+  (("<f6> <down>" . windswap-down)
+   ("<f6> <up>" . windswap-up)
+   ("<f6> <left>" . windswap-left)
+   ("<f6> <right>" . windswap-right)))
+
 (use-package shackle
   :hook
   (after-init . shackle-mode)
@@ -1096,6 +1104,15 @@ ARGUMENT determines the visible heading."
   ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
+;; Use `consult-completion-in-region' if Vertico is enabled.
+;; Otherwise use the default `completion--in-region' function.
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
+
 (use-package company
   :config
   (add-hook 'prog-mode-hook 'company-mode))
@@ -1105,6 +1122,8 @@ ARGUMENT determines the visible heading."
   :config
   (setq company-idle-delay 0.3
         company-show-numbers t
+        company-tooltip-align-annotations t
+        company-async-timeout 15
         company-minimum-prefix-length 2
         company-dabbrev-downcase nil
         company-dabbrev-other-buffers t
@@ -1326,6 +1345,18 @@ ARGUMENT determines the visible heading."
          :map vertico-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
+
+(setq-default abbrev-mode 1)
+
+(use-package yasnippet
+  :hook (after-init . yas-global-mode)
+  :bind
+  (:map yas-minor-mode-map
+        ("C-c & t" . yas-describe-tables)
+        ("C-c & &" . org-mark-ring-goto)))
+
+(use-package yasnippet-snippets
+  :defer)
 
 (use-package git-commit
   :hook
@@ -1585,6 +1616,26 @@ ARGUMENT determines the visible heading."
          ("C-d" . smart-hungry-delete-forward-char))
   :defer nil ;; dont defer so we can add our functions to hooks
   :config (smart-hungry-delete-add-default-hooks))
+
+(require 'hideshow)
+
+;; Hide the comments too when you do a 'hs-hide-all'
+(setq hs-hide-comments nil)
+
+;; Set whether isearch opens folded comments, code, or both
+;; where x is code, comments, t (both), or nil (neither)
+(setq hs-isearch-open 't)
+
+(setq hs-set-up-overlay
+      (defun cunene/display-code-line-counts (ov)
+        (when (eq 'code (overlay-get ov 'hs))
+          (overlay-put ov 'display
+                       (propertize
+                        (format " ... <%d>"
+                                (count-lines (overlay-start ov)
+                                             (overlay-end ov)))
+                        'face 'font-lock-type-face)))))
+(add-hook 'prog-mode-hook #'hs-minor-mode)
 
 ;; none of the use-package machinery seems to work with eshell, so we
 ;; do it manually instead via hooks.

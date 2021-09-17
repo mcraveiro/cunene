@@ -9,12 +9,10 @@ Things we need to remember to change:
 - remove the C-arrows behaviour in org-ref when on top of a cite.
 - org-mode use of M-arrows.
 
-** Current Tasks
-
-- stray files:
-
 ** Missing modes
 
+-
+- verb mode
 - notmuch
 - expand region
 - fixme todos
@@ -36,6 +34,8 @@ Things we need to remember to change:
 - [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
 - [[https://github.com/dandavison/magit-delta][magit-delta]]: "This Emacs package provides a minor mode which configures Magit
   to use [[https://github.com/dandavison/delta][delta]] when displaying diffs."
+- [[https://github.com/thi-ng/org-spec][org-spec]]: "An Org-mode template for technical specification documents and HTML
+  publishing."
 
 * Preamble
 
@@ -671,6 +671,13 @@ Group commands for high-level applications.
   :diminish drag-stuff-mode
   :config
   (drag-stuff-global-mode t))
+
+(require 'uuid)
+
+(defun uuid-insert()
+  (interactive)
+  (require 'uuid)
+  (insert (upcase (uuid-string))))
 #+end_src
 
 ** Strings
@@ -847,6 +854,18 @@ From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
           regexp-search-ring))
   :custom
   (savehist-file (cunene/cache-concat "savehist/history")))
+#+end_src
+
+** Help
+
+#+begin_src emacs-lisp
+(use-package helpful
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+   ("C-c C-d" . helpful-at-point)
+   ("C-h C" . helpful-command)))
 #+end_src
 
 * Features
@@ -1101,6 +1120,7 @@ surrounded by word boundaries."
 | =desktop=  | Built-in                                 |
 | =desktop+= | https://github.com/ffevotte/desktop-plus |
 | =shackle=  | https://github.com/wasamasa/shackle      |
+| =windswap= | https://github.com/purcell/windswap      |
 | =windmove= | Built-in                                 |
 | =winner=   | Built-in                                 |
 
@@ -1155,6 +1175,14 @@ Also returns nil if pid is nil."
   "Don't allow dead emacsen to own the desktop file."
   (when (not (cunene/emacs-process-p ad-return-value))
     (setq ad-return-value nil)))
+
+(use-package windswap
+  :demand
+  :bind
+  (("<f6> <down>" . windswap-down)
+   ("<f6> <up>" . windswap-up)
+   ("<f6> <left>" . windswap-left)
+   ("<f6> <right>" . windswap-right)))
 #+end_src
 
 Window management.
@@ -1475,6 +1503,15 @@ Issues:
   ;; Must be in the :init section of use-package such that the mode gets
   ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
+
+;; Use `consult-completion-in-region' if Vertico is enabled.
+;; Otherwise use the default `completion--in-region' function.
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
 #+end_src
 
 Company
@@ -1489,6 +1526,8 @@ Company
   :config
   (setq company-idle-delay 0.3
         company-show-numbers t
+        company-tooltip-align-annotations t
+        company-async-timeout 15
         company-minimum-prefix-length 2
         company-dabbrev-downcase nil
         company-dabbrev-other-buffers t
@@ -1745,6 +1784,29 @@ For the org-mode support, see:
          ("C-x C-j" . consult-dir-jump-file)))
 #+end_src
 
+** Snippets
+
+#+begin_src emacs-lisp
+(setq-default abbrev-mode 1)
+
+(use-package yasnippet
+  :hook (after-init . yas-global-mode)
+  :bind
+  (:map yas-minor-mode-map
+        ("C-c & t" . yas-describe-tables)
+        ("C-c & &" . org-mark-ring-goto)))
+
+(use-package yasnippet-snippets
+  :defer)
+#+end_src
+
+** Spell checking
+
+#+begin_src emacs-lisp
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+end_src
+
 * Development
 
 Configuration related to programming.
@@ -1948,6 +2010,8 @@ Automatically detect the need for smerge.
 
 ** LSP
 
+| consult-lsp | https://github.com/gagbo/consult-lsp |
+
 #+begin_src emacs-lisp
 (use-package lsp-mode
   :init
@@ -2097,6 +2161,32 @@ Automatically detect the need for smerge.
          ("C-d" . smart-hungry-delete-forward-char))
   :defer nil ;; dont defer so we can add our functions to hooks
   :config (smart-hungry-delete-add-default-hooks))
+#+end_src
+
+** Code Folding
+
+| =hideshow= | [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html][built-in]] |
+
+#+begin_src emacs-lisp
+(require 'hideshow)
+
+;; Hide the comments too when you do a 'hs-hide-all'
+(setq hs-hide-comments nil)
+
+;; Set whether isearch opens folded comments, code, or both
+;; where x is code, comments, t (both), or nil (neither)
+(setq hs-isearch-open 't)
+
+(setq hs-set-up-overlay
+      (defun cunene/display-code-line-counts (ov)
+        (when (eq 'code (overlay-get ov 'hs))
+          (overlay-put ov 'display
+                       (propertize
+                        (format " ... <%d>"
+                                (count-lines (overlay-start ov)
+                                             (overlay-end ov)))
+                        'face 'font-lock-type-face)))))
+(add-hook 'prog-mode-hook #'hs-minor-mode)
 #+end_src
 
 * External
