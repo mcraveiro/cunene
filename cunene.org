@@ -1957,6 +1957,7 @@ Automatically detect the need for smerge.
    (lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-auto-guess-root t
+        lsp-session-file (cunene/cache-concat "lsp/lsp-session-v1")
         lsp-enable-indentation nil
         lsp-enable-on-type-formatting  nil
         lsp-ui-doc-delay 5

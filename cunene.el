@@ -1450,7 +1450,9 @@ ARGUMENT determines the visible heading."
 
 (use-package color-identifiers-mode
   :ensure t
-  :commands color-identifiers-mode)
+  :commands color-identifiers-mode
+  :config
+  (add-hook 'prog-mode-hook 'color-identifiers-mode))
 
 (use-package lsp-mode
   :init
@@ -1460,6 +1462,7 @@ ARGUMENT determines the visible heading."
    (lsp-mode . lsp-enable-which-key-integration))
   :config
   (setq lsp-auto-guess-root t
+        lsp-session-file (cunene/cache-concat "lsp/lsp-session-v1")
         lsp-enable-indentation nil
         lsp-enable-on-type-formatting  nil
         lsp-ui-doc-delay 5
@@ -1525,6 +1528,10 @@ ARGUMENT determines the visible heading."
           (lambda ()
             (local-set-key (kbd "C-c C-l") 'netrom/lsp-hydra/body)
             'lsp-ui-mode))
+
+(use-package consult-lsp
+  :ensure t
+  :diminish)
 
 (use-package plantuml-mode
   :ensure t
