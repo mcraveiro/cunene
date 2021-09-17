@@ -5,8 +5,9 @@ This repository contains my personal Emacs configuration. It is
 heavily based on others - copy and paste, mainly. The sources are
 referenced at the end.
 
-![Cunene River](http://www.wilkinsonsworld.com/wp-content/gallery/october-2012/1523-cunene-river-camp-synchro-10-07-2012-dsc03993.jpg)
-_Cunene river bordering Angola and Namibia. (C) 2012 [Wilkinsons World](http://www.wilkinsonsworld.com/tag/angola/).
+#+CAPTION: Cunene river bordering Angola and Namibia. (C) 2012 [[http://www.wilkinsonsworld.com/tag/angola/][Wilkinsons World]]
+#+NAME: fig:cunene-river
+[[http://www.wilkinsonsworld.com/wp-content/gallery/october-2012/1523-cunene-river-camp-synchro-10-07-2012-dsc03993.jpg]]
 
 * References
 
