@@ -132,7 +132,6 @@
  sentence-end-double-space nil          ; Use a single space after dots
  show-help-function nil                 ; Disable help text everywhere
  tab-always-indent 'complete            ; Tab indents first then tries completions
- tab-width 4                            ; Smaller width for tab characters
  uniquify-buffer-name-style 'forward    ; Uniquify buffer names
  warning-minimum-level :error           ; Skip warning buffers
  window-combination-resize t            ; Resize windows proportionally
@@ -146,7 +145,88 @@
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 
+;; Do not ask to kill a buffer.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+
+(defun diff-buffer-with-associated-file ()
+  "View the differences between BUFFER and its associated file.
+This requires the external program \"diff\" to be in your `exec-path'.
+Returns nil if no differences found, 't otherwise."
+  (interactive)
+  (let ((buf-filename buffer-file-name)
+        (buffer (current-buffer)))
+    (unless buf-filename
+      (error "Buffer %s has no associated file" buffer))
+    (let ((diff-buf (get-buffer-create
+                     (concat "*Assoc file diff: "
+                             (buffer-name)
+                             "*"))))
+      (with-current-buffer diff-buf
+        (setq buffer-read-only nil)
+        (erase-buffer))
+      (let ((tempfile (make-temp-file "buffer-to-file-diff-")))
+        (unwind-protect
+            (progn
+              (with-current-buffer buffer
+                (write-region (point-min) (point-max) tempfile nil 'nomessage))
+              (if (zerop
+                   (apply #'call-process "diff" nil diff-buf nil
+                          (append
+                           (when (and (boundp 'ediff-custom-diff-options)
+                                      (stringp ediff-custom-diff-options))
+                             (list ediff-custom-diff-options))
+                           (list buf-filename tempfile))))
+                  (progn
+                    (message "No differences found")
+                    nil)
+                (progn
+                  (with-current-buffer diff-buf
+                    (goto-char (point-min))
+                    (if (fboundp 'diff-mode)
+                        (diff-mode)
+                      (fundamental-mode)))
+                  (display-buffer diff-buf)
+                  t)))
+          (when (file-exists-p tempfile)
+            (delete-file tempfile)))))))
+
+;; tidy up diffs when closing the file
+(defun kill-associated-diff-buf ()
+  (let ((buf (get-buffer (concat "*Assoc file diff: "
+                             (buffer-name)
+                             "*"))))
+    (when (bufferp buf)
+      (kill-buffer buf))))
+
+(add-hook 'kill-buffer-hook 'kill-associated-diff-buf)
+
+(global-set-key (kbd "C-c C-=") 'diff-buffer-with-associated-file)
+
+(defun de-context-kill (arg)
+  "Kill buffer"
+  (interactive "p")
+  (if (and (buffer-modified-p)
+             buffer-file-name
+             (not (string-match "\\*.*\\*" (buffer-name)))
+             ;; erc buffers will be automatically saved
+             (not (eq major-mode 'erc-mode))
+             (= 1 arg))
+    (let ((differences 't))
+      (when (file-exists-p buffer-file-name)
+        (setq differences (diff-buffer-with-associated-file)))
+
+      (if (y-or-n-p (format "Buffer %s modified; Kill anyway? " buffer-file-name))
+          (progn
+            (set-buffer-modified-p nil)
+            (kill-buffer (current-buffer)))))
+    (if (and (boundp 'gnuserv-minor-mode)
+           gnuserv-minor-mode)
+        (gnuserv-edit)
+      (set-buffer-modified-p nil)
+      (kill-buffer (current-buffer)))))
+
+(global-set-key (kbd "C-x k") 'de-context-kill)
 
 (use-package which-key
   :config
@@ -218,6 +298,68 @@
   ("i" erc)
   ("T" (eshell t)))
 
+;; Give details about white space usage
+(autoload 'whitespace-mode "whitespace" "Toggle whitespace visualization." t)
+(autoload 'whitespace-toggle-options
+  "whitespace" "Toggle local `whitespace-mode' options." t)
+
+;; What to highlight
+(setq whitespace-style
+      '(face tabs trailing lines-tail space-before-tab empty space-after-tab
+             tab-mark))
+
+;; Indicate if empty lines exist at end of the buffer
+(set-default 'indicate-empty-lines t)
+
+;; do not use global mode whitespace
+(global-whitespace-mode 0)
+(setq whitespace-global-modes nil)
+
+;; Show whitespaces on these modes
+(add-hook 'sh-mode-hook 'whitespace-mode)
+(add-hook 'snippet-mode-hook 'whitespace-mode)
+(add-hook 'tex-mode-hook 'whitespace-mode)
+(add-hook 'sql-mode-hook 'whitespace-mode)
+(add-hook 'ruby-mode-hook 'whitespace-mode)
+(add-hook 'diff-mode-hook 'whitespace-mode)
+(add-hook 'c-mode-common-hook 'whitespace-mode)
+(add-hook 'cmake-mode-hook 'whitespace-mode)
+(add-hook 'emacs-lisp-mode-hook 'whitespace-mode)
+(add-hook 'dos-mode-hook 'whitespace-mode)
+(add-hook 'org-mode-hook 'whitespace-mode)
+(add-hook 'js-mode-hook 'whitespace-mode)
+(add-hook 'js2-mode-hook 'whitespace-mode)
+
+;;
+;; Tabs
+;;
+(defun untabify-buffer ()
+  "Remove tabs from buffer."
+  (interactive)
+  (untabify (point-min) (point-max)))
+
+(defun build-tab-stop-list (width)
+  (let ((num-tab-stops (/ 80 width))
+        (counter 1)
+        (ls nil))
+    (while (<= counter num-tab-stops)
+      (setq ls (cons (* width counter) ls))
+      (setq counter (1+ counter)))
+    (nreverse ls)))
+
+;; Spaces only for indentation
+(set-default 'indent-tabs-mode nil)
+
+;; Tab size
+(setq tab-width 4)
+(setq standard-indent 4)
+(setq tab-stop-list (build-tab-stop-list tab-width))
+(setq tab-stop-list (build-tab-stop-list tab-width))
+
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+  (flet ((process-list ())) ad-do-it))
+
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
 
@@ -229,11 +371,11 @@ surrounded by word boundaries."
   (interactive "P")
   (reb-update-regexp)
   (let* ((re (reb-target-binding reb-regexp))
-	 (re-printed (with-output-to-string (print re)))
-	 (replacement (read-from-minibuffer
-		       (format "Replace regexp %s with: "
-			       (substring re-printed 1
-					  (1- (length re-printed)))))))
+     (re-printed (with-output-to-string (print re)))
+     (replacement (read-from-minibuffer
+               (format "Replace regexp %s with: "
+                   (substring re-printed 1
+                      (1- (length re-printed)))))))
     (with-current-buffer reb-target-buffer
       (query-replace-regexp re replacement delimited))))
 
@@ -773,7 +915,7 @@ ARGUMENT determines the visible heading."
 
   ;; where to store persistant files
   (setq bm-repository-file (cunene/cache-concat "bm/bm-repository"))
-  
+
   ;; show bookmark in fringe only.
   (setq bm-highlight-style 'bm-highlight-only-fringe)
   ;; save bookmarks
@@ -916,6 +1058,14 @@ ARGUMENT determines the visible heading."
   (transient-default-level 5)
   (transient-mode-line-format nil))
 
+(defun sm-try-smerge ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-mode 1))))
+
+(add-hook 'find-file-hook 'sm-try-smerge t)
+
 (setq-default projectile-known-projects-file
               (cunene/cache-concat "projectile/bookmarks.eld"))
 (use-package projectile
@@ -964,7 +1114,7 @@ ARGUMENT determines the visible heading."
 (add-hook 'eshell-mode-hook
           (lambda ()
             (require 'em-alias)
-            (add-to-list 
+            (add-to-list
              'eshell-command-aliases-list (list "ll" "ls -l"))
             (defalias 'ff 'find-file)
             (define-key eshell-mode-map (kbd "C-p") #'eshell-previous-matching-input-from-input)
