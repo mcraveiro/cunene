@@ -146,6 +146,8 @@
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+
 (use-package which-key
   :config
   (which-key-mode))
@@ -448,7 +450,7 @@ surrounded by word boundaries."
 ;; (setq-default desktop+-base-dir (cunene/cache-concat "desktops/"))
 
 (use-package desktop
-  :ensure nil
+  :ensure t
   :hook
   (after-init . desktop-read)
   (after-init . desktop-save-mode)
@@ -825,11 +827,12 @@ ARGUMENT determines the visible heading."
   (if (eq window-system 'w32)
       (setq plantuml-jar-path "C:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar"
             plantuml-default-exec-mode 'jar)
-    (setq plantuml-default-exec-mode 'executable)))
+    (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
+          plantuml-default-exec-mode 'executable)))
 
 (use-package flycheck-plantuml
   :ensure t
-  :after (plantuml flycheck)
+  :after (plantuml-mode flycheck)
   :init (flycheck-plantuml-setup)
 )
 
@@ -837,30 +840,26 @@ ARGUMENT determines the visible heading."
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
 (use-package eshell
+  :ensure t
   :after esh-mode
-  :bind (:map eshell-mode-map
-              ("C-p" . eshell-previous-matching-input-from-input)
-              ("C-n" . eshell-next-matching-input-from-input)
-              ([up] . previous-line)
-              ([down] . next-line))
   :custom
   (eshell-directory-name (cunene/cache-concat "eshell"))
-  :config
-  (defalias 'ff 'find-file))
+  :config (defalias 'ff 'find-file)
+)
+
+;; can't use a :bind as eshell is delayed loaded, and the map seems undefined.
+;; using the :hook didn't work either.
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (define-key eshell-mode-map (kbd "C-p") #'eshell-previous-matching-input-from-input)
+            (define-key eshell-mode-map (kbd "C-n") #'eshell-next-matching-input-from-input)
+            (define-key eshell-mode-map (kbd "<up>") #'previous-line)
+            (define-key eshell-mode-map (kbd "<down>") #'next-line)))
+(global-set-key (kbd "C-x m") 'eshell)
 
 (use-package eshell-git-prompt
   :after eshell
   :config
   (eshell-git-prompt-use-theme 'powerline))
-
-;; (setq eshell-prompt-regexp "^[^#$\n]*[#$] "
-;;       eshell-prompt-function
-;;       (lambda nil
-;;         (concat
-;;          "[" (user-login-name) "@" (system-name) " "
-;;          (if (string= (eshell/pwd) (getenv "HOME"))
-;;              "~" (eshell/basename (eshell/pwd)))
-;;          "]"
-;;          (if (= (user-uid) 0) "# " "$ "))))
 
 ;;; cunene.el ends here
