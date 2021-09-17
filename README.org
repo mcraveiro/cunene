@@ -9,7 +9,7 @@
 * About
 
 This repository contains my [[https://github.com/mcraveiro/cunene/blob/master/cunene.org][personal Emacs configuration]]. It is heavily based on
-others - copy and paste, mainly. It uses the literate
+others - copy and paste, mainly. It uses the literate config approach.
 
 * References
 
