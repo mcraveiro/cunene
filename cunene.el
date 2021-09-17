@@ -1352,6 +1352,9 @@ ARGUMENT determines the visible heading."
    'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
   (remove-hook 'magit-section-highlight-hook #'magit-section-highlight))
 
+(use-package git-timemachine
+  :ensure t)
+
 (defun cunene/magit-recenter ()
   "Recenter the current hunk at 25% from the top of the window."
   (when (magit-section-match 'hunk)
@@ -1394,8 +1397,9 @@ ARGUMENT determines the visible heading."
   :init
   (projectile-mode +1)
   :bind (:map projectile-mode-map
-              ("s-p" . projectile-command-map)
-              ("C-c p" . projectile-command-map)))
+              ("C-c p" . projectile-command-map))
+  :config
+  (setq projectile-enable-caching t))
 
 (use-package ibuffer-projectile
   :ensure t
@@ -1412,6 +1416,21 @@ ARGUMENT determines the visible heading."
                (reusable-frames . visible)
                (side            . bottom)
                (window-height   . 0.2)))
+
+(use-package color-identifiers-mode
+  :ensure t
+  :commands color-identifiers-mode)
+
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  ((c++-mode . lsp)
+   (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+(use-package lsp-ui :commands lsp-ui-mode)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 (use-package plantuml-mode
   :ensure t
@@ -1485,5 +1504,8 @@ ARGUMENT determines the visible heading."
   :after eshell
   :config
   (eshell-git-prompt-use-theme 'powerline))
+
+(use-package deadgrep
+  :ensure t)
 
 ;;; cunene.el ends here
