@@ -555,10 +555,9 @@ If there's a text selection, work on the selected text."
 (remove-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
-(use-package saveplace
-  :ensure t
-  :custom (save-place-file (cunene/cache-concat "saveplace/places"))
-  :init (save-place-mode))
+(require 'saveplace)
+(setq save-place-file (cunene/cache-concat "saveplace/places"))
+(save-place-mode)
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -980,7 +979,7 @@ ARGUMENT determines the visible heading."
           treemacs-user-header-line-format         nil
           treemacs-width                           35
           treemacs-width-is-initially-locked       t
-          treemacs-text-scale                      -1
+          treemacs-text-scale                      -2
           treemacs-workspace-switch-cleanup        nil)
 
     ;; The default width and height of the icons is 22 pixels. If you are
@@ -1096,6 +1095,32 @@ ARGUMENT determines the visible heading."
   ;; Must be in the :init section of use-package such that the mode gets
   ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
+
+(use-package company
+  :config
+  (add-hook 'prog-mode-hook 'company-mode))
+
+(use-package company-posframe
+  :init (company-posframe-mode 1)
+  :config
+  (setq company-idle-delay 0.3
+        company-show-numbers t
+        company-minimum-prefix-length 2
+        company-dabbrev-downcase nil
+        company-dabbrev-other-buffers t
+        company-auto-complete nil
+        company-dabbrev-code-other-buffers 'all
+        company-dabbrev-code-everywhere t
+        company-dabbrev-code-ignore-case t
+        company-minimum-prefix-length 1
+        company-transformers nil
+        company-lsp-async t
+        company-lsp-cache-candidates nil)
+
+  :diminish)
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
@@ -1321,6 +1346,12 @@ ARGUMENT determines the visible heading."
   (define-fringe-bitmap 'git-gutter-fr:deleted [255 255 255 255] nil nil 'bottom)
   (define-fringe-bitmap 'git-gutter-fr:modified [255] nil nil '(center t)))
 
+(use-package git-messenger
+  :bind ("C-x G" . git-messenger:popup-message)
+  :config
+  (setq git-messenger:show-detail t
+        git-messenger:use-magit-popup t))
+
 (use-package gitattributes-mode)
 (use-package gitconfig-mode)
 (use-package gitignore-mode)
@@ -1427,10 +1458,73 @@ ARGUMENT determines the visible heading."
   :hook
   ((c++-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
+  :config
+  (setq lsp-auto-guess-root t
+        lsp-enable-indentation nil
+        lsp-enable-on-type-formatting  nil
+        lsp-ui-doc-delay 5
+        lsp-ui-sideline-enable nil
+        lsp-ui-doc-position 'at-point
+        lsp-ui-doc-header nil
+        lsp-ui-doc-include-signature t
+        lsp-ui-doc-enable t
+        lsp-ui-flycheck-enable t
+        lsp-ui-flycheck-list-position 'right
+        lsp-ui-flycheck-live-reporting t
+        lsp-ui-peek-enable t
+        lsp-ui-peek-list-width 60
+        lsp-ui-peek-peek-height 25)
   :commands lsp)
-
 (use-package lsp-ui :commands lsp-ui-mode)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(use-package lsp-treemacs
+  :config
+  (setq lsp-treemacs-sync-mode 1)
+  (setq lsp-treemacs-symbols-position-params
+        '((side . right)
+          (slot . 1)
+          (window-width . 45)))
+  :commands lsp-treemacs-errors-list)
+
+(setq cunene/general-lsp-hydra-heads
+        '(;; Xref
+          ("d" xref-find-definitions "Definitions" :column "Xref")
+          ("D" xref-find-definitions-other-window "-> other win")
+          ("r" xref-find-references "References")
+          ("s" netrom/helm-lsp-workspace-symbol-at-point "Helm search")
+          ("S" netrom/helm-lsp-global-workspace-symbol-at-point "Helm global search")
+
+          ;; Peek
+          ("C-d" lsp-ui-peek-find-definitions "Definitions" :column "Peek")
+          ("C-r" lsp-ui-peek-find-references "References")
+          ("C-i" lsp-ui-peek-find-implementation "Implementation")
+
+          ;; LSP
+          ("p" lsp-describe-thing-at-point "Describe at point" :column "LSP")
+          ("C-a" lsp-execute-code-action "Execute code action")
+          ("R" lsp-rename "Rename")
+          ("t" lsp-goto-type-definition "Type definition")
+          ("i" lsp-goto-implementation "Implementation")
+          ("f" helm-imenu "Filter funcs/classes (Helm)")
+          ("C-c" lsp-describe-session "Describe session")
+
+          ;; Flycheck
+          ("l" lsp-ui-flycheck-list "List errs/warns/notes" :column "Flycheck"))
+
+        cunene/misc-lsp-hydra-heads
+        '(;; Misc
+          ("q" nil "Cancel" :column "Misc")
+          ("b" pop-tag-mark "Back")))
+
+  ;; Create general hydra.
+(eval `(defhydra netrom/lsp-hydra (:color blue :hint nil)
+         ,@(append
+            cunene/general-lsp-hydra-heads
+            cunene/misc-lsp-hydra-heads)))
+
+(add-hook 'lsp-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c C-l") 'netrom/lsp-hydra/body)
+            'lsp-ui-mode))
 
 (use-package plantuml-mode
   :ensure t

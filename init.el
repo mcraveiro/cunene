@@ -36,13 +36,13 @@
  '(
    ;; (background-color . "#101010")       ;; Default background color
    ;; (foreground-color . "#FAFAFA")       ;; Default foreground color
-   (font . "Source Code Pro 10")           ;; Font to use
+   (font . "Source Code Pro 9")           ;; Font to use
    ;; (fullscreen . maximized)             ;; Maximize the window by default
    (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
-   (left-fringe . 8)                    ;; Thin left fringe
+   ;; (left-fringe . 8)                    ;; Thin left fringe
    (menu-bar-lines . 0)                 ;; No menu bar
-   (right-divider-width . 1)            ;; Thin vertical window divider
-   (right-fringe . 8)                   ;; Thin right fringe
+   ;; (right-divider-width . 1)            ;; Thin vertical window divider
+   ;; (right-fringe . 8)                   ;; Thin right fringe
    (tool-bar-lines . 0)                 ;; No tool bar
    ;; (undecorated . t)                    ;; Remove extraneous X decorations
    (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
