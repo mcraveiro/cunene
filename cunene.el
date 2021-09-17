@@ -557,6 +557,7 @@ If there's a text selection, work on the selected text."
 
 (use-package saveplace
   :ensure t
+  :custom (save-place-file (cunene/cache-concat "saveplace/places"))
   :init (save-place-mode))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
@@ -1383,10 +1384,11 @@ ARGUMENT determines the visible heading."
 
 (add-hook 'find-file-hook 'sm-try-smerge t)
 
-(setq-default projectile-known-projects-file
-              (cunene/cache-concat "projectile/bookmarks.eld"))
-(setq-default projectile-cache-file
-              (cunene/cache-concat "projectile/projectile.cache"))
+(setq projectile-known-projects-file
+      (cunene/cache-concat "projectile/bookmarks.eld"))
+(setq projectile-cache-file
+      (cunene/cache-concat "projectile/projectile.cache"))
+
 (use-package projectile
   :ensure t
   :init
@@ -1397,8 +1399,7 @@ ARGUMENT determines the visible heading."
 
 (use-package ibuffer-projectile
   :ensure t
-  :after projectile
-)
+  :after projectile)
 
 (use-package flycheck
   :ensure t

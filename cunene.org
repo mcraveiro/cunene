@@ -828,6 +828,7 @@ From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
 #+begin_src emacs-lisp
 (use-package saveplace
   :ensure t
+  :custom (save-place-file (cunene/cache-concat "saveplace/places"))
   :init (save-place-mode))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
@@ -1858,10 +1859,11 @@ Automatically detect the need for smerge.
 | Projectile | https://github.com/bbatsov/projectile |
 
 #+begin_src emacs-lisp
-(setq-default projectile-known-projects-file
-              (cunene/cache-concat "projectile/bookmarks.eld"))
-(setq-default projectile-cache-file
-              (cunene/cache-concat "projectile/projectile.cache"))
+(setq projectile-known-projects-file
+      (cunene/cache-concat "projectile/bookmarks.eld"))
+(setq projectile-cache-file
+      (cunene/cache-concat "projectile/projectile.cache"))
+
 (use-package projectile
   :ensure t
   :init
@@ -1872,8 +1874,7 @@ Automatically detect the need for smerge.
 
 (use-package ibuffer-projectile
   :ensure t
-  :after projectile
-)
+  :after projectile)
 #+end_src
 
 ** Syntax Checking
@@ -1998,9 +1999,6 @@ Todo:
   :config
   (eshell-git-prompt-use-theme 'powerline))
 #+end_src
-
-
-
 
 * Postamble
 
