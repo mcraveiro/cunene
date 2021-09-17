@@ -786,12 +786,10 @@ Also returns nil if pid is nil."
   :ensure nil
   :bind
   (
-   ([s-left] . windmove-left)
-   ([s-down] . windmove-down)
-   ([s-up] . windmove-up)
-   ([s-right] . windmove-right)
-   )
-)
+   ("<f2> <left>" . windmove-left)
+   ("<f2> <down>" . windmove-down)
+   ("<f2> <up>" . windmove-up)
+   ("<f2> <right>" . windmove-right)))
 
 (use-package winner
   :ensure nil

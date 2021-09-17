@@ -1106,12 +1106,10 @@ Bind shorthands to move between windows.
   :ensure nil
   :bind
   (
-   ([s-left] . windmove-left)
-   ([s-down] . windmove-down)
-   ([s-up] . windmove-up)
-   ([s-right] . windmove-right)
-   )
-)
+   ("<f2> <left>" . windmove-left)
+   ("<f2> <down>" . windmove-down)
+   ("<f2> <up>" . windmove-up)
+   ("<f2> <right>" . windmove-right)))
 #+end_src
 
 Allow undo's and redo's with window configurations.
