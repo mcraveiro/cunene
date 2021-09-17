@@ -986,6 +986,14 @@ ARGUMENT determines the visible heading."
 (use-package savehist
   :init
   (savehist-mode)
+  :config
+  (setq history-length t)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
   :custom
   (savehist-file (cunene/cache-concat "savehist/history")))
 
@@ -1010,6 +1018,10 @@ ARGUMENT determines the visible heading."
 
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
+
+(setq display-time-24hr-format t)
+(setq display-time-day-and-date t)
+(display-time)
 
 (defvar cunene/undo-tree-directory
   (cunene/cache-concat "undo")
@@ -1152,11 +1164,54 @@ ARGUMENT determines the visible heading."
 
 (use-package consult
  :ensure t
-  :bind
-  (("M-g g" . consult-goto-line)
-   ("C-s" . consult-line)
-   ("C-x b" . consult-buffer)
-   ("C-x j" . consult-mark)))
+  :bind (("C-x r x" . consult-register)
+         ("C-x r b" . consult-bookmark)
+         ("C-c k" . consult-kmacro)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complet-command
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ("M-g o" . consult-outline)
+         ("M-g h" . consult-org-heading)
+         ("M-g a" . consult-org-agenda)
+         ("M-g m" . consult-mark)
+         ("C-x b" . consult-buffer)
+         ("<help> a" . consult-apropos)            ;; orig. apropos-command
+         ("M-g g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-project-imenu)
+         ("M-g e" . consult-error)
+         ;; M-s bindings (search-map)
+         ("M-s f" . consult-find)
+         ("M-s L" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch)
+         ("M-g l" . consult-line)
+         ("M-s m" . consult-multi-occur)
+         ("C-x c o" . consult-multi-occur)
+         ("C-x c SPC" . consult-mark)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch)                 ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
+         ("M-s l" . consult-line))
+  :init
+  (setq register-preview-delay 0
+        register-preview-function #'consult-register-format)
+  :config
+  (setq consult-project-root-function #'projectile-project-root)
+  (setq consult-narrow-key "<"))
 
 (use-package consult-flycheck
   :after flycheck)
