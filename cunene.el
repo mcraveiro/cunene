@@ -449,17 +449,32 @@ surrounded by word boundaries."
 
 ;; (setq-default desktop+-base-dir (cunene/cache-concat "desktops/"))
 
-(use-package desktop
-  :ensure t
-  :hook
-  (after-init . desktop-read)
-  (after-init . desktop-save-mode)
-  :custom
-  (desktop-base-file-name (cunene/cache-concat "desktop"))
-  (desktop-base-lock-name (cunene/cache-concat "desktop.lock"))
-  (desktop-restore-eager 4)
-  (desktop-restore-forces-onscreen nil)
-  (desktop-restore-frames t))
+;; could not get it to work via use-package; commands did not kick-in
+;; and kept trying to reload from elpa.
+(require 'desktop)
+(desktop-save-mode 1)
+(setq history-length 250
+      desktop-base-file-name (cunene/cache-concat "desktop")
+      desktop-base-lock-name (cunene/cache-concat "desktop.lock")
+      desktop-restore-eager 4
+      desktop-restore-forces-onscreen nil
+      desktop-restore-frames t)
+(add-to-list 'desktop-globals-to-save 'file-name-history)
+
+(defun cunene/emacs-process-p (pid)
+  "If pid is the process ID of an emacs process, return t, else nil.
+Also returns nil if pid is nil."
+  (when pid
+    (let ((attributes (process-attributes pid)) (cmd))
+      (dolist (attr attributes)
+        (if (string= "comm" (car attr))
+            (setq cmd (cdr attr))))
+      (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
+
+(defadvice desktop-owner (after pry-from-cold-dead-hands activate)
+  "Don't allow dead emacsen to own the desktop file."
+  (when (not (cunene/emacs-process-p ad-return-value))
+    (setq ad-return-value nil)))
 
 (use-package shackle
   :hook
@@ -839,18 +854,15 @@ ARGUMENT determines the visible heading."
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
-(use-package eshell
-  :ensure t
-  :after esh-mode
-  :custom
-  (eshell-directory-name (cunene/cache-concat "eshell"))
-  :config (defalias 'ff 'find-file)
-)
-
-;; can't use a :bind as eshell is delayed loaded, and the map seems undefined.
-;; using the :hook didn't work either.
+;; none of the use-package machinery seems to work with eshell, so we
+;; do it manually instead via hooks.
 (add-hook 'eshell-mode-hook
           (lambda ()
+            (require 'em-alias)
+            (add-to-list 
+             'eshell-command-aliases-list (list "ll" "ls -l"))
+            (defalias 'ff 'find-file)
+            (setq eshell-directory-name (cunene/cache-concat "eshell"))
             (define-key eshell-mode-map (kbd "C-p") #'eshell-previous-matching-input-from-input)
             (define-key eshell-mode-map (kbd "C-n") #'eshell-next-matching-input-from-input)
             (define-key eshell-mode-map (kbd "<up>") #'previous-line)
