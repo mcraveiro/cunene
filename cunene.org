@@ -15,6 +15,7 @@ Things we need to remember to change:
 
 ** Missing modes
 
+- log-view
 - rg
 - helpful
 - whitespace
@@ -514,7 +515,7 @@ Group commands for high-level applications.
 #+begin_src emacs-lisp
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (flet ((process-list ())) ad-do-it))
+  (cl-flet ((process-list ())) ad-do-it))
 #+end_src
 
 * Features
@@ -1256,6 +1257,30 @@ For the org-mode support, see:
           (bm-bookmark-remove  bookmark)))
     (when (> bm-verbosity-level 0)
       (message "Bookmark not found."))))
+#+end_src
+
+** Highlights
+
+#+begin_src emacs-lisp
+;; Highlight current line.
+(add-hook 'ibuffer-mode-hook #'hl-line-mode)
+(add-hook 'occur-mode-hook #'hl-line-mode)
+(add-hook 'svn-status-mode-hook #'hl-line-mode)
+(add-hook 'dired-mode-hook #'hl-line-mode)
+(add-hook 'grep-setup-hook #'hl-line-mode)
+(add-hook 'compilation-mode-hook #'hl-line-mode)
+(add-hook 'magit-mode-hook #'hl-line-mode)
+(add-hook 'vc-git-log-view-mode-hook #'hl-line-mode)
+(add-hook 'log-view-hook #'hl-line-mode)
+(add-hook 'find-dired-mode-hook #'hl-line-mode)
+(add-hook 'gnus-summary-mode-hook #'hl-line-mode)
+(add-hook 'org-agenda-finalize-hook #'hl-line-mode)
+
+;; Turn on local highlighting for list-buffers
+(defadvice list-buffers (after highlight-line activate)
+  (save-excursion
+    (set-buffer "*Buffer List*")
+    (hl-line-mode)))
 #+end_src
 
 * Development

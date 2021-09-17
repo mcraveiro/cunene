@@ -358,7 +358,7 @@ Returns nil if no differences found, 't otherwise."
 
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (flet ((process-list ())) ad-do-it))
+  (cl-flet ((process-list ())) ad-do-it))
 
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
@@ -984,6 +984,26 @@ ARGUMENT determines the visible heading."
           (bm-bookmark-remove  bookmark)))
     (when (> bm-verbosity-level 0)
       (message "Bookmark not found."))))
+
+;; Highlight current line.
+(add-hook 'ibuffer-mode-hook #'hl-line-mode)
+(add-hook 'occur-mode-hook #'hl-line-mode)
+(add-hook 'svn-status-mode-hook #'hl-line-mode)
+(add-hook 'dired-mode-hook #'hl-line-mode)
+(add-hook 'grep-setup-hook #'hl-line-mode)
+(add-hook 'compilation-mode-hook #'hl-line-mode)
+(add-hook 'magit-mode-hook #'hl-line-mode)
+(add-hook 'vc-git-log-view-mode-hook #'hl-line-mode)
+(add-hook 'log-view-hook #'hl-line-mode)
+(add-hook 'find-dired-mode-hook #'hl-line-mode)
+(add-hook 'gnus-summary-mode-hook #'hl-line-mode)
+(add-hook 'org-agenda-finalize-hook #'hl-line-mode)
+
+;; Turn on local highlighting for list-buffers
+(defadvice list-buffers (after highlight-line activate)
+  (save-excursion
+    (set-buffer "*Buffer List*")
+    (hl-line-mode)))
 
 (use-package git-commit
   :hook
