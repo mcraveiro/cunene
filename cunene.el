@@ -173,6 +173,8 @@
   :hook (after-init . doom-modeline-mode))
   :config (setq doom-modeline-buffer-file-name-style 'relative-to-project)
 
+(use-package diminish)
+
 (defvar-local cunene/hydra-super-body nil)
 
 (defun cunene/hydra-set-super ()
@@ -750,6 +752,12 @@ ARGUMENT determines the visible heading."
 
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
+
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
+  :config
+  (global-undo-tree-mode 1))
 
 (use-package git-commit
   :hook
