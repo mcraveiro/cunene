@@ -1161,6 +1161,11 @@ ARGUMENT determines the visible heading."
                  #'completion--in-region)
                args)))
 
+(use-package completing-read-xref
+  :load-path cunene/vendor-packages
+  :commands (completing-read-xref-show-xrefs completing-read-xref-show-xrefs)
+  :init (setq xref-show-definitions-function 'completing-read-xref-show-defs))
+
 (use-package company
   :config
   (add-hook 'prog-mode-hook 'company-mode))
@@ -1403,6 +1408,12 @@ ARGUMENT determines the visible heading."
   (defengine google
     "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
     :keybinding "g"))
+
+(setq isearch-allow-scroll t)
+
+(defadvice isearch-update (before my-isearch-reposite activate)
+  (sit-for 0)
+  (recenter 1))
 
 (setq-default abbrev-mode 1)
 
@@ -1732,6 +1743,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
                                              (overlay-end ov)))
                         'face 'font-lock-type-face)))))
 (add-hook 'prog-mode-hook #'hs-minor-mode)
+
+(use-package json-mode
+  :ensure t)
 
 (use-package jq-mode
   :ensure t)

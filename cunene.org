@@ -1541,6 +1541,11 @@ Issues:
                    #'consult-completion-in-region
                  #'completion--in-region)
                args)))
+
+(use-package completing-read-xref
+  :load-path cunene/vendor-packages
+  :commands (completing-read-xref-show-xrefs completing-read-xref-show-xrefs)
+  :init (setq xref-show-definitions-function 'completing-read-xref-show-defs))
 #+end_src
 
 Company
@@ -1823,6 +1828,11 @@ For the org-mode support, see:
     "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
     :keybinding "g"))
 
+(setq isearch-allow-scroll t)
+
+(defadvice isearch-update (before my-isearch-reposite activate)
+  (sit-for 0)
+  (recenter 1))
 #+end_src
 
 ** Snippets
