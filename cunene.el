@@ -103,6 +103,28 @@
 (eval-when-compile
   (require 'use-package))
 
+(defvar cunene/config-file
+  (concat user-emacs-directory "cunene.el")
+  "The location of the generated cunene config file.")
+
+(defvar cunene/config-file-org
+  (concat user-emacs-directory "cunene.org")
+  "The location of the cunene org-mode file.")
+
+(defun cunene/find-config ()
+  "Edit cunene's config file"
+  (interactive)
+  (find-file cunene/config-file-org))
+
+(defun cunene/reload-config()
+  "Reload config.org"
+  (interactive)
+  (delete-file cunene/config-file)
+  (org-babel-load-file cunene/config-file-org))
+
+(global-set-key (kbd "C-c i") 'cunene/find-dotfiles)
+(global-set-key (kbd "C-c R") 'cunene/reload-config)
+
 (setq-default
  gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
 
@@ -359,6 +381,11 @@ Returns nil if no differences found, 't otherwise."
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
   (cl-flet ((process-list ())) ad-do-it))
+
+(use-package crux
+  :ensure t
+  :bind (
+         ("C-S-d" . crux-duplicate-current-line-or-region)))
 
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes

@@ -181,6 +181,32 @@ Links:
   (require 'use-package))
 #+end_src
 
+** Config file
+
+#+begin_src emacs-lisp
+(defvar cunene/config-file
+  (concat user-emacs-directory "cunene.el")
+  "The location of the generated cunene config file.")
+
+(defvar cunene/config-file-org
+  (concat user-emacs-directory "cunene.org")
+  "The location of the cunene org-mode file.")
+
+(defun cunene/find-config ()
+  "Edit cunene's config file"
+  (interactive)
+  (find-file cunene/config-file-org))
+
+(defun cunene/reload-config()
+  "Reload config.org"
+  (interactive)
+  (delete-file cunene/config-file)
+  (org-babel-load-file cunene/config-file-org))
+
+(global-set-key (kbd "C-c I") 'cunene/find-config)
+(global-set-key (kbd "C-c R") 'cunene/reload-config)
+#+end_src
+
 * Quality of Life
 
 Changes to core behaviour to make life better.
@@ -516,6 +542,15 @@ Group commands for high-level applications.
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
   (cl-flet ((process-list ())) ad-do-it))
+#+end_src
+
+** Utilities
+
+#+begin_src emacs-lisp
+(use-package crux
+  :ensure t
+  :bind (
+         ("C-S-d" . crux-duplicate-current-line-or-region)))
 #+end_src
 
 * Features
