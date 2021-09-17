@@ -1448,12 +1448,13 @@ It is currently used by Magit only in my configuration so it will stay in this
 section for now.
 
 #+begin_src emacs-lisp
+(setq-default
+ transient-history-file (cunene/cache-concat "transient/history.el")
+ transient-levels-file (cunene/cache-concat "transient/levels.el")
+ transient-values-file (cunene/cache-concat "transient/values.el"))
+
 (use-package transient
   :init
-  (setq-default
-   transient-history-file (cunene/cache-concat "transient/history.el")
-   transient-levels-file (cunene/cache-concat "transient/levels.el")
-   transient-values-file (cunene/cache-concat "transient/values.el"))
   :custom
   (transient-default-level 5)
   (transient-mode-line-format nil))

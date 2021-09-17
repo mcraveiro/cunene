@@ -1099,12 +1099,13 @@ ARGUMENT determines the visible heading."
   :hook
   (after-init . pinentry-start))
 
+(setq-default
+ transient-history-file (cunene/cache-concat "transient/history.el")
+ transient-levels-file (cunene/cache-concat "transient/levels.el")
+ transient-values-file (cunene/cache-concat "transient/values.el"))
+
 (use-package transient
   :init
-  (setq-default
-   transient-history-file (cunene/cache-concat "transient/history.el")
-   transient-levels-file (cunene/cache-concat "transient/levels.el")
-   transient-values-file (cunene/cache-concat "transient/values.el"))
   :custom
   (transient-default-level 5)
   (transient-mode-line-format nil))
