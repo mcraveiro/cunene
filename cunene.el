@@ -161,6 +161,7 @@
  uniquify-buffer-name-style 'forward    ; Uniquify buffer names
  warning-minimum-level :error           ; Skip warning buffers
  window-combination-resize t            ; Resize windows proportionally
+ vc-follow-symlinks t                   ; Follow symlinks without asking
  x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (blink-cursor-mode 0)                   ; Prefer a still cursor
 (delete-selection-mode 1)               ; Replace region when inserting text
@@ -170,6 +171,14 @@
 (put 'downcase-region 'disabled nil)    ; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+(column-number-mode t)                  ; Display column numbers
+
+(use-package uniquify
+  :config
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator " • ")
+  (setq uniquify-after-kill-buffer-p t)
+  (setq uniquify-ignore-buffers-re "^\\*"))
 
 ;; Do not ask to kill a buffer.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
@@ -255,8 +264,18 @@ Returns nil if no differences found, 't otherwise."
 (global-set-key (kbd "C-x k") 'de-context-kill)
 
 (use-package which-key
+  :ensure t
+  :init
+  (which-key-mode 1)
   :config
-  (which-key-mode))
+  (which-key-setup-side-window-right-bottom)
+  (setq which-key-sort-order 'which-key-key-order-alpha
+        which-key-side-window-max-width 0.33
+        which-key-idle-delay 2
+        which-key-show-early-on-C-h t
+        which-key-idle-secondary-delay 0.05)
+  :diminish
+  which-key-mode)
 
 (pcase window-system
   ('w32 (set-frame-parameter nil 'fullscreen 'fullboth))
@@ -1035,6 +1054,11 @@ ARGUMENT determines the visible heading."
   (save-excursion
     (set-buffer "*Buffer List*")
     (hl-line-mode)))
+
+(use-package beacon
+  :ensure t
+  :init
+  (beacon-mode 1))
 
 (use-package git-commit
   :hook

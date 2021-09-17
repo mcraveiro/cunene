@@ -2,7 +2,7 @@
 #+AUTHOR: Marco Craveiro
 #+PROPERTY: header-args :results silent
 
-* Requirements
+* Notes and comments
 
 Things we need to remember to change:
 
@@ -15,6 +15,7 @@ Things we need to remember to change:
 
 ** Missing modes
 
+- fixme todos
 - log-view
 - rg
 - helpful
@@ -22,6 +23,13 @@ Things we need to remember to change:
 - yas
 - spell checking
 - parenthesis highlighting, rainbow mode
+
+** Interesting modes to investigate
+
+- [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]]: "visual-fill-column-mode is a small Emacs minor mode that
+  mimics the effect of fill-column in visual-line-mode. Instead of wrapping
+  lines at the window edge, which is the standard behaviour of visual-line-mode,
+  it wraps lines at fill-column."
 
 * Preamble
 
@@ -271,6 +279,7 @@ Here are what I consider better defaults as per my own experience.
  uniquify-buffer-name-style 'forward    ; Uniquify buffer names
  warning-minimum-level :error           ; Skip warning buffers
  window-combination-resize t            ; Resize windows proportionally
+ vc-follow-symlinks t                   ; Follow symlinks without asking
  x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (blink-cursor-mode 0)                   ; Prefer a still cursor
 (delete-selection-mode 1)               ; Replace region when inserting text
@@ -280,9 +289,22 @@ Here are what I consider better defaults as per my own experience.
 (put 'downcase-region 'disabled nil)    ; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+(column-number-mode t)                  ; Display column numbers
 #+end_src
 
-** Buffer killing
+** Buffers
+*** Identification
+
+#+begin_src emacs-lisp
+(use-package uniquify
+  :config
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator " • ")
+  (setq uniquify-after-kill-buffer-p t)
+  (setq uniquify-ignore-buffers-re "^\\*"))
+#+end_src
+
+*** Killing
 
 #+begin_src emacs-lisp
 ;; Do not ask to kill a buffer.
@@ -376,8 +398,18 @@ window with keys that can follow.
 
 #+begin_src emacs-lisp
 (use-package which-key
+  :ensure t
+  :init
+  (which-key-mode 1)
   :config
-  (which-key-mode))
+  (which-key-setup-side-window-right-bottom)
+  (setq which-key-sort-order 'which-key-key-order-alpha
+        which-key-side-window-max-width 0.33
+        which-key-idle-delay 2
+        which-key-show-early-on-C-h t
+        which-key-idle-secondary-delay 0.05)
+  :diminish
+  which-key-mode)
 #+end_src
 
 ** Fullscreen
@@ -1307,7 +1339,9 @@ For the org-mode support, see:
       (message "Bookmark not found."))))
 #+end_src
 
-** Highlights
+** Highlighting
+
+| Beacon | https://github.com/Malabarba/beacon |
 
 #+begin_src emacs-lisp
 ;; Highlight current line.
@@ -1329,6 +1363,25 @@ For the org-mode support, see:
   (save-excursion
     (set-buffer "*Buffer List*")
     (hl-line-mode)))
+
+(use-package beacon
+  :ensure t
+  :init
+  (beacon-mode 1))
+#+end_src
+
+** Search
+
+| Consult | https://github.com/minad/consult |
+
+TODO: learn how to use all the different consult functionality.
+
+#+begin_src emacs-lisp
+(use-package consult
+  :ensure t
+  :bind
+  (("M-g g" . consult-goto-line)
+   ("C-s" . consult-line)))
 #+end_src
 
 * Development
