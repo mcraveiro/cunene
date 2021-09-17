@@ -18,10 +18,6 @@ Things we need to remember to change:
 - fixme todos
 - log-view
 - rg
-- helpful
-- yas
-- spell checking
-- parenthesis highlighting, rainbow mode
 
 ** Interesting modes to investigate
 
@@ -1281,6 +1277,34 @@ authoring documents with a fast and effective plain-text system.
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
+
+(use-package org-superstar
+  :ensure t
+  :hook (org-mode . org-superstar-mode))
+
+(use-package org-fancy-priorities
+  :diminish
+  :ensure t
+  :hook (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-fancy-priorities-list '("🅰" "🅱" "🅲" "🅳" "🅴")))
+
+(use-package hl-todo
+  :ensure t
+  :hook ((prog-mode org-mode) . cunene/hl-todo-init)
+  :init
+  (defun cunene/hl-todo-init ()
+    (setq-local hl-todo-keyword-faces '(("TODO" . "#ff9977")
+                                        ("DOING" . "#FF00BC")
+                                        ("DONE" . "#44bc44")
+                                        ("BLOCKED" . "#003366")
+                                        ))
+    (hl-todo-mode))
+  )
+
+(use-package org-superstar
+  :ensure t
+  :hook (org-mode . org-superstar-mode))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1966,13 +1990,48 @@ section for now.
 Automatically detect the need for smerge.
 
 #+begin_src emacs-lisp
-(defun sm-try-smerge ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
+(use-package smerge-mode
+  :commands smerge-mode
+  :bind ("C-c '" . hydra-smerge/body)
+  :init
+  (defun cunene/maybe-enable-smerge ()
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^<<<<<<< " nil t)
+        (smerge-mode 1))))
+  (add-hook 'find-file-hook 'cunene/maybe-enable-smerge)
+  (add-hook 'after-revert-hook 'cunene/maybe-enable-smerge)
 
-(add-hook 'find-file-hook 'sm-try-smerge t)
+  :config
+  (defhydra hydra-smerge (:hint nil
+                          :pre (smerge-mode 1)
+                          :post (smerge-auto-leave))
+    "
+^Move^       ^Keep^               ^Diff^                 ^Other^
+^^-----------^^-------------------^^---------------------^^-------
+_n_ext       _b_ase               _<_: upper/base        _C_ombine
+_p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
+^^           _l_ower (other)      _>_: base/lower        _k_ill current
+^^           _a_ll                _R_efine
+^^           _RET_: current       _E_diff
+"
+      ("n" smerge-next)
+      ("p" smerge-prev)
+      ("b" smerge-keep-base)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("\C-m" smerge-keep-current)
+      ("<" smerge-diff-base-upper)
+      ("=" smerge-diff-upper-lower)
+      (">" smerge-diff-base-lower)
+      ("R" smerge-refine)
+      ("E" smerge-ediff)
+      ("C" smerge-combine-with-next)
+      ("r" smerge-resolve)
+      ("k" smerge-kill-current)
+      ("q" nil "cancel" :color blue)))
 #+end_src
 
 ** Project Management
@@ -2204,6 +2263,27 @@ Automatically detect the need for smerge.
                                              (overlay-end ov)))
                         'face 'font-lock-type-face)))))
 (add-hook 'prog-mode-hook #'hs-minor-mode)
+#+end_src
+
+** Json
+
+| =jq-format= | https://github.com/wbolster/emacs-jq-format |
+| =jq-mode=   | https://github.com/ljos/jq-mode             |
+|
+
+#+begin_src emacs-lisp
+(use-package json-mode
+  :ensure t)
+
+(use-package jq-mode
+  :ensure t)
+
+(with-eval-after-load "json-mode"
+  (define-key json-mode-map (kbd "C-c C-j") #'jq-interactively))
+
+;; Format JSON / JSONlines with JQ
+(use-package jq-format
+  :ensure t)
 #+end_src
 
 * External

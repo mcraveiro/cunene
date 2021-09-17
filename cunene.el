@@ -910,6 +910,34 @@ Also returns nil if pid is nil."
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
 
+(use-package org-superstar
+  :ensure t
+  :hook (org-mode . org-superstar-mode))
+
+(use-package org-fancy-priorities
+  :diminish
+  :ensure t
+  :hook (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-fancy-priorities-list '("🅰" "🅱" "🅲" "🅳" "🅴")))
+
+(use-package hl-todo
+  :ensure t
+  :hook ((prog-mode org-mode) . cunene/hl-todo-init)
+  :init
+  (defun cunene/hl-todo-init ()
+    (setq-local hl-todo-keyword-faces '(("TODO" . "#ff9977")
+                                        ("DOING" . "#FF00BC")
+                                        ("DONE" . "#44bc44")
+                                        ("BLOCKED" . "#003366")
+                                        ))
+    (hl-todo-mode))
+  )
+
+(use-package org-superstar
+  :ensure t
+  :hook (org-mode . org-superstar-mode))
+
 (defun cunene/org-cycle-parent (argument)
   "Go to the nearest parent heading and execute `org-cycle'.
 
@@ -1474,13 +1502,48 @@ ARGUMENT determines the visible heading."
   (transient-default-level 5)
   (transient-mode-line-format nil))
 
-(defun sm-try-smerge ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
+(use-package smerge-mode
+  :commands smerge-mode
+  :bind ("C-c '" . hydra-smerge/body)
+  :init
+  (defun cunene/maybe-enable-smerge ()
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^<<<<<<< " nil t)
+        (smerge-mode 1))))
+  (add-hook 'find-file-hook 'cunene/maybe-enable-smerge)
+  (add-hook 'after-revert-hook 'cunene/maybe-enable-smerge)
 
-(add-hook 'find-file-hook 'sm-try-smerge t)
+  :config
+  (defhydra hydra-smerge (:hint nil
+                          :pre (smerge-mode 1)
+                          :post (smerge-auto-leave))
+    "
+^Move^       ^Keep^               ^Diff^                 ^Other^
+^^-----------^^-------------------^^---------------------^^-------
+_n_ext       _b_ase               _<_: upper/base        _C_ombine
+_p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
+^^           _l_ower (other)      _>_: base/lower        _k_ill current
+^^           _a_ll                _R_efine
+^^           _RET_: current       _E_diff
+"
+      ("n" smerge-next)
+      ("p" smerge-prev)
+      ("b" smerge-keep-base)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("\C-m" smerge-keep-current)
+      ("<" smerge-diff-base-upper)
+      ("=" smerge-diff-upper-lower)
+      (">" smerge-diff-base-lower)
+      ("R" smerge-refine)
+      ("E" smerge-ediff)
+      ("C" smerge-combine-with-next)
+      ("r" smerge-resolve)
+      ("k" smerge-kill-current)
+      ("q" nil "cancel" :color blue)))
 
 (setq projectile-known-projects-file
       (cunene/cache-concat "projectile/bookmarks.eld"))
@@ -1670,6 +1733,16 @@ ARGUMENT determines the visible heading."
                         'face 'font-lock-type-face)))))
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
+(use-package jq-mode
+  :ensure t)
+
+(with-eval-after-load "json-mode"
+  (define-key json-mode-map (kbd "C-c C-j") #'jq-interactively))
+
+;; Format JSON / JSONlines with JQ
+(use-package jq-format
+  :ensure t)
+
 ;; none of the use-package machinery seems to work with eshell, so we
 ;; do it manually instead via hooks.
 (setq-default eshell-directory-name (cunene/cache-concat "eshell"))
@@ -1692,5 +1765,18 @@ ARGUMENT determines the visible heading."
 
 (use-package deadgrep
   :ensure t)
+
+(setq cunene/browsers
+      '(("Firefox" . browse-url-firefox)
+        ("Chrome" . browse-url-chrome)
+        ("EWW" . eww-browse-url)))
+
+(defun cunene/browse-url (&rest args)
+  "Select the prefered browser from a menu before opening the URL."
+  (interactive)
+  (let ((browser (completing-read "WWW browser: " cunene/browsers nil t "")))
+    (apply (cdr (assoc browser cunene/browsers)) args)))
+
+(setq browse-url-browser-function #'cunene/browse-url)
 
 ;;; cunene.el ends here
