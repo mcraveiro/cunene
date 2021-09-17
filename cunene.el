@@ -413,6 +413,11 @@ Returns nil if no differences found, 't otherwise."
   :config
   (drag-stuff-global-mode t))
 
+(defun uuid-insert()
+  (interactive)
+  (require 'uuid)
+  (insert (upcase (uuid-string))))
+
 (defun cunene/toggle-quotes ()
   "Toggle single quoted string to double or vice versa, and
   flip the internal quotes as well.  Best to run on the first
@@ -573,6 +578,14 @@ If there's a text selection, work on the selected text."
           regexp-search-ring))
   :custom
   (savehist-file (cunene/cache-concat "savehist/history")))
+
+(use-package helpful
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+   ("C-c C-d" . helpful-at-point)
+   ("C-h C" . helpful-command)))
 
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
@@ -868,11 +881,18 @@ Also returns nil if pid is nil."
 
 (use-package org
   :ensure nil
+  :bind
+  (("C-c A" . org-agenda)
+   ("C-c B" . org-switchb)
+   ("C-c c" . org-capture)
+   ("C-c l" . org-store-link))
   :custom
   (org-startup-folded t)
   (org-adapt-indentation nil)
   (org-confirm-babel-evaluate nil)
   (org-cycle-separator-lines 0)
+  (org-hide-leading-stars t)
+  (org-highlight-latex-and-related '(latex))
   (org-descriptive-links t)
   (org-edit-src-content-indentation 0)
   (org-edit-src-persistent-message nil)
@@ -1346,6 +1366,16 @@ ARGUMENT determines the visible heading."
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
 
+(use-package engine-mode
+  :config
+  (engine-mode t)
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+  (defengine google
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "g"))
+
 (setq-default abbrev-mode 1)
 
 (use-package yasnippet
@@ -1357,6 +1387,9 @@ ARGUMENT determines the visible heading."
 
 (use-package yasnippet-snippets
   :defer)
+
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 (use-package git-commit
   :hook

@@ -11,7 +11,7 @@ Things we need to remember to change:
 
 ** Missing modes
 
--
+- bongo
 - verb mode
 - notmuch
 - expand region
@@ -672,8 +672,6 @@ Group commands for high-level applications.
   :config
   (drag-stuff-global-mode t))
 
-(require 'uuid)
-
 (defun uuid-insert()
   (interactive)
   (require 'uuid)
@@ -1255,11 +1253,18 @@ authoring documents with a fast and effective plain-text system.
 #+begin_src emacs-lisp
 (use-package org
   :ensure nil
+  :bind
+  (("C-c A" . org-agenda)
+   ("C-c B" . org-switchb)
+   ("C-c c" . org-capture)
+   ("C-c l" . org-store-link))
   :custom
   (org-startup-folded t)
   (org-adapt-indentation nil)
   (org-confirm-babel-evaluate nil)
   (org-cycle-separator-lines 0)
+  (org-hide-leading-stars t)
+  (org-highlight-latex-and-related '(latex))
   (org-descriptive-links t)
   (org-edit-src-content-indentation 0)
   (org-edit-src-persistent-message nil)
@@ -1719,6 +1724,7 @@ For the org-mode support, see:
 | consult          | https://github.com/minad/consult          |
 | consult-flycheck | https://github.com/minad/consult-flycheck |
 | consult-dir      | https://github.com/karthink/consult-dir   |
+| engine-mode      | https://github.com/hrs/engine-mode        |
 
 #+begin_src emacs-lisp
 (use-package consult
@@ -1782,6 +1788,17 @@ For the org-mode support, see:
          :map vertico-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
+
+(use-package engine-mode
+  :config
+  (engine-mode t)
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+  (defengine google
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "g"))
+
 #+end_src
 
 ** Snippets
@@ -2234,6 +2251,23 @@ Todo:
 #+begin_src emacs-lisp
 (use-package deadgrep
   :ensure t)
+#+end_src
+
+** Web Browsers
+
+#+begin_src emacs-lisp
+(setq cunene/browsers
+      '(("Firefox" . browse-url-firefox)
+        ("Chrome" . browse-url-chrome)
+        ("EWW" . eww-browse-url)))
+
+(defun cunene/browse-url (&rest args)
+  "Select the prefered browser from a menu before opening the URL."
+  (interactive)
+  (let ((browser (completing-read "WWW browser: " cunene/browsers nil t "")))
+    (apply (cdr (assoc browser cunene/browsers)) args)))
+
+(setq browse-url-browser-function #'cunene/browse-url)
 #+end_src
 
 * Postamble
