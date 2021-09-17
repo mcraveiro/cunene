@@ -52,6 +52,8 @@
   (setq-default tramp-persistency-file-name (cunene/cache-concat "tramp.eld")))
 (with-eval-after-load 'url
   (setq-default url-configuration-directory (cunene/cache-concat "url/")))
+(with-eval-after-load 'recentf
+  (setq-default recentf-save-file (cunene/cache-concat "recentf/recentf")))
 
 ;; Moving the location of packages causes weird bootstrapping errors.
 ;; (with-eval-after-load 'package
@@ -1243,6 +1245,8 @@ ARGUMENT determines the visible heading."
 
 (setq-default projectile-known-projects-file
               (cunene/cache-concat "projectile/bookmarks.eld"))
+(setq-default projectile-cache-file
+              (cunene/cache-concat "projectile/projectile.cache"))
 (use-package projectile
   :ensure t
   :init
@@ -1250,6 +1254,8 @@ ARGUMENT determines the visible heading."
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
+  :config
+((setq-default recentf-save-file ))
 
 (use-package ibuffer-projectile
   :ensure t
