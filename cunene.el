@@ -122,8 +122,12 @@
   (delete-file cunene/config-file)
   (org-babel-load-file cunene/config-file-org))
 
-(global-set-key (kbd "C-c i") 'cunene/find-dotfiles)
+(global-set-key (kbd "C-c I") 'cunene/find-config)
 (global-set-key (kbd "C-c R") 'cunene/reload-config)
+
+(setq custom-file
+      (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
 
 (setq-default
  gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.

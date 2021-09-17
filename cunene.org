@@ -181,7 +181,7 @@ Links:
   (require 'use-package))
 #+end_src
 
-** Config file
+** Org-mode config file
 
 #+begin_src emacs-lisp
 (defvar cunene/config-file
@@ -205,6 +205,19 @@ Links:
 
 (global-set-key (kbd "C-c I") 'cunene/find-config)
 (global-set-key (kbd "C-c R") 'cunene/reload-config)
+#+end_src
+
+** Custom
+
+Have a single custom settings config file. Set up the customize file to its own
+separate file, instead of saving customize settings in init.el.
+
+Try your best to make custom config clean.
+
+#+begin_src emacs-lisp
+(setq custom-file
+      (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
 #+end_src
 
 * Quality of Life
