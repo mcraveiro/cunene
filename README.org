@@ -8,14 +8,15 @@
 
 * About
 
-This repository contains my personal Emacs configuration. It is heavily based on
-others - copy and paste, mainly.
+This repository contains my [[https://github.com/mcraveiro/cunene/blob/master/cunene.org][personal Emacs configuration]]. It is heavily based on
+others - copy and paste, mainly. It uses the literate
 
 * References
 
 - [[https://github.com/angrybacon/dotemacs][dotemacs]]: Literate config by [[https://github.com/angrybacon][Mathieu Marques]].
 - [[https://github.com/jamiecollinson/dotfiles][dotfiles]]: Literate config by [[https://github.com/jamiecollinson][Jamie Collinson]].
 - [[https://github.com/credmp/emacs-config][emacs-config]]: Literate config by Arjen Wiersma.
+- [[https://pages.sachachua.com/.emacs.d/Sacha.html][dotemacs]]: Literate config by Sacha Chua.
 
 * Trying it
 
