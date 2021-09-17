@@ -2022,6 +2022,11 @@ Automatically detect the need for smerge.
           (lambda ()
             (local-set-key (kbd "C-c C-l") 'netrom/lsp-hydra/body)
             'lsp-ui-mode))
+
+(use-package consult-lsp
+  :ensure t
+  :diminish)
+
 #+end_src
 
 ** Diagrams
