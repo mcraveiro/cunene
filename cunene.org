@@ -18,6 +18,8 @@ Things we need to remember to change:
 - fixme todos
 - log-view
 - rg
+- pdf tools
+- autofill on org-mode
 
 ** Interesting modes to investigate
 
@@ -32,6 +34,9 @@ Things we need to remember to change:
   to use [[https://github.com/dandavison/delta][delta]] when displaying diffs."
 - [[https://github.com/thi-ng/org-spec][org-spec]]: "An Org-mode template for technical specification documents and HTML
   publishing."
+- [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]]: "Multiple cursors for Emacs. This is some pretty crazy
+  functionality, so yes, there are kinks. Don't be afraid though, I've been
+  using it since 2011 with great success and much merriment."
 
 * Preamble
 
@@ -498,7 +503,8 @@ Links:
 ** COMMENT Hydra
 
 Disabled for now as we are not using it and some of the keybinds conflict with
-more established uses.
+more established uses. Sacha does a =(with-eval-after-load 'hydra= before
+defining the hydra.
 
 *** Hydra: Bootstrap
 
@@ -860,6 +866,46 @@ From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
    ("C-h k" . helpful-key)
    ("C-c C-d" . helpful-at-point)
    ("C-h C" . helpful-command)))
+#+end_src
+
+** Prettify
+
+#+begin_src emacs-lisp
+(defun cunene/configure-prettify-symbols-alist ()
+  (push '("[ ]" . "☐" ) prettify-symbols-alist)
+  (push '("[X]" . "☑" ) prettify-symbols-alist)
+  (push '("[-]" . "❍" ) prettify-symbols-alist)
+  (push '("#+BEGIN_SRC" . "»") prettify-symbols-alist)
+  (push '("#+END_SRC" . "«") prettify-symbols-alist)
+  (push '("#+begin_src" . "»") prettify-symbols-alist)
+  (push '("#+end_src" . "«") prettify-symbols-alist)
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook 'cunene/configure-prettify-symbols-alist)
+
+(defun cunene/prog-mode-configure-prettify-symbols-alist ()
+  "Set prettify symbols alist."
+  (setq prettify-symbols-alist '(("lambda" . "λ")
+                                 ("->" . "→")
+                                 ("->>" . "↠")
+                                 ("=>" . "⇒")
+                                 ("map" . "↦")
+                                 ("/=" . "≠")
+                                 ("!=" . "≠")
+                                 ("==" . "≡")
+                                 ("<=" . "≤")
+                                 (">=" . "≥")
+                                 ("=<<" . "=≪")
+                                 (">>=" . "≫=")
+                                 ("<=<" . "↢")
+                                 (">=>" . "↣")
+                                 ("&&" . "∧")
+                                 ("||" . "∨")
+                                 ("not" . "¬")))
+  (prettify-symbols-mode))
+
+(add-hook 'prog-mode-hook 'cunene/prog-mode-configure-prettify-symbols-alist)
+;;  ("lambda"  . "λ") ("->" . "→") ("->>" . "↠")))
+
 #+end_src
 
 * Features
@@ -2002,7 +2048,7 @@ Automatically detect the need for smerge.
 #+begin_src emacs-lisp
 (use-package smerge-mode
   :commands smerge-mode
-  :bind ("C-c '" . hydra-smerge/body)
+  :bind ("C-c '" . hydra-hsmerge/body)
   :init
   (defun cunene/maybe-enable-smerge ()
     (save-excursion

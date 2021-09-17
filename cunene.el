@@ -587,6 +587,41 @@ If there's a text selection, work on the selected text."
    ("C-c C-d" . helpful-at-point)
    ("C-h C" . helpful-command)))
 
+(defun cunene/configure-prettify-symbols-alist ()
+  (push '("[ ]" . "☐" ) prettify-symbols-alist)
+  (push '("[X]" . "☑" ) prettify-symbols-alist)
+  (push '("[-]" . "❍" ) prettify-symbols-alist)
+  (push '("#+BEGIN_SRC" . "»") prettify-symbols-alist)
+  (push '("#+END_SRC" . "«") prettify-symbols-alist)
+  (push '("#+begin_src" . "»") prettify-symbols-alist)
+  (push '("#+end_src" . "«") prettify-symbols-alist)
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook 'cunene/configure-prettify-symbols-alist)
+
+(defun cunene/prog-mode-configure-prettify-symbols-alist ()
+  "Set prettify symbols alist."
+  (setq prettify-symbols-alist '(("lambda" . "λ")
+                                 ("->" . "→")
+                                 ("->>" . "↠")
+                                 ("=>" . "⇒")
+                                 ("map" . "↦")
+                                 ("/=" . "≠")
+                                 ("!=" . "≠")
+                                 ("==" . "≡")
+                                 ("<=" . "≤")
+                                 (">=" . "≥")
+                                 ("=<<" . "=≪")
+                                 (">>=" . "≫=")
+                                 ("<=<" . "↢")
+                                 (">=>" . "↣")
+                                 ("&&" . "∧")
+                                 ("||" . "∨")
+                                 ("not" . "¬")))
+  (prettify-symbols-mode))
+
+(add-hook 'prog-mode-hook 'cunene/prog-mode-configure-prettify-symbols-alist)
+;;  ("lambda"  . "λ") ("->" . "→") ("->>" . "↠")))
+
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
 
@@ -1515,7 +1550,7 @@ ARGUMENT determines the visible heading."
 
 (use-package smerge-mode
   :commands smerge-mode
-  :bind ("C-c '" . hydra-smerge/body)
+  :bind ("C-c '" . hydra-hsmerge/body)
   :init
   (defun cunene/maybe-enable-smerge ()
     (save-excursion
