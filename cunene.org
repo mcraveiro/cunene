@@ -668,7 +668,11 @@ Group commands for high-level applications.
   :diminish drag-stuff-mode
   :config
   (drag-stuff-global-mode t))
+#+end_src
 
+** Strings
+
+#+begin_src emacs-lisp
 (defun cunene/toggle-quotes ()
   "Toggle single quoted string to double or vice versa, and
   flip the internal quotes as well.  Best to run on the first
@@ -769,11 +773,31 @@ If there's a text selection, work on the selected text."
       (setq deactivate-mark nil))))
 
 (global-set-key (kbd "C-c C--") 'cunene/cycle-hyphen-underscore-space)
+
+(defun cunene/string-inflection-cycle-auto ()
+  "switching by major-mode"
+  (interactive)
+  (cond
+   ((eq major-mode 'emacs-lisp-mode)
+    (string-inflection-all-cycle))
+   ((eq major-mode 'java-mode)
+    (string-inflection-java-style-cycle))
+   ((eq major-mode 'ruby-mode)
+    (string-inflection-ruby-style-cycle))
+   (t
+    ;; default
+    (string-inflection-all-cycle))))
+
+(use-package string-inflection
+  :ensure t
+  :config
+  (global-set-key (kbd "C-M-j") 'cunene/string-inflection-cycle-auto))
 #+end_src
+
 
 ** Filling
 
-xFrom [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
+From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
 
 #+begin_src emacs-lisp
 (defun cunene/unfill-paragraph (&optional region)

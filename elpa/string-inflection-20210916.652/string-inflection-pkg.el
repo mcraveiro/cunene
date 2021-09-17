@@ -1,0 +1,2 @@
+;;; Generated package description from string-inflection-20210916.652/string-inflection.el  -*- no-byte-compile: t -*-
+(define-package "string-inflection" "20210916.652" "underscore -> UPCASE -> CamelCase -> lowerCamelCase conversion of names" 'nil :commit "e9f548606e3d56b58874b4d664cfd71d0b06a42c" :authors '(("akicho8" . "akicho8@gmail.com")) :maintainer '("akicho8" . "akicho8@gmail.com") :keywords '("elisp"))

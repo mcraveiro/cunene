@@ -514,6 +514,25 @@ If there's a text selection, work on the selected text."
 
 (global-set-key (kbd "C-c C--") 'cunene/cycle-hyphen-underscore-space)
 
+(defun cunene/string-inflection-cycle-auto ()
+  "switching by major-mode"
+  (interactive)
+  (cond
+   ((eq major-mode 'emacs-lisp-mode)
+    (string-inflection-all-cycle))
+   ((eq major-mode 'java-mode)
+    (string-inflection-java-style-cycle))
+   ((eq major-mode 'ruby-mode)
+    (string-inflection-ruby-style-cycle))
+   (t
+    ;; default
+    (string-inflection-all-cycle))))
+
+(use-package string-inflection
+  :ensure t
+  :config
+  (global-set-key (kbd "C-M-j") 'cunene/string-inflection-cycle-auto))
+
 (defun cunene/unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and makes it into a single line of text."
   (interactive (progn
