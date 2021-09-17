@@ -17,6 +17,7 @@ others - copy and paste, mainly. It uses the literate config approach.
 - [[https://github.com/jamiecollinson/dotfiles][dotfiles]]: Literate config by [[https://github.com/jamiecollinson][Jamie Collinson]].
 - [[https://github.com/credmp/emacs-config][emacs-config]]: Literate config by Arjen Wiersma.
 - [[https://pages.sachachua.com/.emacs.d/Sacha.html][dotemacs]]: Literate config by Sacha Chua.
+- [[https://lupan.pl/dotemacs/][dotemacs]]: Literate config by Lupan.
 
 * Trying it
 
