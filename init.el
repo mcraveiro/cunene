@@ -37,7 +37,7 @@
    ;; (background-color . "#101010")       ;; Default background color
    ;; (foreground-color . "#FAFAFA")       ;; Default foreground color
    (font . "Source Code Pro 10")           ;; Font to use
-   (fullscreen . maximized)             ;; Maximize the window by default
+   ;; (fullscreen . maximized)             ;; Maximize the window by default
    (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
    (left-fringe . 8)                    ;; Thin left fringe
    (menu-bar-lines . 0)                 ;; No menu bar

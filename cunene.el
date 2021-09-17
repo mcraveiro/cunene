@@ -109,15 +109,15 @@
 
 (defvar cunene/config-file-org
   (concat user-emacs-directory "cunene.org")
-  "The location of the cunene org-mode file.")
+  "The location of the cunene `org-mode' file.")
 
 (defun cunene/find-config ()
-  "Edit cunene's config file"
+  "Edit cunene's config file."
   (interactive)
   (find-file cunene/config-file-org))
 
 (defun cunene/reload-config()
-  "Reload config.org"
+  "Reload config.org."
   (interactive)
   (delete-file cunene/config-file)
   (org-babel-load-file cunene/config-file-org))
@@ -403,18 +403,18 @@ surrounded by word boundaries."
 (use-package ibuffer
   :bind
   (:map ibuffer-mode-map
-	("/ e" . ibuffer-filter-by-ede-project)
-	("% e" . ibuffer-mark-by-ede-project-regexp)
-	("s e" . ibuffer-do-sort-by-ede-project))
+        ("/ e" . ibuffer-filter-by-ede-project)
+        ("% e" . ibuffer-mark-by-ede-project-regexp)
+        ("s e" . ibuffer-do-sort-by-ede-project))
   :config
   (progn
     (global-set-key (kbd "<f5>") 'ibuffer) ;; Shortcut for ibuffer
     (when (display-graphic-p) ;; Display buffer icons on GUI
       (define-ibuffer-column icon (:name " ")
-	(let ((icon (if (and buffer-file-name
+        (let ((icon (if (and buffer-file-name
                              (all-the-icons-match-to-alist buffer-file-name
                                                            all-the-icons-regexp-icon-alist))
-			(all-the-icons-icon-for-file (file-name-nondirectory buffer-file-name)
+                        (all-the-icons-icon-for-file (file-name-nondirectory buffer-file-name)
                                                      :height 0.9 :v-adjust -0.05)
                       (all-the-icons-icon-for-mode major-mode :height 0.9 :v-adjust -0.05))))
           (if (symbolp icon)
@@ -422,9 +422,9 @@ surrounded by word boundaries."
             icon))))
     (add-hook 'ibuffer-mode-hook ;; Setup filter groups
               '(lambda ()
-		 (ibuffer-auto-mode 1)
-		 (ibuffer-switch-to-saved-filter-groups "home")
-		 (ibuffer-do-sort-by-filename/process))))
+                 (ibuffer-auto-mode 1)
+                 (ibuffer-switch-to-saved-filter-groups "home")
+                 (ibuffer-do-sort-by-filename/process))))
 
   :custom
   (ibuffer-formats '((mark modified read-only locked
@@ -894,11 +894,22 @@ ARGUMENT determines the visible heading."
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
 
+(defvar cunene/undo-tree-directory
+  (cunene/cache-concat "undo")
+  "Location of the undo-tree save files.")
+
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode
   :config
-  (global-undo-tree-mode 1))
+  (setq undo-tree-visualizer-diff t)
+  (setq undo-tree-visualizer-timestamps t)
+  (setq undo-tree-visualizer-relative-timestamps t)
+  (setq undo-tree-history-directory-alist
+        `((".*" . ,cunene/undo-tree-directory)))
+  (setq undo-tree-auto-save-history t) ;; autosave the undo-tree history
+  (global-undo-tree-mode 1)
+)
 
 (use-package bm
   :ensure t
@@ -1027,7 +1038,11 @@ ARGUMENT determines the visible heading."
   :bind
   (("M-g g" . consult-goto-line)
    ("C-s" . consult-line)
-   ("C-x b" . consult-buffer)))
+   ("C-x b" . consult-buffer)
+   ("C-x j" . consult-mark)))
+
+(use-package consult-flycheck
+  :after flycheck)
 
 (use-package git-commit
   :hook
@@ -1129,6 +1144,14 @@ ARGUMENT determines the visible heading."
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Flycheck errors*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (reusable-frames . visible)
+               (side            . bottom)
+               (window-height   . 0.2)))
 
 (use-package plantuml-mode
   :ensure t
