@@ -300,49 +300,6 @@ Returns nil if no differences found, 't otherwise."
 
 (use-package diminish)
 
-(defvar-local cunene/hydra-super-body nil)
-
-(defun cunene/hydra-set-super ()
-  "Set the super key for hydra."
-  (when-let* ((suffix "-mode")
-              (position (- (length suffix)))
-              (mode (symbol-name major-mode))
-              (name (if (string= suffix (substring mode position))
-                        (substring mode 0 position)
-                      mode))
-              (body (intern (format "hydra-%s/body" name))))
-    (when (functionp body)
-      (setq cunene/hydra-super-body body))))
-
-(defun cunene/hydra-super-maybe ()
-  "Set super conditionally."
-  (interactive)
-  (if cunene/hydra-super-body
-      (funcall cunene/hydra-super-body)
-    (user-error "Error: cunene/hydra-super: cunene/hydra-super-body is not set")))
-
-(use-package hydra
-  :bind
-  ("C-c a" . hydra-applications/body)
-  ("C-c d" . hydra-dates/body)
-  ("C-c e" . hydra-eyebrowse/body)
-  ("C-c f" . hydra-spotify/body)
-  ("C-c g" . hydra-git/body)
-  ("C-c o" . cunene/hydra-super-maybe)
-  ("C-c p" . hydra-projectile/body)
-  ("C-c s" . hydra-system/body)
-  ("C-c u" . hydra-ui/body)
-  :custom
-  (hydra-default-hint nil))
-
-(defhydra hydra-applications (:color teal)
-  (concat (cunene/hydra-heading "Applications" "Launch" "Shell") "
- _q_ quit            _i_ erc             _T_ eshell             ^^
-")
-  ("q" nil)
-  ("i" erc)
-  ("T" (eshell t)))
-
 ;; Give details about white space usage
 (autoload 'whitespace-mode "whitespace" "Toggle whitespace visualization." t)
 (autoload 'whitespace-toggle-options
@@ -408,7 +365,11 @@ Returns nil if no differences found, 't otherwise."
 (use-package crux
   :ensure t
   :bind (
-         ("C-S-d" . crux-duplicate-current-line-or-region)))
+         ("C-S-d" . crux-duplicate-current-line-or-region)
+         ;; Move to beginning of line between head of line and head of text
+         ("C-a" . crux-move-beginning-of-line)
+         ("C-c r" . crux-rename-file-and-buffer)
+         ("C-c D" . crux-delete-file-and-buffer)))
 
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
@@ -1059,6 +1020,26 @@ ARGUMENT determines the visible heading."
   :ensure t
   :init
   (beacon-mode 1))
+
+(require 'hi-lock)
+
+(defun cunene/unhighlight-symbol-at-point ()
+  "Remove highlight of symbol at point."
+  (interactive)
+  (unhighlight-regexp (concat "\\_<" (thing-at-point 'symbol) "\\_>")))
+
+;; Key bindings
+(global-set-key (kbd "S-<f12>") 'cunene/unhighlight-symbol-at-point)
+(global-set-key (kbd "<f12>") 'highlight-symbol-at-point)
+(global-set-key (kbd "C-<f12>") 'highlight-symbol-next)
+(global-set-key (kbd "M-<f12>") 'highlight-symbol-prev)
+
+(use-package consult
+ :ensure t
+  :bind
+  (("M-g g" . consult-goto-line)
+   ("C-s" . consult-line)
+   ("C-x b" . consult-buffer)))
 
 (use-package git-commit
   :hook

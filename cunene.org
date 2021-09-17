@@ -15,6 +15,7 @@ Things we need to remember to change:
 
 ** Missing modes
 
+- expand region
 - fixme todos
 - log-view
 - rg
@@ -462,7 +463,10 @@ Links:
 (use-package diminish)
 #+end_src
 
-** Hydra
+** COMMENT Hydra
+
+Disabled for now as we are not using it and some of the keybinds conflict with
+more established uses.
 
 *** Hydra: Bootstrap
 
@@ -595,7 +599,11 @@ Group commands for high-level applications.
 (use-package crux
   :ensure t
   :bind (
-         ("C-S-d" . crux-duplicate-current-line-or-region)))
+         ("C-S-d" . crux-duplicate-current-line-or-region)
+         ;; Move to beginning of line between head of line and head of text
+         ("C-a" . crux-move-beginning-of-line)
+         ("C-c r" . crux-rename-file-and-buffer)
+         ("C-c D" . crux-delete-file-and-buffer)))
 #+end_src
 
 * Features
@@ -987,12 +995,6 @@ authoring documents with a fast and effective plain-text system.
 #+begin_src emacs-lisp
 (use-package org
   :ensure nil
-  :bind
-  (:map org-mode-map
-   ("<C-return>" . nil)
-   ("<C-tab>" . cunene/org-cycle-parent))
-  :hook
-  (org-mode . cunene/hydra-set-super)
   :custom
   (org-adapt-indentation nil)
   (org-confirm-babel-evaluate nil)
@@ -1012,11 +1014,7 @@ authoring documents with a fast and effective plain-text system.
   (require 'ob-shell)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
-  (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name)
-  (with-eval-after-load 'evil
-    (evil-define-key* 'motion org-mode-map
-      (kbd "C-j") #'cunene/org-show-next-heading-tidily
-      (kbd "C-k") #'cunene/org-show-previous-heading-tidily)))
+  (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1341,7 +1339,8 @@ For the org-mode support, see:
 
 ** Highlighting
 
-| Beacon | https://github.com/Malabarba/beacon |
+| Beacon  | https://github.com/Malabarba/beacon                                     |
+| Hi-lock | https://www.masteringemacs.org/article/highlighting-by-word-line-regexp |
 
 #+begin_src emacs-lisp
 ;; Highlight current line.
@@ -1368,20 +1367,32 @@ For the org-mode support, see:
   :ensure t
   :init
   (beacon-mode 1))
+
+(require 'hi-lock)
+
+(defun cunene/unhighlight-symbol-at-point ()
+  "Remove highlight of symbol at point."
+  (interactive)
+  (unhighlight-regexp (concat "\\_<" (thing-at-point 'symbol) "\\_>")))
+
+;; Key bindings
+(global-set-key (kbd "S-<f12>") 'cunene/unhighlight-symbol-at-point)
+(global-set-key (kbd "<f12>") 'highlight-symbol-at-point)
+(global-set-key (kbd "C-<f12>") 'highlight-symbol-next)
+(global-set-key (kbd "M-<f12>") 'highlight-symbol-prev)
 #+end_src
 
 ** Search
 
 | Consult | https://github.com/minad/consult |
 
-TODO: learn how to use all the different consult functionality.
-
 #+begin_src emacs-lisp
 (use-package consult
-  :ensure t
+ :ensure t
   :bind
   (("M-g g" . consult-goto-line)
-   ("C-s" . consult-line)))
+   ("C-s" . consult-line)
+   ("C-x b" . consult-buffer)))
 #+end_src
 
 * Development
