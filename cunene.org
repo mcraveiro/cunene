@@ -277,7 +277,6 @@ Here are what I consider better defaults as per my own experience.
  sentence-end-double-space nil          ; Use a single space after dots
  show-help-function nil                 ; Disable help text everywhere
  tab-always-indent 'complete            ; Tab indents first then tries completions
- uniquify-buffer-name-style 'forward    ; Uniquify buffer names
  warning-minimum-level :error           ; Skip warning buffers
  window-combination-resize t            ; Resize windows proportionally
  vc-follow-symlinks t                   ; Follow symlinks without asking
@@ -297,12 +296,11 @@ Here are what I consider better defaults as per my own experience.
 *** Identification
 
 #+begin_src emacs-lisp
-(use-package uniquify
-  :config
-  (setq uniquify-buffer-name-style 'reverse)
-  (setq uniquify-separator " • ")
-  (setq uniquify-after-kill-buffer-p t)
-  (setq uniquify-ignore-buffers-re "^\\*"))
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator " • ")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*")
 #+end_src
 
 *** Killing
@@ -456,7 +454,7 @@ Links:
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
-  :config (setq doom-modeline-buffer-file-name-style 'relative-to-project)
+  :config (setq doom-modeline-buffer-file-name-style 'buffer-name)
 #+end_src
 
 #+begin_src emacs-lisp

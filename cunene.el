@@ -158,7 +158,6 @@
  sentence-end-double-space nil          ; Use a single space after dots
  show-help-function nil                 ; Disable help text everywhere
  tab-always-indent 'complete            ; Tab indents first then tries completions
- uniquify-buffer-name-style 'forward    ; Uniquify buffer names
  warning-minimum-level :error           ; Skip warning buffers
  window-combination-resize t            ; Resize windows proportionally
  vc-follow-symlinks t                   ; Follow symlinks without asking
@@ -173,12 +172,11 @@
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 (column-number-mode t)                  ; Display column numbers
 
-(use-package uniquify
-  :config
-  (setq uniquify-buffer-name-style 'reverse)
-  (setq uniquify-separator " • ")
-  (setq uniquify-after-kill-buffer-p t)
-  (setq uniquify-ignore-buffers-re "^\\*"))
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator " • ")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*")
 
 ;; Do not ask to kill a buffer.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
@@ -296,7 +294,7 @@ Returns nil if no differences found, 't otherwise."
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
-  :config (setq doom-modeline-buffer-file-name-style 'relative-to-project)
+  :config (setq doom-modeline-buffer-file-name-style 'buffer-name)
 
 (use-package diminish)
 
@@ -668,12 +666,6 @@ The function FN wraps a function with `ignore-errors' macro."
 
 (use-package org
   :ensure nil
-  :bind
-  (:map org-mode-map
-   ("<C-return>" . nil)
-   ("<C-tab>" . cunene/org-cycle-parent))
-  :hook
-  (org-mode . cunene/hydra-set-super)
   :custom
   (org-adapt-indentation nil)
   (org-confirm-babel-evaluate nil)
@@ -693,11 +685,7 @@ The function FN wraps a function with `ignore-errors' macro."
   (require 'ob-shell)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
-  (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name)
-  (with-eval-after-load 'evil
-    (evil-define-key* 'motion org-mode-map
-      (kbd "C-j") #'cunene/org-show-next-heading-tidily
-      (kbd "C-k") #'cunene/org-show-previous-heading-tidily)))
+  (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
 
 (defun cunene/org-cycle-parent (argument)
   "Go to the nearest parent heading and execute `org-cycle'.
