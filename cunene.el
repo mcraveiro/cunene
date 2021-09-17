@@ -330,6 +330,8 @@ Returns nil if no differences found, 't otherwise."
 (add-hook 'js-mode-hook 'whitespace-mode)
 (add-hook 'js2-mode-hook 'whitespace-mode)
 
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;;
 ;; Tabs
 ;;
@@ -360,6 +362,15 @@ Returns nil if no differences found, 't otherwise."
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
   (cl-flet ((process-list ())) ad-do-it))
 
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-items '((recents  . 5)
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (agenda . 5))))
+
 (use-package crux
   :ensure t
   :bind (
@@ -368,6 +379,119 @@ Returns nil if no differences found, 't otherwise."
          ("C-a" . crux-move-beginning-of-line)
          ("C-c r" . crux-rename-file-and-buffer)
          ("C-c D" . crux-delete-file-and-buffer)))
+
+(use-package drag-stuff
+  :ensure t
+  :bind
+  (:map drag-stuff-mode-map
+        ("<C-s-up>" . drag-stuff-up)
+        ("<C-s-down>" . drag-stuff-down)
+        ("<C-s-left>" . drag-stuff-left)
+        ("<C-s-right>" . drag-stuff-right))
+  :diminish drag-stuff-mode
+  :config
+  (drag-stuff-global-mode t))
+
+(defun cunene/toggle-quotes ()
+  "Toggle single quoted string to double or vice versa, and
+  flip the internal quotes as well.  Best to run on the first
+  character of the string."
+  (interactive)
+  (save-excursion
+    (re-search-backward "[\"']")
+    (let* ((start (point))
+           (old-c (char-after start))
+           new-c)
+      (setq new-c
+            (case old-c
+              (?\" "'")
+              (?\' "\"")))
+      (setq old-c (char-to-string old-c))
+      (delete-char 1)
+      (insert new-c)
+      (re-search-forward old-c)
+      (backward-char 1)
+      (let ((end (point)))
+        (delete-char 1)
+        (insert new-c)
+        (replace-string new-c old-c nil (1+ start) end)))))
+
+(defun cunene/space-to-underscore-region (start end)
+  "Replace space by underscore in region."
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (search-forward " " nil t) (replace-match "_"))))
+
+(defun cunene/underscore-to-space-region (start end)
+  "Replace underscore by space in region."
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (search-forward "_" nil t) (replace-match " "))))
+
+(defun cunene/replace-underscore-space-toggle ()
+  "Replace underscore/space in the current region or line.
+If the current line contains more “_” char than space,
+then replace them to space, else replace space to _.
+If there's a text selection, work on the selected text."
+  (interactive)
+  (let (li bds)
+    (setq bds
+          (if (region-active-p)
+              (cons (region-beginning) (region-end))
+            (bounds-of-thing-at-point 'line)))
+    (setq li (buffer-substring-no-properties (car bds) (cdr bds)))
+    (if (> (count 32 li) (count 95 li))
+        (progn (replace-string " " "_" nil (car bds) (cdr bds)))
+      (progn (replace-string "_" " " nil (car bds) (cdr bds))))))
+
+(defun cunene/cycle-hyphen-underscore-space ()
+  "Cyclically replace {underscore, space, hypen} chars current
+ line or text selection.  When called repeatedly, this command
+ cycles the {“ ”, “_”, “-”} characters."
+  (interactive)
+  ;; this function sets a property 「'state」. Possible values are 0
+  ;; to length of charList.
+  (let (mainText charList p1 p2 currentState nextState changeFrom
+             changeTo startedWithRegion-p )
+
+    (if (region-active-p)
+        (progn
+          (setq startedWithRegion-p t )
+          (setq p1 (region-beginning))
+          (setq p2 (region-end))
+          )
+      (progn (setq startedWithRegion-p nil )
+             (setq p1 (line-beginning-position))
+             (setq p2 (line-end-position)) ) )
+
+    (setq charList (list " " "_" "-" ))
+
+    (setq currentState
+          (if (get 'cunene/cycle-hyphen-underscore-space 'state)
+              (get 'cunene/cycle-hyphen-underscore-space 'state) 0))
+    (setq nextState (% (+ currentState (length charList) 1) (length charList)))
+
+    (setq changeFrom (nth currentState charList))
+    (setq changeTo (nth nextState charList))
+
+    (setq mainText
+          (replace-regexp-in-string changeFrom changeTo
+                                    (buffer-substring-no-properties p1 p2)))
+    (delete-region p1 p2)
+    (insert mainText)
+
+    (put 'cunene/cycle-hyphen-underscore-space 'state nextState)
+
+    (when startedWithRegion-p
+      (goto-char p2)
+      (set-mark p1)
+      (setq deactivate-mark nil))))
+
+(global-set-key (kbd "C-c C--") 'cunene/cycle-hyphen-underscore-space)
 
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
@@ -638,15 +762,6 @@ Also returns nil if pid is nil."
                    (helpful-mode :same t)
                    (process-menu-mode :same t)))
   (shackle-select-reused-windows t))
-
-(defun cunene/ignore-error-wrapper (fn)
-  "Funtion return new function that ignore errors.
-The function FN wraps a function with `ignore-errors' macro."
-  (lexical-let ((fn fn))
-    (lambda ()
-      (interactive)
-      (ignore-errors
-        (funcall fn)))))
 
 (use-package windmove
   :ensure nil
