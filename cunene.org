@@ -102,13 +102,16 @@ directory with an ever-growing number of packages used on a daily basis.
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'request
-  (setq-default request-storage-directory (cunene/cache-concat "request/")))
+  (setq request-storage-directory (cunene/cache-concat "request/")))
 (with-eval-after-load 'tramp
-  (setq-default tramp-persistency-file-name (cunene/cache-concat "tramp.eld")))
+  (setq tramp-persistency-file-name (cunene/cache-concat "tramp.eld")))
 (with-eval-after-load 'url
-  (setq-default url-configuration-directory (cunene/cache-concat "url/")))
+  (setq url-configuration-directory (cunene/cache-concat "url/")))
 (with-eval-after-load 'recentf
-  (setq-default recentf-save-file (cunene/cache-concat "recentf/recentf")))
+  (progn
+    (setq recentf-save-file (cunene/cache-concat "recentf/recentf"))
+    (setq recentf-max-saved-items 150)
+))
 
 ;; Moving the location of packages causes weird bootstrapping errors.
 ;; (with-eval-after-load 'package
@@ -230,6 +233,34 @@ Try your best to make custom config clean.
 (setq custom-file
       (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
+#+end_src
+
+** Kill Ring
+
+| browse-kill-ring | https://github.com/browse-kill-ring/browse-kill-ring |
+
+#+begin_src emacs-lisp
+(setq kill-ring-max 1000)
+#+end_src
+
+From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
+
+#+begin_src emacs-lisp
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+#+end_src
+
+Browse kill ring.
+
+#+begin_src emacs-lisp
+(use-package browse-kill-ring
+  :ensure t
+  :config
+  (browse-kill-ring-default-keybindings))
 #+end_src
 
 * Quality of Life
@@ -1365,6 +1396,20 @@ Issues:
 
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
+
+;; Enable richer annotations using the Marginalia package
+(use-package marginalia
+  ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+
+  ;; The :init configuration is always executed (Not lazy!)
+  :init
+
+  ;; Must be in the :init section of use-package such that the mode gets
+  ;; enabled right away. Note that this forces loading the package.
+  (marginalia-mode))
 #+end_src
 
 ** Date and Time
@@ -1537,8 +1582,9 @@ For the org-mode support, see:
 
 ** Search
 
-| Consult | https://github.com/minad/consult |
-| Consult-flycheck | https://github.com/minad/consult-flycheck |
+| consult          | https://github.com/minad/consult          |
+| consult-flycheck | https://github.com/minad/consult-flycheck |
+| consult-dir      | https://github.com/karthink/consult-dir   |
 
 #+begin_src emacs-lisp
 (use-package consult
@@ -1594,6 +1640,14 @@ For the org-mode support, see:
 
 (use-package consult-flycheck
   :after flycheck)
+
+;; Consult directory navigation
+(use-package consult-dir
+  :ensure t
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
 #+end_src
 
 * Development
@@ -1753,8 +1807,6 @@ Automatically detect the need for smerge.
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
-  :config
-((setq-default recentf-save-file ))
 
 (use-package ibuffer-projectile
   :ensure t

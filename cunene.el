@@ -47,13 +47,16 @@
     path))
 
 (with-eval-after-load 'request
-  (setq-default request-storage-directory (cunene/cache-concat "request/")))
+  (setq request-storage-directory (cunene/cache-concat "request/")))
 (with-eval-after-load 'tramp
-  (setq-default tramp-persistency-file-name (cunene/cache-concat "tramp.eld")))
+  (setq tramp-persistency-file-name (cunene/cache-concat "tramp.eld")))
 (with-eval-after-load 'url
-  (setq-default url-configuration-directory (cunene/cache-concat "url/")))
+  (setq url-configuration-directory (cunene/cache-concat "url/")))
 (with-eval-after-load 'recentf
-  (setq-default recentf-save-file (cunene/cache-concat "recentf/recentf")))
+  (progn
+    (setq recentf-save-file (cunene/cache-concat "recentf/recentf"))
+    (setq recentf-max-saved-items 150)
+))
 
 ;; Moving the location of packages causes weird bootstrapping errors.
 ;; (with-eval-after-load 'package
@@ -130,6 +133,20 @@
 (setq custom-file
       (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
+
+(setq kill-ring-max 1000)
+
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+
+(use-package browse-kill-ring
+  :ensure t
+  :config
+  (browse-kill-ring-default-keybindings))
 
 (setq-default
  gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
@@ -1019,6 +1036,20 @@ ARGUMENT determines the visible heading."
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
 
+;; Enable richer annotations using the Marginalia package
+(use-package marginalia
+  ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+
+  ;; The :init configuration is always executed (Not lazy!)
+  :init
+
+  ;; Must be in the :init section of use-package such that the mode gets
+  ;; enabled right away. Note that this forces loading the package.
+  (marginalia-mode))
+
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 (display-time)
@@ -1216,6 +1247,14 @@ ARGUMENT determines the visible heading."
 (use-package consult-flycheck
   :after flycheck)
 
+;; Consult directory navigation
+(use-package consult-dir
+  :ensure t
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
 (use-package git-commit
   :hook
   (git-commit-mode . (lambda () (setq-local fill-column 72))))
@@ -1309,8 +1348,6 @@ ARGUMENT determines the visible heading."
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
-  :config
-((setq-default recentf-save-file ))
 
 (use-package ibuffer-projectile
   :ensure t
