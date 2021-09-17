@@ -32,6 +32,7 @@ Things we need to remember to change:
   it wraps lines at fill-column."
 - [[https://elpa.gnu.org/packages/systemd.html][systemd]]: "This package provides D-Bus bindings, major modes and interactive
   commands for working with systemd from within Emacs."
+- [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
 
 * Preamble
 
@@ -589,7 +590,9 @@ Group commands for high-level applications.
 (add-hook 'js-mode-hook 'whitespace-mode)
 (add-hook 'js2-mode-hook 'whitespace-mode)
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; do not clean whitespace on windows.
+(if (not (eq window-system 'w32))
+    (add-hook 'before-save-hook 'delete-trailing-whitespace))
 
 ;;
 ;; Tabs
@@ -766,6 +769,57 @@ If there's a text selection, work on the selected text."
       (setq deactivate-mark nil))))
 
 (global-set-key (kbd "C-c C--") 'cunene/cycle-hyphen-underscore-space)
+#+end_src
+
+** Filling
+
+xFrom [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
+
+#+begin_src emacs-lisp
+(defun cunene/unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list t)))
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil region)))
+(bind-key "M-Q" 'cunene/unfill-paragraph)
+
+(defun my-fill-or-unfill-paragraph (&optional unfill region)
+  "Fill paragraph (or REGION).
+        With the prefix argument UNFILL, unfill it instead."
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list (if current-prefix-arg 'unfill) t)))
+  (let ((fill-column (if unfill (point-max) fill-column)))
+    (fill-paragraph nil region)))
+(bind-key "M-q" 'my-fill-or-unfill-paragraph)
+
+(remove-hook 'text-mode-hook #'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+#+end_src
+
+** History
+
+#+begin_src emacs-lisp
+(use-package saveplace
+  :ensure t
+  :init (save-place-mode))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode)
+  :config
+  (setq history-length t)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
+  :custom
+  (savehist-file (cunene/cache-concat "savehist/history")))
 #+end_src
 
 * Features
@@ -1147,6 +1201,7 @@ authoring documents with a fast and effective plain-text system.
 (use-package org
   :ensure nil
   :custom
+  (org-startup-folded t)
   (org-adapt-indentation nil)
   (org-confirm-babel-evaluate nil)
   (org-cycle-separator-lines 0)
@@ -1357,21 +1412,6 @@ Issues:
   (completion-styles '(orderless))
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode)
-  :config
-  (setq history-length t)
-  (setq history-delete-duplicates t)
-  (setq savehist-save-minibuffer-history 1)
-  (setq savehist-additional-variables
-        '(kill-ring
-          search-ring
-          regexp-search-ring))
-  :custom
-  (savehist-file (cunene/cache-concat "savehist/history")))
 
 ;; A few more useful configurations...
 (use-package emacs
@@ -1853,6 +1893,48 @@ Automatically detect the need for smerge.
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+#+end_src
+
+** Parenthesis
+
+#+begin_src emacs-lisp
+(show-paren-mode 1)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package smartparens
+  :ensure t
+  :diminish
+  :init
+  (smartparens-mode 1)
+  :config
+  (add-hook 'prog-mode-hook 'smartparens-mode))
+
+(use-package rainbow-mode
+  :ensure t
+  :config
+  (setq rainbow-x-colors nil))
+#+end_src
+
+** Indentation
+
+#+begin_src emacs-lisp
+(use-package aggressive-indent
+  :ensure t)
+#+end_src
+
+** Deletion
+
+#+begin_src emacs-lisp
+(use-package smart-hungry-delete
+  :ensure t
+  :bind (("<backspace>" . smart-hungry-delete-backward-char)
+         ("C-d" . smart-hungry-delete-forward-char))
+  :defer nil ;; dont defer so we can add our functions to hooks
+  :config (smart-hungry-delete-add-default-hooks))
 #+end_src
 
 * External

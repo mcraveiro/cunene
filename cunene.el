@@ -349,7 +349,9 @@ Returns nil if no differences found, 't otherwise."
 (add-hook 'js-mode-hook 'whitespace-mode)
 (add-hook 'js2-mode-hook 'whitespace-mode)
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; do not clean whitespace on windows.
+(if (not (eq window-system 'w32))
+    (add-hook 'before-save-hook 'delete-trailing-whitespace))
 
 ;;
 ;; Tabs
@@ -511,6 +513,47 @@ If there's a text selection, work on the selected text."
       (setq deactivate-mark nil))))
 
 (global-set-key (kbd "C-c C--") 'cunene/cycle-hyphen-underscore-space)
+
+(defun cunene/unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list t)))
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil region)))
+(bind-key "M-Q" 'cunene/unfill-paragraph)
+
+(defun my-fill-or-unfill-paragraph (&optional unfill region)
+  "Fill paragraph (or REGION).
+        With the prefix argument UNFILL, unfill it instead."
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list (if current-prefix-arg 'unfill) t)))
+  (let ((fill-column (if unfill (point-max) fill-column)))
+    (fill-paragraph nil region)))
+(bind-key "M-q" 'my-fill-or-unfill-paragraph)
+
+(remove-hook 'text-mode-hook #'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+(use-package saveplace
+  :ensure t
+  :init (save-place-mode))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode)
+  :config
+  (setq history-length t)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
+  :custom
+  (savehist-file (cunene/cache-concat "savehist/history")))
 
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
@@ -799,6 +842,7 @@ Also returns nil if pid is nil."
 (use-package org
   :ensure nil
   :custom
+  (org-startup-folded t)
   (org-adapt-indentation nil)
   (org-confirm-babel-evaluate nil)
   (org-cycle-separator-lines 0)
@@ -996,21 +1040,6 @@ ARGUMENT determines the visible heading."
   (completion-styles '(orderless))
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode)
-  :config
-  (setq history-length t)
-  (setq history-delete-duplicates t)
-  (setq savehist-save-minibuffer-history 1)
-  (setq savehist-additional-variables
-        '(kill-ring
-          search-ring
-          regexp-search-ring))
-  :custom
-  (savehist-file (cunene/cache-concat "savehist/history")))
 
 ;; A few more useful configurations...
 (use-package emacs
@@ -1386,6 +1415,36 @@ ARGUMENT determines the visible heading."
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+
+(show-paren-mode 1)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package smartparens
+  :ensure t
+  :diminish
+  :init
+  (smartparens-mode 1)
+  :config
+  (add-hook 'prog-mode-hook 'smartparens-mode))
+
+(use-package rainbow-mode
+  :ensure t
+  :config
+  (setq rainbow-x-colors nil))
+
+(use-package aggressive-indent
+  :ensure t)
+
+(use-package smart-hungry-delete
+  :ensure t
+  :bind (("<backspace>" . smart-hungry-delete-backward-char)
+         ("C-d" . smart-hungry-delete-forward-char))
+  :defer nil ;; dont defer so we can add our functions to hooks
+  :config (smart-hungry-delete-add-default-hooks))
 
 ;; none of the use-package machinery seems to work with eshell, so we
 ;; do it manually instead via hooks.
