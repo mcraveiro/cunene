@@ -1206,13 +1206,13 @@ Todo:
 #+begin_src emacs-lisp
 ;; none of the use-package machinery seems to work with eshell, so we
 ;; do it manually instead via hooks.
+(setq-default eshell-directory-name (cunene/cache-concat "eshell"))
 (add-hook 'eshell-mode-hook
           (lambda ()
             (require 'em-alias)
             (add-to-list 
              'eshell-command-aliases-list (list "ll" "ls -l"))
             (defalias 'ff 'find-file)
-            (setq eshell-directory-name (cunene/cache-concat "eshell"))
             (define-key eshell-mode-map (kbd "C-p") #'eshell-previous-matching-input-from-input)
             (define-key eshell-mode-map (kbd "C-n") #'eshell-next-matching-input-from-input)
             (define-key eshell-mode-map (kbd "<up>") #'previous-line)
