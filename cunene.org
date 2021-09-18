@@ -11,14 +11,11 @@ Things we need to remember to change:
 
 ** Missing modes
 
-- verb mode
 - notmuch
-- expand region
 - fixme todos
 - log-view
 - rg
 - pdf tools
-- autofill on org-mode
 
 ** Interesting modes to investigate
 
@@ -705,7 +702,7 @@ Assorted utility functions for which we could not yet establish a good category.
   (drag-stuff-global-mode t))
 
 (use-package expand-region
-  :bind ("H-e" . er/expand-region))
+  :bind ("C-c =" . er/expand-region))
 #+end_src
 
 ** Strings
@@ -1954,6 +1951,22 @@ For the org-mode support, see:
 #+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+end_src
+
+** Logs
+
+| logview | https://github.com/doublep/logview |
+
+#+begin_src emacs-lisp
+(use-package logview
+  :ensure t
+  :config
+  (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap"))
+  (setq logview-additional-submodes
+        '(("dogen"
+           (format . "TIMESTAMP [LEVEL] [NAME]")
+           (levels . "SLF4J")
+           (timestamp "ISO 8601 datetime + micros")))))
 #+end_src
 
 * Development

@@ -388,10 +388,25 @@ Returns nil if no differences found, 't otherwise."
   :ensure t
   :config
   (dashboard-setup-startup-hook)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-init-info t)
   (setq dashboard-items '((recents  . 5)
                           (bookmarks . 5)
                           (projects . 5)
                           (agenda . 5))))
+
+;; Remap Open Dashboard
+;; From https://github.com/emacs-dashboard/emacs-dashboard/issues/236
+(defun cunene/new-dashboard ()
+  "Jump to the dashboard buffer, if doesn't exists create one."
+  (interactive)
+  (switch-to-buffer dashboard-buffer-name)
+  (dashboard-mode)
+  (dashboard-insert-startupify-lists)
+  (dashboard-refresh-buffer))
+
+(global-set-key (kbd "<f8>") 'cunene/new-dashboard)
 
 (use-package crux
   :ensure t
@@ -420,7 +435,7 @@ Returns nil if no differences found, 't otherwise."
   (drag-stuff-global-mode t))
 
 (use-package expand-region
-  :bind ("H-e" . er/expand-region))
+  :bind ("C-c =" . er/expand-region))
 
 (defun cunene/toggle-quotes ()
   "Toggle single quoted string to double or vice versa, and
@@ -1488,6 +1503,16 @@ ARGUMENT determines the visible heading."
 
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(use-package logview
+  :ensure t
+  :config
+  (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap"))
+  (setq logview-additional-submodes
+        '(("dogen"
+           (format . "TIMESTAMP [LEVEL] [NAME]")
+           (levels . "SLF4J")
+           (timestamp "ISO 8601 datetime + micros")))))
 
 (use-package git-commit
   :hook
