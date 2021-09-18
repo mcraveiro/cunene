@@ -302,6 +302,7 @@ Returns nil if no differences found, 't otherwise."
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (setq doom-themes-treemacs-theme "doom-colors")
   (load-theme 'doom-dark+ t)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -401,6 +402,11 @@ Returns nil if no differences found, 't otherwise."
          ("C-c r" . crux-rename-file-and-buffer)
          ("C-c D" . crux-delete-file-and-buffer)))
 
+(defun uuid-insert()
+  (interactive)
+  (require 'uuid)
+  (insert (upcase (uuid-string))))
+
 (use-package drag-stuff
   :ensure t
   :bind
@@ -413,10 +419,8 @@ Returns nil if no differences found, 't otherwise."
   :config
   (drag-stuff-global-mode t))
 
-(defun uuid-insert()
-  (interactive)
-  (require 'uuid)
-  (insert (upcase (uuid-string))))
+(use-package expand-region
+  :bind ("H-e" . er/expand-region))
 
 (defun cunene/toggle-quotes ()
   "Toggle single quoted string to double or vice versa, and
@@ -921,6 +925,8 @@ Also returns nil if pid is nil."
    ("C-c B" . org-switchb)
    ("C-c c" . org-capture)
    ("C-c l" . org-store-link))
+  :hook
+  (org-mode . auto-fill-mode)
   :custom
   (org-startup-folded t)
   (org-adapt-indentation nil)
@@ -966,12 +972,7 @@ Also returns nil if pid is nil."
                                         ("DONE" . "#44bc44")
                                         ("BLOCKED" . "#003366")
                                         ))
-    (hl-todo-mode))
-  )
-
-(use-package org-superstar
-  :ensure t
-  :hook (org-mode . org-superstar-mode))
+    (hl-todo-mode)))
 
 (defun cunene/org-cycle-parent (argument)
   "Go to the nearest parent heading and execute `org-cycle'.
@@ -1016,6 +1017,29 @@ ARGUMENT determines the visible heading."
   "Simple buffer name.
 !NAME is the name of the buffer."
   (format "*%s*" name))
+
+(use-package org-agenda
+  :ensure nil
+  :bind ("C-c a" . org-agenda)
+  :config
+  (setq org-agenda-files (directory-files-recursively "~/Documents/org/" "\\.org$"))
+  ;; (setq org-agenda-files '(
+  ;;                          "~/Documents/org/work.org"
+  ;;                          "~/Documents/org/reminder.org"
+  ;;                         ))
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %-24:c%?-16t%-10e% s")
+          (todo   . " %i %-24:c %-10e")
+          (tags   . " %i %-24:c")
+          (search . " %i %-24:c")))
+
+  ;;https://www.philnewton.net/blog/how-i-get-work-done-with-emacs/
+  (setq org-agenda-custom-commands
+        '(("d" "Today's Tasks"
+           ((agenda "" ((org-agenda-span 1)
+                        (org-agenda-overriding-header "Today's Tasks")))))))
+  )
 
 (use-package treemacs
   :ensure t
@@ -1065,7 +1089,6 @@ ARGUMENT determines the visible heading."
           treemacs-space-between-root-nodes        t
           treemacs-tag-follow-cleanup              t
           treemacs-tag-follow-delay                1.5
-          treemacs-text-scale                      nil
           treemacs-user-mode-line-format           nil
           treemacs-user-header-line-format         nil
           treemacs-width                           35
@@ -1454,6 +1477,7 @@ ARGUMENT determines the visible heading."
 
 (use-package yasnippet
   :hook (after-init . yas-global-mode)
+  :diminish yas
   :bind
   (:map yas-minor-mode-map
         ("C-c & t" . yas-describe-tables)
@@ -1791,6 +1815,12 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 ;; Format JSON / JSONlines with JQ
 (use-package jq-format
   :ensure t)
+
+(use-package verb
+  :ensure t
+  :mode ("\\.org\\'" . org-mode)
+  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
+)
 
 (use-package bongo
   :ensure t

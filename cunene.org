@@ -11,7 +11,6 @@ Things we need to remember to change:
 
 ** Missing modes
 
-- bongo
 - verb mode
 - notmuch
 - expand region
@@ -38,6 +37,7 @@ Things we need to remember to change:
   functionality, so yes, there are kinks. Don't be afraid though, I've been
   using it since 2011 with great success and much merriment."
 - [[https://erick.navarro.io/blog/auto-build-and-publish-emacs-org-configuration-as-a-website/][Auto build and publish emacs org configuration as a website]]
+- [[https://oremacs.com/2015/07/20/hydra-columns/][Easily arrange hydra into a matrix]]
 
 * Preamble
 
@@ -475,6 +475,7 @@ so we want to maximize it instead. Works best with titlebar-less frames.
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (setq doom-themes-treemacs-theme "doom-colors")
   (load-theme 'doom-dark+ t)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -638,20 +639,39 @@ Group commands for high-level applications.
 
 ** Dashboard
 
+| emacs-dashboard | https://github.com/emacs-dashboard/emacs-dashboard |
+
 #+begin_src emacs-lisp
 (use-package dashboard
   :ensure t
   :config
   (dashboard-setup-startup-hook)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-init-info t)
   (setq dashboard-items '((recents  . 5)
                           (bookmarks . 5)
                           (projects . 5)
                           (agenda . 5))))
+
+;; Remap Open Dashboard
+;; From https://github.com/emacs-dashboard/emacs-dashboard/issues/236
+(defun cunene/new-dashboard ()
+  "Jump to the dashboard buffer, if doesn't exists create one."
+  (interactive)
+  (switch-to-buffer dashboard-buffer-name)
+  (dashboard-mode)
+  (dashboard-insert-startupify-lists)
+  (dashboard-refresh-buffer))
+
+(global-set-key (kbd "<f8>") 'cunene/new-dashboard)
 #+end_src
 
 ** Utilities
 
 | drag-stuff | https://github.com/rejeep/drag-stuff.el |
+
+Assorted utility functions for which we could not yet establish a good category.
 
 #+begin_src emacs-lisp
 (use-package crux
@@ -663,6 +683,15 @@ Group commands for high-level applications.
          ("C-c r" . crux-rename-file-and-buffer)
          ("C-c D" . crux-delete-file-and-buffer)))
 
+(defun uuid-insert()
+  (interactive)
+  (require 'uuid)
+  (insert (upcase (uuid-string))))
+#+end_src
+
+** Region
+
+#+begin_src emacs-lisp
 (use-package drag-stuff
   :ensure t
   :bind
@@ -675,10 +704,8 @@ Group commands for high-level applications.
   :config
   (drag-stuff-global-mode t))
 
-(defun uuid-insert()
-  (interactive)
-  (require 'uuid)
-  (insert (upcase (uuid-string))))
+(use-package expand-region
+  :bind ("H-e" . er/expand-region))
 #+end_src
 
 ** Strings
@@ -870,6 +897,10 @@ From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
 #+end_src
 
 ** Prettify
+
+Sources:
+
+- [[https://emacsredux.com/blog/2014/08/25/a-peek-at-emacs-24-dot-4-prettify-symbols-mode/][A peek at Emacs 24.4: prettify-symbols-mode]]
 
 #+begin_src emacs-lisp
 (defun cunene/configure-prettify-symbols-alist ()
@@ -1301,6 +1332,8 @@ authoring documents with a fast and effective plain-text system.
    ("C-c B" . org-switchb)
    ("C-c c" . org-capture)
    ("C-c l" . org-store-link))
+  :hook
+  (org-mode . auto-fill-mode)
   :custom
   (org-startup-folded t)
   (org-adapt-indentation nil)
@@ -1346,12 +1379,7 @@ authoring documents with a fast and effective plain-text system.
                                         ("DONE" . "#44bc44")
                                         ("BLOCKED" . "#003366")
                                         ))
-    (hl-todo-mode))
-  )
-
-(use-package org-superstar
-  :ensure t
-  :hook (org-mode . org-superstar-mode))
+    (hl-todo-mode)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1398,6 +1426,29 @@ ARGUMENT determines the visible heading."
   "Simple buffer name.
 !NAME is the name of the buffer."
   (format "*%s*" name))
+
+(use-package org-agenda
+  :ensure nil
+  :bind ("C-c a" . org-agenda)
+  :config
+  (setq org-agenda-files (directory-files-recursively "~/Documents/org/" "\\.org$"))
+  ;; (setq org-agenda-files '(
+  ;;                          "~/Documents/org/work.org"
+  ;;                          "~/Documents/org/reminder.org"
+  ;;                         ))
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %-24:c%?-16t%-10e% s")
+          (todo   . " %i %-24:c %-10e")
+          (tags   . " %i %-24:c")
+          (search . " %i %-24:c")))
+
+  ;;https://www.philnewton.net/blog/how-i-get-work-done-with-emacs/
+  (setq org-agenda-custom-commands
+        '(("d" "Today's Tasks"
+           ((agenda "" ((org-agenda-span 1)
+                        (org-agenda-overriding-header "Today's Tasks")))))))
+  )
 #+END_SRC
 ** Folder tree
 
@@ -1454,7 +1505,6 @@ Issues:
           treemacs-space-between-root-nodes        t
           treemacs-tag-follow-cleanup              t
           treemacs-tag-follow-delay                1.5
-          treemacs-text-scale                      nil
           treemacs-user-mode-line-format           nil
           treemacs-user-header-line-format         nil
           treemacs-width                           35
@@ -1889,6 +1939,7 @@ For the org-mode support, see:
 
 (use-package yasnippet
   :hook (after-init . yas-global-mode)
+  :diminish yas
   :bind
   (:map yas-minor-mode-map
         ("C-c & t" . yas-describe-tables)
@@ -2341,6 +2392,16 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 ;; Format JSON / JSONlines with JQ
 (use-package jq-format
   :ensure t)
+#+end_src
+
+** REST
+
+#+begin_src emacs-lisp
+(use-package verb
+  :ensure t
+  :mode ("\\.org\\'" . org-mode)
+  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
+)
 #+end_src
 
 * Music
