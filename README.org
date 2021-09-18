@@ -11,6 +11,18 @@
 This repository contains my [[https://github.com/mcraveiro/cunene/blob/master/cunene.org][personal Emacs configuration]]. It is heavily based on
 others - copy and paste, mainly. It uses the literate config approach.
 
+Note that this repository also includes all of the [[https://elpa.gnu.org/][elpa]] packages as per the last
+time I've updated them. This means you get a fully repeatable config if you
+clone the repo, but it also means the clone is very large. If you do not want
+the elpa packages, you can simply create a blank =.emacs.d= directory in your
+home and manually copy the two main files of the config into that directory.
+These are:
+
+- [[./init.el][init.el]]
+- [[./cuenen.org][cuneen.org]]
+
+Then restart Emacs, and it will download fresh copies of all packages.
+
 * References
 
 - [[https://github.com/angrybacon/dotemacs][dotemacs]]: Literate config by [[https://github.com/angrybacon][Mathieu Marques]].
