@@ -19,7 +19,7 @@ home and manually copy the two main files of the config into that directory.
 These are:
 
 - [[./init.el][init.el]]
-- [[./cuenen.org][cuneen.org]]
+- [[./cunene.org][cunene.org]]
 
 Then restart Emacs, and it will download fresh copies of all packages.
 
