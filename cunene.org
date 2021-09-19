@@ -1821,7 +1821,7 @@ Company
   :ensure t
   :diminish undo-tree-mode
   :config
-  (setq undo-tree-visualizer-diff t)
+  (setq undo-tree-visualizer-diff nil) ;; causes problems with other buffers
   (setq undo-tree-visualizer-timestamps t)
   (setq undo-tree-visualizer-relative-timestamps t)
   (setq undo-tree-history-directory-alist
@@ -2825,12 +2825,21 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 ** Compilation
 
-FIXME
 #+begin_src emacs-lisp
-(setq compilation-scroll-output t)
+
 (global-set-key (kbd "C-c c") 'compile)
+
+;; automatically scroll the output
+(setq compilation-scroll-output t)
+
+;; reuse existing frame.
 (setq display-buffer-reuse-frames t)
+
+;; kill ongoing compilation
 (setq compilation-always-kill  t)
+
+;; save buffers whenc compiling without asking
+(setq compilation-ask-about-save nil)
 #+end_src
 
 * Music
