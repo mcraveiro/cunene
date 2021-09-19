@@ -12,8 +12,6 @@ Things we need to remember to change:
 ** Missing modes
 
 - notmuch
-- fixme todos
-- rg
 - pdf tools
 
 ** Interesting modes to investigate
@@ -34,6 +32,9 @@ Things we need to remember to change:
   using it since 2011 with great success and much merriment."
 - [[https://erick.navarro.io/blog/auto-build-and-publish-emacs-org-configuration-as-a-website/][Auto build and publish emacs org configuration as a website]]
 - [[https://oremacs.com/2015/07/20/hydra-columns/][Easily arrange hydra into a matrix]]
+- [[https://github.com/wyrickre/dot-mode][dot-mode]]: "It emulates the vi `redo’ command, repeating the immediately
+  preceding sequence of commands. This is done by recording input commands which
+  change the buffer, i.e. not motion commands."
 
 * Preamble
 
@@ -1019,7 +1020,7 @@ surrounded by word boundaries."
 #+begin_src emacs-lisp
 
 ;; Dired switches
-(setq-default dired-listing-switches "-l")
+(setq dired-listing-switches "-lGh1v --group-directories-first")
 (setq-default list-directory-brief-switches "-CF")
 
 (add-hook
@@ -1263,7 +1264,28 @@ configurations.
       desktop-restore-eager 4
       desktop-restore-forces-onscreen nil
       desktop-restore-frames t)
-(add-to-list 'desktop-globals-to-save 'file-name-history)
+
+(setq desktop-globals-to-save
+      (append '((extended-command-history . 30)
+                (file-name-history        . 100)
+                (grep-history             . 30)
+                (compile-history          . 30)
+                (minibuffer-history       . 50)
+                (query-replace-history    . 60)
+                (read-expression-history  . 60)
+                (regexp-history           . 60)
+                (regexp-search-ring       . 20)
+                (search-ring              . 20)
+                (kill-ring                . 20)
+                (shell-command-history    . 50)
+                register-alist)))
+
+;; run a desktop save periodically.
+(run-with-timer 300 300
+                (lambda () (desktop-save-in-desktop-dir)
+                  (savehist-save)
+                  (message nil)) ; clear the "Desktop saved in..." message
+)
 
 (defun cunene/emacs-process-p (pid)
   "If pid is the process ID of an emacs process, return t, else nil.
@@ -2080,6 +2102,24 @@ For the org-mode support, see:
   ("M-o" . ace-window))
 #+end_src
 
+** Diffing
+
+| =ztree= | https://github.com/fourier/ztree |
+
+#+begin_quote
+ztree-diff
+
+ztree-diff is a directory-diff tool for Emacs inspired by commercial tools like
+Beyond Compare or Araxis Merge. It supports showing the difference between two
+directories; calling Ediff for not matching files, copying between directories,
+deleting file/directories, hiding/showing equal files/directories.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package ztree
+  :ensure t)
+#+end_src
+
 * Development
 
 Configuration related to programming.
@@ -2526,6 +2566,56 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :mode ("\\.org\\'" . org-mode)
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
 )
+#+end_src
+
+** C++
+
+#+begin_src emacs-lisp
+;; Default these extensions to c++ mode
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (c-set-offset 'innamespace 0) ;; Do not indent namespaces.
+            (c-set-offset 'arglist-intro '+) ;; indent function args properly
+            (c-set-offset 'arglist-cont-nonempty '+)
+            (c-toggle-hungry-state 1)          ;; use hungry delete.
+            (auto-fill-mode 1)                 ;; auto fill comments
+            (setq c-basic-offset tab-width)
+            (setq c-default-style "stroustrup")))
+
+;; Key bindings
+(eval-after-load 'cc-mode
+  '(progn
+     ;; Ident when moving to a new line
+     (define-key c-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
+     ))
+#+end_src
+
+** Doxymacs
+
+#+begin_src emacs-lisp
+(use-package doxymacs
+  :load-path cunene/vendor-packages
+  :config
+  ;; syntax highlighting for doxygen keywords.
+  (defun cunene/doxymacs-font-lock-hook ()
+    (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
+        (doxymacs-font-lock)))
+  (add-hook 'font-lock-mode-hook 'cunene/doxymacs-font-lock-hook)
+
+  ;; start doxymacs mode in C/C++
+  (add-hook 'c-mode-common-hook 'doxymacs-mode)
+)
+#+end_src
+
+
+** Compilation
+
+FIXME
+#+begin_src emacs-lisp
+
 #+end_src
 
 * Music

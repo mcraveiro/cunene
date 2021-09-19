@@ -108,6 +108,9 @@
 (eval-when-compile
   (require 'use-package))
 
+(use-package quelpa-use-package
+  :ensure t)
+
 (defvar cunene/config-file
   (concat user-emacs-directory "cunene.el")
   "The location of the generated cunene config file.")
@@ -279,6 +282,11 @@ Returns nil if no differences found, 't otherwise."
       (kill-buffer (current-buffer)))))
 
 (global-set-key (kbd "C-x k") 'de-context-kill)
+
+(use-package super-save
+  :ensure t
+  :config
+  (super-save-mode +1))
 
 (use-package which-key
   :ensure t
@@ -614,6 +622,10 @@ If there's a text selection, work on the selected text."
   (push '("[ ]" . "☐" ) prettify-symbols-alist)
   (push '("[X]" . "☑" ) prettify-symbols-alist)
   (push '("[-]" . "❍" ) prettify-symbols-alist)
+  (push '("#+BEGIN_QUOTE" . "“") prettify-symbols-alist)
+  (push '("#+END_QUOTE" . "”") prettify-symbols-alist)
+  (push '("#+begin_quote" . "“") prettify-symbols-alist)
+  (push '("#+end_quote" . "”") prettify-symbols-alist)
   (push '("#+BEGIN_SRC" . "»") prettify-symbols-alist)
   (push '("#+END_SRC" . "«") prettify-symbols-alist)
   (push '("#+begin_src" . "»") prettify-symbols-alist)
@@ -667,7 +679,7 @@ surrounded by word boundaries."
 (define-key reb-mode-map (kbd "C-M-%") 'reb-replace-regexp)
 
 ;; Dired switches
-(setq-default dired-listing-switches "-l")
+(setq dired-listing-switches "-lGh1v --group-directories-first")
 (setq-default list-directory-brief-switches "-CF")
 
 (add-hook
@@ -888,7 +900,28 @@ surrounded by word boundaries."
       desktop-restore-eager 4
       desktop-restore-forces-onscreen nil
       desktop-restore-frames t)
-(add-to-list 'desktop-globals-to-save 'file-name-history)
+
+(setq desktop-globals-to-save
+      (append '((extended-command-history . 30)
+                (file-name-history        . 100)
+                (grep-history             . 30)
+                (compile-history          . 30)
+                (minibuffer-history       . 50)
+                (query-replace-history    . 60)
+                (read-expression-history  . 60)
+                (regexp-history           . 60)
+                (regexp-search-ring       . 20)
+                (search-ring              . 20)
+                (kill-ring                . 20)
+                (shell-command-history    . 50)
+                register-alist)))
+
+;; run a desktop save periodically.
+(run-with-timer 300 300
+                (lambda () (desktop-save-in-desktop-dir)
+                  (savehist-save)
+                  (message nil)) ; clear the "Desktop saved in..." message
+)
 
 (defun cunene/emacs-process-p (pid)
   "If pid is the process ID of an emacs process, return t, else nil.
@@ -1065,6 +1098,9 @@ ARGUMENT determines the visible heading."
            ((agenda "" ((org-agenda-span 1)
                         (org-agenda-overriding-header "Today's Tasks")))))))
   )
+
+(use-package outshine
+  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
 
 (use-package treemacs
   :ensure t
@@ -1410,6 +1446,9 @@ ARGUMENT determines the visible heading."
     (when (> bm-verbosity-level 0)
       (message "Bookmark not found."))))
 
+(setq bookmark-default-file
+      (cunene/cache-concat "bookmarks/bookmarks"))
+
 ;; Highlight current line.
 (add-hook 'ibuffer-mode-hook #'hl-line-mode)
 (add-hook 'occur-mode-hook #'hl-line-mode)
@@ -1561,6 +1600,19 @@ ARGUMENT determines the visible heading."
   (add-to-list 'window-persistent-parameters '(window-side . writable))
   (add-to-list 'window-persistent-parameters '(window-slot . writable))
   (eyebrowse-mode t))
+
+(use-package ace-window
+  :ensure t
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:inherit ace-jump-face-foreground :height 5.0)))))
+  :bind
+  ("M-o" . ace-window))
+
+(use-package ztree
+  :ensure t)
 
 (use-package git-commit
   :hook
@@ -1895,6 +1947,42 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
 )
 
+;; Default these extensions to c++ mode
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (c-set-offset 'innamespace 0) ;; Do not indent namespaces.
+            (c-set-offset 'arglist-intro '+) ;; indent function args properly
+            (c-set-offset 'arglist-cont-nonempty '+)
+            (c-toggle-hungry-state 1)          ;; use hungry delete.
+            (auto-fill-mode 1)                 ;; auto fill comments
+            (setq c-basic-offset tab-width)
+            (setq c-default-style "stroustrup")))
+
+;; Key bindings
+(eval-after-load 'cc-mode
+  '(progn
+     ;; Ident when moving to a new line
+     (define-key c-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
+     ))
+
+(use-package doxymacs
+  :load-path cunene/vendor-packages
+  :config
+  ;; syntax highlighting for doxygen keywords.
+  (defun cunene/doxymacs-font-lock-hook ()
+    (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
+        (doxymacs-font-lock)))
+  (add-hook 'font-lock-mode-hook 'cunene/doxymacs-font-lock-hook)
+
+  ;; start doxymacs mode in C/C++
+  (add-hook 'c-mode-common-hook 'doxymacs-mode)
+)
+
+
+
 (use-package bongo
   :ensure t
   :config
@@ -2203,6 +2291,9 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
   (eshell-git-prompt-use-theme 'powerline))
 
 (use-package deadgrep
+  :ensure t)
+
+(use-package rg
   :ensure t)
 
 (setq cunene/browsers
