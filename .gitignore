@@ -1,5 +1,6 @@
 .cache
 cunene.elc
+quelpa
 
 # files we can't find out who is creating
 .emacs-buffers
