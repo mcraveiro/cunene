@@ -1440,6 +1440,10 @@ authoring documents with a fast and effective plain-text system.
                                         ("STUB"   . "#1E90FF")
                                          ))
     (hl-todo-mode)))
+
+(use-package org-ref
+  :ensure t
+  :after org)
 #+end_src
 
 #+begin_src emacs-lisp
