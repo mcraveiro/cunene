@@ -203,8 +203,8 @@ Links:
 Add support for Quelpa.
 
 #+begin_src emacs-lisp
-(use-package quelpa-use-package
-  :ensure t)
+;; (use-package quelpa-use-package
+;;  :ensure t)
 #+end_src
 
 ** Org-mode config file
@@ -1510,8 +1510,8 @@ ARGUMENT determines the visible heading."
                         (org-agenda-overriding-header "Today's Tasks")))))))
   )
 
-(use-package outshine
-  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
+;; (use-package outshine
+;;  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
 #+end_src
 
 
@@ -2535,6 +2535,23 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
                                              (overlay-end ov)))
                         'face 'font-lock-type-face)))))
 (add-hook 'prog-mode-hook #'hs-minor-mode)
+
+;; https://emacs.stackexchange.com/questions/2884/the-old-how-to-fold-xml-question
+(require 'hideshow)
+(require 'sgml-mode)
+(require 'nxml-mode)
+
+(add-to-list 'hs-special-modes-alist
+             '(nxml-mode
+               "<!--\\|<[^/>]*[^/]>"
+               "-->\\|</[^/>]*[^/]>"
+
+               "<!--"
+               sgml-skip-tag-forward
+               nil))
+
+(add-hook 'nxml-mode-hook 'hs-minor-mode)
+(global-set-key (kbd "C-<tab>") 'hs-toggle-hiding)
 #+end_src
 
 ** Json
@@ -2555,6 +2572,12 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 ;; Format JSON / JSONlines with JQ
 (use-package jq-format
+  :ensure t)
+
+(use-package hierarchy
+  :ensure t)
+
+(use-package json-navigator
   :ensure t)
 #+end_src
 

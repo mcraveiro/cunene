@@ -1928,6 +1928,23 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
                         'face 'font-lock-type-face)))))
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
+;; https://emacs.stackexchange.com/questions/2884/the-old-how-to-fold-xml-question
+(require 'hideshow)
+(require 'sgml-mode)
+(require 'nxml-mode)
+
+(add-to-list 'hs-special-modes-alist
+             '(nxml-mode
+               "<!--\\|<[^/>]*[^/]>"
+               "-->\\|</[^/>]*[^/]>"
+
+               "<!--"
+               sgml-skip-tag-forward
+               nil))
+
+(add-hook 'nxml-mode-hook 'hs-minor-mode)
+(global-set-key (kbd "C-<tab>") 'hs-toggle-hiding)
+
 (use-package json-mode
   :ensure t)
 
@@ -1939,6 +1956,12 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 ;; Format JSON / JSONlines with JQ
 (use-package jq-format
+  :ensure t)
+
+(use-package hierarchy
+  :ensure t)
+
+(use-package json-navigator
   :ensure t)
 
 (use-package verb
@@ -1979,7 +2002,6 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
   ;; start doxymacs mode in C/C++
   (add-hook 'c-mode-common-hook 'doxymacs-mode)
-  (setq doxymacs-doxygen-style "JavaDoc")
 )
 
 
