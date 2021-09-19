@@ -391,7 +391,7 @@ Returns nil if no differences found, 't otherwise."
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-set-init-info t)
-  (setq dashboard-items '((recents  . 5)
+  (setq dashboard-items '((recents  . 10)
                           (bookmarks . 5)
                           (projects . 5)
                           (agenda . 5))))
@@ -436,6 +436,10 @@ Returns nil if no differences found, 't otherwise."
 
 (use-package expand-region
   :bind ("C-c =" . er/expand-region))
+
+(use-package jump-tree
+  :ensure t
+  :init (global-jump-tree-mode))
 
 (defun cunene/toggle-quotes ()
   "Toggle single quoted string to double or vice versa, and
@@ -1239,6 +1243,34 @@ ARGUMENT determines the visible heading."
   :commands (completing-read-xref-show-xrefs completing-read-xref-show-xrefs)
   :init (setq xref-show-definitions-function 'completing-read-xref-show-defs))
 
+;; we only use helm for a few things we haven't learned to use in vertico.
+(use-package helm
+  :diminish helm-mode
+  :config
+  (progn
+    (require 'helm-config)
+    (require 'helm-for-files)
+    (setq helm-candidate-number-limit 100)
+    ;; From https://gist.github.com/antifuchs/9238468
+    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+          helm-input-idle-delay 0.01  ;; this updates things quickly.
+          helm-yas-display-key-on-candidate t
+          helm-quick-update t
+          helm-M-x-requires-pattern nil
+          helm-ff-skip-boring-files t))
+  :bind (("C-c h" . helm-mini)
+         ("C-x c SPC" . helm-all-mark-rings)))
+
+(use-package helm-c-yasnippet
+  :bind (("C-x c y" . helm-yas-complete)
+         ("C-x c Y" . helm-yas-create-snippet-on-region))
+  :config
+  (setq helm-yas-space-match-any-greedy t))
+
+(use-package helm-ls-git
+  :after helm
+  :ensure t)
+
 (use-package company
   :config
   (add-hook 'prog-mode-hook 'company-mode))
@@ -1514,6 +1546,18 @@ ARGUMENT determines the visible heading."
            (levels . "SLF4J")
            (timestamp "ISO 8601 datetime + micros")))))
 
+(use-package eyebrowse
+  :ensure t
+  :custom (eyebrowse-keymap-prefix "C-x w")
+  :preface (defvar eyebrowse-keymap-prefix)
+  :config
+  (setq eyebrowse-new-workspace t)
+  ;; also save side and slot windows configuration.
+  (add-to-list 'window-persistent-parameters '(window-side . writable))
+  (add-to-list 'window-persistent-parameters '(window-slot . writable))
+
+  (eyebrowse-mode t))
+
 (use-package git-commit
   :hook
   (git-commit-mode . (lambda () (setq-local fill-column 72))))
@@ -1715,8 +1759,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
           ("d" xref-find-definitions "Definitions" :column "Xref")
           ("D" xref-find-definitions-other-window "-> other win")
           ("r" xref-find-references "References")
-          ("s" netrom/helm-lsp-workspace-symbol-at-point "Helm search")
-          ("S" netrom/helm-lsp-global-workspace-symbol-at-point "Helm global search")
+          ("s" cunene/helm-lsp-workspace-symbol-at-point "Helm search")
+          ("S" cunene/helm-lsp-global-workspace-symbol-at-point "Helm global search")
 
           ;; Peek
           ("C-d" lsp-ui-peek-find-definitions "Definitions" :column "Peek")
@@ -1741,14 +1785,14 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
           ("b" pop-tag-mark "Back")))
 
   ;; Create general hydra.
-(eval `(defhydra netrom/lsp-hydra (:color blue :hint nil)
+(eval `(defhydra cunene/lsp-hydra (:color blue :hint nil)
          ,@(append
             cunene/general-lsp-hydra-heads
             cunene/misc-lsp-hydra-heads)))
 
 (add-hook 'lsp-mode-hook
           (lambda ()
-            (local-set-key (kbd "C-c C-l") 'netrom/lsp-hydra/body)
+            (local-set-key (kbd "C-c C-l") 'cunene/lsp-hydra/body)
             'lsp-ui-mode))
 
 (use-package consult-lsp
