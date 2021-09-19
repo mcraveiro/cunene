@@ -2595,6 +2595,11 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 ** Doxymacs
 
+| =doxymacs= | https://github.com/gittiver/doxymacs |
+
+TODO: for some reason we do not trigger the mode with =/**=, it seems to require
+=/***=, which is not in accordance with [[https://www.doxygen.nl/manual/docblocks.html][doxygen syntax]].
+
 #+begin_src emacs-lisp
 (use-package doxymacs
   :load-path cunene/vendor-packages

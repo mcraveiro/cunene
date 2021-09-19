@@ -1979,6 +1979,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
   ;; start doxymacs mode in C/C++
   (add-hook 'c-mode-common-hook 'doxymacs-mode)
+  (setq doxymacs-doxygen-style "JavaDoc")
 )
 
 

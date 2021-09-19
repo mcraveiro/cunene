@@ -2,7 +2,7 @@
 ;;; doxymacs.el --- ELisp package for making doxygen related stuff easier.
 ;;
 ;;
-;; Copyright (C) 2001-2007 Ryan T. Sammartino
+;; Copyright (C) 2001-2010 Ryan T. Sammartino
 ;;
 ;; Author: Ryan T. Sammartino <ryan.sammartino at gmail dot com>
 ;;      Kris Verbeeck <kris.verbeeck at advalvas dot be>
@@ -27,8 +27,6 @@
 ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ;;
 ;; Doxymacs homepage: http://doxymacs.sourceforge.net/
-;;
-;; $Id: doxymacs.el.in,v 1.26 2007/06/10 13:17:24 ryants Exp $
 
 ;; Commentary:
 ;;
@@ -107,7 +105,7 @@
 ;;   - C-c d @ will insert grouping comments around the current region.
 ;;
 ;; Doxymacs has been tested on and works with:
-;; - GNU Emacs 20.7.1, 21.1.1, 21.2.1, 21.2.92.1, 21.3, 21.4.1
+;; - GNU Emacs 20.7.1, 21.1.1, 21.2.1, 21.2.92.1, 21.3, 21.4.1, 23.1.1
 ;; - XEmacs 21.1 (patch 14), 21.4 (patches 4-17)
 ;;
 ;; If you have success or failure with other version of {X}Emacs, please
@@ -115,11 +113,16 @@
 
 ;; Change log:
 ;;
-;; 10/06/2007 - version 1.8.0 
+;; 07/03/2010 - feature #1569376: Interactively insert doxygen commands.
+;; 19/02/2010 - patch #2954452: Add new documentation style C++!.
+;;              bug #1862867: Remove trailing whitespace in JavaDoc function
+;;              template.
+;; 18/02/2010 - Support new tparam doxygen command.
+;; 10/06/2007 - version 1.8.0
 ;; 02/02/2007 - bug #1490021: Allow spaces in @param [in] documentation.
 ;;              bug #1496399: Allow for different ways of user-mail-address
 ;;              to be defined.
-;; 22/04/2006 - feature #1338245: Add tokens to filladapt to match 
+;; 22/04/2006 - feature #1338245: Add tokens to filladapt to match
 ;;              doxygen markup.
 ;;            - version 1.7.0
 ;; 04/06/2005 - version 1.6.0
@@ -288,11 +291,12 @@ file:///home/me/project/bar/doc/ and the XML tags file is at
 See http://www.stack.nl/~dimitri/doxygen/docblocks.html#docblocks for examples
 of the various styles.
 
-Must be one of \"JavaDoc\", \"Qt\" or \"C++\". Setting this variable
+Must be one of \"JavaDoc\", \"Qt\" \"C++\" or \"C++!\". Setting this variable
 to anything else will generate errors."
   :type '(radio (const :tag "JavaDoc" "JavaDoc")
 		(const :tag "Qt" "Qt")
-		(const :tag "C++" "C++"))
+		(const :tag "C++" "C++")
+		(const :tag "C++!" "C++!"))
   :group 'doxymacs)
 
 (defcustom doxymacs-command-character
@@ -315,7 +319,7 @@ Set to non-nil to use the external XML parser."
   :group 'doxymacs)
 
 (defcustom doxymacs-external-xml-parser-executable
-  ""
+  "/home/marco/bin/doxymacs_parser"
   "*Where the external XML parser executable is."
   :type 'string
   :group 'doxymacs)
@@ -488,7 +492,16 @@ Key bindings:
   (when doxymacs-mode
     (when (boundp 'filladapt-token-table)
       ;; add tokens to filladapt to match doxygen markup
-      (let ((bullet-regexp "[@\\]\\(param\\(?:\\s-*\\[\\(?:in\\|out\\|in,out\\)\\]\\)?\\s-+\\sw+\\|return\\)"))
+      (let ((bullet-regexp (concat "[@\\]"
+				   "\\(param\\(?:\\s-*"
+				   "\\[\\(?:in\\|out\\|in,out\\)\\]\\)?"
+				   "\\s-+\\sw+"
+				   "\\|tparam\\s-+\\sw+"
+				   "\\|return\\|attention\\|note"
+				   "\\|brief\\|li\\|arg\\|remarks"
+				   "\\|invariant\\|post\\|pre"
+				   "\\|todo\\|warning\\|bug"
+				   "\\|deprecated\\|since\\|test\\)")))
 	(unless (assoc bullet-regexp filladapt-token-table)
 	  (setq filladapt-token-table
 		(append filladapt-token-table
@@ -504,6 +517,8 @@ Key bindings:
 (define-key doxymacs-mode-map "\C-cdr"
   'doxymacs-rescan-tags)
 
+(define-key doxymacs-mode-map "\C-cd\r"
+  'doxymacs-insert-command)
 (define-key doxymacs-mode-map "\C-cdf"
   'doxymacs-insert-function-comment)
 (define-key doxymacs-mode-map "\C-cdi"
@@ -557,7 +572,7 @@ Key bindings:
    ;; keywords that take a variable name as an argument
    (list
     (concat "\\([@\\\\]\\(param\\(?:\\s-*\\[\\(?:in\\|out\\|in,out\\)\\]\\)?"
-	    "\\|a\\|namespace\\|relates\\(also\\)?"
+	    "\\|tparam\\|a\\|namespace\\|relates\\(also\\)?"
 	    "\\|var\\|def\\)\\)\\s-+\\(\\sw+\\)")
     '(1 font-lock-keyword-face prepend)
     '(4 font-lock-variable-name-face prepend))
@@ -1081,6 +1096,207 @@ the completion or nil if canceled by the user."
 (if (not (boundp 'mark-active))
     (defvar mark-active nil))		; Is this correct? Probably not.
 
+;; Inserting commands with completion
+
+(defvar doxymacs-insert-command-history nil)
+
+(defvar doxymacs-commands
+  '(("a" (word "Argument"))
+    ("addindex" (newline "Text to add to LaTeX index"))
+    ("addtogroup" (word "Name of group") (newline optional "Title of group"))
+    ("anchor" (word "Name of anchor"))
+    ("arg" "Argument description")
+    ("attention" "Attention text")
+    ("author" "List of authors")
+    ("b" (word "Word to display in bold"))
+    ("brief" "Brief description")
+    ("bug" "Bug description")
+    ("c" "Word to display as code")
+    ("callgraph")
+    ("callergraph")
+    ("category" (word "Name of category") (optional word "Header file")
+     (optional word "Header name"))
+    ("class" (word "Name of class") (optional word "Header file")
+     (optional word "Header name"))
+    ("code")
+    ("cond" (optional word "Section label"))
+    ("copybrief" (word "Link object"))
+    ("copydetails" (word "Link object"))
+    ("copydoc" (word "Link object"))
+    ("date" "Date description")
+    ("def" (word "#define macro name"))
+    ("defgroup" (word "Name of group") (newline "Group title"))
+    ("deprecated" "Deprecated description")
+    ("details" "Detailed description")
+    ("dir" (word optional "Path fragment"))
+    ("dontinclude" (word "File name"))
+    ("dot")
+    ("dotfile" (word "File name") (optional "Caption (must be in quotes)"))
+    ("e" (word "Word to display in italics"))
+    ("else")
+    ("elseif" (word "Section label"))
+    ("em" (word "Word to display in italics"))
+    ("endcode")
+    ("endcond")
+    ("enddot")
+    ("endhtmlonly")
+    ("endif")
+    ("endlatexonly")
+    ("endlink")
+    ("endmanonly")
+    ("endmsc")
+    ("endverbatim")
+    ("endxmlonly")
+    ("enum" (word "Enumeration name"))
+    ("example" (word "File name"))
+    ("exception" (word "Exception object") "Exception description")
+    ("extends" (word "Name"))
+    ("f$")
+    ("f[")
+    ("f]")
+    ("f{" "Environment")
+    ("f}")
+    ("file" (optional word "File name"))
+    ("fn" (newline "Function declaration"))
+    ("headerfile" (word "Header file") (optional word) "Header name")
+    ("hideinitializer")
+    ("htmlinclude" (word "File name"))
+    ("htmlonly")
+    ("if" (word "Section label"))
+    ("ifnot" (word "Section label"))
+    ("image" (word "Format") (word "File name")
+     (optional "Caption (must be in quotes)") (optional "Size indication"))
+    ("implements" (word "Name"))
+    ("include" (word "File name"))
+    ("includelineno" (word "File name"))
+    ("ingroup" (word "Group name"))
+    ("internal")
+    ("invariant" "Invariant description")
+    ("interface" (word "Name") (optional word "Header file")
+     (optional word "Header Name"))
+    ("latexonly")
+    ("li" "Item description")
+    ("line" (newline "Line pattern"))
+    ("link" (word "Link object"))
+    ("mainpage" (newline optional "Title"))
+    ("manonly")
+    ("memberof" (word "Name"))
+    ("msc")
+    ("n")
+    ("name" (newline "Header"))
+    ("namespace" (word "Name"))
+    ("nosubgrouping")
+    ("note" "Text of note")
+    ("overload" (newline optional "Function declaration"))
+    ("p" (word "Word to display as a parameter"))
+    ("package" (word "Name"))
+    ("page" (word "Name") (newline "Title"))
+    ("par" (newline optional "Title") "Paragraph text")
+    ("paragraph" (word "Paragraph name") (newline "Paragraph title"))
+    ("param" (word "Parameter") "Parameter description")
+    ("param[in]" (word "Parameter") "Parameter description")
+    ("param[out]" (word "Parameter") "Parameter description")
+    ("param[in,out]" (word "Parameter") "Parameter description")
+    ("post" "Post-condition description")
+    ("pre" "Pre-condition description")
+    ("private")
+    ("privatesection")
+    ("property" (newline "Qualified property name"))
+    ("protected")
+    ("protectedsection")
+    ("protocol" (word "Name") (optional word "Header file")
+     (optional word "Header name"))
+    ("public")
+    ("publicsection")
+    ("ref" (word "Name") (newline optional "Text"))
+    ("relates" (word "Name"))
+    ("relatesalso" (word "Name"))
+    ("remarks" "Remarks text")
+    ("return" "Description of return value")
+    ("retval" (word "Return value") "Description")
+    ("sa" "References")
+    ("section" (word "Section name") (newline "Section title"))
+    ("see" "References")
+    ("showinitializer")
+    ("since" "Text")
+    ("skip" (newline "Pattern"))
+    ("skipline" (newline "Pattern"))
+    ("struct" (word "Name") (optional word "Header file")
+     (optional word "Header name"))
+    ("subpage" (word "Name") (newline optional "Text"))
+    ("subsection" (word "Name") (newline optional "Title"))
+    ("subsubsection" (word "Name") (newline optional "Title"))
+    ("test" "Paragraph describing test case")
+    ("throw" (word "Exception object") "Exception description")
+    ("todo" "Paragraph describing what needs to be done")
+    ("tparam" (word "Template parameter") "Description")
+    ("typedef" (newline "Typedef declaration"))
+    ("union" (word "Name") (optional word "Header file")
+     (optional word "Header name"))
+    ("until" (newline "Pattern"))
+    ("var" (newline "Variable declaration"))
+    ("verbatim")
+    ("verbinclude" (word "File name"))
+    ("version" "Version number")
+    ("warning" "Warning message")
+    ("weakgroup" (word "Name") (newline optional "Title"))
+    ("xmlonly")
+    ("xrefitem" (word "Key") "Heading (must be in quotes)"
+     "List title (must be in quotes)" "Text")
+    ("$")
+    ("@")
+    ("\\")
+    ("&")
+    ("~" (optional "Language ID"))
+    ("<")
+    (">")
+    ("#")
+    ("%")
+    ("\""))
+  "Available doxygen commands.  Format is
+
+'((\"command\" args) ...)
+
+where:
+
+ - command is the doxygen command.
+ - args is a list of prompts to display for each argument to the
+   command.  An element of args could also be a list, the last element of which must be a string to use for the prompt, and other elements may be:
+   - newline to indicate a newline should be appended to the user's input.
+   - word to indicate the argument accepts a single word only.
+   - optional to indicate the argument is optional.")
+
+(defun doxymacs-insert-command (cmd)
+  "Insert a doxymacs command with completion."
+  (interactive (list (completing-read
+		      "Insert doxygen command: "
+		      doxymacs-commands
+		      nil nil nil 'doxymacs-insert-command-history)))
+  (insert (concat (doxymacs-doxygen-command-char) cmd))
+  (dolist (arg-prompt (cdr-safe (assoc cmd doxymacs-commands)))
+    (let ((arg (doxymacs-read-arg arg-prompt)))
+      (if (or (= (length arg) 0) (string= "\n" arg))
+	  ;; If nothing is entered no point in prompting for the rest of
+	  ;; the args.
+	  (return)
+	(insert (concat " " arg))))))
+
+(defun doxymacs-read-arg (arg)
+  (let* ((newline (and (listp arg) (memq 'newline arg)))
+	 (word (and (listp arg) (memq 'word arg)))
+	 (optional (and (listp arg) (memq 'optional arg)))
+	 (prompt (if (listp arg) (car (last arg)) arg))
+	 (final-prompt (concat prompt
+			       (if optional (concat " (optional)"))
+			       (if word (concat " (word)"))
+			       ": ")))
+    (concat
+     (cond (word
+	    (read-no-blanks-input final-prompt))
+	   (t
+	    (read-string final-prompt)))
+     (if newline "\n"))))
+
 
 ;; Default templates
 
@@ -1096,6 +1312,10 @@ the completion or nil if canceled by the user."
  '("///" > n "/// " p > n "///" > n)
  "Default C++-style template for a blank multiline doxygen comment.")
 
+(defconst doxymacs-C++!-blank-multiline-comment-template
+ '("//!" > n "//! " p > n "//!" > n)
+ "Default C++!-style template for a blank multiline doxygen comment.")
+
 (defconst doxymacs-JavaDoc-blank-singleline-comment-template
  '("/// " > p)
  "Default JavaDoc-style template for a blank single line doxygen comment.")
@@ -1108,12 +1328,17 @@ the completion or nil if canceled by the user."
  '("/// " > p)
  "Default C++-style template for a blank single line doxygen comment.")
 
+(defconst doxymacs-C++!-blank-singleline-comment-template
+ '("//! " > p)
+ "Default C++!-style template for a blank single line doxygen comment.")
+
 (defun doxymacs-doxygen-command-char ()
   (cond
    (doxymacs-command-character doxymacs-command-character)
    ((string= doxymacs-doxygen-style "JavaDoc") "@")
    ((string= doxymacs-doxygen-style "Qt") "\\")
    ((string= doxymacs-doxygen-style "C++") "@")
+   ((string= doxymacs-doxygen-style "C++!") "\\")
    (t "@")))
 
 (defun doxymacs-user-mail-address ()
@@ -1175,6 +1400,23 @@ the completion or nil if canceled by the user."
    "///" > n)
  "Default C++-style template for file documentation.")
 
+(defconst doxymacs-C++!-file-comment-template
+ '("//!" > n
+   "//! " (doxymacs-doxygen-command-char) "file   "
+   (if (buffer-file-name)
+       (file-name-nondirectory (buffer-file-name))
+     "") > n
+   "//! " (doxymacs-doxygen-command-char) "author " (user-full-name)
+   (doxymacs-user-mail-address)
+   > n
+   "//! " (doxymacs-doxygen-command-char) "date   " (current-time-string) > n
+   "//! " > n
+   "//! " (doxymacs-doxygen-command-char) "brief  " (p "Brief description of this file: ") > n
+   "//! " > n
+   "//! " p > n
+   "//!" > n)
+ "Default C++!-style template for file documentation.")
+
 
 (defun doxymacs-parm-tempo-element (parms)
   "Inserts tempo elements for the given parms in the given style."
@@ -1193,6 +1435,10 @@ the completion or nil if canceled by the user."
 	  (list 'l "/// " (doxymacs-doxygen-command-char)
 		"param " (car parms) " " (list 'p prompt) '> 'n
 		(doxymacs-parm-tempo-element (cdr parms))))
+	 ((string= doxymacs-doxygen-style "C++!")
+	  (list 'l "//! " (doxymacs-doxygen-command-char)
+		"param " (car parms) " " (list 'p prompt) '> 'n
+		(doxymacs-parm-tempo-element (cdr parms))))
 	 (t
 	  (doxymacs-invalid-style))))
     nil))
@@ -1205,12 +1451,12 @@ the completion or nil if canceled by the user."
 	  'l
 	  "/** " '> 'n
 	  " * " 'p '> 'n
-	  " * " '> 'n
+	  " *" '> 'n
 	  (doxymacs-parm-tempo-element (cdr (assoc 'args next-func)))
 	  (unless (string-match
                    (regexp-quote (cdr (assoc 'return next-func)))
                    doxymacs-void-types)
-	    '(l " * " > n " * " (doxymacs-doxygen-command-char)
+	    '(l " *" > n " * " (doxymacs-doxygen-command-char)
 		"return " (p "Returns: ") > n))
 	  " */" '>)
        (progn
@@ -1257,13 +1503,32 @@ the completion or nil if canceled by the user."
 	 nil))))
  "Default C++-style template for function documentation.")
 
+(defconst doxymacs-C++!-function-comment-template
+ '((let ((next-func (doxymacs-find-next-func)))
+     (if next-func
+	 (list
+	  'l
+	  "//! " 'p '> 'n
+	  "//!" '> 'n
+	  (doxymacs-parm-tempo-element (cdr (assoc 'args next-func)))
+	  (unless (string-match
+                   (regexp-quote (cdr (assoc 'return next-func)))
+                   doxymacs-void-types)
+	    '(l "//!" > n "//! " (doxymacs-doxygen-command-char)
+		"return " (p "Returns: ") > n))
+	  "//!" '>)
+       (progn
+	 (error "Can't find next function declaraton.")
+	 nil))))
+ "Default C++!-style template for function documentation.")
+
 (defun doxymacs-invalid-style ()
   "Warn the user that he has set `doxymacs-doxygen-style' to an invalid
 style."
   (error (concat
 	  "Invalid `doxymacs-doxygen-style': "
 	  doxymacs-doxygen-style
-	  ": must be one of \"JavaDoc\", \"Qt\" or \"C++\".")))
+	  ": must be one of \"JavaDoc\", \"Qt\", \"C++\" or \"C++!\".")))
 
 ;; This should make it easier to add new templates and cut down
 ;; on copy-and-paste programming.
@@ -1343,6 +1608,8 @@ the column given by `comment-column' (much like \\[indent-for-comment])."
 			"/*!< ")
 		       ((string= doxymacs-doxygen-style "C++")
 			"///< ")
+		       ((string= doxymacs-doxygen-style "C++!")
+			"//!< ")
 		       (t
 			(doxymacs-invalid-style)))))
 	 (skip (concat (regexp-quote starter) "*"))
@@ -1353,6 +1620,8 @@ the column given by `comment-column' (much like \\[indent-for-comment])."
 		       ((string= doxymacs-doxygen-style "Qt")
 			" */")
 		       ((string= doxymacs-doxygen-style "C++")
+			"")
+		       ((string= doxymacs-doxygen-style "C++!")
 			"")
 		       (t
 			(doxymacs-invalid-style))))))
@@ -1411,6 +1680,8 @@ the column given by `comment-column' (much like \\[indent-for-comment])."
 			"/*@{*/")
 		       ((string= doxymacs-doxygen-style "C++")
 			"/// @{")
+		       ((string= doxymacs-doxygen-style "C++!")
+			"//! @{")
 		       (t
 			(doxymacs-invalid-style)))))
 	 (ender (or doxymacs-group-comment-end
@@ -1421,6 +1692,8 @@ the column given by `comment-column' (much like \\[indent-for-comment])."
 			"/*@}*/")
 		       ((string= doxymacs-doxygen-style "C++")
 			"/// @}")
+		       ((string= doxymacs-doxygen-style "C++!")
+			"//! @}")
 		       (t
 			(doxymacs-invalid-style))))))
     (save-excursion
