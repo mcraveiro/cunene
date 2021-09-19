@@ -159,8 +159,9 @@ Links:
 
 ** Package Management
 
-| =package=     | Built-in                                |
-| =use-package= | https://github.com/jwiegley/use-package |
+| =package=            | Built-in                                              |
+| =use-package=        | https://github.com/jwiegley/use-package               |
+| =quelpa-use-package= | https://framagit.org/steckerhalter/quelpa-use-package |
 
 Setup package sources. Trying to setup a secure set of
 sources.
@@ -196,6 +197,13 @@ Links:
 
 (eval-when-compile
   (require 'use-package))
+#+end_src
+
+Add support for Quelpa.
+
+#+begin_src emacs-lisp
+(use-package quelpa-use-package
+  :ensure t)
 #+end_src
 
 ** Org-mode config file
@@ -426,6 +434,23 @@ Returns nil if no differences found, 't otherwise."
 (global-set-key (kbd "C-x k") 'de-context-kill)
 #+end_src
 
+*** Saving
+
+| super-save | https://github.com/bbatsov/super-save |
+
+#+begin_quote
+super-save auto-saves your buffers, when certain events happen - e.g. you switch
+between buffers, an Emacs frame loses focus, etc. You can think of it as both
+something that augments and replaces the standard auto-save-mode.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package super-save
+  :ensure t
+  :config
+  (super-save-mode +1))
+#+end_src
+
 ** Key discoverability
 
 If you type a prefix key (such as =C-x r=) and wait some time then display
@@ -625,7 +650,9 @@ Group commands for high-level applications.
 
 #+end_src
 
-** Exiting Emacs
+** Exiting
+
+FIXME: It seems this is not working at present.
 
 #+begin_src emacs-lisp
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
@@ -908,6 +935,10 @@ Sources:
   (push '("[ ]" . "☐" ) prettify-symbols-alist)
   (push '("[X]" . "☑" ) prettify-symbols-alist)
   (push '("[-]" . "❍" ) prettify-symbols-alist)
+  (push '("#+BEGIN_QUOTE" . "“") prettify-symbols-alist)
+  (push '("#+END_QUOTE" . "”") prettify-symbols-alist)
+  (push '("#+begin_quote" . "“") prettify-symbols-alist)
+  (push '("#+end_quote" . "”") prettify-symbols-alist)
   (push '("#+BEGIN_SRC" . "»") prettify-symbols-alist)
   (push '("#+END_SRC" . "«") prettify-symbols-alist)
   (push '("#+begin_src" . "»") prettify-symbols-alist)
@@ -1456,7 +1487,12 @@ ARGUMENT determines the visible heading."
            ((agenda "" ((org-agenda-span 1)
                         (org-agenda-overriding-header "Today's Tasks")))))))
   )
-#+END_SRC
+
+(use-package outshine
+  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
+#+end_src
+
+
 ** Folder tree
 
 Issues:
@@ -1835,6 +1871,9 @@ For the org-mode support, see:
           (bm-bookmark-remove  bookmark)))
     (when (> bm-verbosity-level 0)
       (message "Bookmark not found."))))
+
+(setq bookmark-default-file
+      (cunene/cache-concat "bookmarks/bookmarks"))
 #+end_src
 
 ** Highlighting
@@ -2023,6 +2062,22 @@ For the org-mode support, see:
   (add-to-list 'window-persistent-parameters '(window-side . writable))
   (add-to-list 'window-persistent-parameters '(window-slot . writable))
   (eyebrowse-mode t))
+#+end_src
+
+** Switching
+
+| ace-window | https://github.com/abo-abo/ace-window |
+
+#+begin_src emacs-lisp
+(use-package ace-window
+  :ensure t
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:inherit ace-jump-face-foreground :height 5.0)))))
+  :bind
+  ("M-o" . ace-window))
 #+end_src
 
 * Development
@@ -2811,9 +2866,13 @@ Todo:
 ** Grepping
 
 | deadgrep | https://github.com/Wilfred/deadgrep |
+| rg       | https://github.com/dajva/rg.el      |
 
 #+begin_src emacs-lisp
 (use-package deadgrep
+  :ensure t)
+
+(use-package rg
   :ensure t)
 #+end_src
 
