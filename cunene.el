@@ -108,8 +108,8 @@
 (eval-when-compile
   (require 'use-package))
 
-(use-package quelpa-use-package
-  :ensure t)
+;; (use-package quelpa-use-package
+;;  :ensure t)
 
 (defvar cunene/config-file
   (concat user-emacs-directory "cunene.el")
@@ -1099,8 +1099,8 @@ ARGUMENT determines the visible heading."
                         (org-agenda-overriding-header "Today's Tasks")))))))
   )
 
-(use-package outshine
-  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
+;; (use-package outshine
+;;  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
 
 (use-package treemacs
   :ensure t
@@ -1614,6 +1614,57 @@ ARGUMENT determines the visible heading."
 (use-package ztree
   :ensure t)
 
+;; ediff
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-diff-options "-w")
+
+(defvar ediff-do-hexl-diff nil
+  "variable used to store trigger for doing diff in hexl-mode")
+
+(defadvice ediff-files-internal
+  (around ediff-files-internal-for-binary-files activate)
+  "catch the condition when the binary files differ the reason
+for catching the error out here (when re-thrown from the inner
+advice) is to let the stack continue to unwind before we start
+the new diff otherwise some code in the middle of the stack
+expects some output that isn't there and triggers an error"
+  (let ((file-A (ad-get-arg 0))
+        (file-B (ad-get-arg 1))
+        ediff-do-hexl-diff)
+    (condition-case err
+        (progn
+          ad-do-it)
+      (error
+       (if ediff-do-hexl-diff
+           (let ((buf-A (find-file-noselect file-A))
+                 (buf-B (find-file-noselect file-B)))
+             (with-current-buffer buf-A
+               (hexl-mode 1))
+             (with-current-buffer buf-B
+               (hexl-mode 1))
+             (ediff-buffers buf-A buf-B))
+         (error (error-message-string err)))))))
+
+(defadvice ediff-setup-diff-regions
+  (around ediff-setup-diff-regions-for-binary-files activate)
+  "when binary files differ, set the variable "
+  (condition-case err
+      (progn
+        ad-do-it)
+    (error
+     (setq ediff-do-hexl-diff
+           (and (string-match-p "^Errors in diff output.  Diff output is in.*"
+                                (error-message-string err))
+                (string-match-p "^\\(Binary \\)?[fF]iles .* and .* differ"
+                                (buffer-substring-no-properties
+                                 (line-beginning-position)
+                                 (line-end-position)))))
+     (error (error-message-string err)))))
+
+(setq erc-join-buffer 'bury)
+(add-hook 'erc-mode-hook (lambda () (erc-fill-mode nil)))
+
 (use-package git-commit
   :hook
   (git-commit-mode . (lambda () (setq-local fill-column 72))))
@@ -2004,7 +2055,10 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-hook 'c-mode-common-hook 'doxymacs-mode)
 )
 
-
+(setq compilation-scroll-output t)
+(global-set-key (kbd "C-c c") 'compile)
+(setq display-buffer-reuse-frames t)
+(setq compilation-always-kill  t)
 
 (use-package bongo
   :ensure t
