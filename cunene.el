@@ -983,6 +983,8 @@ Also returns nil if pid is nil."
 
 (use-package hl-todo
   :ensure t
+  :bind (:map hl-todo-mode-map
+              ("C-c o" . hl-todo-occur))
   :hook ((prog-mode org-mode) . cunene/hl-todo-init)
   :init
   (defun cunene/hl-todo-init ()
@@ -990,7 +992,11 @@ Also returns nil if pid is nil."
                                         ("DOING" . "#FF00BC")
                                         ("DONE" . "#44bc44")
                                         ("BLOCKED" . "#003366")
-                                        ))
+                                        ("FIXME"  . "#FF0000")
+                                        ("DEBUG"  . "#A020F0")
+                                        ("GOTCHA" . "#FF4500")
+                                        ("STUB"   . "#1E90FF")
+                                         ))
     (hl-todo-mode)))
 
 (defun cunene/org-cycle-parent (argument)
@@ -1515,6 +1521,7 @@ ARGUMENT determines the visible heading."
     :keybinding "g"))
 
 (setq isearch-allow-scroll t)
+(setq isearch-wrap-pause 'no-ding)
 
 (defadvice isearch-update (before my-isearch-reposite activate)
   (sit-for 0)
@@ -1548,14 +1555,11 @@ ARGUMENT determines the visible heading."
 
 (use-package eyebrowse
   :ensure t
-  :custom (eyebrowse-keymap-prefix "C-x w")
-  :preface (defvar eyebrowse-keymap-prefix)
   :config
   (setq eyebrowse-new-workspace t)
   ;; also save side and slot windows configuration.
   (add-to-list 'window-persistent-parameters '(window-side . writable))
   (add-to-list 'window-persistent-parameters '(window-slot . writable))
-
   (eyebrowse-mode t))
 
 (use-package git-commit
