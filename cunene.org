@@ -35,6 +35,7 @@ Things we need to remember to change:
 - [[https://github.com/wyrickre/dot-mode][dot-mode]]: "It emulates the vi `redo’ command, repeating the immediately
   preceding sequence of commands. This is done by recording input commands which
   change the buffer, i.e. not motion commands."
+- [[https://github.com/ffevotte/desktop-plus][desktop-plus]]: could not get it to work.
 
 * Preamble
 
@@ -1221,7 +1222,7 @@ surrounded by word boundaries."
 ** Buffers and Windows
 
 | =desktop=  | Built-in                                 |
-| =desktop+= | https://github.com/ffevotte/desktop-plus |
+
 | =shackle=  | https://github.com/wasamasa/shackle      |
 | =windswap= | https://github.com/purcell/windswap      |
 | =windmove= | Built-in                                 |
@@ -1238,20 +1239,6 @@ Save and restore Emacs status, including buffers, point and window
 configurations.
 
 #+begin_src emacs-lisp
-;; (use-package desktop+
-;;   :ensure t
-;;   :commands (desktop-create desktop-load)
-;;   :init
-;;   (eval-after-load "desktop+"
-;;     '(defun desktop+--set-frame-title ()
-;;        (message "desktop+ set in initialization to not write to frame title")))
-;;   :config
-;;   (require 'desktop+)
-;;   (setq desktop+-special-buffer-handlers
-;;         '(org-agenda-mode shell-mode compilation-mode eshell-mode)))
-
-;; (setq-default desktop+-base-dir (cunene/cache-concat "desktops/"))
-
 ;; could not get it to work via use-package; commands did not kick-in
 ;; and kept trying to reload from elpa.
 (require 'desktop)
