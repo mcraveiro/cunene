@@ -3177,6 +3177,13 @@ Todo:
   (eshell-git-prompt-use-theme 'powerline))
 #+end_src
 
+*** SSH
+
+#+begin_src emacs-lisp
+(use-package ssh
+  :ensure t)
+#+end_src
+
 ** Grepping
 
 | deadgrep | https://github.com/Wilfred/deadgrep |
