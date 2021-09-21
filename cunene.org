@@ -13,6 +13,8 @@ Things we need to remember to change:
 
 - notmuch
 - pdf tools
+- remove all calls for custom; move custom to end, raise SO ticket for local
+  sockets issue on windows.
 
 ** Interesting modes to investigate
 
@@ -36,6 +38,16 @@ Things we need to remember to change:
   preceding sequence of commands. This is done by recording input commands which
   change the buffer, i.e. not motion commands."
 - [[https://github.com/ffevotte/desktop-plus][desktop-plus]]: could not get it to work.
+- [[https://github.com/knpatel401/filetree][filetree]]: "File tree viewer The viewer displays a file list as a directory
+  tree in a special buffer."
+- [[https://gitlab.com/alezost-emacs/bui][bui]]: "BUI (Buffer User Interface) is an Emacs library that can be used to make
+  user interfaces to display some kind of entries (like packages, buffers,
+  functions, etc.)."
+- [[https://github.com/johannes-mueller/test-cockpit.el][test-cockpit]]: "This project attempts to create a user interface to run tests
+  for different programming languages with a consistent user interface. There
+  are commands common to all the supported programming languages and additional
+  settings which are language specific."
+- [[https://github.com/hagleitn/speed-type][speed-type]]: "Practice touch/speed typing in emacs".
 
 * Preamble
 
