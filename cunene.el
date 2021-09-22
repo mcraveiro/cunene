@@ -198,7 +198,6 @@
  vc-follow-symlinks t                   ; Follow symlinks without asking
  x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (blink-cursor-mode 0)                   ; Prefer a still cursor
-(delete-selection-mode 1)               ; Replace region when inserting text
 (fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
 (global-subword-mode 1)                 ; Iterate through CamelCase words
 (mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
@@ -206,6 +205,18 @@
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 (column-number-mode t)                  ; Display column numbers
+
+;; enable narrowing commands
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
+
+;; enabled change region case commands
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; enable erase-buffer command
+(put 'erase-buffer 'disabled nil)
 
 ;; Font size
 (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -352,6 +363,9 @@ Returns nil if no differences found, 't otherwise."
 (autoload 'whitespace-toggle-options
   "whitespace" "Toggle local `whitespace-mode' options." t)
 
+;; limit line length
+(setq whitespace-line-column 80)
+
 ;; What to highlight
 (setq whitespace-style
       '(face tabs trailing lines-tail space-before-tab empty space-after-tab
@@ -467,6 +481,21 @@ Returns nil if no differences found, 't otherwise."
 
 (use-package expand-region
   :bind ("C-c =" . er/expand-region))
+
+;; Replace region when inserting text
+(delete-selection-mode 1)
+
+;; brings visual feedback to some operations by highlighting portions relating
+;; to the operations.
+(use-package volatile-highlights
+  :ensure t
+  :diminish volatile-highlights-mode
+  :config (volatile-highlights-mode t))
+
+;; note - this should be after volatile-highlights is required
+;; add the ability to cut the current line, without marking it
+(require 'rect)
+(crux-with-region-or-line kill-region)
 
 (use-package jump-tree
   :ensure t
@@ -709,6 +738,17 @@ surrounded by word boundaries."
  '(lambda ()
     (when (file-remote-p default-directory)
       (setq dired-actual-switches "-l"))))
+
+;; always delete and copy recursively
+(setq dired-recursive-deletes 'always)
+(setq dired-recursive-copies 'always)
+
+;; if there is a dired buffer displayed in the next window, use its
+;; current subdir, instead of the current subdir of this dired buffer
+(setq dired-dwim-target t)
+
+;; enable some really cool extensions like C-x C-j(dired-jump)
+(require 'dired-x)
 
 (use-package ibuffer
   :bind
@@ -1396,8 +1436,7 @@ ARGUMENT determines the visible heading."
   (setq undo-tree-history-directory-alist
         `((".*" . ,cunene/undo-tree-directory)))
   (setq undo-tree-auto-save-history t) ;; autosave the undo-tree history
-  (global-undo-tree-mode 1)
-)
+  (global-undo-tree-mode 1))
 
 (use-package bm
   :ensure t
@@ -1485,6 +1524,7 @@ ARGUMENT determines the visible heading."
 
 (setq bookmark-default-file
       (cunene/cache-concat "bookmarks/bookmarks"))
+(setq bookmark-save-flag 1)
 
 ;; Highlight current line.
 (add-hook 'ibuffer-mode-hook #'hl-line-mode)
@@ -1602,6 +1642,14 @@ ARGUMENT determines the visible heading."
 (defadvice isearch-update (before my-isearch-reposite activate)
   (sit-for 0)
   (recenter 1))
+
+;; anzu-mode enhances isearch & query-replace by showing total matches and
+;; current match position
+(use-package anzu
+  :diminish anzu-mode
+  :config (global-anzu-mode)
+  :bind (("M-%" . anzu-query-replace)
+         ("C-M-%" . anzu-query-replace-regexp)))
 
 (setq-default abbrev-mode 1)
 
@@ -2193,6 +2241,18 @@ again, I haven't see that as a problem."
 
 ;; save buffers whenc compiling without asking
 (setq compilation-ask-about-save nil)
+
+;; Compilation from Emacs. From prelude.
+(defun cunene/colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook #'cunene/colorize-compilation-buffer)
 
 (use-package bongo
   :ensure t
