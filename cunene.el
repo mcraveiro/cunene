@@ -194,6 +194,10 @@
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 (column-number-mode t)                  ; Display column numbers
 
+;; Font size
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
 (setq uniquify-separator " • ")
@@ -607,8 +611,7 @@ If there's a text selection, work on the selected text."
         '(kill-ring
           search-ring
           regexp-search-ring))
-  :custom
-  (savehist-file (cunene/cache-concat "savehist/history")))
+  (setq savehist-file (cunene/cache-concat "savehist/history")))
 
 (use-package helpful
   :bind
@@ -655,7 +658,6 @@ If there's a text selection, work on the selected text."
   (prettify-symbols-mode))
 
 (add-hook 'prog-mode-hook 'cunene/prog-mode-configure-prettify-symbols-alist)
-;;  ("lambda"  . "λ") ("->" . "→") ("->>" . "↠")))
 
 (require 're-builder)
 (setq reb-re-syntax 'string)        ;; No need for double-slashes
@@ -714,181 +716,166 @@ surrounded by word boundaries."
                  (ibuffer-switch-to-saved-filter-groups "home")
                  (ibuffer-do-sort-by-filename/process))))
 
-  :custom
-  (ibuffer-formats '((mark modified read-only locked
-                           " " (icon 2 2 :left :elide) (name 18 18 :left :elide)
-                           " " (size 9 -1 :right)
-                           " " (mode 16 16 :left :elide) " " filename-and-process)
-                     (mark " " (name 16 -1) " " filename)))
-  (ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
-  (ibuffer-show-empty-filter-groups nil) ;; Remove empty groups
-  (ibuffer-expert t) ;; Enable expert mode
-  (ibuffer-saved-filter-groups ;; Group buffers
-   (quote (("home"
-            ("c++" (mode . c++-mode))
-            ("python" (or
-                       (mode . python-mode)
-                       (name . "^\\*Python\\*$")))
-            ("fsharp" (or
-                       (mode . inferior-fsharp-mode)
-                       (mode . fsharp-mode)))
-            ("csharp" (mode . csharp-mode))
-            ("java" (mode . java-mode))
-            ("kotlin" (mode . kotlin-mode))
-            ("ruby" (mode . ruby-mode))
-            ("perl" (mode . perl-mode))
-            ("json" (mode . json-mode))
-            ("javascript" (or
-                           (mode . javascript-mode)
-                           (mode . js2-mode)
-                           (mode . js-mode)))
-            ("php" (mode . php-mode))
-            ("org" (mode . org-mode))
-            ("xml" (mode . nxml-mode))
-            ("sql" (or
-                    (mode . sql-mode)
-                    (name . "^\\*SQL")))
-            ("make" (or
-                     (mode . cmake-mode)
-                     (mode . makefile-mode)
-                     (mode . makefile-gmake-mode)))
-            ("t4" (name . ".tt$"))
-            ("Dogen - Stitch" (or
-                               (mode . headtail-mode)
-                               (name . ".stitch$")))
-            ("bash" (mode . sh-mode))
-            ("awk" (mode . awk-mode))
-            ("latex" (or
-                      (name . ".tex$")
-                      (name . ".texi$")
-                      (mode . tex-mode)
-                      (mode . latex-mode)))
-            ("markdown" (or
-                         (mode . markdown-mode)
-                         (mode . gfm-mode)))
-            ("emacs-lisp" (or
-                           (mode . emacs-lisp-mode)
-                           (name . "^\\*Compile-Log\\*$")))
-            ("powershell" (or
-                           (mode . powershell-mode)
-                           (name . "^\\*PowerShell")))
-            ("logs" (or
-                     (mode . log4j-mode)
-                     (mode . logview-mode)))
-            ("grep" (or
-                     (name . "^\\*Occur\\*$")
-                     (name . "^\\*Moccur\\*$")
-                     (mode . grep-mode)))
-            ("irc" (or
-                    (mode . erc-list-mode)
-                    (mode . erc-mode)))
-            ("shell" (or
-                      (name . "^\\*Shell Command Output\\*$")
-                      (mode . shell-mode)
-                      (mode . ssh-mode)
-                      (mode . eshell-mode)
-                      (name . "^\\*compilation\\*$")))
-            ("file management" (or
-                                (mode . dired-mode)
-                                (mode . tar-mode)))
-            ("org" (mode . org-mode-))
-            ("text files" (or
-                           (mode . conf-unix-mode)
-                           (mode . conf-space-mode)
-                           (mode . text-mode)))
-            ("yaml" (mode . yaml-mode))
-            ("msdos" (mode . dos-mode))
-            ("patches" (or
-                        (name . "^\\*Assoc file dif")
-                        (mode . diff-mode)))
-            ("version control" (or
-                                (name . "^\\*svn-")
-                                (name . "^\\*vc")
-                                (name . "^\\*cvs")
-                                (name . "^\\magit")))
-            ("snippets" (mode . snippet-mode))
-            ("semantic" (or
-                         (mode . data-debug-mode)
-                         (name . "^\\*Parser Output\\*$")
-                         (name . "^\\*Lexer Output\\*$")))
-            ("web browsing" (or
-                             (mode . w3m-mode)
-                             (mode . twittering-mode)))
-            ("music" (or
-                      (mode . bongo-playlist-mode)
-                      (mode . bongo-library-mode)))
-            ("mail" (or
-                     (mode . gnus-group-mode)
-                     (mode . gnus-summary-mode)
-                     (mode . gnus-article-mode)
-                     (name . "^\\*imap log\\*$")
-                     (name . "^\\*gnus trace\\*$")
-                     (name . "^\\*nnimap imap.")))
-            ("web development" (or
-                                (mode . html-mode)
-                                (mode . css-mode)))
-            ("documentation" (or
-                              (mode . Info-mode)
-                              (mode . apropos-mode)
-                              (mode . woman-mode)
-                              (mode . help-mode)
-                              (mode . Man-mode)))
-            ("system" (or
-                       (name . "^\\*Packages\\*$")
-                       (name . "^\\*helm M-x\\*$")
-                       (name . "^\\*helm mini\\*$")
-                       (name . "^\\*helm projectile\\*$")
-                       (name . "^\\*RTags Log\\*$")
-                       (name . "^\\**RTags Diagnostics\\*$")
-                       (name . "^\\*tramp")
-                       (name . "^\\**input/output of")
-                       (name . "^\\**threads of")
-                       (name . "^\\**breakpoints of")
-                       (name . "^\\**Flycheck")
-                       (name . "^\\**sx-search-result*")
-                       (name . "^\\**gud-dogen.knit")
-                       (name . "^\\**Warnings*")
-                       (name . "^\\*debug tramp")
-                       (name . "^\\*Proced log\\*$")
-                       (name . "^\\*Ediff Registry\\*$")
-                       (name . "^\\*Bookmark List\\*$")
-                       (name . "^\\*RE-Builder\\*$")
-                       (name . "^\\*Kill Ring\\*$")
-                       (name . "^\\*Calendar\\*$")
-                       (name . "^\\*icalendar-errors\\*$")
-                       (name . "^\\*Proced\\*$")
-                       (name . "^\\*WoMan-Log\\*$")
-                       (name . "^\\*Apropos\\*$")
-                       (name . "^\\*Completions\\*$")
-                       (name . "^\\*Help\\*$")
-                       (name . "^\\*Dired log\\*$")
-                       (name . "^\\*scratch\\*$")
-                       (name . "^\\*gnuplot\\*$")
-                       (name . "^\\*Flycheck errors\\*$")
-                       (name . "^\\*compdb:")
-                       (name . "^\\*Backtrace\\*$")
-                       (name . "^\\*Messages\\*$")))
-            ("Treemacs" (or
-                         (name . "^Treemacs Update")
-                         (name . "^\\*nnimap imap.")))
-            )))))
+  (setq ibuffer-formats '((mark modified read-only locked
+                                " " (icon 2 2 :left :elide) (name 18 18 :left :elide)
+                                " " (size 9 -1 :right)
+                                " " (mode 16 16 :left :elide) " " filename-and-process)
+                          (mark " " (name 16 -1) " " filename)))
+  (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
+  (setq ibuffer-show-empty-filter-groups nil) ;; Remove empty groups
+  (setq ibuffer-expert t) ;; Enable expert mode
+  (setq ibuffer-saved-filter-groups ;; Group buffers
+        (quote (("home"
+                 ("c++" (mode . c++-mode))
+                 ("python" (or
+                            (mode . python-mode)
+                            (name . "^\\*Python\\*$")))
+                 ("fsharp" (or
+                            (mode . inferior-fsharp-mode)
+                            (mode . fsharp-mode)))
+                 ("csharp" (mode . csharp-mode))
+                 ("java" (mode . java-mode))
+                 ("kotlin" (mode . kotlin-mode))
+                 ("ruby" (mode . ruby-mode))
+                 ("perl" (mode . perl-mode))
+                 ("json" (mode . json-mode))
+                 ("javascript" (or
+                                (mode . javascript-mode)
+                                (mode . js2-mode)
+                                (mode . js-mode)))
+                 ("php" (mode . php-mode))
+                 ("org" (mode . org-mode))
+                 ("xml" (mode . nxml-mode))
+                 ("sql" (or
+                         (mode . sql-mode)
+                         (name . "^\\*SQL")))
+                 ("make" (or
+                          (mode . cmake-mode)
+                          (mode . makefile-mode)
+                          (mode . makefile-gmake-mode)))
+                 ("t4" (name . ".tt$"))
+                 ("Dogen - Stitch" (or
+                                    (mode . headtail-mode)
+                                    (name . ".stitch$")))
+                 ("bash" (mode . sh-mode))
+                 ("awk" (mode . awk-mode))
+                 ("latex" (or
+                           (name . ".tex$")
+                           (name . ".texi$")
+                           (mode . tex-mode)
+                           (mode . latex-mode)))
+                 ("markdown" (or
+                              (mode . markdown-mode)
+                              (mode . gfm-mode)))
+                 ("emacs-lisp" (or
+                                (mode . emacs-lisp-mode)
+                                (name . "^\\*Compile-Log\\*$")))
+                 ("powershell" (or
+                                (mode . powershell-mode)
+                                (name . "^\\*PowerShell")))
+                 ("logs" (or
+                          (mode . log4j-mode)
+                          (mode . logview-mode)))
+                 ("grep" (or
+                          (name . "^\\*Occur\\*$")
+                          (name . "^\\*Moccur\\*$")
+                          (mode . grep-mode)))
+                 ("irc" (or
+                         (mode . erc-list-mode)
+                         (mode . erc-mode)))
+                 ("shell" (or
+                           (name . "^\\*Shell Command Output\\*$")
+                           (mode . shell-mode)
+                           (mode . ssh-mode)
+                           (mode . eshell-mode)
+                           (name . "^\\*compilation\\*$")))
+                 ("file management" (or
+                                     (mode . dired-mode)
+                                     (mode . tar-mode)))
+                 ("org" (mode . org-mode-))
+                 ("text files" (or
+                                (mode . conf-unix-mode)
+                                (mode . conf-space-mode)
+                                (mode . text-mode)))
+                 ("yaml" (mode . yaml-mode))
+                 ("msdos" (mode . dos-mode))
+                 ("patches" (or
+                             (name . "^\\*Assoc file dif")
+                             (mode . diff-mode)))
+                 ("version control" (or
+                                     (name . "^\\*svn-")
+                                     (name . "^\\*vc")
+                                     (name . "^\\*cvs")
+                                     (name . "^\\magit")))
+                 ("snippets" (mode . snippet-mode))
+                 ("semantic" (or
+                              (mode . data-debug-mode)
+                              (name . "^\\*Parser Output\\*$")
+                              (name . "^\\*Lexer Output\\*$")))
+                 ("web browsing" (or
+                                  (mode . w3m-mode)
+                                  (mode . twittering-mode)))
+                 ("music" (or
+                           (mode . bongo-playlist-mode)
+                           (mode . bongo-library-mode)))
+                 ("mail" (or
+                          (mode . gnus-group-mode)
+                          (mode . gnus-summary-mode)
+                          (mode . gnus-article-mode)
+                          (name . "^\\*imap log\\*$")
+                          (name . "^\\*gnus trace\\*$")
+                          (name . "^\\*nnimap imap.")))
+                 ("web development" (or
+                                     (mode . html-mode)
+                                     (mode . css-mode)))
+                 ("documentation" (or
+                                   (mode . Info-mode)
+                                   (mode . apropos-mode)
+                                   (mode . woman-mode)
+                                   (mode . help-mode)
+                                   (mode . Man-mode)))
+                 ("system" (or
+                            (name . "^\\*Packages\\*$")
+                            (name . "^\\*helm M-x\\*$")
+                            (name . "^\\*helm mini\\*$")
+                            (name . "^\\*helm projectile\\*$")
+                            (name . "^\\*RTags Log\\*$")
+                            (name . "^\\**RTags Diagnostics\\*$")
+                            (name . "^\\*tramp")
+                            (name . "^\\**input/output of")
+                            (name . "^\\**threads of")
+                            (name . "^\\**breakpoints of")
+                            (name . "^\\**Flycheck")
+                            (name . "^\\**sx-search-result*")
+                            (name . "^\\**gud-dogen.knit")
+                            (name . "^\\**Warnings*")
+                            (name . "^\\*debug tramp")
+                            (name . "^\\*Proced log\\*$")
+                            (name . "^\\*Ediff Registry\\*$")
+                            (name . "^\\*Bookmark List\\*$")
+                            (name . "^\\*RE-Builder\\*$")
+                            (name . "^\\*Kill Ring\\*$")
+                            (name . "^\\*Calendar\\*$")
+                            (name . "^\\*icalendar-errors\\*$")
+                            (name . "^\\*Proced\\*$")
+                            (name . "^\\*WoMan-Log\\*$")
+                            (name . "^\\*Apropos\\*$")
+                            (name . "^\\*Completions\\*$")
+                            (name . "^\\*Help\\*$")
+                            (name . "^\\*Dired log\\*$")
+                            (name . "^\\*scratch\\*$")
+                            (name . "^\\*gnuplot\\*$")
+                            (name . "^\\*Flycheck errors\\*$")
+                            (name . "^\\*compdb:")
+                            (name . "^\\*Backtrace\\*$")
+                            (name . "^\\*Messages\\*$")))
+                 ("Treemacs" (or
+                              (name . "^Treemacs Update")
+                              (name . "^\\*nnimap imap.")))
+                 )))))
 
 (global-set-key (kbd "s-w") #'delete-window)
 (global-set-key (kbd "s-W") #'kill-this-buffer)
-
-;; (use-package desktop+
-;;   :ensure t
-;;   :commands (desktop-create desktop-load)
-;;   :init
-;;   (eval-after-load "desktop+"
-;;     '(defun desktop+--set-frame-title ()
-;;        (message "desktop+ set in initialization to not write to frame title")))
-;;   :config
-;;   (require 'desktop+)
-;;   (setq desktop+-special-buffer-handlers
-;;         '(org-agenda-mode shell-mode compilation-mode eshell-mode)))
-
-;; (setq-default desktop+-base-dir (cunene/cache-concat "desktops/"))
 
 ;; could not get it to work via use-package; commands did not kick-in
 ;; and kept trying to reload from elpa.
@@ -1031,6 +1018,37 @@ Also returns nil if pid is nil."
                                         ("STUB"   . "#1E90FF")
                                          ))
     (hl-todo-mode)))
+
+(use-package org-ref
+  :ensure t
+  :after org)
+
+(defun cunene/occur-non-ascii ()
+  "Find any non-ascii characters in the current buffer."
+  (interactive)
+  (occur "[^[:ascii:]]"))
+
+;; speeds up org-ref
+(setq org-ref-show-broken-links nil)
+(setq org-latex-pdf-process
+      '("latexmk -shell-escape -bibtex -pdf %f"))
+(setq org-latex-listings t)
+(setq bibtex-dialect 'biblatex)
+(require 'ox-latex)
+(add-to-list 'org-latex-packages-alist '("" "listings"))
+(add-to-list 'org-latex-packages-alist '("" "color"))
+(setq org-highlight-latex-and-related nil)
+
+;; add classic thesis
+(add-to-list 'org-latex-classes
+             '("scrreprt" "\\documentclass[11pt]{scrreprt}"
+               ("\\part{%s}" . "\\part*{%s}")
+               ("\\chapter{%s}" . "\\chapter*{%s}")
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 (defun cunene/org-cycle-parent (argument)
   "Go to the nearest parent heading and execute `org-cycle'.
@@ -1353,7 +1371,7 @@ ARGUMENT determines the visible heading."
   :ensure t
   :diminish undo-tree-mode
   :config
-  (setq undo-tree-visualizer-diff t)
+  (setq undo-tree-visualizer-diff nil) ;; causes problems with other buffers
   (setq undo-tree-visualizer-timestamps t)
   (setq undo-tree-visualizer-relative-timestamps t)
   (setq undo-tree-history-directory-alist
@@ -2042,6 +2060,94 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
      (define-key c-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
      ))
 
+(use-package csharp-mode
+  :ensure t)
+
+(defun csharp-hs-forward-sexp (&optional arg)
+  "I set hs-forward-sexp-func to this function.
+
+I found this customization necessary to do the hide/show magic in C#
+code, when dealing with region/endregion. This routine
+goes forward one s-expression, whether it is defined by curly braces
+or region/endregion. It handles nesting, too.
+
+The forward-sexp method takes an arg which can be negative, which
+indicates the move should be backward.  Therefore, to be fully
+correct this function should also handle a negative arg. However,
+the hideshow.el package never uses negative args to its
+hs-forward-sexp-func, so it doesn't matter that this function does not
+do negative numbers.
+
+The arg can also be greater than 1, which means go forward
+multiple times. This function doesn't handle that EITHER.  But
+again, I haven't see that as a problem."
+
+  (message "csharp-hs-forward-sexp, (arg %d) (point %d)..."
+           (if (numberp arg) arg -1)
+           (point))
+
+  (let ((nestlevel 0)
+        (mark1 (point))
+        (done nil)
+        )
+
+    (if (and arg (< arg 0))
+        (message "negative arg (%d) is not supported..." arg)
+
+      ;; else, we have a positive argument, hence move forward.
+      ;; simple case is just move forward one brace
+      (if (looking-at "{")
+          (forward-sexp arg)
+
+        ; The more complex case is dealing with a "region/endregion" block.
+        ; We have to deal with nested regions!
+        (and
+         (while (not done)
+           (re-search-forward "^[ \\t]*#[ \\t]*\\(region\\|endregion\\)\\b"
+                              (point-max) 'move)
+           (cond
+
+            ((eobp))                    ; do nothing if at end of buffer
+
+            ((and
+              (match-beginning 1)
+              ;; if the match is longer than 6 chars, we know it is "endregion"
+              (if (> (- (match-end 1) (match-beginning 1)) 6)
+                  (setq nestlevel (1- nestlevel))
+                (setq nestlevel (1+ nestlevel))
+                )
+              )))
+
+           (setq done (not (and (> nestlevel 0) (not (eobp)))))
+
+           )                            ; while
+
+         (if (= nest 0)
+             (goto-char (match-end 2)))
+
+         )
+        )
+      )
+    )
+  )
+
+(unless (assoc 'csharp-mode hs-special-modes-alist)
+          (push '(csharp-mode
+                  ; "\\(^\\s*#\\s*region\\b\\)\\|{"      ; regexp for start block DID NOT WORK
+                  "\\(^[ \\t]*#[ \\t]*region\\b\\)\\|{"  ; regexp for start block
+
+                  ; "\\(^\\s*#\\s*endregion\\b\\)\\|}"   ; regexp for end block NO WORKY!
+                  "\\(^[ \\t]*#[ \\t]*endregion\\b\\)\\|}"   ; regexp for end block
+
+                  "/[*/]"                                ; regexp for comment start
+
+                  csharp-hs-forward-sexp                 ; hs-forward-sexp-func
+                  hs-c-like-adjust-block-beginning       ;c-like adjust (1 char)
+                  ;csharp-hs-adjust-block-beginning      ;csharp adjust ?
+                  )
+                hs-special-modes-alist)
+          )
+
 (use-package doxymacs
   :load-path cunene/vendor-packages
   :config
@@ -2055,10 +2161,19 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-hook 'c-mode-common-hook 'doxymacs-mode)
 )
 
-(setq compilation-scroll-output t)
 (global-set-key (kbd "C-c c") 'compile)
+
+;; automatically scroll the output
+(setq compilation-scroll-output t)
+
+;; reuse existing frame.
 (setq display-buffer-reuse-frames t)
+
+;; kill ongoing compilation
 (setq compilation-always-kill  t)
+
+;; save buffers whenc compiling without asking
+(setq compilation-ask-about-save nil)
 
 (use-package bongo
   :ensure t
@@ -2366,6 +2481,9 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
   :after eshell
   :config
   (eshell-git-prompt-use-theme 'powerline))
+
+(use-package ssh
+  :ensure t)
 
 (use-package deadgrep
   :ensure t)

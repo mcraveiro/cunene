@@ -350,6 +350,14 @@ Here are what I consider better defaults as per my own experience.
 (column-number-mode t)                  ; Display column numbers
 #+end_src
 
+** Text Size
+
+#+begin_src emacs-lisp
+;; Font size
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+#+end_src
+
 ** Buffers
 *** Identification
 
@@ -578,8 +586,8 @@ defining the hydra.
   ("C-c p" . hydra-projectile/body)
   ("C-c s" . hydra-system/body)
   ("C-c u" . hydra-ui/body)
-  :custom
-  (hydra-default-hint nil))
+  :config
+  (setq hydra-default-hint nil))
 #+end_src
 
 *** Hydra: Applications
@@ -922,8 +930,7 @@ From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
         '(kill-ring
           search-ring
           regexp-search-ring))
-  :custom
-  (savehist-file (cunene/cache-concat "savehist/history")))
+  (setq savehist-file (cunene/cache-concat "savehist/history")))
 #+end_src
 
 ** Help
@@ -1070,166 +1077,164 @@ surrounded by word boundaries."
                  (ibuffer-switch-to-saved-filter-groups "home")
                  (ibuffer-do-sort-by-filename/process))))
 
-  :custom
-  (ibuffer-formats '((mark modified read-only locked
-                           " " (icon 2 2 :left :elide) (name 18 18 :left :elide)
-                           " " (size 9 -1 :right)
-                           " " (mode 16 16 :left :elide) " " filename-and-process)
-                     (mark " " (name 16 -1) " " filename)))
-  (ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
-  (ibuffer-show-empty-filter-groups nil) ;; Remove empty groups
-  (ibuffer-expert t) ;; Enable expert mode
-  (ibuffer-saved-filter-groups ;; Group buffers
-   (quote (("home"
-            ("c++" (mode . c++-mode))
-            ("python" (or
-                       (mode . python-mode)
-                       (name . "^\\*Python\\*$")))
-            ("fsharp" (or
-                       (mode . inferior-fsharp-mode)
-                       (mode . fsharp-mode)))
-            ("csharp" (mode . csharp-mode))
-            ("java" (mode . java-mode))
-            ("kotlin" (mode . kotlin-mode))
-            ("ruby" (mode . ruby-mode))
-            ("perl" (mode . perl-mode))
-            ("json" (mode . json-mode))
-            ("javascript" (or
-                           (mode . javascript-mode)
-                           (mode . js2-mode)
-                           (mode . js-mode)))
-            ("php" (mode . php-mode))
-            ("org" (mode . org-mode))
-            ("xml" (mode . nxml-mode))
-            ("sql" (or
-                    (mode . sql-mode)
-                    (name . "^\\*SQL")))
-            ("make" (or
-                     (mode . cmake-mode)
-                     (mode . makefile-mode)
-                     (mode . makefile-gmake-mode)))
-            ("t4" (name . ".tt$"))
-            ("Dogen - Stitch" (or
-                               (mode . headtail-mode)
-                               (name . ".stitch$")))
-            ("bash" (mode . sh-mode))
-            ("awk" (mode . awk-mode))
-            ("latex" (or
-                      (name . ".tex$")
-                      (name . ".texi$")
-                      (mode . tex-mode)
-                      (mode . latex-mode)))
-            ("markdown" (or
-                         (mode . markdown-mode)
-                         (mode . gfm-mode)))
-            ("emacs-lisp" (or
-                           (mode . emacs-lisp-mode)
-                           (name . "^\\*Compile-Log\\*$")))
-            ("powershell" (or
-                           (mode . powershell-mode)
-                           (name . "^\\*PowerShell")))
-            ("logs" (or
-                     (mode . log4j-mode)
-                     (mode . logview-mode)))
-            ("grep" (or
-                     (name . "^\\*Occur\\*$")
-                     (name . "^\\*Moccur\\*$")
-                     (mode . grep-mode)))
-            ("irc" (or
-                    (mode . erc-list-mode)
-                    (mode . erc-mode)))
-            ("shell" (or
-                      (name . "^\\*Shell Command Output\\*$")
-                      (mode . shell-mode)
-                      (mode . ssh-mode)
-                      (mode . eshell-mode)
-                      (name . "^\\*compilation\\*$")))
-            ("file management" (or
-                                (mode . dired-mode)
-                                (mode . tar-mode)))
-            ("org" (mode . org-mode-))
-            ("text files" (or
-                           (mode . conf-unix-mode)
-                           (mode . conf-space-mode)
-                           (mode . text-mode)))
-            ("yaml" (mode . yaml-mode))
-            ("msdos" (mode . dos-mode))
-            ("patches" (or
-                        (name . "^\\*Assoc file dif")
-                        (mode . diff-mode)))
-            ("version control" (or
-                                (name . "^\\*svn-")
-                                (name . "^\\*vc")
-                                (name . "^\\*cvs")
-                                (name . "^\\magit")))
-            ("snippets" (mode . snippet-mode))
-            ("semantic" (or
-                         (mode . data-debug-mode)
-                         (name . "^\\*Parser Output\\*$")
-                         (name . "^\\*Lexer Output\\*$")))
-            ("web browsing" (or
-                             (mode . w3m-mode)
-                             (mode . twittering-mode)))
-            ("music" (or
-                      (mode . bongo-playlist-mode)
-                      (mode . bongo-library-mode)))
-            ("mail" (or
-                     (mode . gnus-group-mode)
-                     (mode . gnus-summary-mode)
-                     (mode . gnus-article-mode)
-                     (name . "^\\*imap log\\*$")
-                     (name . "^\\*gnus trace\\*$")
-                     (name . "^\\*nnimap imap.")))
-            ("web development" (or
-                                (mode . html-mode)
-                                (mode . css-mode)))
-            ("documentation" (or
-                              (mode . Info-mode)
-                              (mode . apropos-mode)
-                              (mode . woman-mode)
-                              (mode . help-mode)
-                              (mode . Man-mode)))
-            ("system" (or
-                       (name . "^\\*Packages\\*$")
-                       (name . "^\\*helm M-x\\*$")
-                       (name . "^\\*helm mini\\*$")
-                       (name . "^\\*helm projectile\\*$")
-                       (name . "^\\*RTags Log\\*$")
-                       (name . "^\\**RTags Diagnostics\\*$")
-                       (name . "^\\*tramp")
-                       (name . "^\\**input/output of")
-                       (name . "^\\**threads of")
-                       (name . "^\\**breakpoints of")
-                       (name . "^\\**Flycheck")
-                       (name . "^\\**sx-search-result*")
-                       (name . "^\\**gud-dogen.knit")
-                       (name . "^\\**Warnings*")
-                       (name . "^\\*debug tramp")
-                       (name . "^\\*Proced log\\*$")
-                       (name . "^\\*Ediff Registry\\*$")
-                       (name . "^\\*Bookmark List\\*$")
-                       (name . "^\\*RE-Builder\\*$")
-                       (name . "^\\*Kill Ring\\*$")
-                       (name . "^\\*Calendar\\*$")
-                       (name . "^\\*icalendar-errors\\*$")
-                       (name . "^\\*Proced\\*$")
-                       (name . "^\\*WoMan-Log\\*$")
-                       (name . "^\\*Apropos\\*$")
-                       (name . "^\\*Completions\\*$")
-                       (name . "^\\*Help\\*$")
-                       (name . "^\\*Dired log\\*$")
-                       (name . "^\\*scratch\\*$")
-                       (name . "^\\*gnuplot\\*$")
-                       (name . "^\\*Flycheck errors\\*$")
-                       (name . "^\\*compdb:")
-                       (name . "^\\*Backtrace\\*$")
-                       (name . "^\\*Messages\\*$")))
-            ("Treemacs" (or
-                         (name . "^Treemacs Update")
-                         (name . "^\\*nnimap imap.")))
-            )))))
+  (setq ibuffer-formats '((mark modified read-only locked
+                                " " (icon 2 2 :left :elide) (name 18 18 :left :elide)
+                                " " (size 9 -1 :right)
+                                " " (mode 16 16 :left :elide) " " filename-and-process)
+                          (mark " " (name 16 -1) " " filename)))
+  (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
+  (setq ibuffer-show-empty-filter-groups nil) ;; Remove empty groups
+  (setq ibuffer-expert t) ;; Enable expert mode
+  (setq ibuffer-saved-filter-groups ;; Group buffers
+        (quote (("home"
+                 ("c++" (mode . c++-mode))
+                 ("python" (or
+                            (mode . python-mode)
+                            (name . "^\\*Python\\*$")))
+                 ("fsharp" (or
+                            (mode . inferior-fsharp-mode)
+                            (mode . fsharp-mode)))
+                 ("csharp" (mode . csharp-mode))
+                 ("java" (mode . java-mode))
+                 ("kotlin" (mode . kotlin-mode))
+                 ("ruby" (mode . ruby-mode))
+                 ("perl" (mode . perl-mode))
+                 ("json" (mode . json-mode))
+                 ("javascript" (or
+                                (mode . javascript-mode)
+                                (mode . js2-mode)
+                                (mode . js-mode)))
+                 ("php" (mode . php-mode))
+                 ("org" (mode . org-mode))
+                 ("xml" (mode . nxml-mode))
+                 ("sql" (or
+                         (mode . sql-mode)
+                         (name . "^\\*SQL")))
+                 ("make" (or
+                          (mode . cmake-mode)
+                          (mode . makefile-mode)
+                          (mode . makefile-gmake-mode)))
+                 ("t4" (name . ".tt$"))
+                 ("Dogen - Stitch" (or
+                                    (mode . headtail-mode)
+                                    (name . ".stitch$")))
+                 ("bash" (mode . sh-mode))
+                 ("awk" (mode . awk-mode))
+                 ("latex" (or
+                           (name . ".tex$")
+                           (name . ".texi$")
+                           (mode . tex-mode)
+                           (mode . latex-mode)))
+                 ("markdown" (or
+                              (mode . markdown-mode)
+                              (mode . gfm-mode)))
+                 ("emacs-lisp" (or
+                                (mode . emacs-lisp-mode)
+                                (name . "^\\*Compile-Log\\*$")))
+                 ("powershell" (or
+                                (mode . powershell-mode)
+                                (name . "^\\*PowerShell")))
+                 ("logs" (or
+                          (mode . log4j-mode)
+                          (mode . logview-mode)))
+                 ("grep" (or
+                          (name . "^\\*Occur\\*$")
+                          (name . "^\\*Moccur\\*$")
+                          (mode . grep-mode)))
+                 ("irc" (or
+                         (mode . erc-list-mode)
+                         (mode . erc-mode)))
+                 ("shell" (or
+                           (name . "^\\*Shell Command Output\\*$")
+                           (mode . shell-mode)
+                           (mode . ssh-mode)
+                           (mode . eshell-mode)
+                           (name . "^\\*compilation\\*$")))
+                 ("file management" (or
+                                     (mode . dired-mode)
+                                     (mode . tar-mode)))
+                 ("org" (mode . org-mode-))
+                 ("text files" (or
+                                (mode . conf-unix-mode)
+                                (mode . conf-space-mode)
+                                (mode . text-mode)))
+                 ("yaml" (mode . yaml-mode))
+                 ("msdos" (mode . dos-mode))
+                 ("patches" (or
+                             (name . "^\\*Assoc file dif")
+                             (mode . diff-mode)))
+                 ("version control" (or
+                                     (name . "^\\*svn-")
+                                     (name . "^\\*vc")
+                                     (name . "^\\*cvs")
+                                     (name . "^\\magit")))
+                 ("snippets" (mode . snippet-mode))
+                 ("semantic" (or
+                              (mode . data-debug-mode)
+                              (name . "^\\*Parser Output\\*$")
+                              (name . "^\\*Lexer Output\\*$")))
+                 ("web browsing" (or
+                                  (mode . w3m-mode)
+                                  (mode . twittering-mode)))
+                 ("music" (or
+                           (mode . bongo-playlist-mode)
+                           (mode . bongo-library-mode)))
+                 ("mail" (or
+                          (mode . gnus-group-mode)
+                          (mode . gnus-summary-mode)
+                          (mode . gnus-article-mode)
+                          (name . "^\\*imap log\\*$")
+                          (name . "^\\*gnus trace\\*$")
+                          (name . "^\\*nnimap imap.")))
+                 ("web development" (or
+                                     (mode . html-mode)
+                                     (mode . css-mode)))
+                 ("documentation" (or
+                                   (mode . Info-mode)
+                                   (mode . apropos-mode)
+                                   (mode . woman-mode)
+                                   (mode . help-mode)
+                                   (mode . Man-mode)))
+                 ("system" (or
+                            (name . "^\\*Packages\\*$")
+                            (name . "^\\*helm M-x\\*$")
+                            (name . "^\\*helm mini\\*$")
+                            (name . "^\\*helm projectile\\*$")
+                            (name . "^\\*RTags Log\\*$")
+                            (name . "^\\**RTags Diagnostics\\*$")
+                            (name . "^\\*tramp")
+                            (name . "^\\**input/output of")
+                            (name . "^\\**threads of")
+                            (name . "^\\**breakpoints of")
+                            (name . "^\\**Flycheck")
+                            (name . "^\\**sx-search-result*")
+                            (name . "^\\**gud-dogen.knit")
+                            (name . "^\\**Warnings*")
+                            (name . "^\\*debug tramp")
+                            (name . "^\\*Proced log\\*$")
+                            (name . "^\\*Ediff Registry\\*$")
+                            (name . "^\\*Bookmark List\\*$")
+                            (name . "^\\*RE-Builder\\*$")
+                            (name . "^\\*Kill Ring\\*$")
+                            (name . "^\\*Calendar\\*$")
+                            (name . "^\\*icalendar-errors\\*$")
+                            (name . "^\\*Proced\\*$")
+                            (name . "^\\*WoMan-Log\\*$")
+                            (name . "^\\*Apropos\\*$")
+                            (name . "^\\*Completions\\*$")
+                            (name . "^\\*Help\\*$")
+                            (name . "^\\*Dired log\\*$")
+                            (name . "^\\*scratch\\*$")
+                            (name . "^\\*gnuplot\\*$")
+                            (name . "^\\*Flycheck errors\\*$")
+                            (name . "^\\*compdb:")
+                            (name . "^\\*Backtrace\\*$")
+                            (name . "^\\*Messages\\*$")))
+                 ("Treemacs" (or
+                              (name . "^Treemacs Update")
+                              (name . "^\\*nnimap imap.")))
+                 )))))
 #+end_src
-
 
 ** Buffers and Windows
 
