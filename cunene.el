@@ -205,6 +205,8 @@
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
 (column-number-mode t)                  ; Display column numbers
+(line-number-mode t)                    ; Display line numbers
+(size-indication-mode t)                ; Display size indicator
 
 ;; enable narrowing commands
 (put 'narrow-to-region 'disabled nil)
@@ -481,7 +483,7 @@ Returns nil if no differences found, 't otherwise."
   (drag-stuff-global-mode t))
 
 (use-package expand-region
-  :bind ("C-c =" . er/expand-region))
+  :bind ("C-=" . er/expand-region))
 
 ;; Replace region when inserting text
 (delete-selection-mode 1)
@@ -1696,6 +1698,11 @@ ARGUMENT determines the visible heading."
   :bind
   ("M-o" . ace-window))
 
+;; Window switching. (C-x o goes to the next window)
+(global-set-key (kbd "C-x O") (lambda ()
+                                (interactive)
+                                (other-window -1))) ;; back one
+
 (use-package ztree
   :ensure t)
 
@@ -2044,6 +2051,18 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :defer nil ;; dont defer so we can add our functions to hooks
   :config (smart-hungry-delete-add-default-hooks))
 
+;; replace zap-to-char functionality with the more powerful zop-to-char
+(global-set-key (kbd "M-z") 'zop-up-to-char)
+(global-set-key (kbd "M-Z") 'zop-to-char)
+
+;; kill lines backward
+(global-set-key (kbd "C-<backspace>") (lambda ()
+                                        (interactive)
+                                        (kill-line 0)
+                                        (indent-according-to-mode)))
+
+(global-set-key [remap kill-whole-line] 'crux-kill-whole-line)
+
 (require 'hideshow)
 
 ;; Hide the comments too when you do a 'hs-hide-all'
@@ -2253,6 +2272,12 @@ again, I haven't see that as a problem."
 
 (require 'ansi-color)
 (add-hook 'compilation-filter-hook #'cunene/colorize-compilation-buffer)
+
+(use-package persistent-scratch
+  :config
+  (setq persistent-scratch-save-file
+        (cunene/cache-concat "scratch/persistent-scratch"))
+  (persistent-scratch-setup-default))
 
 (use-package bongo
   :ensure t
@@ -2560,6 +2585,12 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
   :after eshell
   :config
   (eshell-git-prompt-use-theme 'powerline))
+
+;; Start a new eshell even if one is active.
+(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+
+;; Start a regular shell if you prefer that.
+(global-set-key (kbd "C-x M-m") 'shell)
 
 (use-package ssh
   :ensure t)
