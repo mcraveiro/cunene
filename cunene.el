@@ -936,12 +936,12 @@ Also returns nil if pid is nil."
 (use-package shackle
   :hook
   (after-init . shackle-mode)
-  :custom
-  (shackle-inhibit-window-quit-on-same-windows t)
-  (shackle-rules '((help-mode :same t)
-                   (helpful-mode :same t)
-                   (process-menu-mode :same t)))
-  (shackle-select-reused-windows t))
+  :config
+  (setq shackle-inhibit-window-quit-on-same-windows t)
+  (setq shackle-rules '((help-mode :same t)
+                        (helpful-mode :same t)
+                        (process-menu-mode :same t)))
+  (setq shackle-select-reused-windows t))
 
 (use-package windmove
   :ensure nil
@@ -966,25 +966,24 @@ Also returns nil if pid is nil."
    ("C-c l" . org-store-link))
   :hook
   (org-mode . auto-fill-mode)
-  :custom
-  (org-startup-folded t)
-  (org-adapt-indentation nil)
-  (org-confirm-babel-evaluate nil)
-  (org-cycle-separator-lines 0)
-  (org-hide-leading-stars t)
-  (org-highlight-latex-and-related '(latex))
-  (org-descriptive-links t)
-  (org-edit-src-content-indentation 0)
-  (org-edit-src-persistent-message nil)
-  (org-fontify-done-headline t)
-  (org-fontify-quote-and-verse-blocks t)
-  (org-fontify-whole-heading-line t)
-  (org-return-follows-link t)
-  (org-src-tab-acts-natively t)
-  (org-src-window-setup 'current-window)
-  (org-startup-truncated nil)
-  (org-support-shift-select 'always)
   :config
+  (setq org-startup-folded t)
+  (setq org-adapt-indentation nil)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-cycle-separator-lines 0)
+  (setq org-hide-leading-stars t)
+  (setq org-highlight-latex-and-related '(latex))
+  (setq org-descriptive-links t)
+  (setq org-edit-src-content-indentation 0)
+  (setq org-edit-src-persistent-message nil)
+  (setq org-fontify-done-headline t)
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-fontify-whole-heading-line t)
+  (setq org-return-follows-link t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-src-window-setup 'current-window)
+  (setq org-startup-truncated nil)
+  (setq org-support-shift-select 'always)
   (require 'ob-shell)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
@@ -1229,9 +1228,9 @@ ARGUMENT determines the visible heading."
   :ensure t
   :init
   (vertico-mode)
-  :custom
-  (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
-  (vertico-cycle t)) ;; enable cycling for `vertico-next' and `vertico-previous'.
+  :config
+  (setq vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  (setq vertico-cycle t)) ;; enable cycling for `vertico-next' and `vertico-previous'.
 
 ;; from vendor directory.
 (use-package vertico-quick
@@ -1248,10 +1247,10 @@ ARGUMENT determines the visible heading."
 ;; `initials' completion style a try.
 (use-package orderless
   :ensure t
-  :custom
-  (completion-styles '(orderless))
-  (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion)))))
+  :config
+  (setq completion-styles '(orderless))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '((file (styles partial-completion)))))
 
 ;; A few more useful configurations...
 (use-package emacs
@@ -1725,16 +1724,15 @@ expects some output that isn't there and triggers an error"
    ("M-4" . nil))
   :hook
   (magit-post-stage-hook . cunene/magit-recenter)
-  :custom
-  (epg-pinentry-mode 'loopback)
-  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
-  (magit-diff-highlight-hunk-region-functions
-   '(magit-diff-highlight-hunk-region-using-face))
-  (magit-diff-refine-hunk 'all)
-  (magit-module-sections-nested nil)
-  (magit-section-initial-visibility-alist
-   '((modules . show) (stashes . show) (unpulled . show) (unpushed . show)))
   :config
+  (setq epg-pinentry-mode 'loopback)
+  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (setq magit-diff-highlight-hunk-region-functions
+        '(magit-diff-highlight-hunk-region-using-face))
+  (setq magit-diff-refine-hunk 'all)
+  (setq magit-module-sections-nested nil)
+  (setq magit-section-initial-visibility-alist
+        '((modules . show) (stashes . show) (unpulled . show) (unpushed . show)))
   (magit-add-section-hook
    'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
   (remove-hook 'magit-section-highlight-hook #'magit-section-highlight))
@@ -1762,9 +1760,9 @@ expects some output that isn't there and triggers an error"
 
 (use-package transient
   :init
-  :custom
-  (transient-default-level 5)
-  (transient-mode-line-format nil))
+  :config
+  (setq transient-default-level 5)
+  (setq transient-mode-line-format nil))
 
 (use-package smerge-mode
   :commands smerge-mode
@@ -1927,10 +1925,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package plantuml-mode
   :ensure t
   :mode "\\.plantuml\\'"
-  :custom
-  (plantuml-indent-level 4)
-  (image-auto-resize nil)
   :config
+  (setq plantuml-indent-level 4)
+  (setq image-auto-resize nil)
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
   (if (eq window-system 'w32)
       (setq plantuml-jar-path "C:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar"
