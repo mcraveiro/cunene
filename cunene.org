@@ -1276,8 +1276,13 @@ surrounded by word boundaries."
                                    (mode . Info-mode)
                                    (mode . apropos-mode)
                                    (mode . woman-mode)
+                                   (mode . helpful-mode)
                                    (mode . help-mode)
                                    (mode . Man-mode)))
+                 ("lsp" (or
+                          (name . "^\\*clangd")
+                          (name . "^\\*lsp")))
+
                  ("system" (or
                             (name . "^\\*Packages\\*$")
                             (name . "^\\*helm M-x\\*$")
@@ -1306,12 +1311,14 @@ surrounded by word boundaries."
                             (name . "^\\*Apropos\\*$")
                             (name . "^\\*Completions\\*$")
                             (name . "^\\*Help\\*$")
+                            (name . "^\\*helpful")
                             (name . "^\\*Dired log\\*$")
                             (name . "^\\*scratch\\*$")
                             (name . "^\\*gnuplot\\*$")
                             (name . "^\\*Flycheck errors\\*$")
                             (name . "^\\*compdb:")
                             (name . "^\\*Backtrace\\*$")
+                            (name . "^\\*dashboard\\*$")
                             (name . "^\\*Messages\\*$")))
                  ("Treemacs" (or
                               (name . "^Treemacs Update")
