@@ -55,7 +55,11 @@
 (with-eval-after-load 'recentf
   (progn
     (setq recentf-save-file (cunene/cache-concat "recentf/recentf"))
-    (setq recentf-max-saved-items 150)
+    (setq recentf-max-saved-items 500
+          ;; disable recentf-cleanup on Emacs start, because it can cause
+          ;; problems with remote files
+          recentf-auto-cleanup 'never
+          recentf-max-menu-items 15)
 ))
 
 ;; Moving the location of packages causes weird bootstrapping errors.
@@ -130,6 +134,14 @@
   (delete-file cunene/config-file)
   (org-babel-load-file cunene/config-file-org))
 
+(defun cunen/package-update ()
+  "Update all installed packages to its latest version."
+  (interactive)
+  (when (y-or-n-p "Do you want to update packages? ")
+    (message "Updating installed packages...")
+    (epl-upgrade)
+    (message "Update finished. Restart Emacs to complete the process.")))
+
 (global-set-key (kbd "C-c I") 'cunene/find-config)
 (global-set-key (kbd "C-c R") 'cunene/reload-config)
 
@@ -161,6 +173,7 @@
 
 (setq-default
  ad-redefinition-action 'accept         ; Silence warnings for redefinition
+ require-final-newline t                ; Newline at end of file
  auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
  cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
  custom-unlispify-menu-entries nil      ; Prefer kebab-case for titles
@@ -290,7 +303,11 @@ Returns nil if no differences found, 't otherwise."
 (use-package super-save
   :ensure t
   :config
+  (add-to-list 'super-save-triggers 'ace-window)
   (super-save-mode +1))
+
+;; revert buffers automatically when underlying files are changed externally
+(global-auto-revert-mode t)
 
 (use-package which-key
   :ensure t
@@ -433,6 +450,8 @@ Returns nil if no differences found, 't otherwise."
   (interactive)
   (require 'uuid)
   (insert (upcase (uuid-string))))
+
+(require 'thingatpt)
 
 (use-package drag-stuff
   :ensure t
@@ -597,16 +616,17 @@ If there's a text selection, work on the selected text."
 
 (require 'saveplace)
 (setq save-place-file (cunene/cache-concat "saveplace/places"))
-(save-place-mode)
+(save-place-mode 1)
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
-  (savehist-mode)
+  (savehist-mode +1)
   :config
   (setq history-length t)
   (setq history-delete-duplicates t)
   (setq savehist-save-minibuffer-history 1)
+  (setq savehist-autosave-interval 60)
   (setq savehist-additional-variables
         '(kill-ring
           search-ring
@@ -1955,9 +1975,11 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :ensure t
   :diminish
   :init
-  (smartparens-mode 1)
+  (show-smartparens-global-mode +1)
   :config
-  (add-hook 'prog-mode-hook 'smartparens-mode))
+  (setq sp-autoskip-closing-pair 'always)
+  ;; (setq sp-hybrid-kill-entire-symbol nil)
+)
 
 (use-package rainbow-mode
   :ensure t
