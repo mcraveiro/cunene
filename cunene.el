@@ -204,6 +204,9 @@
 (put 'downcase-region 'disabled nil)    ; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
 (column-number-mode t)                  ; Display column numbers
 (line-number-mode t)                    ; Display line numbers
 (size-indication-mode t)                ; Display size indicator
@@ -220,6 +223,9 @@
 ;; enable erase-buffer command
 (put 'erase-buffer 'disabled nil)
 
+;; repeat pop mark command without the need for C-u
+(setq set-mark-command-repeat-pop t)
+
 ;; Font size
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
@@ -233,8 +239,7 @@
 ;; Do not ask to kill a buffer.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 
-
-(defun diff-buffer-with-associated-file ()
+(defun cunene/diff-buffer-with-associated-file ()
   "View the differences between BUFFER and its associated file.
 This requires the external program \"diff\" to be in your `exec-path'.
 Returns nil if no differences found, 't otherwise."
@@ -277,18 +282,18 @@ Returns nil if no differences found, 't otherwise."
             (delete-file tempfile)))))))
 
 ;; tidy up diffs when closing the file
-(defun kill-associated-diff-buf ()
+(defun cunene/kill-associated-diff-buf ()
   (let ((buf (get-buffer (concat "*Assoc file diff: "
                              (buffer-name)
                              "*"))))
     (when (bufferp buf)
       (kill-buffer buf))))
 
-(add-hook 'kill-buffer-hook 'kill-associated-diff-buf)
+(add-hook 'kill-buffer-hook 'cunene/kill-associated-diff-buf)
 
-(global-set-key (kbd "C-c C-=") 'diff-buffer-with-associated-file)
+(global-set-key (kbd "C-c C-=") 'cunene/diff-buffer-with-associated-file)
 
-(defun de-context-kill (arg)
+(defun cunene/de-context-kill (arg)
   "Kill buffer"
   (interactive "p")
   (if (and (buffer-modified-p)
@@ -299,7 +304,7 @@ Returns nil if no differences found, 't otherwise."
              (= 1 arg))
     (let ((differences 't))
       (when (file-exists-p buffer-file-name)
-        (setq differences (diff-buffer-with-associated-file)))
+        (setq differences (cunene/diff-buffer-with-associated-file)))
 
       (if (y-or-n-p (format "Buffer %s modified; Kill anyway? " buffer-file-name))
           (progn
@@ -311,7 +316,7 @@ Returns nil if no differences found, 't otherwise."
       (set-buffer-modified-p nil)
       (kill-buffer (current-buffer)))))
 
-(global-set-key (kbd "C-x k") 'de-context-kill)
+(global-set-key (kbd "C-x k") 'cunene/de-context-kill)
 
 (use-package super-save
   :ensure t
@@ -429,11 +434,20 @@ Returns nil if no differences found, 't otherwise."
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
   (cl-flet ((process-list ())) ad-do-it))
 
+;; confirm exit
+(global-set-key
+ (kbd "C-x C-c")
+ '(lambda ()
+    (interactive)
+    (if (y-or-n-p-with-timeout "Do you really want to exit Emacs ?" 4 nil)
+        (save-buffers-kill-emacs))))
+
 (use-package dashboard
   :ensure t
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-set-heading-icons t)
+  (setq dashboard-startup-banner 'logo)
   (setq dashboard-set-file-icons t)
   (setq dashboard-set-init-info t)
   (setq dashboard-items '((recents  . 10)
@@ -2023,6 +2037,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 (use-package rainbow-delimiters
   :ensure t
+  :hook ((prog-mode org-mode) . rainbow-mode)
   :config
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
@@ -2043,6 +2058,11 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 (use-package aggressive-indent
   :ensure t)
+
+(defun cunene/indent-buffer ()
+  "Indent entire buffer"
+  (interactive)
+  (indent-region (point-min) (point-max)))
 
 (use-package smart-hungry-delete
   :ensure t
@@ -2613,5 +2633,12 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
     (apply (cdr (assoc browser cunene/browsers)) args)))
 
 (setq browse-url-browser-function #'cunene/browse-url)
+
+(use-package ssh
+  :config  (add-hook 'ssh-mode-hook
+                     (lambda ()
+                       (setq ssh-directory-tracking-mode t)
+                       (shell-dirtrack-mode t)
+                       (setq dirtrackp nil))))
 
 ;;; cunene.el ends here
