@@ -458,7 +458,8 @@ Returns nil if no differences found, 't otherwise."
          ;; Move to beginning of line between head of line and head of text
          ("C-a" . crux-move-beginning-of-line)
          ("C-c r" . crux-rename-file-and-buffer)
-         ("C-c D" . crux-delete-file-and-buffer)))
+         ("C-c D" . crux-delete-file-and-buffer))
+  :config (crux-with-region-or-line kill-region))
 
 (defun uuid-insert()
   (interactive)
@@ -495,7 +496,6 @@ Returns nil if no differences found, 't otherwise."
 ;; note - this should be after volatile-highlights is required
 ;; add the ability to cut the current line, without marking it
 (require 'rect)
-(crux-with-region-or-line kill-region)
 
 (use-package jump-tree
   :ensure t
