@@ -1313,6 +1313,10 @@ ARGUMENT determines the visible heading."
 
 (add-hook 'treemacs-mode-hook #'cunene/setup-tab-width-treemacs-dired)
 
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (setq-local tab-width 1)))
+
 (use-package vertico
   :ensure t
   :init

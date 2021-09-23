@@ -1785,6 +1785,10 @@ Issues:
   (setq tab-width 1))
 
 (add-hook 'treemacs-mode-hook #'cunene/setup-tab-width-treemacs-dired)
+
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (setq-local tab-width 1)))
 #+end_src
 
 ** Completion
