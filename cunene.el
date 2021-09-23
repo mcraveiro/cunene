@@ -349,13 +349,11 @@ Returns nil if no differences found, 't otherwise."
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (setq doom-themes-treemacs-theme "doom-colors")
   (load-theme 'doom-dark+ t)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
   ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-)
+  (doom-themes-org-config))
 
 (use-package all-the-icons)
 (use-package doom-modeline
@@ -1306,6 +1304,12 @@ ARGUMENT determines the visible heading."
 
 (use-package treemacs-all-the-icons)
 (treemacs-load-theme "all-the-icons")
+
+(defun cunene/setup-tab-width-treemacs-dired (&rest _)
+  "Set `tab-width' to 1, so tab characters don't ruin formatting."
+  (setq tab-width 1))
+
+(add-hook 'treemacs-mode-hook #'cunene/setup-tab-width-treemacs-dired)
 
 (use-package vertico
   :ensure t
