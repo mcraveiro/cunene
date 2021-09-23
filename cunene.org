@@ -1739,7 +1739,8 @@ Issues:
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     ;;(treemacs-resize-icons 44)
 
-    (treemacs-follow-mode t)
+    ;; (treemacs-follow-mode t)
+    (treemacs-tag-follow-mode t)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode 'always)
 
@@ -2901,7 +2902,7 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
   :config
   (defun cunene/csharp-mode-setup ()
     (company-mode)
-    (lsp-mode)
+    (lsp)
     (flycheck-mode)
     (c-toggle-hungry-state 1)
     (setq indent-tabs-mode nil)

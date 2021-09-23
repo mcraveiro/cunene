@@ -1261,7 +1261,8 @@ ARGUMENT determines the visible heading."
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     ;;(treemacs-resize-icons 44)
 
-    (treemacs-follow-mode t)
+    ;; (treemacs-follow-mode t)
+    (treemacs-tag-follow-mode t)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode 'always)
 
@@ -2197,6 +2198,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :config
   (defun cunene/csharp-mode-setup ()
     (company-mode)
+    (lsp)
     (flycheck-mode)
     (c-toggle-hungry-state 1)
     (setq indent-tabs-mode nil)
