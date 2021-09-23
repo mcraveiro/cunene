@@ -48,6 +48,34 @@ Things we need to remember to change:
   are commands common to all the supported programming languages and additional
   settings which are language specific."
 - [[https://github.com/hagleitn/speed-type][speed-type]]: "Practice touch/speed typing in emacs".
+- [[https://github.com/alphapapa/burly.el][burly]]: "This package provides tools to save and restore frame and window
+  configurations in Emacs, including buffers that may not be live anymore. In
+  this way, it’s like a lightweight “workspace” manager, allowing you to easily
+  restore one or more frames, including their windows, the windows’ layout, and
+  their buffers."
+- [[https://github.com/alphapapa/bufler.el][bufler]]: "Bufler is like a butler for your buffers, presenting them to you in
+  an organized way based on your instructions. The instructions are written as
+  grouping rules in a simple language, allowing you to customize the way buffers
+  are grouped. The default rules are designed to be generally useful, so you
+  don’t have to write your own."
+- [[https://github.com/tarsius/minions][minions]]: "This package implements a menu that lists enabled minor-modes, as
+  well as commonly but not currently enabled minor-modes. It can be used to
+  toggle local and global minor-modes, to access mode-specific menus, and to get
+  help about modes."
+- [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]]: "aggressive-indent-mode is a minor mode that keeps
+  your code always indented. It reindents after every change, making it more
+  reliable than electric-indent-mode."
+- [[https://github.com/alphapapa/taxy.el][taxy]]: "This library provides a programmable way to classify arbitrary objects
+  into a hierarchical taxonomy. (That’s a lot of fancy words to say that this
+  lets you automatically put things in nested groups.)"
+- [[https://gitlab.com/howardabrams/emacs-piper][piper]]: "Wrapper around existing Emacs functionality that creates an
+  interactive user interface to dealing with unstructured textual data similar
+  with how we transform data through pipes in the shell."
+- [[https://gitlab.com/dto/cell-mode][cell-mode]]: "Cell-mode is an object-oriented spreadsheet control for GNU Emacs.
+  It provides a major mode for spreadsheet-based user interfaces; it can be
+  further extended by defining application-specific Emacs Lisp minor modes which
+  supply new cell and spreadsheet classes via Emacs’ included object system,
+  EIEIO."
 
 * Preamble
 
