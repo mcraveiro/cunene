@@ -1561,6 +1561,7 @@ ARGUMENT determines the visible heading."
 
 ;; Highlight current line.
 (add-hook 'ibuffer-mode-hook #'hl-line-mode)
+(add-hook 'bongo-mode-hook #'hl-line-mode)
 (add-hook 'occur-mode-hook #'hl-line-mode)
 (add-hook 'svn-status-mode-hook #'hl-line-mode)
 (add-hook 'dired-mode-hook #'hl-line-mode)
@@ -1988,8 +1989,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
           ("d" xref-find-definitions "Definitions" :column "Xref")
           ("D" xref-find-definitions-other-window "-> other win")
           ("r" xref-find-references "References")
-          ("s" cunene/helm-lsp-workspace-symbol-at-point "Helm search")
-          ("S" cunene/helm-lsp-global-workspace-symbol-at-point "Helm global search")
+          ("s" helm-lsp-workspace-symbol-at-point "Helm search")
+          ("S" helm-lsp-global-workspace-symbol-at-point "Helm global search")
 
           ;; Peek
           ("C-d" lsp-ui-peek-find-definitions "Definitions" :column "Peek")
@@ -2027,6 +2028,14 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package consult-lsp
   :ensure t
   :diminish)
+
+(use-package helm-lsp
+  :ensure t
+  :bind (:map lsp-mode-map
+              ("<M-RET>" . helm-lsp-code-actions))
+  :diminish)
+
+(define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
 
 (use-package plantuml-mode
   :ensure t
@@ -2184,7 +2193,20 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
      ))
 
 (use-package csharp-mode
-  :ensure t)
+  :ensure t
+  :config
+  (defun cunene/csharp-mode-setup ()
+    (company-mode)
+    (flycheck-mode)
+    (c-toggle-hungry-state 1)
+    (setq indent-tabs-mode nil)
+    (setq c-syntactic-indentation t)
+    (c-set-style "ellemtel")
+    (setq c-basic-offset 4)
+    (setq truncate-lines t)
+    (setq tab-width 4)
+    (setq evil-shift-width 4))
+  (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
 
 (defun csharp-hs-forward-sexp (&optional arg)
   "I set hs-forward-sexp-func to this function.
