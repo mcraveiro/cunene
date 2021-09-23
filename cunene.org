@@ -76,6 +76,11 @@ Things we need to remember to change:
   further extended by defining application-specific Emacs Lisp minor modes which
   supply new cell and spreadsheet classes via Emacs’ included object system,
   EIEIO."
+- [[https://github.com/kiwanami/emacs-ctable][ctable]]: "ctable.el is a table component for emacs lisp. Emacs lisp programs
+  can display a nice table view from an abstract data model. The many emacs
+  programs have the code for displaying table views, such as dired,
+  list-process, buffer-list and so on. So, ctable.el would provide functions and
+  a table framework for the table views."
 
 * Preamble
 
@@ -2071,6 +2076,7 @@ For the org-mode support, see:
 #+begin_src emacs-lisp
 ;; Highlight current line.
 (add-hook 'ibuffer-mode-hook #'hl-line-mode)
+(add-hook 'bongo-mode-hook #'hl-line-mode)
 (add-hook 'occur-mode-hook #'hl-line-mode)
 (add-hook 'svn-status-mode-hook #'hl-line-mode)
 (add-hook 'dired-mode-hook #'hl-line-mode)
@@ -3041,6 +3047,8 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 * Music
 
 ** Bongo
+
+| =bongo= | https://github.com/dbrock/bongo |
 
 Source:
 
