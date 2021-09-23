@@ -709,12 +709,16 @@ Group commands for high-level applications.
 
 ** Exiting
 
-FIXME: It seems this is not working at present.
+Links:
+
+- [[https://stackoverflow.com/questions/2706527/make-emacs-stop-asking-active-processes-exist-kill-them-and-exit-anyway][SO: Make Emacs stop asking "Active processes exist; kill them and exit anyway"]]
 
 #+begin_src emacs-lisp
+(require 'cl-lib)
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (cl-flet ((process-list ())) ad-do-it))
+  (cl-letf (((symbol-function #'process-list) (lambda ())))
+    ad-do-it))
 
 ;; confirm exit
 (global-set-key

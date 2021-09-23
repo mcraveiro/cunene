@@ -428,9 +428,11 @@ Returns nil if no differences found, 't otherwise."
 (setq tab-stop-list (build-tab-stop-list tab-width))
 (setq tab-stop-list (build-tab-stop-list tab-width))
 
+(require 'cl-lib)
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (cl-flet ((process-list ())) ad-do-it))
+  (cl-letf (((symbol-function #'process-list) (lambda ())))
+    ad-do-it))
 
 ;; confirm exit
 (global-set-key
