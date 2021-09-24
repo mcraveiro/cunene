@@ -368,15 +368,8 @@ Returns nil if no differences found, 't otherwise."
 
 (use-package diminish)
 
-;; Make header line in tabulated mode a bit more distinctive.
-;; (face-spec-set 'header-line '((t :background "#481b48" :foreground "#ffffff")))
-; (set-face-attribute 'header-line nil :box '(:line-width 1 :color "#2d2e2e"))
-
-;; (set-face-attribute 'header-line nil
-;;                     :inherit nil
-;;                     :foreground "white"
-;;                     :background "#000000"
-;;                     :box '(:line-width 3 :color "#000000"))
+(use-package hide-mode-line
+  :ensure t)
 
 ;; Give details about white space usage
 (autoload 'whitespace-mode "whitespace" "Toggle whitespace visualization." t)
@@ -1117,6 +1110,10 @@ Also returns nil if pid is nil."
     (hl-todo-mode)))
 
 (use-package org-ref
+  :ensure t
+  :after org)
+
+(use-package org-present
   :ensure t
   :after org)
 
