@@ -101,6 +101,11 @@ Problems:
   puts a dired face on tabulated list buffers. It can be used by deriving from
   tablist-mode, or with more limited features by enabling tablist-minor-mode
   inside a tabulated-list-mode buffer."
+- [[https://github.com/karthink/popper][popper]]: "Popper is a minor-mode to tame the flood of ephemeral windows Emacs
+  produces, while still keeping them within arm’s reach. Designate any buffer to
+  “popup” status, and it will stay out of your way. Disimss or summon it easily
+  with one key. Cycle through all your “popups” or just the ones relevant to
+  your current buffer."
 
 *** Other =.emacs== to investigate
 
