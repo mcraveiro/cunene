@@ -22,4 +22,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 5.0))))
- '(header-line ((t (:inherit mode-line :background "#2b2b2b" :foreground "#f0dfaf" :box (:line-width -1 :color "#585858" :style released-button))))))
+ '(header-line ((t (:inherit mode-line :background "#2b2b2b" :foreground "#f0dfaf" :box (:line-width -1 :color "#252525" :style released-button))))))
