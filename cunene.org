@@ -31,7 +31,6 @@ Problems:
   it wraps lines at fill-column."
 - [[https://elpa.gnu.org/packages/systemd.html][systemd]]: "This package provides D-Bus bindings, major modes and interactive
   commands for working with systemd from within Emacs."
-- [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
 - [[https://github.com/dandavison/magit-delta][magit-delta]]: "This Emacs package provides a minor mode which configures Magit
   to use [[https://github.com/dandavison/delta][delta]] when displaying diffs."
 - [[https://github.com/thi-ng/org-spec][org-spec]]: "An Org-mode template for technical specification documents and HTML
@@ -98,6 +97,10 @@ Problems:
   recent buffers, with an emphasis on minimizing keystrokes. Inspired by the
   Alt-Tab convention in Windows, it keeps the most recently used buffers on the
   top of the stack."
+
+*** Other =.emacs== to investigate
+
+- [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
 
 * Preamble
 
