@@ -94,6 +94,10 @@ Problems:
   is similar to executable-interpret, but quickrun.el provides more convenient
   commands. quickrun.el execute not only script languages(Perl, Ruby, Python
   etc), but also compiling languages(C, C++, Go, Java etc) and markup language."
+- [[https://github.com/killdash9/buffer-flip.el][buffer-flip]]: "This package streamlines the operation of switching between
+  recent buffers, with an emphasis on minimizing keystrokes. Inspired by the
+  Alt-Tab convention in Windows, it keeps the most recently used buffers on the
+  top of the stack."
 
 * Preamble
 
@@ -552,7 +556,7 @@ something that augments and replaces the standard auto-save-mode.
 (use-package super-save
   :ensure t
   :config
-  x(add-to-list 'super-save-triggers 'ace-window 'select-window)
+  (add-to-list 'super-save-triggers 'ace-window 'select-window)
   (super-save-mode +1))
 
 ;; revert buffers automatically when underlying files are changed externally
@@ -629,7 +633,7 @@ Links:
 (use-package diminish)
 
 ;; Make header line in tabulated mode a bit more distinctive.
-(face-spec-set 'header-line '((t :background "#481b48" :foreground "#ffffff")))
+;; (face-spec-set 'header-line '((t :background "#481b48" :foreground "#ffffff")))
 ; (set-face-attribute 'header-line nil :box '(:line-width 1 :color "#2d2e2e"))
 
 ;; (set-face-attribute 'header-line nil

@@ -326,7 +326,7 @@ Returns nil if no differences found, 't otherwise."
 (use-package super-save
   :ensure t
   :config
-  x(add-to-list 'super-save-triggers 'ace-window 'select-window)
+  (add-to-list 'super-save-triggers 'ace-window 'select-window)
   (super-save-mode +1))
 
 ;; revert buffers automatically when underlying files are changed externally
@@ -369,7 +369,7 @@ Returns nil if no differences found, 't otherwise."
 (use-package diminish)
 
 ;; Make header line in tabulated mode a bit more distinctive.
-(face-spec-set 'header-line '((t :background "#481b48" :foreground "#ffffff")))
+;; (face-spec-set 'header-line '((t :background "#481b48" :foreground "#ffffff")))
 ; (set-face-attribute 'header-line nil :box '(:line-width 1 :color "#2d2e2e"))
 
 ;; (set-face-attribute 'header-line nil
