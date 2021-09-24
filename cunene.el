@@ -142,6 +142,11 @@
     (epl-upgrade)
     (message "Update finished. Restart Emacs to complete the process.")))
 
+(defun cunene/tangle ()
+  "Tangles the cunene org mode file."
+  (interactive)
+  (org-babel-tangle-file cunene/config-file-org cunene/config-file "emacs-lisp"))
+
 (global-set-key (kbd "C-c I") 'cunene/find-config)
 (global-set-key (kbd "C-c R") 'cunene/reload-config)
 
@@ -321,7 +326,7 @@ Returns nil if no differences found, 't otherwise."
 (use-package super-save
   :ensure t
   :config
-  (add-to-list 'super-save-triggers 'ace-window)
+  x(add-to-list 'super-save-triggers 'ace-window 'select-window)
   (super-save-mode +1))
 
 ;; revert buffers automatically when underlying files are changed externally
@@ -362,6 +367,16 @@ Returns nil if no differences found, 't otherwise."
   :config (setq doom-modeline-buffer-file-name-style 'buffer-name)
 
 (use-package diminish)
+
+;; Make header line in tabulated mode a bit more distinctive.
+(face-spec-set 'header-line '((t :background "#481b48" :foreground "#ffffff")))
+; (set-face-attribute 'header-line nil :box '(:line-width 1 :color "#2d2e2e"))
+
+;; (set-face-attribute 'header-line nil
+;;                     :inherit nil
+;;                     :foreground "white"
+;;                     :background "#000000"
+;;                     :box '(:line-width 3 :color "#000000"))
 
 ;; Give details about white space usage
 (autoload 'whitespace-mode "whitespace" "Toggle whitespace visualization." t)
@@ -1261,8 +1276,8 @@ ARGUMENT determines the visible heading."
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     ;;(treemacs-resize-icons 44)
 
-    ;; (treemacs-follow-mode t)
-    (treemacs-tag-follow-mode t)
+    (treemacs-follow-mode t)
+    ;; (treemacs-tag-follow-mode nil)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode 'always)
 

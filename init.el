@@ -47,6 +47,9 @@
    ;; (undecorated . t)                    ;; Remove extraneous X decorations
    (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
 
+;; (set-frame-font "Source Code Pro 8")
+;; (set-frame-font "Hack 8")
+
 ;;
 ;; All packages we could not find in the repositories are stored here.
 ;;

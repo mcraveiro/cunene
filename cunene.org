@@ -16,6 +16,13 @@ Things we need to remember to change:
 - remove all calls for custom; move custom to end, raise SO ticket for local
   sockets issue on windows.
 
+Problems:
+
+- end of init: custom-initialize-reset: local sockets are not supported
+- convert all evals after load into requires
+- doom mode line explicit
+- ensure magit
+
 ** Interesting modes to investigate
 
 - [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]]: "visual-fill-column-mode is a small Emacs minor mode that
@@ -81,6 +88,12 @@ Things we need to remember to change:
   programs have the code for displaying table views, such as dired,
   list-process, buffer-list and so on. So, ctable.el would provide functions and
   a table framework for the table views."
+- [[https://github.com/Bad-ptr/common-header-mode-line.el][common-header-mode-line]]: "Draws per-frame mode-line and/or header-line and
+  allow to customize per-window header/mode-line."
+- [[https://github.com/emacsorphanage/quickrun][quickrun]]: "quickrun.el is a extension to execute editing buffer. quickrun.el
+  is similar to executable-interpret, but quickrun.el provides more convenient
+  commands. quickrun.el execute not only script languages(Perl, Ruby, Python
+  etc), but also compiling languages(C, C++, Go, Java etc) and markup language."
 
 * Preamble
 
@@ -286,6 +299,11 @@ Add support for Quelpa.
     (message "Updating installed packages...")
     (epl-upgrade)
     (message "Update finished. Restart Emacs to complete the process.")))
+
+(defun cunene/tangle ()
+  "Tangles the cunene org mode file."
+  (interactive)
+  (org-babel-tangle-file cunene/config-file-org cunene/config-file "emacs-lisp"))
 
 (global-set-key (kbd "C-c I") 'cunene/find-config)
 (global-set-key (kbd "C-c R") 'cunene/reload-config)
@@ -534,7 +552,7 @@ something that augments and replaces the standard auto-save-mode.
 (use-package super-save
   :ensure t
   :config
-  (add-to-list 'super-save-triggers 'ace-window)
+  x(add-to-list 'super-save-triggers 'ace-window 'select-window)
   (super-save-mode +1))
 
 ;; revert buffers automatically when underlying files are changed externally
@@ -609,6 +627,16 @@ Links:
 
 #+begin_src emacs-lisp
 (use-package diminish)
+
+;; Make header line in tabulated mode a bit more distinctive.
+(face-spec-set 'header-line '((t :background "#481b48" :foreground "#ffffff")))
+; (set-face-attribute 'header-line nil :box '(:line-width 1 :color "#2d2e2e"))
+
+;; (set-face-attribute 'header-line nil
+;;                     :inherit nil
+;;                     :foreground "white"
+;;                     :background "#000000"
+;;                     :box '(:line-width 3 :color "#000000"))
 #+end_src
 
 ** COMMENT Hydra
@@ -1739,8 +1767,8 @@ Issues:
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     ;;(treemacs-resize-icons 44)
 
-    ;; (treemacs-follow-mode t)
-    (treemacs-tag-follow-mode t)
+    (treemacs-follow-mode t)
+    ;; (treemacs-tag-follow-mode nil)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode 'always)
 
