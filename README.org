@@ -25,11 +25,23 @@ Then restart Emacs, and it will download fresh copies of all packages.
 
 * References
 
+** Emacs config files
+
 - [[https://github.com/angrybacon/dotemacs][dotemacs]]: Literate config by [[https://github.com/angrybacon][Mathieu Marques]].
 - [[https://github.com/jamiecollinson/dotfiles][dotfiles]]: Literate config by [[https://github.com/jamiecollinson][Jamie Collinson]].
 - [[https://github.com/credmp/emacs-config][emacs-config]]: Literate config by Arjen Wiersma.
 - [[https://pages.sachachua.com/.emacs.d/Sacha.html][dotemacs]]: Literate config by Sacha Chua.
 - [[https://lupan.pl/dotemacs/][dotemacs]]: Literate config by Lupan.
+- [[https://github.com/kaushalmodi/.emacs.d][.emacs.d]]: Emacs config from Kaushal Modi.
+- [[https://github.com/seagle0128/.emacs.d][Centaur Emacs]]: This is an Emacs distribution that aims to enhance the default
+  Emacs experience.
+- [[https://github.com/bbatsov/prelude][prelude]]: Prelude is an Emacs distribution that aims to enhance the default
+  Emacs experience.
+- [[https://blog.sumtypeofway.com/posts/emacs-config.html][emacs-config]]: Emacs configuration from Patrick Thomson.
+
+** Fonts
+
+- [[https://github.com/hbin/top-programming-fonts][top-programming-fonts]]: Huang Bin's favourite programming fonts.
 
 * Trying it
 

@@ -363,8 +363,12 @@ Returns nil if no differences found, 't otherwise."
 (use-package all-the-icons)
 (use-package doom-modeline
   :ensure t
-  :hook (after-init . doom-modeline-mode))
-  :config (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  (setq doom-modeline-major-mode-icon t)
+  ;; Whether display the buffer encoding.
+  (setq doom-modeline-buffer-encoding nil))
 
 (use-package diminish)
 
@@ -1024,15 +1028,135 @@ Also returns nil if pid is nil."
    ("<f6> <left>" . windswap-left)
    ("<f6> <right>" . windswap-right)))
 
-(use-package shackle
-  :hook
-  (after-init . shackle-mode)
-  :config
-  (setq shackle-inhibit-window-quit-on-same-windows t)
-  (setq shackle-rules '((help-mode :same t)
-                        (helpful-mode :same t)
-                        (process-menu-mode :same t)))
-  (setq shackle-select-reused-windows t))
+;; Enforce rules for popups
+;; (use-package shackle
+;;   :hook (after-init . shackle-mode)
+;;   :init
+;;   (setq shackle-default-size 0.4
+;;         shackle-default-alignment 'below
+;;         shackle-default-rule nil
+;;         shackle-select-reused-windows t
+;;         shackle-rules
+;;         '((("*Help*" "*Apropos*") :select t :size 0.3 :align 'below :autoclose t)
+;;           (compilation-mode :select t :size 0.3 :align 'below :autoclose t)
+;;           (comint-mode :select t :size 0.4 :align 'below :autoclose t)
+;;           ("*Completions*" :size 0.3 :align 'below :autoclose t)
+;;           ("*Pp Eval Output*" :size 15 :align 'below :autoclose t)
+;;           ("*Backtrace*" :select t :size 15 :align 'below)
+;;           (("*Warnings*" "*Messages*") :size 0.3 :align 'below :autoclose t)
+;;           ("^\\*.*Shell Command.*\\*$" :regexp t :size 0.3 :align 'below :autoclose t)
+;;           ("\\*[Wo]*Man.*\\*" :regexp t :select t :align 'below :autoclose t)
+;;           ("*Calendar*" :select t :size 0.3 :align 'below)
+;;           (("*shell*" "*eshell*" "*ielm*") :popup t :size 0.3 :align 'below)
+;;           ("^\\*vc-.*\\*$" :regexp t :size 0.3 :align 'below :autoclose t)
+;;           ("*gud-debug*" :select t :size 0.4 :align 'below :autoclose t)
+;;           ("\\*ivy-occur .*\\*" :regexp t :select t :size 0.3 :align 'below)
+;;           (" *undo-tree*" :select t)
+;;           ("*quickrun*" :select t :size 15 :align 'below)
+;;           ("*tldr*" :size 0.4 :align 'below :autoclose t)
+;;           ("*Finder*" :select t :size 0.3 :align 'below :autoclose t)
+;;           ("^\\*macro expansion\\**" :regexp t :size 0.4 :align 'below)
+;;           ("^\\*elfeed-entry" :regexp t :size 0.7 :align 'below :autoclose t)
+;;           (" *Install vterm* " :size 0.35 :same t :align 'below)
+;;           (("*Paradox Report*" "*package update results*") :size 0.2 :align 'below :autoclose t)
+;;           ("*Package-Lint*" :size 0.4 :align 'below :autoclose t)
+;;           ("*How Do You*" :select t :size 0.5 :align 'below :autoclose t)
+
+;;           ((youdao-dictionary-mode osx-dictionary-mode fanyi-mode) :select t :size 0.5 :align 'below :autoclose t)
+
+;;           (("*Org Agenda*" " *Agenda Commands*" " *Org todo*" "*Org Dashboard*" "*Org Select*")
+;;            :select t :size 0.1 :align 'below :autoclose t)
+;;           (("\\*Capture\\*" "^CAPTURE-.*\\.org*") :regexp t :select t :size 0.3 :align 'below :autoclose t)
+
+;;           ("*ert*" :size 15 :align 'below :autoclose t)
+;;           (overseer-buffer-mode :size 15 :align 'below :autoclose t)
+
+;;           (" *Flycheck checkers*" :select t :size 0.3 :align 'below :autoclose t)
+;;           ((flycheck-error-list-mode flymake-diagnostics-buffer-mode)
+;;            :select t :size 0.25 :align 'below :autoclose t)
+
+;;           (("*lsp-help*" "*lsp session*") :size 0.3 :align 'below :autoclose t)
+;;           ("*DAP Templates*" :select t :size 0.4 :align 'below :autoclose t)
+;;           (dap-server-log-mode :size 15 :align 'below :autoclose t)
+;;           ("*rustfmt*" :select t :size 0.3 :align 'below :autoclose t)
+;;           ((rustic-compilation-mode rustic-cargo-clippy-mode rustic-cargo-outdated-mode rustic-cargo-test-mode)
+;;            :select t :size 0.3 :align 'below :autoclose t)
+
+;;           (profiler-report-mode :select t :size 0.5 :align 'below)
+;;           ("*ELP Profiling Restuls*" :select t :size 0.5 :align 'below)
+
+;;           ((inferior-python-mode inf-ruby-mode swift-repl-mode) :size 0.4 :align 'below)
+;;           ("*prolog*" :size 0.4 :align 'below)
+
+;;           (("*Gofmt Errors*" "*Go Test*") :select t :size 0.3 :align 'below :autoclose t)
+;;           (godoc-mode :select t :size 0.4 :align 'below :autoclose t)
+
+;;           ((grep-mode occur-mode rg-mode deadgrep-mode ag-mode pt-mode) :select t :size 0.4 :align 'below)
+;;           (Buffer-menu-mode :select t :size 0.5 :align 'below :autoclose t)
+;;           (gnus-article-mode :select t :size 0.7 :align 'below :autoclose t)
+;;           (helpful-mode :select t :size 0.3 :align 'below :autoclose t)
+;;           (devdocs-mode :select t :size 0.4 :align 'below :autoclose t)
+;;           ((process-menu-mode list-environment-mode cargo-process-mode) :select t :size 0.3 :align 'below)
+;;           (("*docker-containers*" "*docker-images*" "*docker-networks*" "*docker-volumes*")
+;;            :size 0.4 :align 'below :autoclose t)
+;;           (bookmark-bmenu-mode :select t :size 0.4 :align 'below)
+;;           (tabulated-list-mode :size 0.4 :align 'below :autclose t)))
+;;   :config
+;;   (with-no-warnings
+;;     (defvar shackle--popup-window-list nil
+;;       "All popup windows.")
+;;     (defvar-local shackle--current-popup-window nil
+;;       "Current popup window.")
+;;     (put 'shackle--current-popup-window 'permanent-local t)
+
+;;     (defun cunene/shackle-last-popup-buffer ()
+;;       "View last popup buffer."
+;;       (interactive)
+;;       (ignore-errors
+;;         (display-buffer shackle-last-buffer)))
+;;     (bind-key "C-h z" #'cunene/shackle-last-popup-buffer)
+
+;;     ;; Add keyword: `autoclose'
+;;     (defun cunene/shackle-display-buffer-hack (fn buffer alist plist)
+;;       (let ((window (funcall fn buffer alist plist)))
+;;         (setq shackle--current-popup-window window)
+
+;;         (when (plist-get plist :autoclose)
+;;           (push (cons window buffer) shackle--popup-window-list))
+;;         window))
+;;     (advice-add #'shackle-display-buffer :around #'cunene/shackle-display-buffer-hack)
+
+;;     (defun cunene/shackle-close-popup-window-hack (&rest _)
+;;       "Close current popup window via `C-g'."
+;;       (setq shackle--popup-window-list
+;;             (cl-loop for (window . buffer) in shackle--popup-window-list
+;;                      if (and (window-live-p window)
+;;                              (equal (window-buffer window) buffer))
+;;                      collect (cons window buffer)))
+;;       ;; `C-g' can deactivate region
+;;       (when (and (called-interactively-p 'interactive)
+;;                  (not (region-active-p)))
+;;         (if (one-window-p)
+;;             (let ((window (selected-window)))
+;;               (when (equal (buffer-local-value 'shackle--current-popup-window
+;;                                                (window-buffer window))
+;;                            window)
+;;                 (winner-undo)))
+;;           (let* ((window (caar shackle--popup-window-list))
+;;                  (buffer (cdar shackle--popup-window-list))
+;;                  (process (get-buffer-process buffer)))
+;;             (when (and (window-live-p window)
+;;                        (equal (window-buffer window) buffer))
+;;               (when (process-live-p process)
+;;                 (kill-process process))
+;;               (delete-window window)
+;;               (pop shackle--popup-window-list))))))
+
+;;     (advice-add #'keyboard-quit :before #'cunene/shackle-close-popup-window-hack)
+
+;;     ;; Compatible with org
+;;     (advice-add #'org-switch-to-buffer-other-window
+;;                 :override #'switch-to-buffer-other-window)))
 
 (use-package windmove
   :ensure nil
@@ -1244,7 +1368,7 @@ ARGUMENT determines the visible heading."
           treemacs-no-png-images                   nil
           treemacs-no-delete-other-windows         t
           treemacs-project-follow-cleanup          nil
-          treemacs-persist-file                    (cunene/cache-concat "treemacs/treemacs-persist")
+          treemacs-persist-file                    (cunene/cache-concat"treemacs/treemacs-persist")
           treemacs-position                        'left
           treemacs-read-string-input               'from-child-frame
           treemacs-recenter-distance               0.1
@@ -1264,7 +1388,7 @@ ARGUMENT determines the visible heading."
           treemacs-tag-follow-delay                1.5
           treemacs-user-mode-line-format           nil
           treemacs-user-header-line-format         nil
-          treemacs-width                           35
+          treemacs-width                           45
           treemacs-width-is-initially-locked       t
           treemacs-text-scale                      -2
           treemacs-workspace-switch-cleanup        nil)
@@ -1464,9 +1588,9 @@ ARGUMENT determines the visible heading."
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
-(display-time)
+;; (setq display-time-24hr-format t)
+;; (setq display-time-day-and-date t)
+;; (display-time)
 
 (defvar cunene/undo-tree-directory
   (cunene/cache-concat "undo")
@@ -1478,11 +1602,19 @@ ARGUMENT determines the visible heading."
   :config
   (setq undo-tree-visualizer-diff nil) ;; causes problems with other buffers
   (setq undo-tree-visualizer-timestamps t)
+  (setq undo-tree-enable-undo-in-region t)
   (setq undo-tree-visualizer-relative-timestamps t)
   (setq undo-tree-history-directory-alist
         `((".*" . ,cunene/undo-tree-directory)))
   (setq undo-tree-auto-save-history t) ;; autosave the undo-tree history
   (global-undo-tree-mode 1))
+
+(add-to-list 'display-buffer-alist
+             '("*undo-tree"
+               (display-buffer-reuse-window display-buffer-in-side-window)
+               (side . right)
+               (window-width . 0.15)
+               (reusable-frames . nil)))
 
 (use-package bm
   :ensure t
@@ -1610,6 +1742,10 @@ ARGUMENT determines the visible heading."
 (global-set-key (kbd "<f12>") 'highlight-symbol-at-point)
 (global-set-key (kbd "C-<f12>") 'highlight-symbol-next)
 (global-set-key (kbd "M-<f12>") 'highlight-symbol-prev)
+
+(use-package dimmer
+  :custom (dimmer-fraction 0.3)
+  :config (dimmer-mode))
 
 (use-package consult
  :ensure t
@@ -2355,7 +2491,7 @@ again, I haven't see that as a problem."
 (use-package bongo
   :ensure t
   :config
-  (setq bongo-default-directory "~/Music")
+  ;; (setq bongo-default-directory "~/Music") ;; causes problems
   (setq bongo-prefer-library-buffers nil)
   (setq bongo-insert-whole-directory-trees t)
   (setq bongo-logo nil)

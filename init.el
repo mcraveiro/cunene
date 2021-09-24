@@ -49,6 +49,8 @@
 
 ;; (set-frame-font "Source Code Pro 8")
 ;; (set-frame-font "Hack 8")
+;; (set-frame-font "Menlo 8")
+;; (set-frame-font "FiraCode 8")
 
 ;;
 ;; All packages we could not find in the repositories are stored here.

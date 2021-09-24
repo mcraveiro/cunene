@@ -5,9 +5,8 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" default))
- '(debug-on-error t)
  '(package-selected-packages
-   '(hide-mode-line org-present helm-lsp persistent-scratch volatile-highlights anzu ssh csharp-mode org-ref json-navigator ztree outshine quelpa-use-package rg super-save helm-c-yasnippet eyebrowse helm-ls-git helm jump-tree logview expand-region org-agenda verb bongo smerge-modeh completing-read-xref json-mode jq-format jq-mode hl-todo org-fancy-priorities org-superstar uuid engine-mode helpful yasnippet-snippets yasnippet windswap consult-lsp company-box company-posframe company git-messenger deadgrep lsp-treemacs lsp-ui lsp-mode color-identifiers-mode git-timemachine string-inflection smart-hungry-delete smartparens rainbow-delimiters marginalia consult-dir dashboard drag-stuff consult-flycheck consult highline vertico-quick eshell-git-prompt doom-themes use-package))
+   '(dimmer hide-mode-line org-present helm-lsp persistent-scratch volatile-highlights anzu ssh csharp-mode org-ref json-navigator ztree outshine quelpa-use-package rg super-save helm-c-yasnippet eyebrowse helm-ls-git helm jump-tree logview expand-region org-agenda verb bongo smerge-modeh completing-read-xref json-mode jq-format jq-mode hl-todo org-fancy-priorities org-superstar uuid engine-mode helpful yasnippet-snippets yasnippet windswap consult-lsp company-box company-posframe company git-messenger deadgrep lsp-treemacs lsp-ui lsp-mode color-identifiers-mode git-timemachine string-inflection smart-hungry-delete smartparens rainbow-delimiters marginalia consult-dir dashboard drag-stuff consult-flycheck consult highline vertico-quick eshell-git-prompt doom-themes use-package))
  '(safe-local-variable-values
    '((cmake-tab-width . 4)
      (org-roam-directory . "/work/DomainDrivenConsulting/masd/dogen/integration")
