@@ -114,6 +114,10 @@ Problems:
   end-of-buffer) for some modes so that point moves to meaningful locations. The
   real beginning and end of buffers (i.e., point-min and point-max) are still
   accessible by pressing the same key again."
+- [[https://github.com/benma/visual-regexp.el][visual-regexp]]: "visual-regexp for Emacs is like replace-regexp, but with live
+  visual feedback directly in the buffer. Check out visual-regexp-steroids if
+  you want to use modern regular expressions instead of Emacs-style regular
+  expressions.
 
 *** Other =.emacs== to investigate
 
@@ -864,11 +868,23 @@ Assorted utility functions for which we could not yet establish a good category.
          ("C-c D" . crux-delete-file-and-buffer))
   :config (crux-with-region-or-line kill-region))
 
-(defun uuid-insert()
+(defun cunene/uuid-insert()
   (interactive)
   (require 'uuid)
   (insert (upcase (uuid-string))))
 
+;; VS Code has a great feature where you can just copy a filename to the
+;; clipboard.
+(defun cunene/copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+;; operations on thing at point.
 (require 'thingatpt)
 #+end_src
 
@@ -1069,6 +1085,8 @@ From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
 
 (remove-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+ (global-so-long-mode 1)
 #+end_src
 
 ** History
@@ -3052,6 +3070,14 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
   :ensure t)
 #+end_src
 
+** Markup
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :bind (("C-c C-s a" . markdown-table-align))
+  :mode ("\\.md$" . gfm-mode))
+#+end_src
+
 ** REST
 
 #+begin_src emacs-lisp
@@ -3650,6 +3676,18 @@ Todo:
                        (setq ssh-directory-tracking-mode t)
                        (shell-dirtrack-mode t)
                        (setq dirtrackp nil))))
+#+end_src
+
+** Processes
+
+| =prodigy= | https://github.com/rejeep/prodigy.el |
+
+#+begin_src emacs-lisp
+(use-package prodigy
+  :bind ("C-c 8" . #'prodigy)
+  :config
+;;  (load "~/.config/emacs/services.el" 'noerror)
+)
 #+end_src
 
 * Postamble

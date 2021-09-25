@@ -489,11 +489,23 @@ Returns nil if no differences found, 't otherwise."
          ("C-c D" . crux-delete-file-and-buffer))
   :config (crux-with-region-or-line kill-region))
 
-(defun uuid-insert()
+(defun cunene/uuid-insert()
   (interactive)
   (require 'uuid)
   (insert (upcase (uuid-string))))
 
+;; VS Code has a great feature where you can just copy a filename to the
+;; clipboard.
+(defun cunene/copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+;; operations on thing at point.
 (require 'thingatpt)
 
 (use-package drag-stuff
@@ -670,6 +682,8 @@ If there's a text selection, work on the selected text."
 
 (remove-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+ (global-so-long-mode 1)
 
 (require 'saveplace)
 (setq save-place-file (cunene/cache-concat "saveplace/places"))
@@ -2314,6 +2328,10 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package json-navigator
   :ensure t)
 
+(use-package markdown-mode
+  :bind (("C-c C-s a" . markdown-table-align))
+  :mode ("\\.md$" . gfm-mode))
+
 (use-package verb
   :ensure t
   :mode ("\\.org\\'" . org-mode)
@@ -2829,5 +2847,11 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
                        (setq ssh-directory-tracking-mode t)
                        (shell-dirtrack-mode t)
                        (setq dirtrackp nil))))
+
+(use-package prodigy
+  :bind ("C-c 8" . #'prodigy)
+  :config
+;;  (load "~/.config/emacs/services.el" 'noerror)
+)
 
 ;;; cunene.el ends here
