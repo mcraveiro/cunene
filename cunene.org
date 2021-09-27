@@ -216,6 +216,8 @@ directory with an ever-growing number of packages used on a daily basis.
 
 ** Backup files
 
+| =backup-walker= | https://github.com/lewang/backup-walker |
+
 Control where emacs places the pesky backup files.
 
 Links:
@@ -236,8 +238,8 @@ Links:
       vc-make-backup-files t            ;; Backup files even if under version control.
       delete-old-versions t             ;; delete excess backup files silently.
       delete-by-moving-to-trash t       ;; Move deleted files to trash.
-      kept-old-versions 6               ;; oldest versions to keep when a new numbered backup is made
-      kept-new-versions 9               ;; newest versions to keep when a new numbered backup is made
+      kept-old-versions 20              ;; oldest versions to keep when a new numbered backup is made
+      kept-new-versions 20              ;; newest versions to keep when a new numbered backup is made
       auto-save-default t               ;; auto-save every buffer that visits a file
       auto-save-timeout 20              ;; number of seconds idle time before auto-save
       auto-save-interval 200)           ;; number of keystrokes between auto-saves
@@ -249,6 +251,9 @@ Links:
         '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode)
         )
        auto-mode-alist))
+
+(use-package backup-walker
+  :ensure t)
 #+end_src
 
 ** Package Management
