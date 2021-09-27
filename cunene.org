@@ -11,6 +11,8 @@ Things we need to remember to change:
 
 ** Missing modes
 
+- mustache templates
+- polymode with dogen stitch support.
 - notmuch
 - pdf tools
 - remove all calls for custom; move custom to end, raise SO ticket for local
@@ -3285,6 +3287,19 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   (persistent-scratch-setup-default))
 #+end_src
 
+** Mustache
+
+| =mustache= | https://github.com/mustache/emacs |
+
+#+begin_src emacs-lisp
+(use-package mustache
+  :ensure t
+  :config
+;;  (org-babel-do-load-languages 'org-babel-load-languages
+;;                             '((mustache     . t)))
+)
+#+end_src
+
 * Music
 
 ** Bongo
@@ -3688,6 +3703,15 @@ Todo:
   :config
 ;;  (load "~/.config/emacs/services.el" 'noerror)
 )
+#+end_src
+
+** Mongo
+
+| =inf-mongo= | https://github.com/endofunky/inf-mongo |
+
+#+begin_src emacs-lisp
+(use-package inf-mongo
+  :ensure t)
 #+end_src
 
 * Postamble
