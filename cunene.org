@@ -11,6 +11,7 @@ Things we need to remember to change:
 
 ** Missing modes
 
+- add null to pretty symbols
 - mustache templates
 - polymode with dogen stitch support.
 - notmuch
@@ -1693,6 +1694,7 @@ changes can be "undone" using the command =winner-undo=.
 
 | =org=         | Built-in                               |
 | =org-present= | https://github.com/rlister/org-present |
+| =ox-tufte=    | https://github.com/dakrone/ox-tufte    |
 
 This very file is organized with =org-mode=. Like Markdown, but with
 superpowers.
@@ -1767,6 +1769,10 @@ authoring documents with a fast and effective plain-text system.
     (hl-todo-mode)))
 
 (use-package org-ref
+  :ensure t
+  :after org)
+
+(use-package ox-tufte
   :ensure t
   :after org)
 
@@ -1874,7 +1880,6 @@ ARGUMENT determines the visible heading."
 ;; (use-package outshine
 ;;  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
 #+end_src
-
 
 ** Folder tree
 
@@ -2403,6 +2408,9 @@ For the org-mode support, see:
          :map vertico-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
+
+(use-package consult-yasnippet
+  :ensure t)
 
 (use-package engine-mode
   :config
