@@ -79,8 +79,8 @@
       vc-make-backup-files t            ;; Backup files even if under version control.
       delete-old-versions t             ;; delete excess backup files silently.
       delete-by-moving-to-trash t       ;; Move deleted files to trash.
-      kept-old-versions 6               ;; oldest versions to keep when a new numbered backup is made
-      kept-new-versions 9               ;; newest versions to keep when a new numbered backup is made
+      kept-old-versions 20              ;; oldest versions to keep when a new numbered backup is made
+      kept-new-versions 20              ;; newest versions to keep when a new numbered backup is made
       auto-save-default t               ;; auto-save every buffer that visits a file
       auto-save-timeout 20              ;; number of seconds idle time before auto-save
       auto-save-interval 200)           ;; number of keystrokes between auto-saves
@@ -92,6 +92,9 @@
         '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode)
         )
        auto-mode-alist))
+
+(use-package backup-walker
+  :ensure t)
 
 (require 'package)
 (setq package-archives
@@ -505,6 +508,42 @@ Returns nil if no differences found, 't otherwise."
       (kill-new filename)
       (message "Copied buffer file name '%s' to the clipboard." filename))))
 
+(defun cunene/toggle-scroll(&optional arg)
+  "Toggles both horizontal and vertical scroll bars."
+  (interactive)
+  (toggle-horizontal-scroll-bar arg)
+  (toggle-scroll-bar arg))
+
+(defun cunene/plantuml-make-diagram ()
+  "Create a diagram from a PlantUML buffer."
+  (interactive)
+  (let* ((jvm_args " -DPLANTUML_LIMIT_SIZE=16384 -Djava.awt.headless=true ")
+         (jar_path " c:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar ")
+         (jar_args (concat " -jar " jar_path))
+         (command (concat "java " jvm_args jar_args " -v " (buffer-file-name)))
+         (plant-buffer-name (concat "PlantUML: "
+                                    (file-name-nondirectory (buffer-file-name)))))
+    (with-current-buffer (get-buffer-create plant-buffer-name)
+      (erase-buffer)
+      (goto-char (point-max))
+      (insert "Starting PlantUML "(format-time-string "%D %-I:%M %p")))
+    (start-process-shell-command "PlantUML" plant-buffer-name command)))
+
+(defun cunene/flush-blank-lines (start end)
+  "Remove blank lines.
+START and END mark the region."
+  (interactive "r")
+  (flush-lines "^\\s-*$" start end))
+
+(defun cunene/ask-before-closing-frame ()
+  "Close only if y was pressed."
+  (interactive)
+  (if (y-or-n-p (format "Do you really want to close this frame?"))
+      (delete-frame)
+    (message "Canceled frame close")))
+
+(global-set-key (kbd "C-x 5 0") 'cunene/ask-before-closing-frame)
+
 ;; operations on thing at point.
 (require 'thingatpt)
 
@@ -846,7 +885,11 @@ surrounded by word boundaries."
                                 (mode . js2-mode)
                                 (mode . js-mode)))
                  ("php" (mode . php-mode))
-                 ("org" (mode . org-mode))
+                 ("prodigy" (name . "^\\*prodigy"))
+                 ("mongo" (mode . inf-mongo-mode))
+                 ("org" (or
+                         (name . "^\\*Org Agenda")
+                         (mode . org-mode)))
                  ("xml" (mode . nxml-mode))
                  ("sql" (or
                          (mode . sql-mode)
@@ -916,6 +959,8 @@ surrounded by word boundaries."
                               (name . "^\\*Lexer Output\\*$")))
                  ("web browsing" (or
                                   (mode . w3m-mode)
+                                  (mode . verb-mode)
+                                  (name . "^\\*Verb")
                                   (mode . twittering-mode)))
                  ("music" (or
                            (mode . bongo-playlist-mode)
@@ -939,8 +984,9 @@ surrounded by word boundaries."
                                    (mode . Man-mode)))
                  ("lsp" (or
                           (name . "^\\*clangd")
+                          (name . "^\\*company-")
+                          (name . "^\\*omnisharp")
                           (name . "^\\*lsp")))
-
                  ("system" (or
                             (name . "^\\*Packages\\*$")
                             (name . "^\\*helm M-x\\*$")
@@ -1213,6 +1259,7 @@ Also returns nil if pid is nil."
   (setq org-src-window-setup 'current-window)
   (setq org-startup-truncated nil)
   (setq org-support-shift-select 'always)
+  (setq org-adapt-indentation 'headline-data)
   (require 'ob-shell)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
@@ -1248,6 +1295,10 @@ Also returns nil if pid is nil."
     (hl-todo-mode)))
 
 (use-package org-ref
+  :ensure t
+  :after org)
+
+(use-package ox-tufte
   :ensure t
   :after org)
 
@@ -1348,6 +1399,12 @@ ARGUMENT determines the visible heading."
            ((agenda "" ((org-agenda-span 1)
                         (org-agenda-overriding-header "Today's Tasks")))))))
   )
+
+;; Formatting of time stamps in clock table.
+(setq org-time-clocksum-format
+      (quote
+       (:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)))
+(setq org-duration-format (quote h:mm))
 
 ;; (use-package outshine
 ;;  :quelpa (outshine :fetcher github :repo "alphapapa/outshine"))
@@ -1600,6 +1657,7 @@ ARGUMENT determines the visible heading."
   :diminish)
 
 (use-package company-box
+  :config (setq company-box-icons-alist 'company-box-icons-all-the-icons)
   :hook (company-mode . company-box-mode))
 
 ;; (setq display-time-24hr-format t)
@@ -1728,9 +1786,10 @@ ARGUMENT determines the visible heading."
 (add-hook 'compilation-mode-hook #'hl-line-mode)
 (add-hook 'magit-mode-hook #'hl-line-mode)
 (add-hook 'vc-git-log-view-mode-hook #'hl-line-mode)
-(add-hook 'log-view-hook #'hl-line-mode)
+(add-hook 'logview-mode-hook #'hl-line-mode)
 (add-hook 'find-dired-mode-hook #'hl-line-mode)
 (add-hook 'gnus-summary-mode-hook #'hl-line-mode)
+(add-hook 'org-agenda-finalize-hook #'hl-line-mode)
 (add-hook 'org-agenda-finalize-hook #'hl-line-mode)
 
 ;; Turn on local highlighting for list-buffers
@@ -1822,6 +1881,9 @@ ARGUMENT determines the visible heading."
          :map vertico-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
+
+(use-package consult-yasnippet
+  :ensure t)
 
 (use-package engine-mode
   :config
@@ -2506,6 +2568,13 @@ again, I haven't see that as a problem."
         (cunene/cache-concat "scratch/persistent-scratch"))
   (persistent-scratch-setup-default))
 
+(use-package mustache
+  :ensure t
+  :config
+;;  (org-babel-do-load-languages 'org-babel-load-languages
+;;                             '((mustache     . t)))
+)
+
 (use-package bongo
   :ensure t
   :config
@@ -2819,6 +2888,26 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
 ;; Start a regular shell if you prefer that.
 (global-set-key (kbd "C-x M-m") 'shell)
 
+(defun eshell/z (&optional regexp)
+    "Navigate to a previously visited directory in eshell, or to
+any directory proferred by `consult-dir'."
+    (let ((eshell-dirs (delete-dups
+                        (mapcar 'abbreviate-file-name
+                                (ring-elements eshell-last-dir-ring)))))
+      (cond
+       ((and (not regexp) (featurep 'consult-dir))
+        (let* ((consult-dir--source-eshell `(:name "Eshell"
+                                             :narrow ?e
+                                             :category file
+                                             :face consult-file
+                                             :items ,eshell-dirs))
+               (consult-dir-sources (cons consult-dir--source-eshell
+                                          consult-dir-sources)))
+          (eshell/cd (substring-no-properties
+                      (consult-dir--pick "Switch directory: ")))))
+       (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
+                            (completing-read "cd: " eshell-dirs)))))))
+
 (use-package ssh
   :ensure t)
 
@@ -2841,6 +2930,10 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
 
 (setq browse-url-browser-function #'cunene/browse-url)
 
+;; hard-code location of Chrome on Windows.
+(if (not (eq window-system 'w32))
+    (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"))
+
 (use-package ssh
   :config  (add-hook 'ssh-mode-hook
                      (lambda ()
@@ -2853,5 +2946,8 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
   :config
 ;;  (load "~/.config/emacs/services.el" 'noerror)
 )
+
+(use-package inf-mongo
+  :ensure t)
 
 ;;; cunene.el ends here
