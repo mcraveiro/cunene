@@ -1,4 +1,3 @@
-#+TITLE: Cunene
 #+AUTHOR: Marco Craveiro
 #+PROPERTY: header-args :results silent
 
@@ -8,6 +7,8 @@ Things we need to remember to change:
 
 - remove the C-arrows behaviour in org-ref when on top of a cite.
 - org-mode use of M-arrows.
+- transient history is not in cache.
+- chrome link does not work on linux, using windows path for browser.
 
 ** Missing modes
 
@@ -28,6 +29,11 @@ Problems:
 
 ** Interesting modes to investigate
 
+- [[https://gist.github.com/alphapapa/79ea7c33d03c9c975634559b1a776418][outline hacks]]: series of utilities for outline mode.
+- [[https://github.com/tarsius/bicycle][bicycle]]: "This package provides commands for cycling the visibility of outline
+  sections and code blocks. These commands are intended to be bound in
+  outline-minor-mode-map and do most of the work using functions provided by the
+  outline package."
 - [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]]: "visual-fill-column-mode is a small Emacs minor mode that
   mimics the effect of fill-column in visual-line-mode. Instead of wrapping
   lines at the window edge, which is the standard behaviour of visual-line-mode,
@@ -127,6 +133,34 @@ Problems:
   convenient key), offering you relevant actions to use on a target determined
   by the context [...]" Blog post: [[https://karthinks.com/software/fifteen-ways-to-use-embark/][Fifteen ways to use embark]]
 - [[https://github.com/suntsov/efar][efar]]: "This package provides FAR-like file manager for Emacs."
+- [[https://karthinks.com/software/bridging-islands-in-emacs-1/][Bridging islands in emacs: re-builder and query-replace-regexp]]: binding
+  between query replace and the regex builder.
+- [[https://github.com/minad/corfu][corfu]]: "Corfu enhances the default completion in region function with a
+  completion overlay. The current candidates are shown in a popup below or above
+  the point. Corfu is the minimalistic completion-in-region counterpart of the
+  Vertico minibuffer UI."
+- [[https://github.com/tonyaldon/bfs][bfs]]: "bfs (Browse File System) implements for emacs a dynamic tree view of the
+  file system à la [[https://github.com/ranger/ranger][ranger]]." See also [[https://github.com/ralesi/ranger.el][ranger mode]]: "This is a minor mode that
+  runs within dired, it emulates many of ranger's features. This minor mode
+  shows a stack of parent directories, and updates the parent buffers, while
+  you're navigating the file system. The preview window takes some of the ideas
+  from Peep-Dired, to display previews for the selected files, in the primary
+  dired buffer."
+- [[https://github.com/knpatel401/filetree][filetree]]: "Filetree is a package that provides two basic functions: 1) File
+  tree viewer The viewer displays a file list as a directory tree in a special
+  buffer. [...] 2) File notes The file notes enable the user to write and
+  display (org-mode) notes associated with individual files and directories.
+  [...]"
+- [[https://www.reddit.com/r/emacs/comments/qlykkq/which_widget_or_tui_libraries_for_emacs_do_you/][Reddit: Which widget or TUI libraries for emacs do you know?]] widgets in emacs.
+- [[https://karthinks.com/software/avy-can-do-anything/][Avy can do anything]]: full power of Avy.
+- [[https://github.com/tumashu/vertico-posframe][vertico-posframe]]: Vertico but using an external frame.
+- [[https://github.com/fritzgrabo/project-tab-groups][project-tab-groups]]: "Provides a global minor mode that enhances the Emacs
+  built-in project.el library to support keeping projects isolated in named tab
+  groups."
+- [[https://github.com/FrostyX/eyebrowse-restore][eyebrowse-restore]]: "Never lose your Eyebrowse window configurations again."
+- [[https://gitlab.com/niklaseklund/dtache][dtache]]: "Dtache, or Detach Emacs, is a package to run shell commands in
+  sessions that are isolated from Emacs. Dtache also provides a convenient user
+  interface to interact with the sessions."
 
 *** Other =.emacs== to investigate
 
@@ -135,14 +169,9 @@ Problems:
 * Preamble
 
 #+begin_src emacs-lisp
-;;; cunene.el --- Cunene: My emacs configuration
-;;
-;; Copyright © 2021 Marco Craveiro
-;;
-;; Author: Marco Craveiro <marco_craveiro@gmail.com>
-;; URL: https://github.com/mcraveiro/prelude
-;; Version: 0.0.0
-;; Keywords: convenience
+;;; cunene.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;;Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
+;;https://github.com/mcraveiro/prelude Version: 0.0.0 Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
 
@@ -444,6 +473,7 @@ Here are what I consider better defaults as per my own experience.
  warning-minimum-level :error           ; Skip warning buffers
  window-combination-resize t            ; Resize windows proportionally
  vc-follow-symlinks t                   ; Follow symlinks without asking
+ image-auto-resize nil                  ; Do not resize images automatically
  x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (blink-cursor-mode 0)                   ; Prefer a still cursor
 (fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
@@ -1820,6 +1850,9 @@ authoring documents with a fast and effective plain-text system.
 
 (use-package org-ref
   :ensure t
+  :config
+  (define-key org-ref-cite-keymap (kbd "C-<left>") nil)
+  (define-key org-ref-cite-keymap (kbd "C-<right>") nil)
   :after org)
 
 (use-package ox-tufte
@@ -1835,8 +1868,10 @@ authoring documents with a fast and effective plain-text system.
   (interactive)
   (occur "[^[:ascii:]]"))
 
-;; speeds up org-ref
-(setq org-ref-show-broken-links nil)
+;; export glossaries and acronyms.
+(add-hook 'org-export-before-parsing-hook 'org-ref-acronyms-before-parsing)
+(add-hook 'org-export-before-parsing-hook 'org-ref-glossary-before-parsing)
+
 (setq org-latex-pdf-process
       '("latexmk -shell-escape -bibtex -pdf %f"))
 (setq org-latex-listings t)
@@ -2481,6 +2516,10 @@ For the org-mode support, see:
     "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
     :keybinding "g"))
 
+(use-package google-this
+  :config
+  (google-this-mode 1))
+
 (setq isearch-allow-scroll t)
 (setq isearch-wrap-pause 'no-ding)
 
@@ -2522,6 +2561,32 @@ For the org-mode support, see:
 #+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+end_src
+
+** Thesaurus
+
+#+begin_src emacs-lisp
+(use-package define-word
+  :config
+  (setq define-word-default-service 'wordnik)
+  (defun url-http-user-agent-string ()
+  "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36
+"))
+
+(defun cunene/define-word (&rest args)
+  "Create a buffer for display word instead of using messages."
+  (interactive)
+  (let
+      ((buffer (get-buffer-create "Define Word")))
+    (set-buffer buffer)
+    (erase-buffer)
+    (set-buffer-major-mode buffer)
+    (apply 'insert args)
+    (display-buffer buffer)))
+
+(setq define-word-displayfn-alist
+      (cl-loop for (service . _) in define-word-services
+               collect (cons service #'cunene/define-word)))
 #+end_src
 
 ** Logs
@@ -2986,7 +3051,6 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :mode "\\.plantuml\\'"
   :config
   (setq plantuml-indent-level 4)
-  (setq image-auto-resize nil)
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
   (if (eq window-system 'w32)
       (setq plantuml-jar-path "C:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar"
@@ -2997,8 +3061,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package flycheck-plantuml
   :ensure t
   :after (plantuml-mode flycheck)
-  :init (flycheck-plantuml-setup)
-)
+  :init (flycheck-plantuml-setup))
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
@@ -3734,6 +3797,15 @@ any directory proferred by `consult-dir'."
                       (consult-dir--pick "Switch directory: ")))))
        (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
                             (completing-read "cd: " eshell-dirs)))))))
+
+(defun cunene/create-named-eshell (name)
+  "Create an eshell buffer named NAME."
+  (interactive "sName: ")
+  (setq name (concat "*eshell - " name "*"))
+  (eshell)
+  (rename-buffer name))
+
+(global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
 #+end_src
 
 *** SSH
@@ -3773,7 +3845,7 @@ any directory proferred by `consult-dir'."
 (setq browse-url-browser-function #'cunene/browse-url)
 
 ;; hard-code location of Chrome on Windows.
-(if (not (eq window-system 'w32))
+(if (eq window-system 'w32)
     (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"))
 #+end_src
 

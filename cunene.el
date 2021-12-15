@@ -1,11 +1,6 @@
-;;; cunene.el --- Cunene: My emacs configuration
-;;
-;; Copyright © 2021 Marco Craveiro
-;;
-;; Author: Marco Craveiro <marco_craveiro@gmail.com>
-;; URL: https://github.com/mcraveiro/prelude
-;; Version: 0.0.0
-;; Keywords: convenience
+;;; cunene.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;;Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
+;;https://github.com/mcraveiro/prelude Version: 0.0.0 Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
 
