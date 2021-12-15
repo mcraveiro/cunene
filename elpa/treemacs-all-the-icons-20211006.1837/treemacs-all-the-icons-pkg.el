@@ -1,2 +1,0 @@
-;;; Generated package description from treemacs-all-the-icons-20211006.1837/treemacs-all-the-icons.el  -*- no-byte-compile: t -*-
-(define-package "treemacs-all-the-icons" "20211006.1837" "all-the-icons integration for treemacs" '((emacs "26.1") (all-the-icons "4.0.1") (treemacs "0.0")) :commit "6b71604773f852158f00596776a68a82fb2633bd" :authors '(("Eric Dallo" . "ercdll1337@gmail.com")) :maintainer '("Eric Dallo" . "ercdll1337@gmail.com") :url "https://github.com/Alexander-Miller/treemacs")

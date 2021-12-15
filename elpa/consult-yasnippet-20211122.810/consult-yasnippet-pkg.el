@@ -1,0 +1,2 @@
+;;; Generated package description from consult-yasnippet-20211122.810/consult-yasnippet.el  -*- no-byte-compile: t -*-
+(define-package "consult-yasnippet" "20211122.810" "A consulting-read interface for yasnippet" '((emacs "27.1") (yasnippet "0.14") (consult "0.9")) :commit "9f38ad510328e708370a3a6b41cf40e8bd031b04" :authors '(("mohsin kaleem" . "mohkale@kisara.moe")) :maintainer '("mohsin kaleem" . "mohkale@kisara.moe") :url "https://github.com/mohkale/consult-yasnippet")

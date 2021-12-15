@@ -1,0 +1,2 @@
+;;; Generated package description from smart-hungry-delete-20211020.1822/smart-hungry-delete.el  -*- no-byte-compile: t -*-
+(define-package "smart-hungry-delete" "20211020.1822" "smart hungry deletion of whitespace" '((emacs "24.3")) :commit "78acd1f16fb99b66a6c9bd605a988c3c74280577" :authors '(("Hauke Rehfeld" . "emacs@haukerehfeld.de")) :maintainer '("Hauke Rehfeld" . "emacs@haukerehfeld.de") :keywords '("convenience") :url "https://github.com/hrehfeld/emacs-smart-hungry-delete")
