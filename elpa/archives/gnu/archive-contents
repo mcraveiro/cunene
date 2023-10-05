@@ -530,15 +530,14 @@
 		       (:maintainer "Clément Pit-Claudel" . "clement.pitclaudel@live.com")
 		       (:url . "https://github.com/cpitclaudel/compact-docstrings"))])
  (company .
-	  [(0 9 13)
+	  [(0 10 0)
 	   ((emacs
-	     (24 3)))
+	     (25 1)))
 	   "Modular text completion framework" tar
 	   ((:url . "http://company-mode.github.io/")
-	    (:maintainer "Dmitry Gutov" . "dgutov@yandex.ru")
-	    (:authors
-	     ("Nikolaj Schumacher"))
-	    (:keywords "abbrev" "convenience" "matching"))])
+	    (:keywords "abbrev" "convenience" "matching")
+	    (:maintainer "Dmitry Gutov" . "dmitry@gutov.dev")
+	    (:commit . "b59662293cc9bd52bf6c7a4c3f70393351b52d71"))])
  (company-ebdb .
 	       [(1 1)
 		((company
@@ -954,7 +953,7 @@
 	 (:url . "https://elpa.gnu.org/packages/djvu.html")
 	 (:commit . "071c8ab168588897475899c46eaa16e70141db8c"))])
  (do-at-point .
-	      [(0 1 0)
+	      [(0 1 1)
 	       ((emacs
 		 (26 1)))
 	       "Generic context-sensitive action dispatcher." tar
@@ -963,7 +962,7 @@
 		(:maintainer "Philip Kaludercic" . "~pkal/public-inbox@lists.sr.ht")
 		(:authors
 		 ("Philip Kaludercic" . "philipk@posteo.net"))
-		(:commit . "539d5da7f439ca05b6f3eb227dc0587b951a86f0"))])
+		(:commit . "3244b2a765315ad640deab34b1b2f90ac2277df3"))])
  (doc-toc .
 	  [(1 2)
 	   ((emacs
@@ -1194,7 +1193,7 @@
 		    ("Omar Antolín Camarena" . "omar@matem.unam.mx"))
 		   (:commit . "07af44c7de72efde79ac563cbecdfff0b48d8411"))])
  (ement .
-	[(0 12)
+	[(0 13)
 	 ((emacs
 	   (27 1))
 	  (map
@@ -1217,7 +1216,7 @@
 	  (:maintainer "Adam Porter" . "adam@alphapapa.net")
 	  (:authors
 	   ("Adam Porter" . "adam@alphapapa.net"))
-	  (:commit . "a4fc3d1ab6df424bc1296b8ca480a8c55c542dc2"))])
+	  (:commit . "17ea7f6fc11d8e7747c87e9efa76d04e815fd32e"))])
  (emms .
        [(16)
 	((cl-lib
@@ -2077,17 +2076,15 @@
 	 ("Protesilaos Stavrou" . "info@protesilaos.com"))
 	(:commit . "09cf249c78385502a2ead30c4fa1468cf96939f7"))])
  (llm .
-      [(0 1 1)
-       ((request
-	 (0 3 3))
-	(emacs
+      [(0 3 0)
+       ((emacs
 	 (28 1)))
        "Interface to pluggable llm backends" tar
        ((:url . "https://github.com/ahyatt/llm")
 	(:maintainer "Andrew Hyatt" . "ahyatt@gmail.com")
 	(:authors
 	 ("Andrew Hyatt" . "ahyatt@gmail.com"))
-	(:commit . "9ca27d742b43283f5c81d925be74dc0d27c95924"))])
+	(:commit . "7954a92d7cd15ed4e265101ac94d2f969fae473d"))])
  (lmc .
       [(1 4)
        ((emacs
@@ -3285,7 +3282,7 @@
 	      (:maintainer "Ralph Amissah" . "ralph.amissah@gmail.com")
 	      (:url . "http://www.sisudoc.org/"))])
  (site-lisp .
-	    [(0 1 1)
+	    [(0 1 2)
 	     ((emacs
 	       (25 1)))
 	     "Manage site-lisp directories" tar
@@ -3294,7 +3291,7 @@
 	      (:maintainer "Philip Kaludercic" . "~pkal/public-inbox@lists.sr.ht")
 	      (:authors
 	       ("Philip Kaludercic" . "philipk@posteo.net"))
-	      (:commit . "f9898d50d956e86faf0eb27def8ccc7180efa928"))])
+	      (:commit . "3f7a99472a4940bc63ed032de016e5a40fec0965"))])
  (sketch-mode .
 	      [(1 0 4)
 	       nil "Quickly create svg sketches using keyboard and mouse" tar
@@ -4241,6 +4238,15 @@
 	    (:authors
 	     ("Ivan Kanis" . "ivan@kanis.fr"))
 	    (:maintainer "Ivan Kanis" . "ivan@kanis.fr"))])
+ (wrap-search .
+	      [(4 12 10)
+	       nil "wrapped, non-incremental search" tar
+	       ((:url . "https://dataswamp.org/~incal/emacs-init/wrap-search.el")
+		(:keywords "matching")
+		(:maintainer "Emanuel Berg" . "incal@dataswamp.org")
+		(:authors
+		 ("Emanuel Berg" . "incal@dataswamp.org"))
+		(:commit . "12a50aa425278d5982364b0f97e7a9f13ac52fe9"))])
  (xclip .
 	[(1 11)
 	 nil "Copy&paste GUI clipboard from text terminal" tar
