@@ -409,7 +409,7 @@ Comparison is done with `eq'."
   "If the file or buffer is closed, then the marker is invalid.
 This function will remove these invalid entries."
   (setq jump-tree-pos-list
-        (cl-remove-if (lambda (position)
+        (remove-if (lambda (position)
                      (or (not (markerp (cdr position)))
                          (not (marker-buffer (cdr position)))))
                    jump-tree-pos-list)))

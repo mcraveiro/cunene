@@ -1,4 +1,4 @@
-;;; hide-mode-line-autoloads.el --- automatically extracted autoloads
+;;; hide-mode-line-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -13,10 +13,19 @@
 (autoload 'hide-mode-line-mode "hide-mode-line" "\
 Minor mode to hide the mode-line in the current buffer.
 
-If called interactively, enable Hide-Mode-Line mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Hide-Mode-Line mode' mode.  If the prefix argument is positive,
+enable the mode, and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `hide-mode-line-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \(fn &optional ARG)" t nil)
 
@@ -35,11 +44,15 @@ or call the function `global-hide-mode-line-mode'.")
 (autoload 'global-hide-mode-line-mode "hide-mode-line" "\
 Toggle Hide-Mode-Line mode in all buffers.
 With prefix ARG, enable Global Hide-Mode-Line mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
+otherwise, disable it.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.
+Enable the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
 
 Hide-Mode-Line mode is enabled in all buffers where
 `turn-on-hide-mode-line-mode' would do it.
+
 See `hide-mode-line-mode' for more information on Hide-Mode-Line mode.
 
 \(fn &optional ARG)" t nil)
@@ -51,7 +64,7 @@ Unless in `fundamental-mode' or `hide-mode-line-excluded-modes'." nil nil)
 (autoload 'turn-off-hide-mode-line-mode "hide-mode-line" "\
 Turn off `hide-mode-line-mode'." nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hide-mode-line" '("hide-mode-line-")))
+(register-definition-prefixes "hide-mode-line" '("hide-mode-line-"))
 
 ;;;***
 
@@ -59,6 +72,6 @@ Turn off `hide-mode-line-mode'." nil nil)
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; hide-mode-line-autoloads.el ends here

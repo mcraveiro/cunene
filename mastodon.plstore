@@ -1,0 +1,4 @@
+;;; public entries -*- mode: plstore -*-
+(("active-user" :username "MarcoCraveiro@emacs.ch" :instance "https://emacs.ch" :client_id "PCsCkqQj06qzeDLyFdmER-EH3Adbt9ywr-rGDbZNgyY" :client_secret "9joOs0rk_B-6O-inuVswNCGhXGy3dIYIgETHHCzIS30" :access_token "ki5wbbN8QzjlHne8fiMNy2CSgkX98ZH-vHO-se85oCQ")
+ ("user-MarcoCraveiro@emacs.ch" :username "MarcoCraveiro@emacs.ch" :instance "https://emacs.ch" :client_id "PCsCkqQj06qzeDLyFdmER-EH3Adbt9ywr-rGDbZNgyY" :client_secret "9joOs0rk_B-6O-inuVswNCGhXGy3dIYIgETHHCzIS30" :access_token "ki5wbbN8QzjlHne8fiMNy2CSgkX98ZH-vHO-se85oCQ")
+ ("mastodon-https://emacs.ch" :id "1118" :name "mastodon.el" :website "https://codeberg.org/martianh/mastodon.el" :redirect_uri "urn:ietf:wg:oauth:2.0:oob" :client_id "PCsCkqQj06qzeDLyFdmER-EH3Adbt9ywr-rGDbZNgyY" :client_secret "9joOs0rk_B-6O-inuVswNCGhXGy3dIYIgETHHCzIS30" :vapid_key "BIHyZ27zWZdWouMY4HI4xHDhRfshivPwVTsjtzQNl4rbYoX0l2j9HBvllsTB19JdBWrEpgAPBn_I1JQSwM5mi0M="))

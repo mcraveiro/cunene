@@ -1,0 +1,2 @@
+;;; Generated package description from diff-at-point.el  -*- no-byte-compile: t -*-
+(define-package "diff-at-point" "20230320.2355" "Diff navigation" '((emacs "26.2")) :commit "0a4815a364b636eadf2f9ca6f468fb5996ff8d6f" :authors '(("Campbell Barton" . "ideasman42@gmail.com")) :maintainers '(("Campbell Barton" . "ideasman42@gmail.com")) :maintainer '("Campbell Barton" . "ideasman42@gmail.com") :url "https://codeberg.org/ideasman42/emacs-diff-at-point")

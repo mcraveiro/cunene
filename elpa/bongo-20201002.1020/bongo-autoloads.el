@@ -1,4 +1,4 @@
-;;; bongo-autoloads.el --- automatically extracted autoloads
+;;; bongo-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -53,14 +53,14 @@ With prefix argument PROMPT, prompt for the buffer to switch to.
 Switch to a Bongo buffer.
 See the function `bongo-buffer'." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bongo" '("afplay" "bongo-" "define-bongo-backend" "mikmod" "ogg123" "speexdec" "timidity" "vlc" "with-")))
+(register-definition-prefixes "bongo" '("afplay" "bongo-" "define-bongo-backend" "mikmod" "ogg123" "speexdec" "timidity" "vlc" "with-"))
 
 ;;;***
 
 ;;;### (autoloads nil "lastfm-submit" "lastfm-submit.el" (0 0 0 0))
 ;;; Generated autoloads from lastfm-submit.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lastfm-submit" '("lastfm")))
+(register-definition-prefixes "lastfm-submit" '("lastfm"))
 
 ;;;***
 
@@ -72,6 +72,6 @@ See the function `bongo-buffer'." t nil)
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; bongo-autoloads.el ends here

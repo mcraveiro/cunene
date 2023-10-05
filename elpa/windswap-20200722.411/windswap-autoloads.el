@@ -1,4 +1,4 @@
-;;; windswap-autoloads.el --- automatically extracted autoloads
+;;; windswap-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -41,7 +41,7 @@ ARG is as for that function.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "windswap" '("windswap--")))
+(register-definition-prefixes "windswap" '("windswap--"))
 
 ;;;***
 
@@ -49,6 +49,6 @@ ARG is as for that function.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; windswap-autoloads.el ends here

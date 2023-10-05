@@ -1,4 +1,4 @@
-;;; plantuml-mode-autoloads.el --- automatically extracted autoloads
+;;; plantuml-mode-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -19,7 +19,7 @@ Shortcuts             Command Name
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "plantuml-mode" '("plantuml-")))
+(register-definition-prefixes "plantuml-mode" '("plantuml-"))
 
 ;;;***
 
@@ -27,6 +27,6 @@ Shortcuts             Command Name
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; plantuml-mode-autoloads.el ends here

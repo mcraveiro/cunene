@@ -1,4 +1,4 @@
-;;; git-messenger-autoloads.el --- automatically extracted autoloads
+;;; git-messenger-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -11,7 +11,7 @@
 
 (autoload 'git-messenger:popup-message "git-messenger" nil t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-messenger" '("git-messenger")))
+(register-definition-prefixes "git-messenger" '("git-messenger"))
 
 ;;;***
 
@@ -19,6 +19,6 @@
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; git-messenger-autoloads.el ends here

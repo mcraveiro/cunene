@@ -6,16 +6,18 @@
 ;; Created: February 22, 2021
 ;; Homepage: https://github.com/mcraveiro/cunene
 
-;; This program is free software. You can redistribute it and/or modify it under
-;; the terms of the Do What The Fuck You Want To Public License, version 2 as
-;; published by Sam Hocevar.
-;;
-;; This program is distributed in the hope that it will be useful, but WITHOUT
-;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-;; FOR A PARTICULAR PURPOSE.
-;;
-;; You should have received a copy of the Do What The Fuck You Want To Public
-;; License along with this program. If not, see http://www.wtfpl.net/.
+;; This package is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This package is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -47,7 +49,7 @@
    ;; (undecorated . t)                    ;; Remove extraneous X decorations
    (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
 
-;; (set-frame-font "Source Code Pro 8")
+;; (set-frame-font "Source Code Pro 9")
 ;; (set-frame-font "Hack 8")
 ;; (set-frame-font "Menlo 8")
 ;; (set-frame-font "FiraCode 8")
@@ -70,9 +72,22 @@
                      headings
                      nil)))
 
-;;
+;; FIXME: whilst debugging package install problems.
+;; (require 'package)
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;; (setq package-archives
+;;       '(
+;;         ("gnu" . "https://elpa.gnu.org/packages/")
+;;         ;; ("gnu" . "https://mirrors.163.com/elpa/gnu/")
+;; 	("melpa" . "https://melpa.org/packages/"))
+;;         ;; ("gnu"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/gnu/")
+;;         ;; ("melpa" . "https://melpa.org/packages/"))
+;;       )
+
+;; (package-initialize)
+
+
 ;; Configuration specific to startup.
-;;
 
 (let
     (
@@ -112,3 +127,17 @@
 
 ;;; init.el ends here
 (put 'scroll-left 'disabled nil)
+(put 'list-timers 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(doom-themes drag-stuff ssh helm-c-yasnippet google-this treemacs-projectile lsp-treemacs eshell-git-prompt expand-region windswap ibuffer-projectile rainbow-mode ztree smart-hungry-delete color-identifiers-mode inf-mongo logview consult-yasnippet prodigy consult-flycheck which-key define-word diff-at-point json-mode git-timemachine browse-kill-ring git-gutter-fringe yaml-mode mastodon aggressive-indent helpful use-package marginalia jq-format doom-modeline bm codegpt backup-walker ox-tufte lsp-ui bongo org-ql treemacs-magit engine-mode dimmer jq-mode rainbow-delimiters super-save verb treemacs-persp flycheck-plantuml org-present cmake-mode helm-ls-git consult-dir powershell eyebrowse hl-todo git-messenger epc sql-clickhouse crux beacon jump-tree orderless synosaurus vertico treemacs-icons-dired persistent-scratch msgu company-box yasnippet-snippets anzu rg dashboard company-posframe hide-mode-line diminish treemacs-evil org-ref-prettify smartparens mustache treemacs-all-the-icons volatile-highlights org-fancy-priorities)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

@@ -1,4 +1,4 @@
-;;; ssh-autoloads.el --- automatically extracted autoloads
+;;; ssh-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -52,7 +52,7 @@ how ssh X display tunelling interacts with frames on remote displays.
 
 \(fn INPUT-ARGS &optional BUFFER)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ssh" '("ssh-")))
+(register-definition-prefixes "ssh" '("ssh-"))
 
 ;;;***
 
@@ -60,6 +60,6 @@ how ssh X display tunelling interacts with frames on remote displays.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; ssh-autoloads.el ends here

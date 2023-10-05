@@ -1,4 +1,4 @@
-;;; git-gutter-fringe-autoloads.el --- automatically extracted autoloads
+;;; git-gutter-fringe-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -10,7 +10,7 @@
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from git-gutter-fringe.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-gutter-fringe" '("git-gutter-fr")))
+(register-definition-prefixes "git-gutter-fringe" '("git-gutter-fr"))
 
 ;;;***
 
@@ -18,6 +18,6 @@
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; git-gutter-fringe-autoloads.el ends here

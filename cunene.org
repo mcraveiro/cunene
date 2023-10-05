@@ -14,7 +14,6 @@ Things we need to remember to change:
 
 - add null to pretty symbols
 - mustache templates
-- polymode with dogen stitch support.
 - notmuch
 - pdf tools
 - remove all calls for custom; move custom to end, raise SO ticket for local
@@ -161,10 +160,123 @@ Problems:
 - [[https://gitlab.com/niklaseklund/dtache][dtache]]: "Dtache, or Detach Emacs, is a package to run shell commands in
   sessions that are isolated from Emacs. Dtache also provides a convenient user
   interface to interact with the sessions."
+- [[https://github.com/tarsius/moody][moody]]: "This package provides utilities for displaying elements of the mode
+  line as tabs and ribbons. It also provides replacements for a few built-in
+  elements."
+- [[https://github.com/astoff/devdocs.el][devdocs.el]]: "devdocs.el is a documentation viewer for Emacs similar to the
+  built-in Info browser, but geared towards documentation obtained from the
+  DevDocs website."
+- [[https://github.com/alphapapa/org-sidebar][org-sidebar]]: "This package presents helpful sidebars for Org buffers. Sidebars
+  are customizable using org-ql queries and org-super-agenda grouping."
+- [[https://github.com/localauthor/org-side-tree][org-side-tree]]: "Navigate Org mode outlines in Emacs via side window."
+- [[https://github.com/Artawower/turbo-log][turbo-log]]: "This project inspired by a similar package for vs-code -
+  turbo-console-log, and provides functionality for fast log message inserting
+  under current line. It works for js-mode, typescript-mode, go-mode and
+  python."
+- [[https://github.com/cryptobadger/flight-attendant.el][flight-attendant]]: "This is a quite unsophisticated attempt to get GitHub
+  Copilot up and running in Emacs."
+- [[https://github.com/elias94/accent][accent]]: "accent.el shows a popup with accented characters based on the current
+  letter under the cursor."
+- [[https://github.com/d12frosted/flyspell-correct][flyspell-correct]]: "Correcting misspelled words with flyspell using favourite
+  interface."
+- [[https://gitlab.com/sawyerjgardner/demap.el][demap]]: "Demap is an Emacs package that adds a minimap buffer that shows a
+  zoomed out view of the active window. It updates what it is showing has you
+  change the active window and it can be detached, moved, hidden or killed like
+  any other Emacs buffer."
+- [[https://github.com/rschwarz/sql-clickhouse][sql-clickhouse]]: "We add ClickHouse as a new product type to the builtin
+  sql-mode in Emacs. That way, we get syntax highlighting and can communicate
+  with the DB using the CLI clickhouse-client."
+- [[https://github.com/bmag/imenu-list][imenu-list]]: "This Emacs minor-mode creates an automatically updated buffer
+  called *Ilist* that is populated with the current buffer's imenu entries. The
+  *Ilist* buffer is typically shown as a sidebar (Emacs vertically splits the
+  window)."
+- [[https://github.com/gregsexton/httprepl.el][httprepl]]: "httprepl.el allows you to interactively make HTTP requests at a
+  REPL-like UI within Emacs."
+- [[https://github.com/karthink/elfeed-tube][elfeed-tube]]: "Elfeed Tube is an Emacs package for a richer, interactive,
+  noise-free and fully text-capable interface to your Youtube subscriptions and
+  playlists using Elfeed, the RSS feed reader for Emacs. Think of it as
+  supercharging Elfeed, or perhaps a taste of what the RSS/Atom protocol could
+  have become today if it had continue to evolve."
+- [[https://github.com/alhassy/org-special-block-extras][org-special-block-extras]]: "In particular, we are concerned with ‘custom’, or
+  ‘special’, blocks which delimit how a particular region of text is supposed to
+  be formatted according to the possible export backends. In some sense, special
+  blocks are meta-blocks. Rather than writing text in, say, LaTeX environments
+  using LaTeX commands or in HTML div's using HTML tags, we promote using
+  Org-mode markup in special blocks —Org markup cannot be used explicitly within
+  HTML or LaTeX environments."
+- [[https://karthinks.com/software/it-bears-repeating/][repeat mode]]: "Repeat Mode lets you call multiple commands in a keymap without
+  repeating the prefix each time."
+- [[https://github.com/SqrtMinusOne/reverso.el][reverso]]: "Emacs client for the Reverso service. The implemented features are:
+  Translation, Context (AKA bilingual concordances), Grammar check, Synonyms
+  search."
+- [[https://github.com/ahungry/swagger-to-org][swagger-to-org]]: "This is a package that allows you to take parse a
+  swagger.json file, and produce an org-mode buffer/file out of it's contents."
+- [[https://github.com/Olivia5k/makefile-executor.el][makefile-executor.el]]: "Interactively selecting a make target and running it."
+- [[https://github.com/abo-abo/helm-make/][helm-make]]: "A call to helm-make will give you a helm selection of this
+  directory Makefile's targets. Selecting a target will call compile on it."
+- [[https://github.com/bbatsov/helm-projectile][helm-projectile]]: "Projectile can be integrated with Helm via
+  helm-source-projectile-projects, helm-source-projectile-files-list,
+  helm-source-projectile-buffers-list and helm-source-projectile-recentf-list
+  sources (available in helm-projectile.el)." [[https://tuhdo.github.io/helm-projectile.html][Docs]].
+- [[https://github.com/mickeynp/combobulate][combobulate]]: "Combobulate is an Emacs package that provides a standardized
+  framework for manipulating and navigating your source code using tree sitter's
+  concrete syntax tree. Combobulate is language agnostic and should work with
+  little modification almost all languages supported by tree sitter itself."
+- [[https://github.com/emacs-citar/citar][citar]]: "This package provides a completing-read front-end to browse and act on
+  BibTeX, BibLaTeX, and CSL JSON bibliographic data, and LaTeX, markdown, and
+  org-cite editing support."
+- [[https://github.com/gregsexton/origami.el][origami.el]]: "A text folding minor mode for Emacs."
+- [[https://github.com/DamienCassou/json-navigator][json-navigator]]: "Display any JSON document as a tree by typing M-x
+  json-navigator-navigator. Here is a screencast showing the navigation tree of
+  an example JSON document."
+- [[https://github.com/orgtre/org-cc][org-cc]]: "This Emacs package makes it easy to create rich multi-column custom
+  completion commands to find specific Org entries based on their data and
+  metadata. The goal is to have a completion interface similar to that of citar,
+  but for arbitrary subsets of Org entries."
+- [[https://github.com/ghosty141/consult-git-log-grep][consult-git-log-grep]]: provides an interactive way to search the git log using
+  consult."
+- [[https://github.com/NicolasPetton/Indium][Indium]]: "A JavaScript development environment for Emacs."
+- [[https://github.com/minad/org-modern][org-modern]]: "This package implements a “modern” style for your Org buffers
+  using font locking and text properties. The package styles headlines,
+  keywords, tables and source blocks."
+- [[https://github.com/joshcho/ChatGPT.el][ChatGPT.el]]: "ChatGPT in Emacs."
+- [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]: ChatGPT and DALL-E Emacs shells + Org Babel.
+- [[https://github.com/iwahbe/jsonian][jsonian]]: "jsonian.el provides a major mode for editing JSON files of any size.
+  The goal is to be feature complete against json-mode with no external
+  dependencies or file size limits."
+- [[https://github.com/minad/cape][cape]]: "Cape provides Completion At Point Extensions which can be used in
+  combination with the Corfu completion UI or the default completion UI. The
+  completion backends used by completion-at-point are so called
+  completion-at-point-functions (Capfs). In principle, the Capfs provided by
+  Cape can also be used by Company."
+- [[https://github.com/SqrtMinusOne/reverso.el][reverso.el]]: "Emacs client for the Reverso service."
+- [[https://github.com/k-talo/volatile-highlights.el][volatile-highlights.el]]: "This library provides minor mode
+  volatile-highlights-mode, which brings visual feedback to some operations by
+  highlighting portions relating to the operations."
+- [[https://github.com/Artawower/blamer.el][blamer]]: "A git blame plugin for emacs inspired by VS Code’s GitLens plugin and
+  Vim plugin."
+- [[https://github.com/ber-ro/diffed][diffed]]: "Emacs major mode which uses recursive diff output as a base for
+  synchronization. Diffed is for recursive diff like Dired is for ls. Can be
+  used somewhat like ediff-directories, but without the need to switch to
+  another buffer to view a subdirectory or to copy a file to the opposite
+  directory."
+- [[https://codeberg.org/ideasman42/emacs-cycle-at-point][emacs-cycle-at-point]]: "Immediately cycle text at the cursor, without
+  prompting. Unlike most actions to select from a list cycle-at-point replaces
+  the text immediately, calling again to cycle over options."
+- [[https://github.com/leotaku/flycheck-aspell][flycheck-aspell]]: "The flycheck-aspell and flymake-aspell packages add support
+  for spell checking to Flycheck and Flymake using the GNU Aspell application."
+- [[https://github.com/yashi/org-asciidoc][org-asciidoc]]: "An Org Mode Exporter Backend For AsciiDoc and Asciidoctor"
 
 *** Other =.emacs== to investigate
 
 - [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
+- [[https://github.com/rougier/dotemacs/blob/master/dotemacs.org][Nicholas Rougier's dot emacs.]]:
+
+** Articles to read
+
+- [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life In Plain Text!]]
+- [[https://xenodium.com/emacs-quick-kill-process/][Emacs: quickly killing processes]]
+
 
 * Preamble
 
@@ -197,6 +309,8 @@ Problems:
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
+
+(other-frame 1)
 #+end_src
 
 * Core
@@ -250,6 +364,62 @@ directory with an ever-growing number of packages used on a daily basis.
 ;;   (setq-default package-user-dir (cunene/cache-concat "packages/")))
 #+end_src
 
+** Package Management
+
+| =package=            | Built-in                                              |
+| =use-package=        | https://github.com/jwiegley/use-package               |
+| =quelpa-use-package= | https://framagit.org/steckerhalter/quelpa-use-package |
+
+Setup package sources. Trying to setup a secure set of
+sources.
+
+Links:
+
+- [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][Your editor is malware]]
+
+#+begin_src emacs-lisp
+(require 'package)
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq package-archives
+      '(
+        ;; ("gnu" . "https://elpa.gnu.org/packages/")
+        ( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/")
+        ("gnu" . "https://mirrors.163.com/elpa/gnu/")
+        ;; ("gnu"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/gnu/")
+        ("melpa" . "https://melpa.org/packages/")
+        )
+      )
+
+(package-initialize)
+#+end_src
+
+Install the =use-package= dependency.
+
+Links:
+
+- [[https://github.com/jwiegley/use-package/issues/202][#202: use-package-always-defer]]
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'use-package
+  (setq-default
+   use-package-always-defer nil     ;; Let auto-loading be managed by package.el
+   use-package-always-ensure t))    ;; Install packages if not present in the system
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package t))
+
+(eval-when-compile
+  (require 'use-package))
+#+end_src
+
+Add support for Quelpa.
+
+#+begin_src emacs-lisp
+;; (use-package quelpa-use-package
+;;  :ensure t)
+#+end_src
+
 ** Backup files
 
 | =backup-walker= | https://github.com/lewang/backup-walker |
@@ -290,55 +460,6 @@ Links:
 
 (use-package backup-walker
   :ensure t)
-#+end_src
-
-** Package Management
-
-| =package=            | Built-in                                              |
-| =use-package=        | https://github.com/jwiegley/use-package               |
-| =quelpa-use-package= | https://framagit.org/steckerhalter/quelpa-use-package |
-
-Setup package sources. Trying to setup a secure set of
-sources.
-
-Links:
-
-- [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][Your editor is malware]]
-
-#+begin_src emacs-lisp
-(require 'package)
-(setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-      ("melpa" . "https://melpa.org/packages/")))
-
-(package-initialize)
-#+end_src
-
-Install the =use-package= dependency.
-
-Links:
-
-- [[https://github.com/jwiegley/use-package/issues/202][#202: use-package-always-defer]]
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'use-package
-  (setq-default
-   use-package-always-defer nil     ;; Let auto-loading be managed by package.el
-   use-package-always-ensure t))    ;; Install packages if not present in the system
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package t))
-
-(eval-when-compile
-  (require 'use-package))
-#+end_src
-
-Add support for Quelpa.
-
-#+begin_src emacs-lisp
-;; (use-package quelpa-use-package
-;;  :ensure t)
 #+end_src
 
 ** Cunene related
@@ -503,6 +624,7 @@ Here are what I consider better defaults as per my own experience.
 
 ;; repeat pop mark command without the need for C-u
 (setq set-mark-command-repeat-pop t)
+(setq image-auto-resize 0.7)
 #+end_src
 
 ** Text Size
@@ -937,10 +1059,10 @@ Assorted utility functions for which we could not yet establish a good category.
 (defun cunene/plantuml-make-diagram ()
   "Create a diagram from a PlantUML buffer."
   (interactive)
-  (let* ((jvm_args " -DPLANTUML_LIMIT_SIZE=16384 -Djava.awt.headless=true ")
-         (jar_path " c:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar ")
+  (let* ((jvm_args " -DPLANTUML_LIMIT_SIZE=16384 -Djava.awt.headless=true -DPLANTUML_SECURITY_PROFILE=UNSECURE")
+         (jar_path "/usr/share/plantuml/plantuml.jar ")
          (jar_args (concat " -jar " jar_path))
-         (command (concat "java " jvm_args jar_args " -v " (buffer-file-name)))
+         (command (concat "java " jvm_args jar_args " -Playout=elk -tpng -v " (buffer-file-name)))
          (plant-buffer-name (concat "PlantUML: "
                                     (file-name-nondirectory (buffer-file-name)))))
     (with-current-buffer (get-buffer-create plant-buffer-name)
@@ -1522,11 +1644,12 @@ surrounded by word boundaries."
 
 ** Buffers and Windows
 
-| =desktop=  | Built-in                                 |
-| =shackle=  | https://github.com/wasamasa/shackle      |
-| =windswap= | https://github.com/purcell/windswap      |
-| =windmove= | Built-in                                 |
-| =winner=   | Built-in                                 |
+| =desktop=   | Built-in                                 |
+| =shackle=   | https://github.com/wasamasa/shackle      |
+| =windswap=  | https://github.com/purcell/windswap      |
+| =windmove=  | Built-in                                 |
+| =winner=    | Built-in                                 |
+| =framemove= | https://github.com/emacsmirror/framemove |
 
 Bind keys to manage windows and buffers that are more popular.
 
@@ -1750,6 +1873,9 @@ Bind shorthands to move between windows.
    ("<f2> <down>" . windmove-down)
    ("<f2> <up>" . windmove-up)
    ("<f2> <right>" . windmove-right)))
+
+;; (require 'framemove)
+;; (setq framemove-hook-into-windmove t)
 #+end_src
 
 Allow undo's and redo's with window configurations.
@@ -1814,14 +1940,20 @@ authoring documents with a fast and effective plain-text system.
   (setq org-startup-truncated nil)
   (setq org-support-shift-select 'always)
   (setq org-adapt-indentation 'headline-data)
+  (setq org-duration-format (quote h:mm))
+  (setq org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/2236
   (require 'ob-shell)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
 
-(use-package org-superstar
-  :ensure t
-  :hook (org-mode . org-superstar-mode))
+;; too slow on large files.
+;; (use-package org-superstar
+;;   :ensure t
+;;   :hook (org-mode . org-superstar-mode))
+
+;; (use-package org-sidebar
+;;   :ensure t)
 
 (use-package org-fancy-priorities
   :diminish
@@ -1848,12 +1980,12 @@ authoring documents with a fast and effective plain-text system.
                                          ))
     (hl-todo-mode)))
 
-(use-package org-ref
-  :ensure t
-  :config
-  (define-key org-ref-cite-keymap (kbd "C-<left>") nil)
-  (define-key org-ref-cite-keymap (kbd "C-<right>") nil)
-  :after org)
+;; (use-package org-ref
+;;   :ensure t
+;;   :config
+;;   (define-key org-ref-cite-keymap (kbd "C-<left>") nil)
+;;   (define-key org-ref-cite-keymap (kbd "C-<right>") nil)
+;;   :after org)
 
 (use-package ox-tufte
   :ensure t
@@ -1862,6 +1994,18 @@ authoring documents with a fast and effective plain-text system.
 (use-package org-present
   :ensure t
   :after org)
+
+(use-package org-roam
+  :ensure t
+  :config
+  (setq org-roam-directory (file-truename "~/Development/roam"))
+  (org-roam-db-autosync-mode)
+  :after org)
+
+(use-package org-roam-ui
+  :ensure t
+  :config
+  :after org-roam)
 
 (defun cunene/occur-non-ascii ()
   "Find any non-ascii characters in the current buffer."
@@ -1876,6 +2020,7 @@ authoring documents with a fast and effective plain-text system.
       '("latexmk -shell-escape -bibtex -pdf %f"))
 (setq org-latex-listings t)
 (setq bibtex-dialect 'biblatex)
+;; (add-to-list 'org-export-backends 'taskjuggler)
 (require 'ox-latex)
 (add-to-list 'org-latex-packages-alist '("" "listings"))
 (add-to-list 'org-latex-packages-alist '("" "color"))
@@ -2184,7 +2329,7 @@ Issues:
   :diminish helm-mode
   :config
   (progn
-    (require 'helm-config)
+    ;; (require 'helm-config)
     (require 'helm-for-files)
     (setq helm-candidate-number-limit 100)
     ;; From https://gist.github.com/antifuchs/9238468
@@ -2643,7 +2788,8 @@ For the org-mode support, see:
 
 ** Diffing
 
-| =ztree= | https://github.com/fourier/ztree |
+| =ztree=         | https://github.com/fourier/ztree                  |
+| =diff-at-point= | https://gitlab.com/ideasman42/emacs-diff-at-point |
 
 #+begin_quote
 ztree-diff
@@ -2655,8 +2801,17 @@ deleting file/directories, hiding/showing equal files/directories.
 #+end_quote
 
 #+begin_src emacs-lisp
-(use-package ztree
-  :ensure t)
+(use-package ztree :ensure t)
+
+(use-package diff-at-point :ensure t)
+
+(add-hook 'diff-mode-hook
+  (lambda ()
+    (define-key diff-mode-shared-map (kbd "<C-M-return>") 'diff-at-point-goto-source-and-close)))
+
+(add-hook 'prog-mode-hook
+  (lambda ()
+    (define-key prog-mode-map (kbd "<C-M-return>") 'diff-at-point-open-and-goto-hunk)))
 
 ;; ediff
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -2705,7 +2860,6 @@ expects some output that isn't there and triggers an error"
                                  (line-beginning-position)
                                  (line-end-position)))))
      (error (error-message-string err)))))
-
 #+end_src
 
 ** IRC
@@ -2714,6 +2868,19 @@ expects some output that isn't there and triggers an error"
 (setq erc-join-buffer 'bury)
 (add-hook 'erc-mode-hook (lambda () (erc-fill-mode nil)))
 #+end_src
+
+*** Mastodon
+
+#+begin_src emacs-lisp
+(use-package mastodon
+  :ensure t
+  :config
+  (setq mastodon-active-user "MarcoCraveiro")
+  (setq mastodon-instance-url "https://emacs.ch")
+  )
+
+#+end_src
+
 
 * Development
 
@@ -2767,9 +2934,9 @@ Display indicators in the left fringe for Git changes.
 Major modes for Git-specific files.
 
 #+begin_src emacs-lisp
-(use-package gitattributes-mode)
-(use-package gitconfig-mode)
-(use-package gitignore-mode)
+;; (use-package gitattributes-mode)
+;; (use-package gitconfig-mode)
+;; (use-package gitignore-mode)
 #+end_src
 
 Magit provides Git facilities directly from within Emacs.
@@ -2831,10 +2998,10 @@ Start =pinentry= in order for Emacs to be able to prompt for passphrases when
 necessary.
 
 #+begin_src emacs-lisp
-(use-package pinentry
-  :hook
-  (after-init . pinentry-start))
-#+end_src
+;; (use-package pinentry
+;;   :hook
+;;   (after-init . pinentry-start))
+#+End_src
 
 Transient is the package behind the modal maps and prefixes depicted in Magit.
 It is currently used by Magit only in my configuration so it will stay in this
@@ -2983,11 +3150,18 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package lsp-treemacs
   :config
   (setq lsp-treemacs-sync-mode 1)
+  (setq lsp-headerline-breadcrumb-segments '(file symbols))
   (setq lsp-treemacs-symbols-position-params
         '((side . right)
           (slot . 1)
           (window-width . 45)))
   :commands lsp-treemacs-errors-list)
+
+;;
+;; Improve performance by not logging debug info.
+;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
+;;
+(fset #'jsonrpc--log-event #'ignore)
 
 (setq cunene/general-lsp-hydra-heads
         '(;; Xref
@@ -3030,17 +3204,24 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
             (local-set-key (kbd "C-c C-l") 'cunene/lsp-hydra/body)
             'lsp-ui-mode))
 
-(use-package consult-lsp
-  :ensure t
-  :diminish)
+;; (use-package consult-lsp
+;;   :ensure t
+;;   :diminish)
 
-(use-package helm-lsp
-  :ensure t
-  :bind (:map lsp-mode-map
-              ("<M-RET>" . helm-lsp-code-actions))
-  :diminish)
+;; (use-package helm-lsp
+;;   :ensure t
+;;   :diminish
+;;   :commands helm-lsp-workspace-symbol
+;;   :config
+;;   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol))
 
-(define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
+;; (use-package helm-lsp
+;;   :ensure t
+;;   :require lsp-mode
+;;   :bind (:map lsp-command-map
+;;               ("<M-RET>" . helm-lsp-code-actions))
+;;   :diminish)
+
 #+end_src
 
 ** Diagrams
@@ -3200,11 +3381,11 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 (use-package jq-format
   :ensure t)
 
-(use-package hierarchy
-  :ensure t)
+;; (use-package hierarchy
+;;   :ensure t)
 
-(use-package json-navigator
-  :ensure t)
+;; (use-package json-navigator
+;;   :ensure t)
 #+end_src
 
 ** Markup
@@ -3248,27 +3429,30 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
      ;; Ident when moving to a new line
      (define-key c-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
      ))
+
+(use-package cmake-mode
+  :ensure t)
 #+end_src
 
 ** C#
 
 #+begin_src emacs-lisp
-(use-package csharp-mode
-  :ensure t
-  :config
-  (defun cunene/csharp-mode-setup ()
-    (company-mode)
-    (lsp)
-    (flycheck-mode)
-    (c-toggle-hungry-state 1)
-    (setq indent-tabs-mode nil)
-    (setq c-syntactic-indentation t)
-    (c-set-style "ellemtel")
-    (setq c-basic-offset 4)
-    (setq truncate-lines t)
-    (setq tab-width 4)
-    (setq evil-shift-width 4))
-  (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
+;; (use-package csharp-mode
+;;   :ensure t
+;;   :config
+;;   (defun cunene/csharp-mode-setup ()
+;;     (company-mode)
+;;     (lsp)
+;;     (flycheck-mode)
+;;     (c-toggle-hungry-state 1)
+;;     (setq indent-tabs-mode nil)
+;;     (setq c-syntactic-indentation t)
+;;     (c-set-style "ellemtel")
+;;     (setq c-basic-offset 4)
+;;     (setq truncate-lines t)
+;;     (setq tab-width 4)
+;;     (setq evil-shift-width 4))
+;;   (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
 
 (defun csharp-hs-forward-sexp (&optional arg)
   "I set hs-forward-sexp-func to this function.
@@ -3433,6 +3617,48 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 ;;  (org-babel-do-load-languages 'org-babel-load-languages
 ;;                             '((mustache     . t)))
 )
+#+end_src
+
+** SQL
+
+| =sql-clickhouse= | https://github.com/rschwarz/sql-clickhouse |
+
+#+begin_src emacs-lisp
+(use-package sql-clickhouse
+  :ensure t
+)
+#+end_src
+
+** Yaml
+
+| =yaml-mode= | [[https://github.com/yoshiki/yaml-mode]] |
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :ensure t
+)
+#+end_src
+
+** Powershell
+
+| =yaml-mode= | [[https://github.com/jschaf/powershell.el]] |
+
+#+begin_src emacs-lisp
+(use-package powershell
+  :ensure t
+)
+#+end_src
+
+
+** GPT
+
+#+begin_src emacs-lisp
+(use-package chatgpt-shell
+  :ensure t
+  :custom
+  ((chatgpt-shell-openai-key
+    (lambda ()
+      (auth-source-pick-first-password :host "api.openai.com")))))
 #+end_src
 
 * Music
@@ -3821,8 +4047,8 @@ any directory proferred by `consult-dir'."
 | rg       | https://github.com/dajva/rg.el      |
 
 #+begin_src emacs-lisp
-(use-package deadgrep
-  :ensure t)
+;; (use-package deadgrep
+;;   :ensure t)
 
 (use-package rg
   :ensure t)
@@ -3832,9 +4058,9 @@ any directory proferred by `consult-dir'."
 
 #+begin_src emacs-lisp
 (setq cunene/browsers
-      '(("Firefox" . browse-url-firefox)
-        ("Chrome" . browse-url-chrome)
-        ("EWW" . eww-browse-url)))
+      '(("Chrome" . browse-url-chrome)
+        ("EWW" . eww-browse-url)
+        ("Firefox" . browse-url-firefox)))
 
 (defun cunene/browse-url (&rest args)
   "Select the prefered browser from a menu before opening the URL."

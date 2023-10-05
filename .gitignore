@@ -4,3 +4,6 @@ quelpa
 
 # files we can't find out who is creating
 .emacs-buffers
+eln-cache
+.org-id-locations
+.persistent-scratch

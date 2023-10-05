@@ -1,4 +1,4 @@
-;;; anzu-autoloads.el --- automatically extracted autoloads
+;;; anzu-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -12,9 +12,19 @@
 (autoload 'anzu-mode "anzu" "\
 minor-mode which display search information in mode-line.
 
-If called interactively, enable Anzu mode if ARG is positive, and disable it if
-ARG is zero or negative.  If called from Lisp, also enable the mode if ARG is
-omitted or nil, and toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the `Anzu
+mode' mode.  If the prefix argument is positive, enable the mode,
+and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `anzu-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \(fn &optional ARG)" t nil)
 
@@ -32,12 +42,14 @@ or call the function `global-anzu-mode'.")
 
 (autoload 'global-anzu-mode "anzu" "\
 Toggle Anzu mode in all buffers.
-With prefix ARG, enable Global Anzu mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
+With prefix ARG, enable Global Anzu mode if ARG is positive; otherwise, disable it.
 
-Anzu mode is enabled in all buffers where
-`anzu--turn-on' would do it.
+If called from Lisp, toggle the mode if ARG is `toggle'.
+Enable the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+Anzu mode is enabled in all buffers where `anzu--turn-on' would do it.
+
 See `anzu-mode' for more information on Anzu mode.
 
 \(fn &optional ARG)" t nil)
@@ -71,7 +83,7 @@ anzu version of `isearch-query-replace-regexp'.
 
 \(fn ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "anzu" '("anzu")))
+(register-definition-prefixes "anzu" '("anzu"))
 
 ;;;***
 
@@ -79,6 +91,6 @@ anzu version of `isearch-query-replace-regexp'.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; anzu-autoloads.el ends here

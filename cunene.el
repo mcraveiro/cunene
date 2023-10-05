@@ -27,6 +27,8 @@
 
 ;;; Code:
 
+(other-frame 1)
+
 (setq user-full-name "Marco Craveiro")
 (setq user-mail-address "marco.craveiro@gmail.com")
 
@@ -61,6 +63,35 @@
 ;; (with-eval-after-load 'package
 ;;   (setq-default package-user-dir (cunene/cache-concat "packages/")))
 
+(require 'package)
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq package-archives
+      '(
+        ;; ("gnu" . "https://elpa.gnu.org/packages/")
+        ( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/")
+        ("gnu" . "https://mirrors.163.com/elpa/gnu/")
+        ;; ("gnu"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/gnu/")
+        ("melpa" . "https://melpa.org/packages/")
+        )
+      )
+
+(package-initialize)
+
+(with-eval-after-load 'use-package
+  (setq-default
+   use-package-always-defer nil     ;; Let auto-loading be managed by package.el
+   use-package-always-ensure t))    ;; Install packages if not present in the system
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package t))
+
+(eval-when-compile
+  (require 'use-package))
+
+;; (use-package quelpa-use-package
+;;  :ensure t)
+
 (defvar cunene/backup-directory (cunene/cache-concat "backups"))
 
 (if (not (file-exists-p cunene/backup-directory))
@@ -90,28 +121,6 @@
 
 (use-package backup-walker
   :ensure t)
-
-(require 'package)
-(setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-      ("melpa" . "https://melpa.org/packages/")))
-
-(package-initialize)
-
-(with-eval-after-load 'use-package
-  (setq-default
-   use-package-always-defer nil     ;; Let auto-loading be managed by package.el
-   use-package-always-ensure t))    ;; Install packages if not present in the system
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package t))
-
-(eval-when-compile
-  (require 'use-package))
-
-;; (use-package quelpa-use-package
-;;  :ensure t)
 
 (defvar cunene/config-file
   (concat user-emacs-directory "cunene.el")
@@ -199,6 +208,7 @@
  warning-minimum-level :error           ; Skip warning buffers
  window-combination-resize t            ; Resize windows proportionally
  vc-follow-symlinks t                   ; Follow symlinks without asking
+ image-auto-resize nil                  ; Do not resize images automatically
  x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (blink-cursor-mode 0)                   ; Prefer a still cursor
 (fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
@@ -228,6 +238,7 @@
 
 ;; repeat pop mark command without the need for C-u
 (setq set-mark-command-repeat-pop t)
+(setq image-auto-resize 0.7)
 
 ;; Font size
 (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -512,10 +523,10 @@ Returns nil if no differences found, 't otherwise."
 (defun cunene/plantuml-make-diagram ()
   "Create a diagram from a PlantUML buffer."
   (interactive)
-  (let* ((jvm_args " -DPLANTUML_LIMIT_SIZE=16384 -Djava.awt.headless=true ")
-         (jar_path " c:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar ")
+  (let* ((jvm_args " -DPLANTUML_LIMIT_SIZE=16384 -Djava.awt.headless=true -DPLANTUML_SECURITY_PROFILE=UNSECURE")
+         (jar_path "/usr/share/plantuml/plantuml.jar ")
          (jar_args (concat " -jar " jar_path))
-         (command (concat "java " jvm_args jar_args " -v " (buffer-file-name)))
+         (command (concat "java " jvm_args jar_args " -Playout=elk -tpng -v " (buffer-file-name)))
          (plant-buffer-name (concat "PlantUML: "
                                     (file-name-nondirectory (buffer-file-name)))))
     (with-current-buffer (get-buffer-create plant-buffer-name)
@@ -1222,6 +1233,9 @@ Also returns nil if pid is nil."
    ("<f2> <up>" . windmove-up)
    ("<f2> <right>" . windmove-right)))
 
+;; (require 'framemove)
+;; (setq framemove-hook-into-windmove t)
+
 (use-package winner
   :ensure nil
   :hook
@@ -1255,14 +1269,20 @@ Also returns nil if pid is nil."
   (setq org-startup-truncated nil)
   (setq org-support-shift-select 'always)
   (setq org-adapt-indentation 'headline-data)
+  (setq org-duration-format (quote h:mm))
+  (setq org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/2236
   (require 'ob-shell)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
 
-(use-package org-superstar
-  :ensure t
-  :hook (org-mode . org-superstar-mode))
+;; too slow on large files.
+;; (use-package org-superstar
+;;   :ensure t
+;;   :hook (org-mode . org-superstar-mode))
+
+;; (use-package org-sidebar
+;;   :ensure t)
 
 (use-package org-fancy-priorities
   :diminish
@@ -1289,9 +1309,12 @@ Also returns nil if pid is nil."
                                          ))
     (hl-todo-mode)))
 
-(use-package org-ref
-  :ensure t
-  :after org)
+;; (use-package org-ref
+;;   :ensure t
+;;   :config
+;;   (define-key org-ref-cite-keymap (kbd "C-<left>") nil)
+;;   (define-key org-ref-cite-keymap (kbd "C-<right>") nil)
+;;   :after org)
 
 (use-package ox-tufte
   :ensure t
@@ -1301,17 +1324,32 @@ Also returns nil if pid is nil."
   :ensure t
   :after org)
 
+(use-package org-roam
+  :ensure t
+  :config
+  (setq org-roam-directory (file-truename "~/Development/roam"))
+  (org-roam-db-autosync-mode)
+  :after org)
+
+(use-package org-roam-ui
+  :ensure t
+  :config
+  :after org-roam)
+
 (defun cunene/occur-non-ascii ()
   "Find any non-ascii characters in the current buffer."
   (interactive)
   (occur "[^[:ascii:]]"))
 
-;; speeds up org-ref
-(setq org-ref-show-broken-links nil)
+;; export glossaries and acronyms.
+(add-hook 'org-export-before-parsing-hook 'org-ref-acronyms-before-parsing)
+(add-hook 'org-export-before-parsing-hook 'org-ref-glossary-before-parsing)
+
 (setq org-latex-pdf-process
       '("latexmk -shell-escape -bibtex -pdf %f"))
 (setq org-latex-listings t)
 (setq bibtex-dialect 'biblatex)
+;; (add-to-list 'org-export-backends 'taskjuggler)
 (require 'ox-latex)
 (add-to-list 'org-latex-packages-alist '("" "listings"))
 (add-to-list 'org-latex-packages-alist '("" "color"))
@@ -1603,7 +1641,7 @@ ARGUMENT determines the visible heading."
   :diminish helm-mode
   :config
   (progn
-    (require 'helm-config)
+    ;; (require 'helm-config)
     (require 'helm-for-files)
     (setq helm-candidate-number-limit 100)
     ;; From https://gist.github.com/antifuchs/9238468
@@ -1890,6 +1928,10 @@ ARGUMENT determines the visible heading."
     "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
     :keybinding "g"))
 
+(use-package google-this
+  :config
+  (google-this-mode 1))
+
 (setq isearch-allow-scroll t)
 (setq isearch-wrap-pause 'no-ding)
 
@@ -1920,6 +1962,28 @@ ARGUMENT determines the visible heading."
 
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(use-package define-word
+  :config
+  (setq define-word-default-service 'wordnik)
+  (defun url-http-user-agent-string ()
+  "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36
+"))
+
+(defun cunene/define-word (&rest args)
+  "Create a buffer for display word instead of using messages."
+  (interactive)
+  (let
+      ((buffer (get-buffer-create "Define Word")))
+    (set-buffer buffer)
+    (erase-buffer)
+    (set-buffer-major-mode buffer)
+    (apply 'insert args)
+    (display-buffer buffer)))
+
+(setq define-word-displayfn-alist
+      (cl-loop for (service . _) in define-word-services
+               collect (cons service #'cunene/define-word)))
 
 (use-package logview
   :ensure t
@@ -1955,8 +2019,17 @@ ARGUMENT determines the visible heading."
                                 (interactive)
                                 (other-window -1))) ;; back one
 
-(use-package ztree
-  :ensure t)
+(use-package ztree :ensure t)
+
+(use-package diff-at-point :ensure t)
+
+(add-hook 'diff-mode-hook
+  (lambda ()
+    (define-key diff-mode-shared-map (kbd "<C-M-return>") 'diff-at-point-goto-source-and-close)))
+
+(add-hook 'prog-mode-hook
+  (lambda ()
+    (define-key prog-mode-map (kbd "<C-M-return>") 'diff-at-point-open-and-goto-hunk)))
 
 ;; ediff
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -2009,6 +2082,13 @@ expects some output that isn't there and triggers an error"
 (setq erc-join-buffer 'bury)
 (add-hook 'erc-mode-hook (lambda () (erc-fill-mode nil)))
 
+(use-package mastodon
+  :ensure t
+  :config
+  (setq mastodon-active-user "MarcoCraveiro")
+  (setq mastodon-instance-url "https://emacs.ch")
+  )
+
 (use-package git-commit
   :hook
   (git-commit-mode . (lambda () (setq-local fill-column 72))))
@@ -2034,9 +2114,9 @@ expects some output that isn't there and triggers an error"
   (setq git-messenger:show-detail t
         git-messenger:use-magit-popup t))
 
-(use-package gitattributes-mode)
-(use-package gitconfig-mode)
-(use-package gitignore-mode)
+;; (use-package gitattributes-mode)
+;; (use-package gitconfig-mode)
+;; (use-package gitignore-mode)
 
 (use-package magit
   :bind
@@ -2076,9 +2156,9 @@ expects some output that isn't there and triggers an error"
         (magit-section-goto (magit-current-section))
         (recenter top)))))
 
-(use-package pinentry
-  :hook
-  (after-init . pinentry-start))
+;; (use-package pinentry
+;;   :hook
+;;   (after-init . pinentry-start))
 
 (setq-default
  transient-history-file (cunene/cache-concat "transient/history.el")
@@ -2198,11 +2278,18 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package lsp-treemacs
   :config
   (setq lsp-treemacs-sync-mode 1)
+  (setq lsp-headerline-breadcrumb-segments '(file symbols))
   (setq lsp-treemacs-symbols-position-params
         '((side . right)
           (slot . 1)
           (window-width . 45)))
   :commands lsp-treemacs-errors-list)
+
+;;
+;; Improve performance by not logging debug info.
+;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
+;;
+(fset #'jsonrpc--log-event #'ignore)
 
 (setq cunene/general-lsp-hydra-heads
         '(;; Xref
@@ -2245,24 +2332,29 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
             (local-set-key (kbd "C-c C-l") 'cunene/lsp-hydra/body)
             'lsp-ui-mode))
 
-(use-package consult-lsp
-  :ensure t
-  :diminish)
+;; (use-package consult-lsp
+;;   :ensure t
+;;   :diminish)
 
-(use-package helm-lsp
-  :ensure t
-  :bind (:map lsp-mode-map
-              ("<M-RET>" . helm-lsp-code-actions))
-  :diminish)
+;; (use-package helm-lsp
+;;   :ensure t
+;;   :diminish
+;;   :commands helm-lsp-workspace-symbol
+;;   :config
+;;   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol))
 
-(define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
+;; (use-package helm-lsp
+;;   :ensure t
+;;   :require lsp-mode
+;;   :bind (:map lsp-command-map
+;;               ("<M-RET>" . helm-lsp-code-actions))
+;;   :diminish)
 
 (use-package plantuml-mode
   :ensure t
   :mode "\\.plantuml\\'"
   :config
   (setq plantuml-indent-level 4)
-  (setq image-auto-resize nil)
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
   (if (eq window-system 'w32)
       (setq plantuml-jar-path "C:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar"
@@ -2273,8 +2365,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package flycheck-plantuml
   :ensure t
   :after (plantuml-mode flycheck)
-  :init (flycheck-plantuml-setup)
-)
+  :init (flycheck-plantuml-setup))
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
@@ -2379,11 +2470,11 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package jq-format
   :ensure t)
 
-(use-package hierarchy
-  :ensure t)
+;; (use-package hierarchy
+;;   :ensure t)
 
-(use-package json-navigator
-  :ensure t)
+;; (use-package json-navigator
+;;   :ensure t)
 
 (use-package markdown-mode
   :bind (("C-c C-s a" . markdown-table-align))
@@ -2416,22 +2507,25 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
      (define-key c-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
      ))
 
-(use-package csharp-mode
-  :ensure t
-  :config
-  (defun cunene/csharp-mode-setup ()
-    (company-mode)
-    (lsp)
-    (flycheck-mode)
-    (c-toggle-hungry-state 1)
-    (setq indent-tabs-mode nil)
-    (setq c-syntactic-indentation t)
-    (c-set-style "ellemtel")
-    (setq c-basic-offset 4)
-    (setq truncate-lines t)
-    (setq tab-width 4)
-    (setq evil-shift-width 4))
-  (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
+(use-package cmake-mode
+  :ensure t)
+
+;; (use-package csharp-mode
+;;   :ensure t
+;;   :config
+;;   (defun cunene/csharp-mode-setup ()
+;;     (company-mode)
+;;     (lsp)
+;;     (flycheck-mode)
+;;     (c-toggle-hungry-state 1)
+;;     (setq indent-tabs-mode nil)
+;;     (setq c-syntactic-indentation t)
+;;     (c-set-style "ellemtel")
+;;     (setq c-basic-offset 4)
+;;     (setq truncate-lines t)
+;;     (setq tab-width 4)
+;;     (setq evil-shift-width 4))
+;;   (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
 
 (defun csharp-hs-forward-sexp (&optional arg)
   "I set hs-forward-sexp-func to this function.
@@ -2569,6 +2663,25 @@ again, I haven't see that as a problem."
 ;;  (org-babel-do-load-languages 'org-babel-load-languages
 ;;                             '((mustache     . t)))
 )
+
+(use-package sql-clickhouse
+  :ensure t
+)
+
+(use-package yaml-mode
+  :ensure t
+)
+
+(use-package powershell
+  :ensure t
+)
+
+(use-package chatgpt-shell
+  :ensure t
+  :custom
+  ((chatgpt-shell-openai-key
+    (lambda ()
+      (auth-source-pick-first-password :host "api.openai.com")))))
 
 (use-package bongo
   :ensure t
@@ -2903,19 +3016,28 @@ any directory proferred by `consult-dir'."
        (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
                             (completing-read "cd: " eshell-dirs)))))))
 
+(defun cunene/create-named-eshell (name)
+  "Create an eshell buffer named NAME."
+  (interactive "sName: ")
+  (setq name (concat "*eshell - " name "*"))
+  (eshell)
+  (rename-buffer name))
+
+(global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
+
 (use-package ssh
   :ensure t)
 
-(use-package deadgrep
-  :ensure t)
+;; (use-package deadgrep
+;;   :ensure t)
 
 (use-package rg
   :ensure t)
 
 (setq cunene/browsers
-      '(("Firefox" . browse-url-firefox)
-        ("Chrome" . browse-url-chrome)
-        ("EWW" . eww-browse-url)))
+      '(("Chrome" . browse-url-chrome)
+        ("EWW" . eww-browse-url)
+        ("Firefox" . browse-url-firefox)))
 
 (defun cunene/browse-url (&rest args)
   "Select the prefered browser from a menu before opening the URL."
@@ -2926,7 +3048,7 @@ any directory proferred by `consult-dir'."
 (setq browse-url-browser-function #'cunene/browse-url)
 
 ;; hard-code location of Chrome on Windows.
-(if (not (eq window-system 'w32))
+(if (eq window-system 'w32)
     (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"))
 
 (use-package ssh

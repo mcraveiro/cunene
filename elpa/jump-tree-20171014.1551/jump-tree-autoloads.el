@@ -1,4 +1,4 @@
-;;; jump-tree-autoloads.el --- automatically extracted autoloads
+;;; jump-tree-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -11,6 +11,7 @@
 
 (autoload 'jump-tree-mode "jump-tree" "\
 Toggle jump-tree mode.
+
 With no argument, this command toggles the mode.
 A positive prefix argument turns the mode on.
 A negative prefix argument turns it off.
@@ -22,10 +23,19 @@ The following keys are available in `jump-tree-mode':
 Within the jump-tree visualizer, the following keys are available:
   \\{jump-tree-visualizer-mode-map}
 
-If called interactively, enable Jump-Tree mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`Jump-Tree mode' mode.  If the prefix argument is positive,
+enable the mode, and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `jump-tree-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \(fn &optional ARG)" t nil)
 
@@ -43,24 +53,28 @@ or call the function `global-jump-tree-mode'.")
 
 (autoload 'global-jump-tree-mode "jump-tree" "\
 Toggle Jump-Tree mode in all buffers.
-With prefix ARG, enable Global Jump-Tree mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
+With prefix ARG, enable Global Jump-Tree mode if ARG is positive; otherwise,
+disable it.
 
-Jump-Tree mode is enabled in all buffers where
-`turn-on-jump-tree-mode' would do it.
+If called from Lisp, toggle the mode if ARG is `toggle'.
+Enable the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+Jump-Tree mode is enabled in all buffers where `turn-on-jump-tree-mode' would do
+it.
+
 See `jump-tree-mode' for more information on Jump-Tree mode.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "jump-tree" '("jump-tree-" "turn-on-jump-tree-mode")))
+(register-definition-prefixes "jump-tree" '("jump-tree-" "turn-on-jump-tree-mode"))
 
 ;;;***
 
 ;;;### (autoloads nil "jump-tree-pos" "jump-tree-pos.el" (0 0 0 0))
 ;;; Generated autoloads from jump-tree-pos.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "jump-tree-pos" '("jump-tree-")))
+(register-definition-prefixes "jump-tree-pos" '("jump-tree-"))
 
 ;;;***
 
@@ -68,7 +82,7 @@ See `jump-tree-mode' for more information on Jump-Tree mode.
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from jump-tree-visualizer.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "jump-tree-visualizer" '("jump-tree-")))
+(register-definition-prefixes "jump-tree-visualizer" '("jump-tree-"))
 
 ;;;***
 
@@ -80,6 +94,6 @@ See `jump-tree-mode' for more information on Jump-Tree mode.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; jump-tree-autoloads.el ends here

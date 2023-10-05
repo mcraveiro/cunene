@@ -1,4 +1,4 @@
-;;; ztree-autoloads.el --- automatically extracted autoloads
+;;; ztree-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -12,10 +12,19 @@
 (autoload 'ztreediff-mode "ztree-diff" "\
 A minor mode for displaying the difference of the directory trees in text mode.
 
-If called interactively, enable Ztreediff mode if ARG is
-positive, and disable it if ARG is zero or negative.  If called
-from Lisp, also enable the mode if ARG is omitted or nil, and
-toggle it if ARG is `toggle'; disable the mode otherwise.
+This is a minor mode.  If called interactively, toggle the
+`ZtreeDiff mode' mode.  If the prefix argument is positive,
+enable the mode, and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
+the mode if ARG is nil, omitted, or is a positive number.
+Disable the mode if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate `ztreediff-mode'.
+
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
 
 \(fn &optional ARG)" t nil)
 
@@ -26,7 +35,7 @@ Argument DIR2 right directory.
 
 \(fn DIR1 DIR2)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-diff" '("ztree")))
+(register-definition-prefixes "ztree-diff" '("ztree"))
 
 ;;;***
 
@@ -34,7 +43,7 @@ Argument DIR2 right directory.
 ;;;;;;  0 0 0))
 ;;; Generated autoloads from ztree-diff-model.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-diff-model" '("ztree-di")))
+(register-definition-prefixes "ztree-diff-model" '("ztree-di"))
 
 ;;;***
 
@@ -46,14 +55,14 @@ Create an interactive buffer with the directory tree of the PATH given.
 
 \(fn PATH)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-dir" '("ztree")))
+(register-definition-prefixes "ztree-dir" '("ztree"))
 
 ;;;***
 
 ;;;### (autoloads nil "ztree-util" "ztree-util.el" (0 0 0 0))
 ;;; Generated autoloads from ztree-util.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-util" '("def-ztree-local-fun" "ztree-")))
+(register-definition-prefixes "ztree-util" '("def-ztree-local-fun" "ztree-"))
 
 ;;;***
 
@@ -68,7 +77,7 @@ A major mode for displaying the directory tree in text mode.
 (autoload 'ztree-view-on-window-configuration-changed "ztree-view" "\
 Hook called then window configuration changed to resize buffer's contents" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-view" '("ztree")))
+(register-definition-prefixes "ztree-view" '("ztree"))
 
 ;;;***
 
@@ -81,6 +90,6 @@ Hook called then window configuration changed to resize buffer's contents" nil n
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; ztree-autoloads.el ends here

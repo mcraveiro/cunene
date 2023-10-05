@@ -1,4 +1,4 @@
-;;; flycheck-plantuml-autoloads.el --- automatically extracted autoloads
+;;; flycheck-plantuml-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -21,6 +21,6 @@ Add `plantuml' to `flycheck-checkers'." t nil)
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; flycheck-plantuml-autoloads.el ends here

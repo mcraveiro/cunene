@@ -1,4 +1,4 @@
-;;; backup-walker-autoloads.el --- automatically extracted autoloads
+;;; backup-walker-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -16,7 +16,7 @@ with universal arg, ask for a file-name.
 
 \(fn ORIGINAL-FILE)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "backup-walker" '("backup-walker-")))
+(register-definition-prefixes "backup-walker" '("backup-walker-"))
 
 ;;;***
 
@@ -24,6 +24,6 @@ with universal arg, ask for a file-name.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; backup-walker-autoloads.el ends here

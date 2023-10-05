@@ -1,4 +1,4 @@
-;;; frame-local-autoloads.el --- automatically extracted autoloads
+;;; frame-local-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -9,7 +9,7 @@
 ;;;### (autoloads nil "frame-local" "frame-local.el" (0 0 0 0))
 ;;; Generated autoloads from frame-local.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "frame-local" '("frame-local-")))
+(register-definition-prefixes "frame-local" '("frame-local-"))
 
 ;;;***
 
@@ -17,6 +17,6 @@
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
+;; coding: utf-8-emacs-unix
 ;; End:
 ;;; frame-local-autoloads.el ends here
