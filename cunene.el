@@ -1272,6 +1272,7 @@ Also returns nil if pid is nil."
   (setq org-duration-format (quote h:mm))
   (setq org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/2236
   (require 'ob-shell)
+  (require 'org-indent)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
@@ -1316,6 +1317,13 @@ Also returns nil if pid is nil."
 ;;   (define-key org-ref-cite-keymap (kbd "C-<right>") nil)
 ;;   :after org)
 
+(use-package citeproc
+  :ensure t)
+
+(use-package citeproc-org
+  :ensure t
+  :after org)
+
 (use-package ox-tufte
   :ensure t
   :after org)
@@ -1326,9 +1334,6 @@ Also returns nil if pid is nil."
 
 (use-package org-roam
   :ensure t
-  :config
-  (setq org-roam-directory (file-truename "~/Development/roam"))
-  (org-roam-db-autosync-mode)
   :after org)
 
 (use-package org-roam-ui
@@ -2089,6 +2094,8 @@ expects some output that isn't there and triggers an error"
   (setq mastodon-instance-url "https://emacs.ch")
   )
 
+(use-package git-modes)
+
 (use-package git-commit
   :hook
   (git-commit-mode . (lambda () (setq-local fill-column 72))))
@@ -2142,7 +2149,9 @@ expects some output that isn't there and triggers an error"
         '((modules . show) (stashes . show) (unpulled . show) (unpushed . show)))
   (magit-add-section-hook
    'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
-  (remove-hook 'magit-section-highlight-hook #'magit-section-highlight))
+  (remove-hook 'magit-section-highlight-hook #'magit-section-highlight)
+  (remove-hook 'server-switch-hook 'magit-commit-diff)
+  (remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff))
 
 (use-package git-timemachine
   :ensure t)
@@ -2476,6 +2485,20 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 ;; (use-package json-navigator
 ;;   :ensure t)
 
+(defun cunene/json-indent-region (start end)
+  "Indent region as JSON.
+START and END mark the region."
+  (interactive "r")
+  (let
+      ((buffer (get-buffer-create "*JSON Content*"))
+       (pipeline "jq ."))
+    (shell-command-on-region start end pipeline buffer)
+    (set-buffer buffer)
+    (json-mode)
+    (switch-to-buffer-other-window buffer)
+    )
+)
+
 (use-package markdown-mode
   :bind (("C-c C-s a" . markdown-table-align))
   :mode ("\\.md$" . gfm-mode))
@@ -2510,22 +2533,22 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package cmake-mode
   :ensure t)
 
-;; (use-package csharp-mode
-;;   :ensure t
-;;   :config
-;;   (defun cunene/csharp-mode-setup ()
-;;     (company-mode)
-;;     (lsp)
-;;     (flycheck-mode)
-;;     (c-toggle-hungry-state 1)
-;;     (setq indent-tabs-mode nil)
-;;     (setq c-syntactic-indentation t)
-;;     (c-set-style "ellemtel")
-;;     (setq c-basic-offset 4)
-;;     (setq truncate-lines t)
-;;     (setq tab-width 4)
-;;     (setq evil-shift-width 4))
-;;   (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
+(use-package csharp-mode
+  :ensure t
+  :config
+  (defun cunene/csharp-mode-setup ()
+    (company-mode)
+    (lsp)
+    (flycheck-mode)
+    (c-toggle-hungry-state 1)
+    (setq indent-tabs-mode nil)
+    (setq c-syntactic-indentation t)
+    (c-set-style "ellemtel")
+    (setq c-basic-offset 4)
+    (setq truncate-lines t)
+    (setq tab-width 4)
+    (setq evil-shift-width 4))
+  (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
 
 (defun csharp-hs-forward-sexp (&optional arg)
   "I set hs-forward-sexp-func to this function.
@@ -2657,6 +2680,13 @@ again, I haven't see that as a problem."
         (cunene/cache-concat "scratch/persistent-scratch"))
   (persistent-scratch-setup-default))
 
+(use-package mustache-mode
+  :ensure t
+  :config
+;;  (org-babel-do-load-languages 'org-babel-load-languages
+                               ;; '((mustache     . t)))
+)
+
 (use-package mustache
   :ensure t
   :config
@@ -2672,16 +2702,15 @@ again, I haven't see that as a problem."
   :ensure t
 )
 
-(use-package powershell
-  :ensure t
-)
-
 (use-package chatgpt-shell
   :ensure t
   :custom
   ((chatgpt-shell-openai-key
     (lambda ()
       (auth-source-pick-first-password :host "api.openai.com")))))
+
+(use-package llama-cpp
+  :ensure t)
 
 (use-package bongo
   :ensure t
@@ -2970,25 +2999,26 @@ Also see `cunene/bongo-playlist-insert-playlist-file'."
          ("C-c SPC" . cunene/bongo-dired-insert)
          ("C-c +" . cunene/bongo-dired-make-playlist-file)))
 
-;; none of the use-package machinery seems to work with eshell, so we
-;; do it manually instead via hooks.
-(setq-default eshell-directory-name (cunene/cache-concat "eshell"))
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (require 'em-alias)
-            (add-to-list
-             'eshell-command-aliases-list (list "ll" "ls -l"))
-            (defalias 'ff 'find-file)
-            (define-key eshell-mode-map (kbd "C-p") #'eshell-previous-matching-input-from-input)
-            (define-key eshell-mode-map (kbd "C-n") #'eshell-next-matching-input-from-input)
-            (define-key eshell-mode-map (kbd "<up>") #'previous-line)
-            (define-key eshell-mode-map (kbd "<down>") #'next-line)))
-(global-set-key (kbd "C-x m") 'eshell)
-
-(use-package eshell-git-prompt
-  :after eshell
+(use-package eshell
   :config
-  (eshell-git-prompt-use-theme 'powerline))
+  (require 'em-hist)
+  (require 'em-alias)
+  (add-to-list
+   'eshell-command-aliases-list (list "ll" "ls -l"))
+  (defalias 'ff 'find-file)
+  (use-package eshell-git-prompt
+    :config
+    (setq-default eshell-directory-name (cunene/cache-concat "eshell"))
+    (eshell-git-prompt-use-theme 'powerline)
+    (define-advice eshell-git-prompt-powerline-dir (:override () short)
+      "Show only last directory."
+      (file-name-nondirectory (directory-file-name default-directory))))
+  :bind (:map eshell-hist-mode-map
+              ("<down>" . 'next-line)
+              ("<up>" . 'previous-line)
+              ;; ([remap eshell-previous-matching-input-from-input] . helm-eshell-history)
+              ;; ([remap eshell-list-history] . helm-eshell-history)
+              ))
 
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
@@ -3026,6 +3056,13 @@ any directory proferred by `consult-dir'."
 (global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
 
 (use-package ssh
+  :ensure t)
+
+(use-package powershell
+  :ensure t
+)
+
+(use-package project-shells
   :ensure t)
 
 ;; (use-package deadgrep

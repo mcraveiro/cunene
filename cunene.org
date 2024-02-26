@@ -26,246 +26,6 @@ Problems:
 - doom mode line explicit
 - ensure magit
 
-** Interesting modes to investigate
-
-- [[https://gist.github.com/alphapapa/79ea7c33d03c9c975634559b1a776418][outline hacks]]: series of utilities for outline mode.
-- [[https://github.com/tarsius/bicycle][bicycle]]: "This package provides commands for cycling the visibility of outline
-  sections and code blocks. These commands are intended to be bound in
-  outline-minor-mode-map and do most of the work using functions provided by the
-  outline package."
-- [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]]: "visual-fill-column-mode is a small Emacs minor mode that
-  mimics the effect of fill-column in visual-line-mode. Instead of wrapping
-  lines at the window edge, which is the standard behaviour of visual-line-mode,
-  it wraps lines at fill-column."
-- [[https://elpa.gnu.org/packages/systemd.html][systemd]]: "This package provides D-Bus bindings, major modes and interactive
-  commands for working with systemd from within Emacs."
-- [[https://github.com/dandavison/magit-delta][magit-delta]]: "This Emacs package provides a minor mode which configures Magit
-  to use [[https://github.com/dandavison/delta][delta]] when displaying diffs."
-- [[https://github.com/thi-ng/org-spec][org-spec]]: "An Org-mode template for technical specification documents and HTML
-  publishing."
-- [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]]: "Multiple cursors for Emacs. This is some pretty crazy
-  functionality, so yes, there are kinks. Don't be afraid though, I've been
-  using it since 2011 with great success and much merriment."
-- [[https://erick.navarro.io/blog/auto-build-and-publish-emacs-org-configuration-as-a-website/][Auto build and publish emacs org configuration as a website]]
-- [[https://oremacs.com/2015/07/20/hydra-columns/][Easily arrange hydra into a matrix]]
-- [[https://github.com/wyrickre/dot-mode][dot-mode]]: "It emulates the vi `redo’ command, repeating the immediately
-  preceding sequence of commands. This is done by recording input commands which
-  change the buffer, i.e. not motion commands."
-- [[https://github.com/ffevotte/desktop-plus][desktop-plus]]: could not get it to work.
-- [[https://github.com/knpatel401/filetree][filetree]]: "File tree viewer The viewer displays a file list as a directory
-  tree in a special buffer."
-- [[https://gitlab.com/alezost-emacs/bui][bui]]: "BUI (Buffer User Interface) is an Emacs library that can be used to make
-  user interfaces to display some kind of entries (like packages, buffers,
-  functions, etc.)."
-- [[https://github.com/johannes-mueller/test-cockpit.el][test-cockpit]]: "This project attempts to create a user interface to run tests
-  for different programming languages with a consistent user interface. There
-  are commands common to all the supported programming languages and additional
-  settings which are language specific."
-- [[https://github.com/hagleitn/speed-type][speed-type]]: "Practice touch/speed typing in emacs".
-- [[https://github.com/alphapapa/burly.el][burly]]: "This package provides tools to save and restore frame and window
-  configurations in Emacs, including buffers that may not be live anymore. In
-  this way, it’s like a lightweight “workspace” manager, allowing you to easily
-  restore one or more frames, including their windows, the windows’ layout, and
-  their buffers."
-- [[https://github.com/alphapapa/bufler.el][bufler]]: "Bufler is like a butler for your buffers, presenting them to you in
-  an organized way based on your instructions. The instructions are written as
-  grouping rules in a simple language, allowing you to customize the way buffers
-  are grouped. The default rules are designed to be generally useful, so you
-  don’t have to write your own."
-- [[https://github.com/tarsius/minions][minions]]: "This package implements a menu that lists enabled minor-modes, as
-  well as commonly but not currently enabled minor-modes. It can be used to
-  toggle local and global minor-modes, to access mode-specific menus, and to get
-  help about modes."
-- [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]]: "aggressive-indent-mode is a minor mode that keeps
-  your code always indented. It reindents after every change, making it more
-  reliable than electric-indent-mode."
-- [[https://github.com/alphapapa/taxy.el][taxy]]: "This library provides a programmable way to classify arbitrary objects
-  into a hierarchical taxonomy. (That’s a lot of fancy words to say that this
-  lets you automatically put things in nested groups.)"
-- [[https://gitlab.com/howardabrams/emacs-piper][piper]]: "Wrapper around existing Emacs functionality that creates an
-  interactive user interface to dealing with unstructured textual data similar
-  with how we transform data through pipes in the shell."
-- [[https://gitlab.com/dto/cell-mode][cell-mode]]: "Cell-mode is an object-oriented spreadsheet control for GNU Emacs.
-  It provides a major mode for spreadsheet-based user interfaces; it can be
-  further extended by defining application-specific Emacs Lisp minor modes which
-  supply new cell and spreadsheet classes via Emacs’ included object system,
-  EIEIO."
-- [[https://github.com/kiwanami/emacs-ctable][ctable]]: "ctable.el is a table component for emacs lisp. Emacs lisp programs
-  can display a nice table view from an abstract data model. The many emacs
-  programs have the code for displaying table views, such as dired,
-  list-process, buffer-list and so on. So, ctable.el would provide functions and
-  a table framework for the table views."
-- [[https://github.com/Bad-ptr/common-header-mode-line.el][common-header-mode-line]]: "Draws per-frame mode-line and/or header-line and
-  allow to customize per-window header/mode-line."
-- [[https://github.com/emacsorphanage/quickrun][quickrun]]: "quickrun.el is a extension to execute editing buffer. quickrun.el
-  is similar to executable-interpret, but quickrun.el provides more convenient
-  commands. quickrun.el execute not only script languages(Perl, Ruby, Python
-  etc), but also compiling languages(C, C++, Go, Java etc) and markup language."
-- [[https://github.com/killdash9/buffer-flip.el][buffer-flip]]: "This package streamlines the operation of switching between
-  recent buffers, with an emphasis on minimizing keystrokes. Inspired by the
-  Alt-Tab convention in Windows, it keeps the most recently used buffers on the
-  top of the stack."
-- [[https://github.com/politza/tablist][tablist]]: "This package adds marks and filters to tabulated-list-mode. It also
-  puts a dired face on tabulated list buffers. It can be used by deriving from
-  tablist-mode, or with more limited features by enabling tablist-minor-mode
-  inside a tabulated-list-mode buffer."
-- [[https://github.com/karthink/popper][popper]]: "Popper is a minor-mode to tame the flood of ephemeral windows Emacs
-  produces, while still keeping them within arm’s reach. Designate any buffer to
-  “popup” status, and it will stay out of your way. Disimss or summon it easily
-  with one key. Cycle through all your “popups” or just the ones relevant to
-  your current buffer."
-- [[https://gitlab.com/ideasman42/emacs-undo-fu][undo-fu]]: "Simple, stable linear undo with redo for Emacs. This is a light
-  weight wrapper for Emacs built-in undo system, adding convenient undo/redo
-  without losing access to the full undo history, allowing you to visit all
-  previous states of the document if you need."
-- [[https://github.com/DamienCassou/beginend][beginend]]: "Redefine M-< and M-> (or any key bound to beginning-of-buffer or
-  end-of-buffer) for some modes so that point moves to meaningful locations. The
-  real beginning and end of buffers (i.e., point-min and point-max) are still
-  accessible by pressing the same key again."
-- [[https://github.com/benma/visual-regexp.el][visual-regexp]]: "visual-regexp for Emacs is like replace-regexp, but with live
-  visual feedback directly in the buffer. Check out visual-regexp-steroids if
-  you want to use modern regular expressions instead of Emacs-style regular
-  expressions.
-- [[https://gitlab.com/tygrdev/boxy-headings][boxy-headings]]: "View org files as a boxy diagram."
-- [[https://github.com/oantolin/embark/tree/98121bacef39abaf6f6849f87a439ba2184c03e2][embark]]: "This package provides a sort of right-click contextual menu for
-  Emacs, accessed through the embark-act command (which you should bind to a
-  convenient key), offering you relevant actions to use on a target determined
-  by the context [...]" Blog post: [[https://karthinks.com/software/fifteen-ways-to-use-embark/][Fifteen ways to use embark]]
-- [[https://github.com/suntsov/efar][efar]]: "This package provides FAR-like file manager for Emacs."
-- [[https://karthinks.com/software/bridging-islands-in-emacs-1/][Bridging islands in emacs: re-builder and query-replace-regexp]]: binding
-  between query replace and the regex builder.
-- [[https://github.com/minad/corfu][corfu]]: "Corfu enhances the default completion in region function with a
-  completion overlay. The current candidates are shown in a popup below or above
-  the point. Corfu is the minimalistic completion-in-region counterpart of the
-  Vertico minibuffer UI."
-- [[https://github.com/tonyaldon/bfs][bfs]]: "bfs (Browse File System) implements for emacs a dynamic tree view of the
-  file system à la [[https://github.com/ranger/ranger][ranger]]." See also [[https://github.com/ralesi/ranger.el][ranger mode]]: "This is a minor mode that
-  runs within dired, it emulates many of ranger's features. This minor mode
-  shows a stack of parent directories, and updates the parent buffers, while
-  you're navigating the file system. The preview window takes some of the ideas
-  from Peep-Dired, to display previews for the selected files, in the primary
-  dired buffer."
-- [[https://github.com/knpatel401/filetree][filetree]]: "Filetree is a package that provides two basic functions: 1) File
-  tree viewer The viewer displays a file list as a directory tree in a special
-  buffer. [...] 2) File notes The file notes enable the user to write and
-  display (org-mode) notes associated with individual files and directories.
-  [...]"
-- [[https://www.reddit.com/r/emacs/comments/qlykkq/which_widget_or_tui_libraries_for_emacs_do_you/][Reddit: Which widget or TUI libraries for emacs do you know?]] widgets in emacs.
-- [[https://karthinks.com/software/avy-can-do-anything/][Avy can do anything]]: full power of Avy.
-- [[https://github.com/tumashu/vertico-posframe][vertico-posframe]]: Vertico but using an external frame.
-- [[https://github.com/fritzgrabo/project-tab-groups][project-tab-groups]]: "Provides a global minor mode that enhances the Emacs
-  built-in project.el library to support keeping projects isolated in named tab
-  groups."
-- [[https://github.com/FrostyX/eyebrowse-restore][eyebrowse-restore]]: "Never lose your Eyebrowse window configurations again."
-- [[https://gitlab.com/niklaseklund/dtache][dtache]]: "Dtache, or Detach Emacs, is a package to run shell commands in
-  sessions that are isolated from Emacs. Dtache also provides a convenient user
-  interface to interact with the sessions."
-- [[https://github.com/tarsius/moody][moody]]: "This package provides utilities for displaying elements of the mode
-  line as tabs and ribbons. It also provides replacements for a few built-in
-  elements."
-- [[https://github.com/astoff/devdocs.el][devdocs.el]]: "devdocs.el is a documentation viewer for Emacs similar to the
-  built-in Info browser, but geared towards documentation obtained from the
-  DevDocs website."
-- [[https://github.com/alphapapa/org-sidebar][org-sidebar]]: "This package presents helpful sidebars for Org buffers. Sidebars
-  are customizable using org-ql queries and org-super-agenda grouping."
-- [[https://github.com/localauthor/org-side-tree][org-side-tree]]: "Navigate Org mode outlines in Emacs via side window."
-- [[https://github.com/Artawower/turbo-log][turbo-log]]: "This project inspired by a similar package for vs-code -
-  turbo-console-log, and provides functionality for fast log message inserting
-  under current line. It works for js-mode, typescript-mode, go-mode and
-  python."
-- [[https://github.com/cryptobadger/flight-attendant.el][flight-attendant]]: "This is a quite unsophisticated attempt to get GitHub
-  Copilot up and running in Emacs."
-- [[https://github.com/elias94/accent][accent]]: "accent.el shows a popup with accented characters based on the current
-  letter under the cursor."
-- [[https://github.com/d12frosted/flyspell-correct][flyspell-correct]]: "Correcting misspelled words with flyspell using favourite
-  interface."
-- [[https://gitlab.com/sawyerjgardner/demap.el][demap]]: "Demap is an Emacs package that adds a minimap buffer that shows a
-  zoomed out view of the active window. It updates what it is showing has you
-  change the active window and it can be detached, moved, hidden or killed like
-  any other Emacs buffer."
-- [[https://github.com/rschwarz/sql-clickhouse][sql-clickhouse]]: "We add ClickHouse as a new product type to the builtin
-  sql-mode in Emacs. That way, we get syntax highlighting and can communicate
-  with the DB using the CLI clickhouse-client."
-- [[https://github.com/bmag/imenu-list][imenu-list]]: "This Emacs minor-mode creates an automatically updated buffer
-  called *Ilist* that is populated with the current buffer's imenu entries. The
-  *Ilist* buffer is typically shown as a sidebar (Emacs vertically splits the
-  window)."
-- [[https://github.com/gregsexton/httprepl.el][httprepl]]: "httprepl.el allows you to interactively make HTTP requests at a
-  REPL-like UI within Emacs."
-- [[https://github.com/karthink/elfeed-tube][elfeed-tube]]: "Elfeed Tube is an Emacs package for a richer, interactive,
-  noise-free and fully text-capable interface to your Youtube subscriptions and
-  playlists using Elfeed, the RSS feed reader for Emacs. Think of it as
-  supercharging Elfeed, or perhaps a taste of what the RSS/Atom protocol could
-  have become today if it had continue to evolve."
-- [[https://github.com/alhassy/org-special-block-extras][org-special-block-extras]]: "In particular, we are concerned with ‘custom’, or
-  ‘special’, blocks which delimit how a particular region of text is supposed to
-  be formatted according to the possible export backends. In some sense, special
-  blocks are meta-blocks. Rather than writing text in, say, LaTeX environments
-  using LaTeX commands or in HTML div's using HTML tags, we promote using
-  Org-mode markup in special blocks —Org markup cannot be used explicitly within
-  HTML or LaTeX environments."
-- [[https://karthinks.com/software/it-bears-repeating/][repeat mode]]: "Repeat Mode lets you call multiple commands in a keymap without
-  repeating the prefix each time."
-- [[https://github.com/SqrtMinusOne/reverso.el][reverso]]: "Emacs client for the Reverso service. The implemented features are:
-  Translation, Context (AKA bilingual concordances), Grammar check, Synonyms
-  search."
-- [[https://github.com/ahungry/swagger-to-org][swagger-to-org]]: "This is a package that allows you to take parse a
-  swagger.json file, and produce an org-mode buffer/file out of it's contents."
-- [[https://github.com/Olivia5k/makefile-executor.el][makefile-executor.el]]: "Interactively selecting a make target and running it."
-- [[https://github.com/abo-abo/helm-make/][helm-make]]: "A call to helm-make will give you a helm selection of this
-  directory Makefile's targets. Selecting a target will call compile on it."
-- [[https://github.com/bbatsov/helm-projectile][helm-projectile]]: "Projectile can be integrated with Helm via
-  helm-source-projectile-projects, helm-source-projectile-files-list,
-  helm-source-projectile-buffers-list and helm-source-projectile-recentf-list
-  sources (available in helm-projectile.el)." [[https://tuhdo.github.io/helm-projectile.html][Docs]].
-- [[https://github.com/mickeynp/combobulate][combobulate]]: "Combobulate is an Emacs package that provides a standardized
-  framework for manipulating and navigating your source code using tree sitter's
-  concrete syntax tree. Combobulate is language agnostic and should work with
-  little modification almost all languages supported by tree sitter itself."
-- [[https://github.com/emacs-citar/citar][citar]]: "This package provides a completing-read front-end to browse and act on
-  BibTeX, BibLaTeX, and CSL JSON bibliographic data, and LaTeX, markdown, and
-  org-cite editing support."
-- [[https://github.com/gregsexton/origami.el][origami.el]]: "A text folding minor mode for Emacs."
-- [[https://github.com/DamienCassou/json-navigator][json-navigator]]: "Display any JSON document as a tree by typing M-x
-  json-navigator-navigator. Here is a screencast showing the navigation tree of
-  an example JSON document."
-- [[https://github.com/orgtre/org-cc][org-cc]]: "This Emacs package makes it easy to create rich multi-column custom
-  completion commands to find specific Org entries based on their data and
-  metadata. The goal is to have a completion interface similar to that of citar,
-  but for arbitrary subsets of Org entries."
-- [[https://github.com/ghosty141/consult-git-log-grep][consult-git-log-grep]]: provides an interactive way to search the git log using
-  consult."
-- [[https://github.com/NicolasPetton/Indium][Indium]]: "A JavaScript development environment for Emacs."
-- [[https://github.com/minad/org-modern][org-modern]]: "This package implements a “modern” style for your Org buffers
-  using font locking and text properties. The package styles headlines,
-  keywords, tables and source blocks."
-- [[https://github.com/joshcho/ChatGPT.el][ChatGPT.el]]: "ChatGPT in Emacs."
-- [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]: ChatGPT and DALL-E Emacs shells + Org Babel.
-- [[https://github.com/iwahbe/jsonian][jsonian]]: "jsonian.el provides a major mode for editing JSON files of any size.
-  The goal is to be feature complete against json-mode with no external
-  dependencies or file size limits."
-- [[https://github.com/minad/cape][cape]]: "Cape provides Completion At Point Extensions which can be used in
-  combination with the Corfu completion UI or the default completion UI. The
-  completion backends used by completion-at-point are so called
-  completion-at-point-functions (Capfs). In principle, the Capfs provided by
-  Cape can also be used by Company."
-- [[https://github.com/SqrtMinusOne/reverso.el][reverso.el]]: "Emacs client for the Reverso service."
-- [[https://github.com/k-talo/volatile-highlights.el][volatile-highlights.el]]: "This library provides minor mode
-  volatile-highlights-mode, which brings visual feedback to some operations by
-  highlighting portions relating to the operations."
-- [[https://github.com/Artawower/blamer.el][blamer]]: "A git blame plugin for emacs inspired by VS Code’s GitLens plugin and
-  Vim plugin."
-- [[https://github.com/ber-ro/diffed][diffed]]: "Emacs major mode which uses recursive diff output as a base for
-  synchronization. Diffed is for recursive diff like Dired is for ls. Can be
-  used somewhat like ediff-directories, but without the need to switch to
-  another buffer to view a subdirectory or to copy a file to the opposite
-  directory."
-- [[https://codeberg.org/ideasman42/emacs-cycle-at-point][emacs-cycle-at-point]]: "Immediately cycle text at the cursor, without
-  prompting. Unlike most actions to select from a list cycle-at-point replaces
-  the text immediately, calling again to cycle over options."
-- [[https://github.com/leotaku/flycheck-aspell][flycheck-aspell]]: "The flycheck-aspell and flymake-aspell packages add support
-  for spell checking to Flycheck and Flymake using the GNU Aspell application."
-- [[https://github.com/yashi/org-asciidoc][org-asciidoc]]: "An Org Mode Exporter Backend For AsciiDoc and Asciidoctor"
 
 *** Other =.emacs== to investigate
 
@@ -1943,6 +1703,7 @@ authoring documents with a fast and effective plain-text system.
   (setq org-duration-format (quote h:mm))
   (setq org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/2236
   (require 'ob-shell)
+  (require 'org-indent)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
@@ -1987,6 +1748,13 @@ authoring documents with a fast and effective plain-text system.
 ;;   (define-key org-ref-cite-keymap (kbd "C-<right>") nil)
 ;;   :after org)
 
+(use-package citeproc
+  :ensure t)
+
+(use-package citeproc-org
+  :ensure t
+  :after org)
+
 (use-package ox-tufte
   :ensure t
   :after org)
@@ -1997,9 +1765,6 @@ authoring documents with a fast and effective plain-text system.
 
 (use-package org-roam
   :ensure t
-  :config
-  (setq org-roam-directory (file-truename "~/Development/roam"))
-  (org-roam-db-autosync-mode)
   :after org)
 
 (use-package org-roam-ui
@@ -2898,6 +2663,13 @@ Configuration related to programming.
 | =transient=          | https://github.com/magit/transient                            |
 | =git-messenger=      | https://github.com/emacsorphanage/git-messenger               |
 
+
+Git modes.
+
+#+begin_src emacs-lisp
+(use-package git-modes)
+#+end_src
+
 Auto-fill commit messages.
 
 #+begin_src emacs-lisp
@@ -2977,7 +2749,9 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
         '((modules . show) (stashes . show) (unpulled . show) (unpushed . show)))
   (magit-add-section-hook
    'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
-  (remove-hook 'magit-section-highlight-hook #'magit-section-highlight))
+  (remove-hook 'magit-section-highlight-hook #'magit-section-highlight)
+  (remove-hook 'server-switch-hook 'magit-commit-diff)
+  (remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff))
 
 (use-package git-timemachine
   :ensure t)
@@ -3388,6 +3162,22 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 ;;   :ensure t)
 #+end_src
 
+#+begin_src emacs-lisp
+(defun cunene/json-indent-region (start end)
+  "Indent region as JSON.
+START and END mark the region."
+  (interactive "r")
+  (let
+      ((buffer (get-buffer-create "*JSON Content*"))
+       (pipeline "jq ."))
+    (shell-command-on-region start end pipeline buffer)
+    (set-buffer buffer)
+    (json-mode)
+    (switch-to-buffer-other-window buffer)
+    )
+)
+#+end_src
+
 ** Markup
 
 #+begin_src emacs-lisp
@@ -3437,22 +3227,22 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 ** C#
 
 #+begin_src emacs-lisp
-;; (use-package csharp-mode
-;;   :ensure t
-;;   :config
-;;   (defun cunene/csharp-mode-setup ()
-;;     (company-mode)
-;;     (lsp)
-;;     (flycheck-mode)
-;;     (c-toggle-hungry-state 1)
-;;     (setq indent-tabs-mode nil)
-;;     (setq c-syntactic-indentation t)
-;;     (c-set-style "ellemtel")
-;;     (setq c-basic-offset 4)
-;;     (setq truncate-lines t)
-;;     (setq tab-width 4)
-;;     (setq evil-shift-width 4))
-;;   (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
+(use-package csharp-mode
+  :ensure t
+  :config
+  (defun cunene/csharp-mode-setup ()
+    (company-mode)
+    (lsp)
+    (flycheck-mode)
+    (c-toggle-hungry-state 1)
+    (setq indent-tabs-mode nil)
+    (setq c-syntactic-indentation t)
+    (c-set-style "ellemtel")
+    (setq c-basic-offset 4)
+    (setq truncate-lines t)
+    (setq tab-width 4)
+    (setq evil-shift-width 4))
+  (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
 
 (defun csharp-hs-forward-sexp (&optional arg)
   "I set hs-forward-sexp-func to this function.
@@ -3611,6 +3401,13 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 | =mustache= | https://github.com/mustache/emacs |
 
 #+begin_src emacs-lisp
+(use-package mustache-mode
+  :ensure t
+  :config
+;;  (org-babel-do-load-languages 'org-babel-load-languages
+                               ;; '((mustache     . t)))
+)
+
 (use-package mustache
   :ensure t
   :config
@@ -3639,17 +3436,6 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 )
 #+end_src
 
-** Powershell
-
-| =yaml-mode= | [[https://github.com/jschaf/powershell.el]] |
-
-#+begin_src emacs-lisp
-(use-package powershell
-  :ensure t
-)
-#+end_src
-
-
 ** GPT
 
 #+begin_src emacs-lisp
@@ -3659,6 +3445,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   ((chatgpt-shell-openai-key
     (lambda ()
       (auth-source-pick-first-password :host "api.openai.com")))))
+
+(use-package llama-cpp
+  :ensure t)
 #+end_src
 
 * Music
@@ -3978,25 +3767,26 @@ Todo:
 - [[https://emacs.stackexchange.com/questions/18564/merge-history-from-multiple-eshells][Merge history from multiple eshells]]
 
 #+begin_src emacs-lisp
-;; none of the use-package machinery seems to work with eshell, so we
-;; do it manually instead via hooks.
-(setq-default eshell-directory-name (cunene/cache-concat "eshell"))
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (require 'em-alias)
-            (add-to-list
-             'eshell-command-aliases-list (list "ll" "ls -l"))
-            (defalias 'ff 'find-file)
-            (define-key eshell-mode-map (kbd "C-p") #'eshell-previous-matching-input-from-input)
-            (define-key eshell-mode-map (kbd "C-n") #'eshell-next-matching-input-from-input)
-            (define-key eshell-mode-map (kbd "<up>") #'previous-line)
-            (define-key eshell-mode-map (kbd "<down>") #'next-line)))
-(global-set-key (kbd "C-x m") 'eshell)
-
-(use-package eshell-git-prompt
-  :after eshell
+(use-package eshell
   :config
-  (eshell-git-prompt-use-theme 'powerline))
+  (require 'em-hist)
+  (require 'em-alias)
+  (add-to-list
+   'eshell-command-aliases-list (list "ll" "ls -l"))
+  (defalias 'ff 'find-file)
+  (use-package eshell-git-prompt
+    :config
+    (setq-default eshell-directory-name (cunene/cache-concat "eshell"))
+    (eshell-git-prompt-use-theme 'powerline)
+    (define-advice eshell-git-prompt-powerline-dir (:override () short)
+      "Show only last directory."
+      (file-name-nondirectory (directory-file-name default-directory))))
+  :bind (:map eshell-hist-mode-map
+              ("<down>" . 'next-line)
+              ("<up>" . 'previous-line)
+              ;; ([remap eshell-previous-matching-input-from-input] . helm-eshell-history)
+              ;; ([remap eshell-list-history] . helm-eshell-history)
+              ))
 
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
@@ -4038,6 +3828,23 @@ any directory proferred by `consult-dir'."
 
 #+begin_src emacs-lisp
 (use-package ssh
+  :ensure t)
+#+end_src
+
+*** Powershell
+
+| =powershell= | [[https://github.com/jschaf/powershell.el]] |
+
+#+begin_src emacs-lisp
+(use-package powershell
+  :ensure t
+)
+#+end_src
+
+*** General
+
+#+begin_src emacs-lisp
+(use-package project-shells
   :ensure t)
 #+end_src
 
