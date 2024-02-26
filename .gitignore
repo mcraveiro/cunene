@@ -9,3 +9,4 @@ eln-cache
 .persistent-scratch
 elpa
 org-roam.db
+async-bytecomp.log
