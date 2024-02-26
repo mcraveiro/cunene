@@ -2,7 +2,7 @@ name: Build and deploy product website
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
 
   workflow_dispatch:
 
