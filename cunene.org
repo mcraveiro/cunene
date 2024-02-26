@@ -354,11 +354,12 @@ Here are what I consider better defaults as per my own experience.
  window-combination-resize t            ; Resize windows proportionally
  vc-follow-symlinks t                   ; Follow symlinks without asking
  image-auto-resize nil                  ; Do not resize images automatically
+ make-pointer-invisible nil             ; Do not make mouse invisible
  x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (blink-cursor-mode 0)                   ; Prefer a still cursor
 (fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
 (global-subword-mode 1)                 ; Iterate through CamelCase words
-(mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
+;; (mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
 (put 'downcase-region 'disabled nil)    ; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ; Enable upcase-region
 (set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
@@ -1754,9 +1755,9 @@ authoring documents with a fast and effective plain-text system.
   :ensure t
   :after org)
 
-(use-package ox-tufte
-  :ensure t
-  :after org)
+;; (use-package ox-tufte
+;;   :ensure t
+;;   :after org)
 
 (use-package org-present
   :ensure t
