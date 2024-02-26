@@ -1,5 +1,6 @@
 #+TITLE: Cunene
 #+AUTHOR: Marco Craveiro
+#+EXPORT_FILE_NAME: index
 
 #+NAME: fig:cunene-river
 [[./assets/images/1523-cunene-river-camp-synchro-10-07-2012-dsc03993.jpg-nggid043262-ngg0dyn-1390x780x100-00f0w010c010r110f110r010t010.jpg]]

@@ -1,6 +1,8 @@
 .cache
 cunene.elc
 quelpa
+.packages
+build
 
 # files we can't find out who is creating
 .emacs-buffers
