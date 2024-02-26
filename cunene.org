@@ -26,7 +26,6 @@ Problems:
 - doom mode line explicit
 - ensure magit
 
-
 *** Other =.emacs== to investigate
 
 - [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
