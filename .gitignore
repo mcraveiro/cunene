@@ -4,6 +4,7 @@ cunene.elc
 quelpa
 .packages
 build
+server
 
 # Generated files
 config/*.el
@@ -18,3 +19,4 @@ elpa
 org-roam.db
 async-bytecomp.log
 .org-id-locations-file
+transient
