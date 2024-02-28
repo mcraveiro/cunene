@@ -648,13 +648,6 @@ authoring documents with a fast and effective plain-text system.
                                          ))
     (hl-todo-mode)))
 
-;; (use-package org-ref
-;;   :ensure t
-;;   :config
-;;   (define-key org-ref-cite-keymap (kbd "C-<left>") nil)
-;;   (define-key org-ref-cite-keymap (kbd "C-<right>") nil)
-;;   :after org)
-
 (use-package citeproc)
 (use-package citeproc-org :after org)
 (use-package org-present :after org)
