@@ -565,7 +565,7 @@ character of the string."
            (old-c (char-after start))
            new-c)
       (setq new-c
-            (case old-c
+            (cl-case old-c
               (?\" "'")
               (?\' "\"")))
       (setq old-c (char-to-string old-c))
@@ -588,7 +588,8 @@ START and END mark the region."
     (while (search-forward " " nil t) (replace-match "_"))))
 
 (defun cunene/underscore-to-space-region (start end)
-  "Replace underscore by space in region."
+  "Replace underscore by space in region.
+START and END mark the region."
   (interactive "r")
   (save-restriction
     (narrow-to-region start end)
@@ -612,9 +613,9 @@ selection, work on the selected text."
       (progn (replace-string "_" " " nil (car bds) (cdr bds))))))
 
 (defun cunene/cycle-hyphen-underscore-space ()
-  "Cyclically replace {underscore, space, hypen} chars current
-line or text selection. When called repeatedly, this command
-cycles the { , _, -} characters."
+  "Cyclically replace underscore, space, hypen chars.
+Acts in current line or text selection. When called repeatedly,
+this command cycles the { , _, -} characters."
   (interactive)
   ;; this function sets a property 「'state」. Possible values are 0
   ;; to length of charList.
@@ -681,7 +682,7 @@ From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
 
 #+begin_src emacs-lisp
 (defun cunene/unfill-paragraph (&optional region)
-  "Take a multi-line paragraph and makes it into a single line of text.
+  "Take a multi-line paragraph and make it into a single line of text.
 REGION to fill or unfill."
   (interactive (progn
                  (barf-if-buffer-read-only)
@@ -692,7 +693,7 @@ REGION to fill or unfill."
 
 (defun cunene/fill-or-unfill-paragraph (&optional unfill region)
   "Fill paragraph (or REGION).
-        With the prefix argument UNFILL, unfill it instead."
+With the prefix argument UNFILL, unfill it instead."
   (interactive (progn
                  (barf-if-buffer-read-only)
                  (list (if current-prefix-arg 'unfill) t)))

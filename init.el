@@ -64,14 +64,15 @@
   "Tangle and load an org file.
 ORG-FILE-NAME file to operate on."
   (let ((el-file-name (concat (file-name-sans-extension org-file-name) ".el"))
+        (elc-file-name (concat (file-name-sans-extension org-file-name) ".elc"))
       (modification-time
          (file-attribute-modification-time (file-attributes org-file-name))))
     (message (concat "Tangling " org-file-name "..."))
     (unless (org-file-newer-than-p el-file-name modification-time)
       (org-babel-tangle-file org-file-name el-file-name "emacs-lisp")
       (byte-compile-file el-file-name))
-    (message (concat "Loading " el-file-name "..."))
-    (load-file el-file-name)))
+    (message (concat "Loading " elc-file-name "..."))
+    (load-file elc-file-name)))
 
 (let
     (
