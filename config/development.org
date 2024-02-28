@@ -274,7 +274,18 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 #+begin_src emacs-lisp
 (use-package eglot)
+(use-package flycheck-eglot)
 (use-package consult-eglot)
+(use-package imenu-list)
+
+(defun cunene/path-to-omnisharp ()
+  "Returns the path to the LSP server for C#."
+  (if (eq window-system 'w32)
+      "c:/opt/omnisharp-roslyn/latest/omnisharp-roslyn/OmniSharp.exe"
+    "/home/marco/local/omnisharp/OmniSharp.exe"))
+
+(add-to-list 'eglot-server-programs
+             `(csharp-mode . (,(cunene/path-to-omnisharp) "-lsp")))
 
 ;;
 ;; Improve performance by not logging debug info.
@@ -499,7 +510,6 @@ START and END mark the region."
   :config
   (defun cunene/csharp-mode-setup ()
     (company-mode)
-    (lsp)
     (flycheck-mode)
     (c-toggle-hungry-state 1)
     (setq indent-tabs-mode nil)
