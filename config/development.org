@@ -267,92 +267,20 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-hook 'prog-mode-hook 'color-identifiers-mode))
 #+end_src
 
-* LSP
+* Eglot
 
-| consult-lsp | https://github.com/gagbo/consult-lsp |
+| eglot         | https://github.com/joaotavora/eglot      |
+| consult-eglot | https://github.com/mohkale/consult-eglot |
 
 #+begin_src emacs-lisp
-(use-package lsp-mode
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook
-  ((c++-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration))
-  :config
-  (setq lsp-auto-guess-root t
-        lsp-session-file (cunene/cache-concat "lsp/lsp-session-v1")
-        lsp-enable-indentation nil
-        lsp-enable-on-type-formatting  nil
-        lsp-ui-doc-delay 5
-        lsp-ui-sideline-enable nil
-        lsp-ui-doc-position 'at-point
-        lsp-ui-doc-header nil
-        lsp-ui-doc-include-signature t
-        lsp-ui-doc-enable t
-        lsp-ui-flycheck-enable t
-        lsp-ui-flycheck-list-position 'right
-        lsp-ui-flycheck-live-reporting t
-        lsp-ui-peek-enable t
-        lsp-ui-peek-list-width 60
-        lsp-ui-peek-peek-height 25)
-  :commands lsp)
-(use-package lsp-ui :commands lsp-ui-mode)
-(use-package lsp-treemacs
-  :config
-  (setq lsp-treemacs-sync-mode 1)
-  (setq lsp-headerline-breadcrumb-segments '(file symbols))
-  (setq lsp-treemacs-symbols-position-params
-        '((side . right)
-          (slot . 1)
-          (window-width . 45)))
-  :commands lsp-treemacs-errors-list)
+(use-package eglot)
+(use-package consult-eglot)
 
 ;;
 ;; Improve performance by not logging debug info.
 ;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
 ;;
 (fset #'jsonrpc--log-event #'ignore)
-
-(setq cunene/general-lsp-hydra-heads
-        '(;; Xref
-          ("d" xref-find-definitions "Definitions" :column "Xref")
-          ("D" xref-find-definitions-other-window "-> other win")
-          ("r" xref-find-references "References")
-          ("s" helm-lsp-workspace-symbol-at-point "Helm search")
-          ("S" helm-lsp-global-workspace-symbol-at-point "Helm global search")
-
-          ;; Peek
-          ("C-d" lsp-ui-peek-find-definitions "Definitions" :column "Peek")
-          ("C-r" lsp-ui-peek-find-references "References")
-          ("C-i" lsp-ui-peek-find-implementation "Implementation")
-
-          ;; LSP
-          ("p" lsp-describe-thing-at-point "Describe at point" :column "LSP")
-          ("C-a" lsp-execute-code-action "Execute code action")
-          ("R" lsp-rename "Rename")
-          ("t" lsp-goto-type-definition "Type definition")
-          ("i" lsp-goto-implementation "Implementation")
-          ("f" helm-imenu "Filter funcs/classes (Helm)")
-          ("C-c" lsp-describe-session "Describe session")
-
-          ;; Flycheck
-          ("l" lsp-ui-flycheck-list "List errs/warns/notes" :column "Flycheck"))
-
-        cunene/misc-lsp-hydra-heads
-        '(;; Misc
-          ("q" nil "Cancel" :column "Misc")
-          ("b" pop-tag-mark "Back")))
-
-  ;; Create general hydra.
-(eval `(defhydra cunene/lsp-hydra (:color blue :hint nil)
-         ,@(append
-            cunene/general-lsp-hydra-heads
-            cunene/misc-lsp-hydra-heads)))
-
-(add-hook 'lsp-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-c C-l") 'cunene/lsp-hydra/body)
-            'lsp-ui-mode))
 #+end_src
 
 * Diagrams
