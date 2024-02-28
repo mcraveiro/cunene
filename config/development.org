@@ -1,0 +1,788 @@
+:properties:
+:id: 6A53FD28-BBD1-1804-7233-027439130AF1
+:end:
+#+title: Development
+#+author: Marco Craveiro
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+
+Configuration related to programming.
+
+* Preamble
+
+#+begin_src emacs-lisp
+;;; core.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
+;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; General editor configuration
+
+;;; License:
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License
+;; as published by the Free Software Foundation; either version 3
+;; of the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Code:
+#+end_src
+
+* Version Control
+
+| =git-commit=         | https://github.com/magit/magit/blob/master/lisp/git-commit.el |
+| =git-gutter-fringe=  | https://github.com/emacsorphanage/git-gutter-fringe           |
+| =gitattributes-mode= | https://github.com/magit/git-modes#gitattributes-mode         |
+| =gitconfig-mode=     | https://github.com/magit/git-modes#gitconfig-mode             |
+| =gitignore-mode=     | https://github.com/magit/git-modes#gitignore-mode             |
+| =magit=              | https://github.com/magit/magit                                |
+| =pinentry=           | https://elpa.gnu.org/packages/pinentry.html                   |
+| =transient=          | https://github.com/magit/transient                            |
+| =git-messenger=      | https://github.com/emacsorphanage/git-messenger               |
+
+
+Git modes.
+
+#+begin_src emacs-lisp
+(use-package git-modes)
+#+end_src
+
+Auto-fill commit messages.
+
+#+begin_src emacs-lisp
+(use-package git-commit
+  :hook
+  (git-commit-mode . (lambda () (setq-local fill-column 72))))
+#+end_src
+
+Display indicators in the left fringe for Git changes.
+
+#+begin_src emacs-lisp
+(use-package git-gutter-fringe
+  :preface
+  (defun cunene/git-gutter-enable ()
+    (when-let* ((buffer (buffer-file-name))
+                (backend (vc-backend buffer)))
+      (require 'git-gutter)
+      (require 'git-gutter-fringe)
+      (git-gutter-mode 1)))
+  :hook
+  (after-change-major-mode . cunene/git-gutter-enable)
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [255] nil nil '(center t))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [255 255 255 255] nil nil 'bottom)
+  (define-fringe-bitmap 'git-gutter-fr:modified [255] nil nil '(center t)))
+
+(use-package git-messenger
+  :bind ("C-x G" . git-messenger:popup-message)
+  :config
+  (setq git-messenger:show-detail t
+        git-messenger:use-magit-popup t))
+#+end_src
+
+Major modes for Git-specific files.
+
+#+begin_src emacs-lisp
+;; (use-package gitattributes-mode)
+;; (use-package gitconfig-mode)
+;; (use-package gitignore-mode)
+#+end_src
+
+Magit provides Git facilities directly from within Emacs.
+
+#+begin_quote
+Magit is an interface to the version control system Git, implemented as an Emacs
+package. Magit aspires to be a complete Git porcelain. While we cannot (yet)
+claim that Magit wraps and improves upon each and every Git command, it is
+complete enough to allow even experienced Git users to perform almost all of
+their daily version control tasks directly from within Emacs. While many fine
+Git clients exist, only Magit and Git itself deserve to be called porcelains.
+
+--- Jonas Bernoulli
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package magit
+  :bind
+  (:map magit-file-section-map
+   ("<return>" . magit-diff-visit-file-other-window)
+   :map magit-hunk-section-map
+   ("<return>" . magit-diff-visit-file-other-window)
+   :map magit-status-mode-map
+   ("M-1" . nil)
+   ("M-2" . nil)
+   ("M-3" . nil)
+   ("M-4" . nil))
+  :hook
+  (magit-post-stage-hook . cunene/magit-recenter)
+  :config
+  (setq epg-pinentry-mode 'loopback)
+  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (setq magit-diff-highlight-hunk-region-functions
+        '(magit-diff-highlight-hunk-region-using-face))
+  (setq magit-diff-refine-hunk 'all)
+  (setq magit-module-sections-nested nil)
+  (setq magit-section-initial-visibility-alist
+        '((modules . show) (stashes . show) (unpulled . show) (unpushed . show)))
+  (magit-add-section-hook
+   'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
+  (remove-hook 'magit-section-highlight-hook #'magit-section-highlight)
+  (remove-hook 'server-switch-hook 'magit-commit-diff)
+  (remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff))
+
+(use-package git-timemachine)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun cunene/magit-recenter ()
+  "Recenter the current hunk at 25% from the top of the window."
+  (when (magit-section-match 'hunk)
+    (let ((top (max 0 scroll-margin (truncate (/ (window-body-height) 4)))))
+      (message "%s" top)
+      (save-excursion
+        (magit-section-goto (magit-current-section))
+        (recenter top)))))
+#+end_src
+
+Start =pinentry= in order for Emacs to be able to prompt for passphrases when
+necessary.
+
+Transient is the package behind the modal maps and prefixes depicted in Magit.
+It is currently used by Magit only in my configuration so it will stay in this
+section for now.
+
+#+begin_src emacs-lisp
+(setq-default
+ transient-history-file (cunene/cache-concat "transient/history.el")
+ transient-levels-file (cunene/cache-concat "transient/levels.el")
+ transient-values-file (cunene/cache-concat "transient/values.el"))
+
+(use-package transient
+  :init
+  :config
+  (setq transient-default-level 5)
+  (setq transient-mode-line-format nil))
+#+end_src
+
+Automatically detect the need for smerge.
+
+#+begin_src emacs-lisp
+(use-package smerge-mode
+  :commands smerge-mode
+  :bind ("C-c '" . hydra-hsmerge/body)
+  :init
+  (defun cunene/maybe-enable-smerge ()
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^<<<<<<< " nil t)
+        (smerge-mode 1))))
+  (add-hook 'find-file-hook 'cunene/maybe-enable-smerge)
+  (add-hook 'after-revert-hook 'cunene/maybe-enable-smerge)
+
+  :config
+  (defhydra hydra-smerge (:hint nil
+                          :pre (smerge-mode 1)
+                          :post (smerge-auto-leave))
+    "
+^Move^       ^Keep^               ^Diff^                 ^Other^
+^^-----------^^-------------------^^---------------------^^-------
+_n_ext       _b_ase               _<_: upper/base        _C_ombine
+_p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
+^^           _l_ower (other)      _>_: base/lower        _k_ill current
+^^           _a_ll                _R_efine
+^^           _RET_: current       _E_diff
+"
+      ("n" smerge-next)
+      ("p" smerge-prev)
+      ("b" smerge-keep-base)
+      ("u" smerge-keep-upper)
+      ("l" smerge-keep-lower)
+      ("a" smerge-keep-all)
+      ("RET" smerge-keep-current)
+      ("\C-m" smerge-keep-current)
+      ("<" smerge-diff-base-upper)
+      ("=" smerge-diff-upper-lower)
+      (">" smerge-diff-base-lower)
+      ("R" smerge-refine)
+      ("E" smerge-ediff)
+      ("C" smerge-combine-with-next)
+      ("r" smerge-resolve)
+      ("k" smerge-kill-current)
+      ("q" nil "cancel" :color blue)))
+#+end_src
+
+* Project Management
+
+| Projectile | https://github.com/bbatsov/projectile |
+
+#+begin_src emacs-lisp
+(setq projectile-known-projects-file
+      (cunene/cache-concat "projectile/bookmarks.eld"))
+(setq projectile-cache-file
+      (cunene/cache-concat "projectile/projectile.cache"))
+
+(use-package projectile
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ("C-c p" . projectile-command-map))
+  :config
+  (setq projectile-enable-caching t))
+
+(use-package ibuffer-projectile :after projectile)
+#+end_src
+
+* Syntax Checking
+
+#+begin_src emacs-lisp
+(use-package flycheck :init (global-flycheck-mode))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Flycheck errors*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (reusable-frames . visible)
+               (side            . bottom)
+               (window-height   . 0.2)))
+#+end_src
+
+* Syntax Highlighting
+
+#+begin_src emacs-lisp
+(use-package color-identifiers-mode
+  :commands color-identifiers-mode
+  :config
+  (add-hook 'prog-mode-hook 'color-identifiers-mode))
+#+end_src
+
+* LSP
+
+| consult-lsp | https://github.com/gagbo/consult-lsp |
+
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  ((c++-mode . lsp)
+   (lsp-mode . lsp-enable-which-key-integration))
+  :config
+  (setq lsp-auto-guess-root t
+        lsp-session-file (cunene/cache-concat "lsp/lsp-session-v1")
+        lsp-enable-indentation nil
+        lsp-enable-on-type-formatting  nil
+        lsp-ui-doc-delay 5
+        lsp-ui-sideline-enable nil
+        lsp-ui-doc-position 'at-point
+        lsp-ui-doc-header nil
+        lsp-ui-doc-include-signature t
+        lsp-ui-doc-enable t
+        lsp-ui-flycheck-enable t
+        lsp-ui-flycheck-list-position 'right
+        lsp-ui-flycheck-live-reporting t
+        lsp-ui-peek-enable t
+        lsp-ui-peek-list-width 60
+        lsp-ui-peek-peek-height 25)
+  :commands lsp)
+(use-package lsp-ui :commands lsp-ui-mode)
+(use-package lsp-treemacs
+  :config
+  (setq lsp-treemacs-sync-mode 1)
+  (setq lsp-headerline-breadcrumb-segments '(file symbols))
+  (setq lsp-treemacs-symbols-position-params
+        '((side . right)
+          (slot . 1)
+          (window-width . 45)))
+  :commands lsp-treemacs-errors-list)
+
+;;
+;; Improve performance by not logging debug info.
+;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
+;;
+(fset #'jsonrpc--log-event #'ignore)
+
+(setq cunene/general-lsp-hydra-heads
+        '(;; Xref
+          ("d" xref-find-definitions "Definitions" :column "Xref")
+          ("D" xref-find-definitions-other-window "-> other win")
+          ("r" xref-find-references "References")
+          ("s" helm-lsp-workspace-symbol-at-point "Helm search")
+          ("S" helm-lsp-global-workspace-symbol-at-point "Helm global search")
+
+          ;; Peek
+          ("C-d" lsp-ui-peek-find-definitions "Definitions" :column "Peek")
+          ("C-r" lsp-ui-peek-find-references "References")
+          ("C-i" lsp-ui-peek-find-implementation "Implementation")
+
+          ;; LSP
+          ("p" lsp-describe-thing-at-point "Describe at point" :column "LSP")
+          ("C-a" lsp-execute-code-action "Execute code action")
+          ("R" lsp-rename "Rename")
+          ("t" lsp-goto-type-definition "Type definition")
+          ("i" lsp-goto-implementation "Implementation")
+          ("f" helm-imenu "Filter funcs/classes (Helm)")
+          ("C-c" lsp-describe-session "Describe session")
+
+          ;; Flycheck
+          ("l" lsp-ui-flycheck-list "List errs/warns/notes" :column "Flycheck"))
+
+        cunene/misc-lsp-hydra-heads
+        '(;; Misc
+          ("q" nil "Cancel" :column "Misc")
+          ("b" pop-tag-mark "Back")))
+
+  ;; Create general hydra.
+(eval `(defhydra cunene/lsp-hydra (:color blue :hint nil)
+         ,@(append
+            cunene/general-lsp-hydra-heads
+            cunene/misc-lsp-hydra-heads)))
+
+(add-hook 'lsp-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c C-l") 'cunene/lsp-hydra/body)
+            'lsp-ui-mode))
+#+end_src
+
+* Diagrams
+
+#+begin_src emacs-lisp
+(use-package plantuml-mode
+  :mode "\\.plantuml\\'"
+  :config
+  (setq plantuml-indent-level 4)
+  (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
+  (if (eq window-system 'w32)
+      (setq plantuml-jar-path "C:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar"
+            plantuml-default-exec-mode 'jar)
+    (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
+          plantuml-default-exec-mode 'executable)))
+
+(use-package flycheck-plantuml
+  :ensure t
+  :after (plantuml-mode flycheck)
+  :init (flycheck-plantuml-setup))
+
+(with-eval-after-load "org"
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+#+end_src
+
+* Parenthesis
+
+#+begin_src emacs-lisp
+(show-paren-mode 1)
+
+(use-package rainbow-delimiters
+  :hook ((prog-mode org-mode) . rainbow-mode)
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package smartparens
+  :diminish
+  :init
+  (show-smartparens-global-mode +1)
+  :config
+  (setq sp-autoskip-closing-pair 'always))
+
+(use-package rainbow-mode
+  :config
+  (setq rainbow-x-colors nil))
+#+end_src
+
+* Indentation
+
+#+begin_src emacs-lisp
+(use-package aggressive-indent)
+
+(defun cunene/indent-buffer ()
+  "Indent entire buffer"
+  (interactive)
+  (indent-region (point-min) (point-max)))
+#+end_src
+
+* Deletion
+
+| =smart-hungry-delete= | https://github.com/hrehfeld/emacs-smart-hungry-delete |
+
+#+begin_quote
+Delete whitespace between words, parenthesis and other delimiters in a smart (dumb) way.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package smart-hungry-delete
+  :bind (("<backspace>" . smart-hungry-delete-backward-char)
+         ("C-d" . smart-hungry-delete-forward-char))
+  :defer nil ;; dont defer so we can add our functions to hooks
+  :config (smart-hungry-delete-add-default-hooks))
+
+;; replace zap-to-char functionality with the more powerful zop-to-char
+(global-set-key (kbd "M-z") 'zop-up-to-char)
+(global-set-key (kbd "M-Z") 'zop-to-char)
+
+;; kill lines backward
+(global-set-key (kbd "C-<backspace>") (lambda ()
+                                        (interactive)
+                                        (kill-line 0)
+                                        (indent-according-to-mode)))
+
+(global-set-key [remap kill-whole-line] 'crux-kill-whole-line)
+#+end_src
+
+* Code Folding
+
+| =hideshow= | [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html][built-in]] |
+
+#+begin_src emacs-lisp
+(require 'hideshow)
+
+;; Hide the comments too when you do a 'hs-hide-all'
+(setq hs-hide-comments nil)
+
+;; Set whether isearch opens folded comments, code, or both
+;; where x is code, comments, t (both), or nil (neither)
+(setq hs-isearch-open 't)
+
+(setq hs-set-up-overlay
+      (defun cunene/display-code-line-counts (ov)
+        (when (eq 'code (overlay-get ov 'hs))
+          (overlay-put ov 'display
+                       (propertize
+                        (format " ... <%d>"
+                                (count-lines (overlay-start ov)
+                                             (overlay-end ov)))
+                        'face 'font-lock-type-face)))))
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
+;; https://emacs.stackexchange.com/questions/2884/the-old-how-to-fold-xml-question
+(require 'hideshow)
+(require 'sgml-mode)
+(require 'nxml-mode)
+
+(add-to-list 'hs-special-modes-alist
+             '(nxml-mode
+               "<!--\\|<[^/>]*[^/]>"
+               "-->\\|</[^/>]*[^/]>"
+
+               "<!--"
+               sgml-skip-tag-forward
+               nil))
+
+(add-hook 'nxml-mode-hook 'hs-minor-mode)
+(global-set-key (kbd "C-<tab>") 'hs-toggle-hiding)
+#+end_src
+
+* Json
+
+| =jq-format= | https://github.com/wbolster/emacs-jq-format |
+| =jq-mode=   | https://github.com/ljos/jq-mode             |
+|
+
+#+begin_src emacs-lisp
+(use-package json-mode)
+(use-package jq-mode)
+(with-eval-after-load "json-mode"
+  (define-key json-mode-map (kbd "C-c C-j") #'jq-interactively))
+
+;; Format JSON / JSONlines with JQ
+(use-package jq-format)
+
+;; (use-package hierarchy
+;;   :ensure t)
+
+;; (use-package json-navigator
+;;   :ensure t)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun cunene/json-indent-region (start end)
+  "Indent region as JSON.
+START and END mark the region."
+  (interactive "r")
+  (let
+      ((buffer (get-buffer-create "*JSON Content*"))
+       (pipeline "jq ."))
+    (shell-command-on-region start end pipeline buffer)
+    (set-buffer buffer)
+    (json-mode)
+    (switch-to-buffer-other-window buffer)
+    )
+)
+#+end_src
+
+* Markup
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :bind (("C-c C-s a" . markdown-table-align))
+  :mode ("\\.md$" . gfm-mode))
+#+end_src
+
+** REST
+
+#+begin_src emacs-lisp
+(use-package verb
+  :mode ("\\.org\\'" . org-mode)
+  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
+)
+#+end_src
+
+* C/C++
+
+#+begin_src emacs-lisp
+;; Default these extensions to c++ mode
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (c-set-offset 'innamespace 0) ;; Do not indent namespaces.
+            (c-set-offset 'arglist-intro '+) ;; indent function args properly
+            (c-set-offset 'arglist-cont-nonempty '+)
+            (c-toggle-hungry-state 1)          ;; use hungry delete.
+            (auto-fill-mode 1)                 ;; auto fill comments
+            (setq c-basic-offset tab-width)
+            (setq c-default-style "stroustrup")))
+
+;; Key bindings
+(eval-after-load 'cc-mode
+  '(progn
+     ;; Ident when moving to a new line
+     (define-key c-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
+     ))
+
+(use-package cmake-mode)
+#+end_src
+
+* C#
+
+#+begin_src emacs-lisp
+(use-package csharp-mode
+  :config
+  (defun cunene/csharp-mode-setup ()
+    (company-mode)
+    (lsp)
+    (flycheck-mode)
+    (c-toggle-hungry-state 1)
+    (setq indent-tabs-mode nil)
+    (setq c-syntactic-indentation t)
+    (c-set-style "ellemtel")
+    (setq c-basic-offset 4)
+    (setq truncate-lines t)
+    (setq tab-width 4)
+    (setq evil-shift-width 4))
+  (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
+
+(defun csharp-hs-forward-sexp (&optional arg)
+  "I set hs-forward-sexp-func to this function.
+
+I found this customization necessary to do the hide/show magic in C#
+code, when dealing with region/endregion. This routine
+goes forward one s-expression, whether it is defined by curly braces
+or region/endregion. It handles nesting, too.
+
+The forward-sexp method takes an arg which can be negative, which
+indicates the move should be backward.  Therefore, to be fully
+correct this function should also handle a negative arg. However,
+the hideshow.el package never uses negative args to its
+hs-forward-sexp-func, so it doesn't matter that this function does not
+do negative numbers.
+
+The arg can also be greater than 1, which means go forward
+multiple times. This function doesn't handle that EITHER.  But
+again, I haven't see that as a problem."
+
+  (message "csharp-hs-forward-sexp, (arg %d) (point %d)..."
+           (if (numberp arg) arg -1)
+           (point))
+
+  (let ((nestlevel 0)
+        (mark1 (point))
+        (done nil)
+        )
+
+    (if (and arg (< arg 0))
+        (message "negative arg (%d) is not supported..." arg)
+
+      ;; else, we have a positive argument, hence move forward.
+      ;; simple case is just move forward one brace
+      (if (looking-at "{")
+          (forward-sexp arg)
+
+        ; The more complex case is dealing with a "region/endregion" block.
+        ; We have to deal with nested regions!
+        (and
+         (while (not done)
+           (re-search-forward "^[ \\t]*#[ \\t]*\\(region\\|endregion\\)\\b"
+                              (point-max) 'move)
+           (cond
+
+            ((eobp))                    ; do nothing if at end of buffer
+
+            ((and
+              (match-beginning 1)
+              ;; if the match is longer than 6 chars, we know it is "endregion"
+              (if (> (- (match-end 1) (match-beginning 1)) 6)
+                  (setq nestlevel (1- nestlevel))
+                (setq nestlevel (1+ nestlevel))
+                )
+              )))
+
+           (setq done (not (and (> nestlevel 0) (not (eobp)))))
+
+           )                            ; while
+
+         (if (= nest 0)
+             (goto-char (match-end 2)))
+
+         )
+        )
+      )
+    )
+  )
+
+(unless (assoc 'csharp-mode hs-special-modes-alist)
+          (push '(csharp-mode
+                  ; "\\(^\\s*#\\s*region\\b\\)\\|{"      ; regexp for start block DID NOT WORK
+                  "\\(^[ \\t]*#[ \\t]*region\\b\\)\\|{"  ; regexp for start block
+
+                  ; "\\(^\\s*#\\s*endregion\\b\\)\\|}"   ; regexp for end block NO WORKY!
+                  "\\(^[ \\t]*#[ \\t]*endregion\\b\\)\\|}"   ; regexp for end block
+
+                  "/[*/]"                                ; regexp for comment start
+
+                  csharp-hs-forward-sexp                 ; hs-forward-sexp-func
+                  hs-c-like-adjust-block-beginning       ;c-like adjust (1 char)
+                  ;csharp-hs-adjust-block-beginning      ;csharp adjust ?
+                  )
+                hs-special-modes-alist)
+          )
+#+end_src
+
+* Doxymacs
+
+| =doxymacs= | https://github.com/gittiver/doxymacs |
+
+TODO: for some reason we do not trigger the mode with =/**=, it seems to require
+=/***=, which is not in accordance with [[https://www.doxygen.nl/manual/docblocks.html][doxygen syntax]].
+
+#+begin_src emacs-lisp
+(use-package doxymacs
+  :load-path cunene/vendor-packages
+  :config
+  ;; syntax highlighting for doxygen keywords.
+  (defun cunene/doxymacs-font-lock-hook ()
+    (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
+        (doxymacs-font-lock)))
+  (add-hook 'font-lock-mode-hook 'cunene/doxymacs-font-lock-hook)
+
+  ;; start doxymacs mode in C/C++
+  (add-hook 'c-mode-common-hook 'doxymacs-mode))
+#+end_src
+
+* Compilation
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c c") 'compile)
+
+;; automatically scroll the output
+(setq compilation-scroll-output t)
+
+;; reuse existing frame.
+(setq display-buffer-reuse-frames t)
+
+;; kill ongoing compilation
+(setq compilation-always-kill  t)
+
+;; save buffers whenc compiling without asking
+(setq compilation-ask-about-save nil)
+
+;; Compilation from Emacs. From prelude.
+(defun cunene/colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook #'cunene/colorize-compilation-buffer)
+#+end_src
+
+* Lisp
+
+| =persistent-scratch= | https://github.com/Fanael/persistent-scratch |
+
+#+begin_src emacs-lisp
+(use-package persistent-scratch
+  :config
+  (setq persistent-scratch-save-file
+        (cunene/cache-concat "scratch/persistent-scratch"))
+  (persistent-scratch-setup-default))
+#+end_src
+
+* Mustache
+
+| =mustache= | https://github.com/mustache/emacs |
+
+#+begin_src emacs-lisp
+(use-package mustache-mode
+  :ensure t
+  :config
+;;  (org-babel-do-load-languages 'org-babel-load-languages
+                               ;; '((mustache     . t)))
+)
+
+(use-package mustache
+  :ensure t
+  :config
+;;  (org-babel-do-load-languages 'org-babel-load-languages
+;;                             '((mustache     . t)))
+)
+#+end_src
+
+* SQL
+
+| =sql-clickhouse= | https://github.com/rschwarz/sql-clickhouse |
+
+#+begin_src emacs-lisp
+(use-package sql-clickhouse)
+#+end_src
+
+* Yaml
+
+| =yaml-mode= | [[https://github.com/yoshiki/yaml-mode]] |
+
+#+begin_src emacs-lisp
+(use-package yaml-mode)
+#+end_src
+
+* GPT
+
+#+begin_src emacs-lisp
+(use-package chatgpt-shell
+  :custom
+  ((chatgpt-shell-openai-key
+    (lambda ()
+      (auth-source-pick-first-password :host "api.openai.com")))))
+
+(use-package llama-cpp)
+#+end_src
+
+* Postamble
+
+#+begin_src emacs-lisp
+;;; core.el ends here
+#+end_src

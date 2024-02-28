@@ -69,7 +69,7 @@ With non-nil optional argument DELIMITED, only replace matches
 surrounded by word boundaries."
   (interactive "P")
   (reb-update-regexp)
-  (let* ((re (reb-target-binding reb-regexp))
+  (let* ((re (cunene/reb-target-binding reb-regexp))
      (re-printed (with-output-to-string (print re)))
      (replacement (read-from-minibuffer
                (format "Replace regexp %s with: "
@@ -88,6 +88,7 @@ surrounded by word boundaries."
 (setq dired-listing-switches "-lGh1v --group-directories-first")
 (setq-default list-directory-brief-switches "-CF")
 
+(require 'dired)
 (add-hook
  'dired-before-readin-hook
  #'(lambda ()
@@ -117,6 +118,7 @@ surrounded by word boundaries."
         ("% e" . ibuffer-mark-by-ede-project-regexp)
         ("s e" . ibuffer-do-sort-by-ede-project))
   :config
+  (require 'all-the-icons)
   (progn
     (global-set-key (kbd "<f5>") 'ibuffer) ;; Shortcut for ibuffer
     (when (display-graphic-p) ;; Display buffer icons on GUI

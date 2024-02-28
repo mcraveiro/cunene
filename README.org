@@ -46,3 +46,4 @@ make it easier to grok.
 - [[./config/core.org][Core]]
 - [[id:C14C28ED-B722-48A8-93E3-A10007EC4D03][Quality of Life]]
 - [[id:341DBB81-FE17-7064-5BC3-9A139E1FF48F][Features]]
+- [[id:6A53FD28-BBD1-1804-7233-027439130AF1][Development]]
