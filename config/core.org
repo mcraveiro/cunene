@@ -1,0 +1,361 @@
+:properties:
+:id: EFF6DB62-FAAD-6764-1DAB-CB7B497E0427
+:end:
+#+title: Core
+#+author: Marco Craveiro
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+
+Basic configuration for core aspects of Emacs.
+
+* Preamble
+
+#+begin_src emacs-lisp
+;;; core.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
+;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; General editor configuration
+
+;;; License:
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License
+;; as published by the Free Software Foundation; either version 3
+;; of the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Code:
+#+end_src
+
+* GTK Warning
+
+On startup, because we use PGTK on X, we get an annoying warning. This gets rid
+of the warning.
+
+Links:
+
+- [[https://kisaragi-hiu.com/emacs-29-pgtk-woes/][Emacs 29 pgtk woes]]
+
+#+begin_src emacs-lisp
+(defun cunene/call-process-to-string (command &rest args)
+  "Call COMMAND with ARGS; return stdout.
+
+If COMMAND returns with a non-zero exit code, signal an error."
+  (declare (indent 0))
+  (with-temp-buffer
+    (let ((code (apply #'call-process command nil '(t nil) nil args)))
+      (unless (= 0 code)
+        (error "%s exited with exit code %s" command code)))
+    (string-trim (buffer-string))))
+
+(defun cunene/kill-gtk-warning ()
+  "Deletes the GTK warning window."
+  (when (and (display-graphic-p)
+             (executable-find "xdotool"))
+    (when-let (window-id (ignore-errors
+                           (cunene/call-process-to-string
+                            "xdotool" "search"
+                            "--all"
+                            "--pid" (format "%s" (emacs-pid))
+                            "--name" "^Warning$")))
+      (cunene/call-process-to-string
+       "xdotool" "windowclose" window-id))))
+
+(cunene/kill-gtk-warning)
+#+end_src
+
+* Identity
+
+Personal details.
+
+#+begin_src emacs-lisp
+(setq user-full-name "Marco Craveiro")
+(setq user-mail-address "marco.craveiro@gmail.com")
+#+end_src
+
+** GTK Warning
+
+On startup, because we use PGTK on X, we get an annoying warning. This gets rid
+of the warning.
+
+Links:
+
+- [[https://kisaragi-hiu.com/emacs-29-pgtk-woes/][Emacs 29 pgtk woes]]
+
+#+begin_src emacs-lisp
+(defmacro cunene/once-after-make-frame (&rest body)
+  "Eval BODY on `server-after-make-frame-hook' just once."
+  (declare (indent 0))
+  `(let (func)
+     ;; Using `setq' allows the function itself to see the variable.
+     ;; I learned this trick from deferred.el.
+     (setq func (lambda ()
+                  ,@body
+                  ;;(remove-hook 'server-after-make-frame-hook func)
+                  ))
+     (add-hook 'server-after-make-frame-hook func)))
+
+(defun cunene/call-process-to-string (command &rest args)
+  "Call COMMAND with ARGS; return stdout.
+
+If COMMAND returns with a non-zero exit code, signal an error."
+  (declare (indent 0))
+  (with-temp-buffer
+    (let ((code (apply #'call-process command nil '(t nil) nil args)))
+      (unless (= 0 code)
+        (error "%s exited with exit code %s" command code)))
+    (string-trim (buffer-string))))
+
+(message "HERE4")
+(cunene/once-after-make-frame
+ (progn
+   (
+    (message "HERE")
+    (when (and (display-graphic-p)
+               (executable-find "xdotool"))
+      (when-let (window-id (ignore-errors
+                             (cunene/call-process-to-string
+                              "xdotool" "search"
+                              "--all"
+                              "--pid" (format "%s" (emacs-pid))
+                              "--name" "^Warning$")))
+        (cunene/call-process-to-string
+         "xdotool" "windowclose" window-id)
+        (message "HERE2")
+        ))
+    )
+    ))
+#+end_src
+
+** Messages
+
+#+begin_src emacs-lisp
+;; Add timestamps to messages.
+(defun cunene/current-time-microseconds ()
+  "Return the current time formatted to include microseconds."
+  (let* ((nowtime (current-time))
+         (now-ms (nth 2 nowtime)))
+    (concat (format-time-string "[%Y-%m-%dT%T" nowtime) (format ".%d]" now-ms))))
+
+(defun cunene/ad-timestamp-message (FORMAT-STRING &rest args)
+  "Advice to run before `message' to prepend a timestamp to each message.
+
+FORMAT-STRING string for the message.
+ARGS arguments to format string."
+  (unless (string-equal FORMAT-STRING "%s%s")
+    (let ((deactivate-mark nil)
+          (inhibit-read-only t))
+      (with-current-buffer "*Messages*"
+        (goto-char (point-max))
+        (if (not (bolp))
+          (newline))
+        (insert (cunene/current-time-microseconds) " ")))))
+
+(advice-add 'message :before 'cunene/ad-timestamp-message)
+#+end_src
+
+** Caching
+
+Use =.cache/= to contain local data. This is to avoid littering in the Emacs
+directory with an ever-growing number of packages used on a daily basis.
+
+#+begin_src emacs-lisp
+(defconst cunene/cache-directory
+  (expand-file-name (concat user-emacs-directory ".cache/"))
+  "Directory where all cache files should be saved.")
+
+(defun cunene/cache-concat (name)
+  "Return the absolute path of NAME under `cunene/cache-directory'."
+  (let* ((directory (file-name-as-directory cunene/cache-directory))
+         (path (convert-standard-filename (concat directory name))))
+    (make-directory (file-name-directory path) t)
+    path))
+#+end_src
+
+#+begin_src emacs-lisp
+(eval-when-compile (require 'request))
+(with-eval-after-load 'request
+  (setq request-storage-directory (cunene/cache-concat "request/")))
+(eval-when-compile (require 'tramp))
+(with-eval-after-load 'tramp
+  (setq tramp-persistency-file-name (cunene/cache-concat "tramp.eld")))
+(eval-when-compile (require 'url))
+(with-eval-after-load 'url
+  (setq url-configuration-directory (cunene/cache-concat "url/")))
+(eval-when-compile (require 'recentf))
+(with-eval-after-load 'recentf
+  (progn
+    (setq recentf-save-file (cunene/cache-concat "recentf/recentf"))
+    (setq recentf-max-saved-items 500
+          ;; disable recentf-cleanup on Emacs start, because it can cause
+          ;; problems with remote files
+          recentf-auto-cleanup 'never
+          recentf-max-menu-items 15)))
+
+;; Moving the location of packages causes weird bootstrapping errors.
+;; (with-eval-after-load 'package
+;;   (setq-default package-user-dir (cunene/cache-concat "packages/")))
+#+end_src
+
+* Package Management
+
+| =package=            | Built-in                                              |
+| =use-package=        | https://github.com/jwiegley/use-package               |
+| =quelpa-use-package= | https://framagit.org/steckerhalter/quelpa-use-package |
+
+Setup package sources. Trying to setup a secure set of sources.
+
+Links:
+
+- [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][Your editor is malware]]
+
+#+begin_src emacs-lisp
+(require 'package)
+(setq package-archives
+      '(("gnu" . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")))
+
+(package-initialize)
+#+end_src
+
+Install the =use-package= dependency.
+
+Links:
+
+- [[https://github.com/jwiegley/use-package/issues/202][#202: use-package-always-defer]]
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'use-package
+  (setq-default
+   use-package-always-defer nil     ;; Let auto-loading be managed by package.el
+   use-package-always-ensure t))    ;; Install packages if not present in the system
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package t))
+
+(eval-when-compile
+  (require 'use-package))
+#+end_src
+
+* Backup files
+
+| =backup-walker= | https://github.com/lewang/backup-walker |
+
+Control where emacs places the pesky backup files.
+
+Links:
+
+- [[https://newbedev.com/how-do-i-control-how-emacs-makes-backup-files][How do I control how Emacs makes backup files?]]
+
+#+begin_src emacs-lisp
+(defvar cunene/backup-directory (cunene/cache-concat "backups"))
+(if (not (file-exists-p cunene/backup-directory))
+    (make-directory cunene/backup-directory t))
+
+(setq backup-directory-alist `(("." . ,cunene/backup-directory)) ;; location of the backup directory.
+      make-backup-files t               ;; Backup of a file the first time it is saved.
+      backup-by-copying t               ;; Don't clobber symlinks.
+      version-control t                 ;; Version numbers for backup files.
+      vc-make-backup-files t            ;; Backup files even if under version control.
+      delete-old-versions t             ;; delete excess backup files silently.
+      delete-by-moving-to-trash t       ;; Move deleted files to trash.
+      kept-old-versions 20              ;; oldest versions to keep when a new numbered backup is made
+      kept-new-versions 20              ;; newest versions to keep when a new numbered backup is made
+      auto-save-default t               ;; auto-save every buffer that visits a file
+      auto-save-timeout 20              ;; number of seconds idle time before auto-save
+      auto-save-interval 200)           ;; number of keystrokes between auto-saves
+#+end_src
+
+Handle sensitive data as per this article:
+
+- [[https://anirudhsasikumar.net/blog/2005.01.21.html][Disabling Backup and Auto-save in Emacs]]
+
+#+begin_src emacs-lisp
+(define-minor-mode sensitive-mode
+  "For sensitive files like password lists.
+It disables backup creation and auto saving.
+
+With no argument, this command toggles the mode. Non-null prefix
+argument turns on the mode. Null prefix argument turns off the
+mode."
+  ;; The initial value.
+  :init-value nil
+  ;; The indicator for the mode line.
+  :lighter " Sensitive"
+  ;; The minor mode bindings.
+  :keymap nil
+  (if (symbol-value sensitive-mode)
+      (progn
+        ;; disable backups
+        (set (make-local-variable 'backup-inhibited) t)
+        ;; disable auto-save
+        (if auto-save-default
+            (auto-save-mode -1)))
+    ;; resort to default value of backup-inhibited
+    (kill-local-variable 'backup-inhibited)
+    ;; resort to default auto save setting
+    (if auto-save-default
+        (auto-save-mode 1))))
+
+(add-to-list 'auto-mode-alist '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode))
+
+;; easy interface for backed up files.
+(use-package backup-walker)
+#+end_src
+
+* Custom
+
+Have a single custom settings config file. Set up the customize file to its own
+separate file, instead of saving customize settings in init.el.
+
+Try your best to make custom config clean.
+
+#+begin_src emacs-lisp
+(setq custom-file
+      (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
+#+end_src
+
+* Kill Ring
+
+| browse-kill-ring | https://github.com/browse-kill-ring/browse-kill-ring |
+
+#+begin_src emacs-lisp
+(setq kill-ring-max 1000)
+#+end_src
+
+From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
+
+#+begin_src emacs-lisp
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+#+end_src
+
+Browse kill ring.
+
+#+begin_src emacs-lisp
+(use-package browse-kill-ring
+  :config (browse-kill-ring-default-keybindings))
+#+end_src
+
+#+begin_src emacs-lisp
+;;; core.el ends here
+#+end_src

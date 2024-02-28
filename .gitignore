@@ -5,6 +5,10 @@ quelpa
 .packages
 build
 
+# Generated files
+config/*.el
+config/*.elc
+
 # files we can't find out who is creating
 .emacs-buffers
 eln-cache
@@ -13,3 +17,4 @@ eln-cache
 elpa
 org-roam.db
 async-bytecomp.log
+.org-id-locations-file

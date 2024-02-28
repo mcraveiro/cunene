@@ -1,53 +1,46 @@
-#+TITLE: Cunene
-#+AUTHOR: Marco Craveiro
-#+EXPORT_FILE_NAME: index
+:properties:
+:id: 0CBE0066-4508-6CB4-6DBB-858E675F3D31
+:end:
+#+title: Cunene
+#+author: Marco Craveiro
+#+export_file_name: index
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+#+startup: inlineimages
 
-#+NAME: fig:cunene-river
+#+name: fig:cunene-river
 [[./assets/images/1523-cunene-river-camp-synchro-10-07-2012-dsc03993.jpg-nggid043262-ngg0dyn-1390x780x100-00f0w010c010r110f110r010t010.jpg]]
 
 /Cunene river bordering Angola and Namibia/. (C) 2012 [[http://www.wilkinsonsworld.com/tag/angola/][Wilkinsons World]]
 
 * About
 
-This repository contains my [[https://github.com/mcraveiro/cunene/blob/master/cunene.org][personal Emacs configuration]]. It is heavily based on
-others - copy and paste, mainly. It uses the literate config approach.
+This repository contains my [[https://mcraveiro.github.io/index.html][personal]] [[https://www.gnu.org/software/emacs/][Emacs]] [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html][configuration]]. It is heavily based on
+others - copy and paste, mainly ([[id:5D02026A-5C55-A1C4-9603-A3D456463A55][References]]). It uses the literate
+config approach.
 
-Note that this repository also includes all of the [[https://elpa.gnu.org/][elpa]] packages as per the last
-time I've updated them. This means you get a fully repeatable config if you
-clone the repo, but it also means the clone is very large. If you do not want
-the elpa packages, you can simply create a blank =.emacs.d= directory in your
-home and manually copy the two main files of the config into that directory.
-These are:
+To use it, simply git clone the repo into =~/.emacs.d=:
 
-- [[./init.el][init.el]]
-- [[./cunene.org][cunene.org]]
+#+begin_src sh
+git clone https://github.com/mcraveiro/cunene.git ~/.emacs.d
+#+end_src
 
-Then restart Emacs, and it will download fresh copies of all packages.
-
-* References
-
-** Emacs config files
-
-- [[https://github.com/angrybacon/dotemacs][dotemacs]]: Literate config by [[https://github.com/angrybacon][Mathieu Marques]].
-- [[https://github.com/jamiecollinson/dotfiles][dotfiles]]: Literate config by [[https://github.com/jamiecollinson][Jamie Collinson]].
-- [[https://github.com/credmp/emacs-config][emacs-config]]: Literate config by Arjen Wiersma.
-- [[https://pages.sachachua.com/.emacs.d/Sacha.html][dotemacs]]: Literate config by Sacha Chua.
-- [[https://lupan.pl/dotemacs/][dotemacs]]: Literate config by Lupan.
-- [[https://github.com/kaushalmodi/.emacs.d][.emacs.d]]: Emacs config from Kaushal Modi.
-- [[https://github.com/seagle0128/.emacs.d][Centaur Emacs]]: This is an Emacs distribution that aims to enhance the default
-  Emacs experience.
-- [[https://github.com/bbatsov/prelude][prelude]]: Prelude is an Emacs distribution that aims to enhance the default
-  Emacs experience.
-- [[https://blog.sumtypeofway.com/posts/emacs-config.html][emacs-config]]: Emacs configuration from Patrick Thomson.
-
-** Fonts
-
-- [[https://github.com/hbin/top-programming-fonts][top-programming-fonts]]: Huang Bin's favourite programming fonts.
-
-* Trying it
-
-You can test this init without changing your configuration:
+And start Emacs. It will download all the necessary packages. You can also test
+this init without changing your configuration:
 
 #+begin_src sh
 emacs --no-init-file -l ./init.el
 #+end_src
+
+* Roam
+
+This project also stores all my knowledge about Emacs itself, using the org-roam
+approach. The generated web pages are available as a web site:
+
+- https://mcraveiro.github.io/cunene/
+
+* Configuration
+
+The configuration itself is split into a small number of self-contained files to
+make it easier to grok.
+
+- [[./config/core.org][Core]]

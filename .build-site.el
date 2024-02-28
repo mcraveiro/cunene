@@ -63,9 +63,10 @@
 ;; Define the publishing project
 (setq org-publish-project-alist
       '(
-        ("progen-site:pages"
+        ("site:pages"
          :recursive f
          :base-directory "./"
+         :exclude "elpa"
          :publishing-function org-html-publish-to-html
          :publishing-directory "./build/output/site"
          :with-author nil           ;; Don't include author name
@@ -73,14 +74,12 @@
          :with-toc t                ;; Include a table of contents
          :section-numbers nil       ;; Don't include section numbers
          :time-stamp-file nil)      ;; Don't include time stamp in file
-        ("progen-site:images"
+        ("site:images"
          :base-directory "./assets/images"
          :base-extension "png\\|jpg\\|gif\\|svg"
          :publishing-directory "./build/output/site/assets/images"
          :publishing-function org-publish-attachment)
-        ( "progen-site:main"
-          :components("progen-site:images" "progen-site:pages"))
-       ))
+        ("site:main" :components("site:pages" "site:images"))))
 
 ;; Generate the site output
 (org-publish-all t)

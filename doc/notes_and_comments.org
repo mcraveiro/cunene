@@ -1,0 +1,69 @@
+:properties:
+:id: 942E5349-A751-6124-855B-02887BD28B6E
+:end:
+#+title: Notes and comments
+#+author: Marco Craveiro
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+
+Things we need to remember to change:
+
+- remove the C-arrows behaviour in org-ref when on top of a cite.
+- org-mode use of M-arrows.
+- transient history is not in cache.
+- chrome link does not work on linux, using windows path for browser.
+
+* Missing modes
+
+- add null to pretty symbols
+- mustache templates
+- notmuch
+- pdf tools
+- remove all calls for custom; move custom to end, raise SO ticket for local
+  sockets issue on windows.
+
+Problems:
+
+- end of init: custom-initialize-reset: local sockets are not supported
+- convert all evals after load into requires
+- doom mode line explicit
+- ensure magit
+
+* Other =.emacs== to investigate
+
+- [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
+- [[https://github.com/rougier/dotemacs/blob/master/dotemacs.org][Nicholas Rougier's dot emacs.]]:
+
+* Articles to read
+
+- [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life In Plain Text!]]
+- [[https://xenodium.com/emacs-quick-kill-process/][Emacs: quickly killing processes]]
+
+* References
+  :properties:
+  :id: 5D02026A-5C55-A1C4-9603-A3D456463A55
+  :custom_id: ID-5D02026A-5C55-A1C4-9603-A3D456463A55
+  :end:
+
+These are some of the Emacs configurations I based mine on.
+
+** Emacs config files
+
+- [[https://github.com/angrybacon/dotemacs][dotemacs]]: Literate config by [[https://github.com/angrybacon][Mathieu Marques]].
+- [[https://github.com/jamiecollinson/dotfiles][dotfiles]]: Literate config by [[https://github.com/jamiecollinson][Jamie Collinson]].
+- [[https://github.com/credmp/emacs-config][emacs-config]]: Literate config by Arjen Wiersma.
+- [[https://pages.sachachua.com/.emacs.d/Sacha.html][dotemacs]]: Literate config by Sacha Chua.
+- [[https://lupan.pl/dotemacs/][dotemacs]]: Literate config by Lupan.
+- [[https://github.com/kaushalmodi/.emacs.d][.emacs.d]]: Emacs config from Kaushal Modi.
+- [[https://github.com/seagle0128/.emacs.d][Centaur Emacs]]: This is an Emacs distribution that aims to enhance the default
+  Emacs experience.
+- [[https://github.com/bbatsov/prelude][prelude]]: Prelude is an Emacs distribution that aims to enhance the default
+  Emacs experience.
+- [[https://blog.sumtypeofway.com/posts/emacs-config.html][emacs-config]]: Emacs configuration from Patrick Thomson.
+
+** See Also
+
+Assorted notes and comments are stored here: [[./org/notes_and_comments.org][Notes and comments]].
+
+** Fonts
+
+- [[https://github.com/hbin/top-programming-fonts][top-programming-fonts]]: Huang Bin's favourite programming fonts.
