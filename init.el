@@ -25,6 +25,9 @@
 
 ;;; Code:
 
+(put 'org-roam-directory 'safe-local-variable (lambda (_) t))
+(put 'org-roam-db-location 'safe-local-variable (lambda (_) t))
+
 (setq-default
  load-prefer-newer t                    ;; Load newest version of lisp code.
  mode-line-format nil                   ;; No mode line format
@@ -102,5 +105,4 @@ ORG-FILE-NAME file to operate on."
 
   ;; Collect garbage when all else is done
   (garbage-collect))
-
 ;;; init.el ends here

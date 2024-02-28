@@ -86,61 +86,7 @@ Personal details.
 (setq user-mail-address "marco.craveiro@gmail.com")
 #+end_src
 
-** GTK Warning
-
-On startup, because we use PGTK on X, we get an annoying warning. This gets rid
-of the warning.
-
-Links:
-
-- [[https://kisaragi-hiu.com/emacs-29-pgtk-woes/][Emacs 29 pgtk woes]]
-
-#+begin_src emacs-lisp
-(defmacro cunene/once-after-make-frame (&rest body)
-  "Eval BODY on `server-after-make-frame-hook' just once."
-  (declare (indent 0))
-  `(let (func)
-     ;; Using `setq' allows the function itself to see the variable.
-     ;; I learned this trick from deferred.el.
-     (setq func (lambda ()
-                  ,@body
-                  ;;(remove-hook 'server-after-make-frame-hook func)
-                  ))
-     (add-hook 'server-after-make-frame-hook func)))
-
-(defun cunene/call-process-to-string (command &rest args)
-  "Call COMMAND with ARGS; return stdout.
-
-If COMMAND returns with a non-zero exit code, signal an error."
-  (declare (indent 0))
-  (with-temp-buffer
-    (let ((code (apply #'call-process command nil '(t nil) nil args)))
-      (unless (= 0 code)
-        (error "%s exited with exit code %s" command code)))
-    (string-trim (buffer-string))))
-
-(message "HERE4")
-(cunene/once-after-make-frame
- (progn
-   (
-    (message "HERE")
-    (when (and (display-graphic-p)
-               (executable-find "xdotool"))
-      (when-let (window-id (ignore-errors
-                             (cunene/call-process-to-string
-                              "xdotool" "search"
-                              "--all"
-                              "--pid" (format "%s" (emacs-pid))
-                              "--name" "^Warning$")))
-        (cunene/call-process-to-string
-         "xdotool" "windowclose" window-id)
-        (message "HERE2")
-        ))
-    )
-    ))
-#+end_src
-
-** Messages
+* Messages
 
 #+begin_src emacs-lisp
 ;; Add timestamps to messages.
@@ -167,7 +113,7 @@ ARGS arguments to format string."
 (advice-add 'message :before 'cunene/ad-timestamp-message)
 #+end_src
 
-** Caching
+* Caching
 
 Use =.cache/= to contain local data. This is to avoid littering in the Emacs
 directory with an ever-growing number of packages used on a daily basis.
@@ -183,9 +129,7 @@ directory with an ever-growing number of packages used on a daily basis.
          (path (convert-standard-filename (concat directory name))))
     (make-directory (file-name-directory path) t)
     path))
-#+end_src
 
-#+begin_src emacs-lisp
 (eval-when-compile (require 'request))
 (with-eval-after-load 'request
   (setq request-storage-directory (cunene/cache-concat "request/")))
@@ -267,6 +211,7 @@ Links:
     (make-directory cunene/backup-directory t))
 
 (setq backup-directory-alist `(("." . ,cunene/backup-directory)) ;; location of the backup directory.
+      auto-save-file-name-transforms `((".*" ,cunene/backup-directory t)) ;; location of the autosaves directory
       make-backup-files t               ;; Backup of a file the first time it is saved.
       backup-by-copying t               ;; Don't clobber symlinks.
       version-control t                 ;; Version numbers for backup files.
@@ -278,7 +223,7 @@ Links:
       auto-save-default t               ;; auto-save every buffer that visits a file
       auto-save-timeout 20              ;; number of seconds idle time before auto-save
       auto-save-interval 200)           ;; number of keystrokes between auto-saves
-#+end_src
+      #+end_src
 
 Handle sensitive data as per this article:
 
