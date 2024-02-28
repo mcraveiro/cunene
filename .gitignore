@@ -20,3 +20,5 @@ org-roam.db
 async-bytecomp.log
 .org-id-locations-file
 transient
+auto-save-list
+eshell

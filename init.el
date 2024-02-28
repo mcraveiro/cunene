@@ -56,6 +56,7 @@
 (defvar cunene/vendor-packages
   (expand-file-name "~/.emacs.d/vendor")
   "Location for third-party packages.")
+(add-to-list 'load-path cunene/vendor-packages)
 
 (require 'org-macs)
 (require 'ob-tangle)

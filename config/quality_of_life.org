@@ -1,0 +1,795 @@
+:properties:
+:id: C14C28ED-B722-48A8-93E3-A10007EC4D03
+:end:
+#+title: Quality of Life
+#+author: Marco Craveiro
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+
+Changes to core behaviour to make life better.
+
+* Preamble
+
+#+begin_src emacs-lisp
+;;; quality_of_life.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
+;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; General editor configuration
+
+;;; License:
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License
+;; as published by the Free Software Foundation; either version 3
+;; of the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Code:
+#+end_src
+
+* Garbage collection
+
+Improvements to default GC. Links:
+
+- [[https://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/][Why are you changing gc-cons-threshold?]]
+
+#+begin_src emacs-lisp
+(setq-default gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
+#+end_src
+
+Garbage-collect on focus-out, Emacs /should/ feel snappier overall.
+
+#+begin_src emacs-lisp
+(add-function :after after-focus-change-function
+  (defun cunene/garbage-collect-maybe ()
+    (unless (frame-focus-state)
+      (garbage-collect))))
+#+end_src
+
+* Better Defaults
+
+Here are what I consider better defaults as per my own experience.
+
+#+begin_src emacs-lisp
+(require 'image-mode)
+(setq-default
+ ad-redefinition-action 'accept         ; Silence warnings for redefinition
+ require-final-newline t                ; Newline at end of file
+ auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
+ cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
+ custom-unlispify-menu-entries nil      ; Prefer kebab-case for titles
+ custom-unlispify-tag-names nil         ; Prefer kebab-case for symbols
+ delete-by-moving-to-trash t            ; Delete files to trash
+ fill-column 80                         ; Set width for automatic line breaks
+ help-window-select t                   ; Focus new help windows when opened
+ indent-tabs-mode nil                   ; Stop using tabs to indent
+ inhibit-startup-screen t               ; Disable start-up screen
+ initial-scratch-message ""             ; Empty the initial *scratch* buffer
+ mouse-yank-at-point t                  ; Yank at point rather than pointer
+ read-process-output-max (* 1024 1024)  ; Increase read size per process
+ recenter-positions '(5 top bottom)     ; Set re-centering positions
+ scroll-conservatively 101              ; Avoid recentering when scrolling far
+ scroll-margin 2                        ; Add a margin when scrolling vertically
+ select-enable-clipboard t              ; Merge system's and Emacs' clipboard
+ sentence-end-double-space nil          ; Use a single space after dots
+ show-help-function nil                 ; Disable help text everywhere
+ tab-always-indent 'complete            ; Tab indents first then tries completions
+ warning-minimum-level :error           ; Skip warning buffers
+ window-combination-resize t            ; Resize windows proportionally
+ vc-follow-symlinks t                   ; Follow symlinks without asking
+ image-auto-resize nil                  ; Do not resize images automatically
+ make-pointer-invisible nil             ; Do not make mouse invisible
+ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
+
+(blink-cursor-mode 0)                   ; Prefer a still cursor
+(fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
+(global-subword-mode 1)                 ; Iterate through CamelCase words
+(put 'downcase-region 'disabled nil)    ; Enable downcase-region
+(put 'upcase-region 'disabled nil)      ; Enable upcase-region
+(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(column-number-mode t)                  ; Display column numbers
+(line-number-mode t)                    ; Display line numbers
+(size-indication-mode t)                ; Display size indicator
+
+;; enable narrowing commands
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
+
+;; enabled change region case commands
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; enable erase-buffer command
+(put 'erase-buffer 'disabled nil)
+
+;; repeat pop mark command without the need for C-u
+(setq set-mark-command-repeat-pop t)
+(setq image-auto-resize 0.7)
+#+end_src
+
+* Text Size
+
+#+begin_src emacs-lisp
+;; Font size
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+#+end_src
+
+* Buffers
+
+** Identification
+
+#+begin_src emacs-lisp
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator " • ")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*")
+#+end_src
+
+** Killing
+
+#+begin_src emacs-lisp
+;; Do not ask to kill a buffer.
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+(defun cunene/diff-buffer-with-associated-file ()
+  "View the differences between BUFFER and its associated file.
+This requires the external program diff to be in your variable `exec-path'.
+Returns nil if no differences found, t otherwise."
+  (interactive)
+  (let ((buf-filename buffer-file-name)
+        (buffer (current-buffer)))
+    (unless buf-filename
+      (error "Buffer %s has no associated file" buffer))
+    (let ((diff-buf (get-buffer-create
+                     (concat "*Assoc file diff: "
+                             (buffer-name)
+                             "*"))))
+      (with-current-buffer diff-buf
+        (setq buffer-read-only nil)
+        (erase-buffer))
+      (let ((tempfile (make-temp-file "buffer-to-file-diff-")))
+        (unwind-protect
+            (progn
+              (with-current-buffer buffer
+                (write-region (point-min) (point-max) tempfile nil 'nomessage))
+              (if (zerop
+                   (apply #'call-process "diff" nil diff-buf nil
+                          (append
+                           (when (and (boundp 'ediff-custom-diff-options)
+                                      (stringp ediff-custom-diff-options))
+                             (list ediff-custom-diff-options))
+                           (list buf-filename tempfile))))
+                  (progn
+                    (message "No differences found")
+                    nil)
+                (progn
+                  (with-current-buffer diff-buf
+                    (goto-char (point-min))
+                    (if (fboundp 'diff-mode)
+                        (diff-mode)
+                      (fundamental-mode)))
+                  (display-buffer diff-buf)
+                  t)))
+          (when (file-exists-p tempfile)
+            (delete-file tempfile)))))))
+(global-set-key (kbd "C-c C-=") 'cunene/diff-buffer-with-associated-file)
+
+;; tidy up diffs when closing the file
+(defun cunene/kill-associated-diff-buf ()
+  "Kill the diff buffer when the file is killed."
+  (let ((buf (get-buffer (concat "*Assoc file diff: "
+                             (buffer-name)
+                             "*"))))
+    (when (bufferp buf)
+      (kill-buffer buf))))
+(add-hook 'kill-buffer-hook 'cunene/kill-associated-diff-buf)
+
+(defun cunene/de-context-kill (arg)
+  "Show differences when killing buffer.
+ARG is true, always kill."
+  (interactive "p")
+  (if (and (buffer-modified-p)
+             buffer-file-name
+             (not (string-match "\\*.*\\*" (buffer-name)))
+             ;; erc buffers will be automatically saved
+             (not (eq major-mode 'erc-mode))
+             (= 1 arg))
+    (let ((differences 't))
+      (when (file-exists-p buffer-file-name)
+        (setq differences (cunene/diff-buffer-with-associated-file)))
+
+      (if (y-or-n-p (format "Buffer %s modified; Kill anyway? " buffer-file-name))
+          (progn
+            (set-buffer-modified-p nil)
+            (kill-buffer (current-buffer)))))))
+
+(global-set-key (kbd "C-x k") 'cunene/de-context-kill)
+#+end_src
+
+** Saving
+
+| super-save | https://github.com/bbatsov/super-save |
+
+#+begin_quote
+Super-save auto-saves your buffers, when certain events happen - e.g. you switch
+between buffers, an Emacs frame loses focus, etc. You can think of it as both
+something that augments and replaces the standard auto-save-mode.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package super-save
+  :config
+  (add-to-list 'super-save-triggers 'ace-window 'select-window)
+  (super-save-mode +1))
+
+;; revert buffers automatically when underlying files are changed externally
+(global-auto-revert-mode t)
+#+end_src
+
+* Key discoverability
+
+If you type a prefix key (such as =C-x r=) and wait some time then display
+window with keys that can follow.
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :init (which-key-mode 1)
+  :config
+  (which-key-setup-side-window-right-bottom)
+  (setq which-key-sort-order 'which-key-key-order-alpha
+        which-key-side-window-max-width 0.33
+        which-key-idle-delay 2
+        which-key-show-early-on-C-h t
+        which-key-idle-secondary-delay 0.05)
+  :diminish
+  which-key-mode)
+#+end_src
+
+* Themes
+
+| =Doom One= | https://github.com/hlissner/emacs-doom-themes |
+
+#+begin_src emacs-lisp
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-dark+ t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+#+end_src
+
+Doom modeline.
+
+Links:
+
+- [[https://github.com/seagle0128/doom-modeline][doom-modeline GH]]
+
+#+begin_src emacs-lisp
+(use-package all-the-icons)
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  (setq doom-modeline-major-mode-icon t)
+  ;; Whether display the buffer encoding.
+  (setq doom-modeline-buffer-encoding nil))
+#+end_src
+
+* Modeline
+
+| =diminish=       | https://github.com/emacsmirror/diminish          |
+| =hide-mode-line= | https://github.com/hlissner/emacs-hide-mode-line |
+
+#+begin_src emacs-lisp
+(use-package diminish)
+(use-package hide-mode-line)
+#+end_src
+
+* Whitespace
+
+#+begin_src emacs-lisp
+;; Give details about white space usage
+(require 'whitespace)
+(autoload 'whitespace-toggle-options
+  "whitespace" "Toggle local `whitespace-mode' options." t)
+
+;; limit line length
+(setq whitespace-line-column 80)
+
+;; What to highlight
+(setq whitespace-style
+      '(face tabs trailing lines-tail space-before-tab empty space-after-tab
+             tab-mark))
+
+;; Indicate if empty lines exist at end of the buffer
+(set-default 'indicate-empty-lines t)
+
+;; do not use global mode whitespace
+(global-whitespace-mode 0)
+(setq whitespace-global-modes nil)
+
+;; Show whitespaces on these modes
+(add-hook 'sh-mode-hook 'whitespace-mode)
+(add-hook 'snippet-mode-hook 'whitespace-mode)
+(add-hook 'tex-mode-hook 'whitespace-mode)
+(add-hook 'sql-mode-hook 'whitespace-mode)
+(add-hook 'ruby-mode-hook 'whitespace-mode)
+(add-hook 'diff-mode-hook 'whitespace-mode)
+(add-hook 'c-mode-common-hook 'whitespace-mode)
+(add-hook 'cmake-mode-hook 'whitespace-mode)
+(add-hook 'emacs-lisp-mode-hook 'whitespace-mode)
+(add-hook 'dos-mode-hook 'whitespace-mode)
+(add-hook 'org-mode-hook 'whitespace-mode)
+(add-hook 'js-mode-hook 'whitespace-mode)
+(add-hook 'js2-mode-hook 'whitespace-mode)
+
+;; do not clean whitespace on windows.
+(if (not (eq window-system 'w32))
+    (add-hook 'before-save-hook 'delete-trailing-whitespace))
+
+;;
+;; Tabs
+;;
+(defun cunene/untabify-buffer ()
+  "Remove tabs from buffer."
+  (interactive)
+  (untabify (point-min) (point-max)))
+
+(defun cunene/build-tab-stop-list (width)
+  "Create a tab stop list.
+WIDTH is the size of the list."
+  (let ((num-tab-stops (/ 80 width))
+        (counter 1)
+        (ls nil))
+    (while (<= counter num-tab-stops)
+      (setq ls (cons (* width counter) ls))
+      (setq counter (1+ counter)))
+    (nreverse ls)))
+
+;; Spaces only for indentation
+(set-default 'indent-tabs-mode nil)
+
+;; Tab size
+(setq tab-width 4)
+(setq standard-indent 4)
+(setq tab-stop-list (cunene/build-tab-stop-list tab-width))
+(setq tab-stop-list (cunene/build-tab-stop-list tab-width))
+#+end_src
+
+* Exiting
+
+Links:
+
+- [[https://stackoverflow.com/questions/2706527/make-emacs-stop-asking-active-processes-exist-kill-them-and-exit-anyway][SO: Make Emacs stop asking "Active processes exist; kill them and exit anyway"]]
+
+#+begin_src emacs-lisp
+(require 'cl-lib)
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+  (cl-letf (((symbol-function #'process-list) (lambda ())))
+    ad-do-it))
+
+;; confirm exit
+(global-set-key
+ (kbd "C-x C-c")
+ #'(lambda ()
+    (interactive)
+    (if (y-or-n-p-with-timeout "Do you really want to exit Emacs ?" 4 nil)
+        (save-buffers-kill-emacs))))
+
+(defun cunene/ask-before-closing-frame ()
+  "Close only if y was pressed."
+  (interactive)
+  (if (y-or-n-p (format "Do you really want to close this frame?"))
+      (delete-frame)
+    (message "Canceled frame close")))
+
+(global-set-key (kbd "C-x 5 0") 'cunene/ask-before-closing-frame)
+#+end_src
+
+* Dashboard
+
+| emacs-dashboard | https://github.com/emacs-dashboard/emacs-dashboard |
+
+#+begin_src emacs-lisp
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-init-info t)
+  (setq dashboard-items '((recents  . 10)
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (agenda . 5))))
+
+;; Remap Open Dashboard
+;; From https://github.com/emacs-dashboard/emacs-dashboard/issues/236
+(require 'dashboard)
+(defun cunene/new-dashboard ()
+  "Jump to the dashboard buffer, if doesn't exists create one."
+  (interactive)
+  (switch-to-buffer dashboard-buffer-name)
+  (dashboard-mode)
+  (dashboard-insert-startupify-lists)
+  (dashboard-refresh-buffer))
+
+(global-set-key (kbd "<f8>") 'cunene/new-dashboard)
+#+end_src
+
+* Utilities
+
+| thingatpt  | https://www.emacswiki.org/emacs/ThingAtPoint |
+
+Assorted utility functions for which we could not yet establish a good category.
+
+#+begin_src emacs-lisp
+(use-package crux
+  :bind (
+         ("C-S-d" . crux-duplicate-current-line-or-region)
+         ;; Move to beginning of line between head of line and head of text
+         ("C-a" . crux-move-beginning-of-line)
+         ("C-c r" . crux-rename-file-and-buffer)
+         ("C-c D" . crux-delete-file-and-buffer))
+  :config (crux-with-region-or-line kill-region))
+
+(use-package uuid
+  :load-path cunene/vendor-packages)
+
+(require 'uuid)
+(defun cunene/uuid-insert()
+  "Insert a guid."
+  (interactive)
+  (insert (upcase (uuid-string))))
+
+;; VS Code has a great feature where you can just copy a filename to the
+;; clipboard.
+(defun cunene/copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+(defun cunene/toggle-scroll(&optional arg)
+  "Toggle both horizontal and vertical scroll bars.
+ARG to set the direction."
+  (interactive)
+  (toggle-horizontal-scroll-bar arg)
+  (toggle-scroll-bar arg))
+
+(defun cunene/plantuml-make-diagram ()
+  "Create a diagram from a PlantUML buffer."
+  (interactive)
+  (let* ((jvm_args " -DPLANTUML_LIMIT_SIZE=16384 -Djava.awt.headless=true -DPLANTUML_SECURITY_PROFILE=UNSECURE")
+         (jar_path "/usr/share/plantuml/plantuml.jar ")
+         (jar_args (concat " -jar " jar_path))
+         (command (concat "java " jvm_args jar_args " -Playout=elk -tpng -v " (buffer-file-name)))
+         (plant-buffer-name (concat "PlantUML: "
+                                    (file-name-nondirectory (buffer-file-name)))))
+    (with-current-buffer (get-buffer-create plant-buffer-name)
+      (erase-buffer)
+      (goto-char (point-max))
+      (insert "Starting PlantUML "(format-time-string "%D %-I:%M %p")))
+    (start-process-shell-command "PlantUML" plant-buffer-name command)))
+
+(defun cunene/flush-blank-lines (start end)
+  "Remove blank lines.
+START and END mark the region."
+  (interactive "r")
+  (flush-lines "^\\s-*$" start end))
+
+;; operations on thing at point.
+(require 'thingatpt)
+#+end_src
+
+* Region
+
+| =drag-stuff=          | https://github.com/rejeep/drag-stuff.el          |
+| =volatile-highlights= | https://github.com/k-talo/volatile-highlights.el |
+
+#+begin_src emacs-lisp
+(use-package drag-stuff
+  :bind
+  (:map drag-stuff-mode-map
+        ("<C-s-up>" . drag-stuff-up)
+        ("<C-s-down>" . drag-stuff-down)
+        ("<C-s-left>" . drag-stuff-left)
+        ("<C-s-right>" . drag-stuff-right))
+  :diminish drag-stuff-mode
+  :config
+  (drag-stuff-global-mode t))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
+;; Replace region when inserting text
+(delete-selection-mode 1)
+
+;; brings visual feedback to some operations by highlighting portions relating
+;; to the operations.
+(use-package volatile-highlights
+  :diminish volatile-highlights-mode
+  :config (volatile-highlights-mode t))
+
+;; note - this should be after volatile-highlights is required
+;; add the ability to cut the current line, without marking it
+(require 'rect)
+#+end_src
+
+* Mark
+
+| =jump-tree= | https://github.com/yangwen0228/jump-tree |
+
+#+begin_src emacs-lisp
+(use-package jump-tree
+  :init (global-jump-tree-mode))
+#+end_src
+
+* Strings
+
+#+begin_src emacs-lisp
+(defun cunene/toggle-quotes ()
+  "Toggle single quoted string to double or vice versa.
+Flip the internal quotes as well. Best to run on the first
+character of the string."
+  (interactive)
+  (save-excursion
+    (re-search-backward "[\"']")
+    (let* ((start (point))
+           (old-c (char-after start))
+           new-c)
+      (setq new-c
+            (case old-c
+              (?\" "'")
+              (?\' "\"")))
+      (setq old-c (char-to-string old-c))
+      (delete-char 1)
+      (insert new-c)
+      (re-search-forward old-c)
+      (backward-char 1)
+      (let ((end (point)))
+        (delete-char 1)
+        (insert new-c)
+        (replace-string new-c old-c nil (1+ start) end)))))
+
+(defun cunene/space-to-underscore-region (start end)
+  "Replace space by underscore in region.
+START and END mark the region."
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (search-forward " " nil t) (replace-match "_"))))
+
+(defun cunene/underscore-to-space-region (start end)
+  "Replace underscore by space in region."
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (search-forward "_" nil t) (replace-match " "))))
+
+(defun cunene/replace-underscore-space-toggle ()
+  "Replace underscore/space in the current region or line.
+If the current line contains more _ char than space, then replace
+them to space, else replace space to _. If there's a text
+selection, work on the selected text."
+  (interactive)
+  (let (li bds)
+    (setq bds
+          (if (region-active-p)
+              (cons (region-beginning) (region-end))
+            (bounds-of-thing-at-point 'line)))
+    (setq li (buffer-substring-no-properties (car bds) (cdr bds)))
+    (if (> (count 32 li) (count 95 li))
+        (progn (replace-string " " "_" nil (car bds) (cdr bds)))
+      (progn (replace-string "_" " " nil (car bds) (cdr bds))))))
+
+(defun cunene/cycle-hyphen-underscore-space ()
+  "Cyclically replace {underscore, space, hypen} chars current
+line or text selection. When called repeatedly, this command
+cycles the { , _, -} characters."
+  (interactive)
+  ;; this function sets a property 「'state」. Possible values are 0
+  ;; to length of charList.
+  (let (mainText charList p1 p2 currentState nextState changeFrom
+             changeTo startedWithRegion-p )
+
+    (if (region-active-p)
+        (progn
+          (setq startedWithRegion-p t )
+          (setq p1 (region-beginning))
+          (setq p2 (region-end))
+          )
+      (progn (setq startedWithRegion-p nil )
+             (setq p1 (line-beginning-position))
+             (setq p2 (line-end-position)) ) )
+
+    (setq charList (list " " "_" "-" ))
+
+    (setq currentState
+          (if (get 'cunene/cycle-hyphen-underscore-space 'state)
+              (get 'cunene/cycle-hyphen-underscore-space 'state) 0))
+    (setq nextState (% (+ currentState (length charList) 1) (length charList)))
+
+    (setq changeFrom (nth currentState charList))
+    (setq changeTo (nth nextState charList))
+
+    (setq mainText
+          (replace-regexp-in-string changeFrom changeTo
+                                    (buffer-substring-no-properties p1 p2)))
+    (delete-region p1 p2)
+    (insert mainText)
+
+    (put 'cunene/cycle-hyphen-underscore-space 'state nextState)
+
+    (when startedWithRegion-p
+      (goto-char p2)
+      (set-mark p1)
+      (setq deactivate-mark nil))))
+
+(global-set-key (kbd "C-c C--") 'cunene/cycle-hyphen-underscore-space)
+
+(defun cunene/string-inflection-cycle-auto ()
+  "Switch by major-mode."
+  (interactive)
+  (cond
+   ((eq major-mode 'emacs-lisp-mode)
+    (string-inflection-all-cycle))
+   ((eq major-mode 'java-mode)
+    (string-inflection-java-style-cycle))
+   ((eq major-mode 'ruby-mode)
+    (string-inflection-ruby-style-cycle))
+   (t
+    ;; default
+    (string-inflection-all-cycle))))
+
+(use-package string-inflection
+  :config
+  (global-set-key (kbd "C-M-j") 'cunene/string-inflection-cycle-auto))
+#+end_src
+
+* Filling
+
+From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
+
+#+begin_src emacs-lisp
+(defun cunene/unfill-paragraph (&optional region)
+  "Take a multi-line paragraph and makes it into a single line of text.
+REGION to fill or unfill."
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list t)))
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil region)))
+(bind-key "M-Q" 'cunene/unfill-paragraph)
+
+(defun cunene/fill-or-unfill-paragraph (&optional unfill region)
+  "Fill paragraph (or REGION).
+        With the prefix argument UNFILL, unfill it instead."
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list (if current-prefix-arg 'unfill) t)))
+  (let ((fill-column (if unfill (point-max) fill-column)))
+    (fill-paragraph nil region)))
+(bind-key "M-q" 'cunene/fill-or-unfill-paragraph)
+
+(remove-hook 'text-mode-hook #'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+(global-so-long-mode 1)
+#+end_src
+
+* History
+
+#+begin_src emacs-lisp
+(require 'saveplace)
+(setq save-place-file (cunene/cache-concat "saveplace/places"))
+(save-place-mode 1)
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode +1)
+  :config
+  (setq history-length t)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-autosave-interval 60)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
+  (setq savehist-file (cunene/cache-concat "savehist/history")))
+#+end_src
+
+* Help
+
+#+begin_src emacs-lisp
+(use-package helpful
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+   ("C-c C-d" . helpful-at-point)
+   ("C-h C" . helpful-command)))
+#+end_src
+
+* Prettify
+
+Sources:
+
+- [[https://emacsredux.com/blog/2014/08/25/a-peek-at-emacs-24-dot-4-prettify-symbols-mode/][A peek at Emacs 24.4: prettify-symbols-mode]]
+
+#+begin_src emacs-lisp
+(defun cunene/configure-prettify-symbols-alist ()
+  "List of pretty symbols."
+  (push '("[ ]" . "☐" ) prettify-symbols-alist)
+  (push '("[X]" . "☑" ) prettify-symbols-alist)
+  (push '("[-]" . "❍" ) prettify-symbols-alist)
+  (push '("#+BEGIN_QUOTE" . "“") prettify-symbols-alist)
+  (push '("#+END_QUOTE" . "”") prettify-symbols-alist)
+  (push '("#+begin_quote" . "“") prettify-symbols-alist)
+  (push '("#+end_quote" . "”") prettify-symbols-alist)
+  (push '("#+BEGIN_SRC" . "»") prettify-symbols-alist)
+  (push '("#+END_SRC" . "«") prettify-symbols-alist)
+  (push '("#+begin_src" . "»") prettify-symbols-alist)
+  (push '("#+end_src" . "«") prettify-symbols-alist)
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook 'cunene/configure-prettify-symbols-alist)
+
+(defun cunene/prog-mode-configure-prettify-symbols-alist ()
+  "Set prettify symbols alist."
+  (setq prettify-symbols-alist '(("lambda" . "λ")
+                                 ("->" . "→")
+                                 ("->>" . "↠")
+                                 ("=>" . "⇒")
+                                 ("map" . "↦")
+                                 ("/=" . "≠")
+                                 ("!=" . "≠")
+                                 ("==" . "≡")
+                                 ("<=" . "≤")
+                                 (">=" . "≥")
+                                 ("=<<" . "=≪")
+                                 (">>=" . "≫=")
+                                 ("<=<" . "↢")
+                                 (">=>" . "↣")
+                                 ("&&" . "∧")
+                                 ("||" . "∨")
+                                 ("not" . "¬")))
+  (prettify-symbols-mode))
+
+(add-hook 'prog-mode-hook 'cunene/prog-mode-configure-prettify-symbols-alist)
+#+end_src
+
+* Postamble
+
+#+begin_src emacs-lisp
+;;; quality_of_life.el ends here
+#+end_src

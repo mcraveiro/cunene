@@ -44,3 +44,4 @@ The configuration itself is split into a small number of self-contained files to
 make it easier to grok.
 
 - [[./config/core.org][Core]]
+- [[id:C14C28ED-B722-48A8-93E3-A10007EC4D03][Quality of Life]]
