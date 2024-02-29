@@ -155,12 +155,16 @@ surrounded by word boundaries."
                  ("fsharp" (or
                             (mode . inferior-fsharp-mode)
                             (mode . fsharp-mode)))
-                 ("csharp" (mode . csharp-mode))
+                 ("csharp" (or
+                            (mode . csharp-mode)
+                            (mode . csproj-mode)
+                            (mode . sln-mode))
                  ("java" (mode . java-mode))
                  ("kotlin" (mode . kotlin-mode))
                  ("ruby" (mode . ruby-mode))
                  ("perl" (mode . perl-mode))
                  ("json" (mode . json-mode))
+                 ("docker" (mode . dockerfile-mode))
                  ("javascript" (or
                                 (mode . javascript-mode)
                                 (mode . js2-mode)
@@ -180,9 +184,6 @@ surrounded by word boundaries."
                           (mode . makefile-mode)
                           (mode . makefile-gmake-mode)))
                  ("t4" (name . ".tt$"))
-                 ("Dogen - Stitch" (or
-                                    (mode . headtail-mode)
-                                    (name . ".stitch$")))
                  ("bash" (mode . sh-mode))
                  ("awk" (mode . awk-mode))
                  ("latex" (or
