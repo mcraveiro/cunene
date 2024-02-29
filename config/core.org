@@ -194,9 +194,11 @@ Links:
 (eval-when-compile
   (require 'use-package))
 
+;; Fix strange issue on windows.
 (use-package bind-key
   :config
   (add-to-list 'same-window-buffer-names "*Personal Keybindings*"))
+(require 'bind-key)
 #+end_src
 
 * Backup files

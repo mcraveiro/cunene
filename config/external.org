@@ -1,0 +1,205 @@
+:properties:
+:id: 1A4D59C3-A56B-B7C4-54AB-6466F500580C
+:end:
+#+title: External
+#+author: Marco Craveiro
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+
+Interaction with the outside world.
+
+* Preamble
+
+#+begin_src emacs-lisp
+;;; external.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
+;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; General editor configuration
+
+;;; License:
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License
+;; as published by the Free Software Foundation; either version 3
+;; of the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Code:
+#+end_src
+
+
+* Shells
+
+** Eshell
+
+Links:
+
+- [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][Mastering Eshell]]
+- [[https://karthinks.com/software/jumping-directories-in-eshell/][Jumping directories in eshell]]
+
+Todo:
+
+- [[https://emacs.stackexchange.com/questions/18564/merge-history-from-multiple-eshells][Merge history from multiple eshells]]
+
+#+begin_src emacs-lisp
+(use-package eshell
+  :config
+  (require 'em-hist)
+  (require 'em-alias)
+  (add-to-list
+   'eshell-command-aliases-list (list "ll" "ls -l"))
+  (defalias 'ff 'find-file)
+  (use-package eshell-git-prompt
+    :config
+    (setq-default eshell-directory-name (cunene/cache-concat "eshell"))
+    (eshell-git-prompt-use-theme 'powerline)
+    (define-advice eshell-git-prompt-powerline-dir (:override () short)
+      "Show only last directory."
+      (file-name-nondirectory (directory-file-name default-directory))))
+  :bind (:map eshell-hist-mode-map
+              ("<down>" . 'next-line)
+              ("<up>" . 'previous-line)
+              ;; ([remap eshell-previous-matching-input-from-input] . helm-eshell-history)
+              ;; ([remap eshell-list-history] . helm-eshell-history)
+              ))
+
+;; Start a new eshell even if one is active.
+(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+
+;; Start a regular shell if you prefer that.
+(global-set-key (kbd "C-x M-m") 'shell)
+
+(defun eshell/z (&optional regexp)
+    "Navigate to a previously visited directory in eshell, or to
+any directory proferred by `consult-dir'."
+    (let ((eshell-dirs (delete-dups
+                        (mapcar 'abbreviate-file-name
+                                (ring-elements eshell-last-dir-ring)))))
+      (cond
+       ((and (not regexp) (featurep 'consult-dir))
+        (let* ((consult-dir--source-eshell `(:name "Eshell"
+                                             :narrow ?e
+                                             :category file
+                                             :face consult-file
+                                             :items ,eshell-dirs))
+               (consult-dir-sources (cons consult-dir--source-eshell
+                                          consult-dir-sources)))
+          (eshell/cd (substring-no-properties
+                      (consult-dir--pick "Switch directory: ")))))
+       (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
+                            (completing-read "cd: " eshell-dirs)))))))
+
+(defun cunene/create-named-eshell (name)
+  "Create an eshell buffer named NAME."
+  (interactive "sName: ")
+  (setq name (concat "*eshell - " name "*"))
+  (eshell)
+  (rename-buffer name))
+
+(global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
+#+end_src
+
+** SSH
+
+#+begin_src emacs-lisp
+(use-package ssh)
+#+end_src
+
+** Powershell
+
+| =powershell= | [[https://github.com/jschaf/powershell.el]] |
+
+#+begin_src emacs-lisp
+(use-package powershell)
+#+end_src
+
+** General
+
+#+begin_src emacs-lisp
+(use-package project-shells)
+#+end_src
+
+* Grepping
+
+| deadgrep | https://github.com/Wilfred/deadgrep |
+| rg       | https://github.com/dajva/rg.el      |
+
+#+begin_src emacs-lisp
+;; (use-package deadgrep
+;;   :ensure t)
+
+(use-package rg)
+#+end_src
+
+* Web Browsers
+
+#+begin_src emacs-lisp
+(setq cunene/browsers
+      '(("Chrome" . browse-url-chrome)
+        ("EWW" . eww-browse-url)
+        ("Firefox" . browse-url-firefox)))
+
+(defun cunene/browse-url (&rest args)
+  "Select the prefered browser from a menu before opening the URL."
+  (interactive)
+  (let ((browser (completing-read "WWW browser: " cunene/browsers nil t "")))
+    (apply (cdr (assoc browser cunene/browsers)) args)))
+
+(setq browse-url-browser-function #'cunene/browse-url)
+
+;; hard-code location of Chrome on Windows.
+(if (eq window-system 'w32)
+    (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"))
+#+end_src
+
+* SSH
+
+| =ssh= | https://github.com/ieure/ssh-el =
+
+#+begin_src emacs-lisp
+(use-package ssh
+  :config  (add-hook 'ssh-mode-hook
+                     (lambda ()
+                       (setq ssh-directory-tracking-mode t)
+                       (shell-dirtrack-mode t)
+                       (setq dirtrackp nil))))
+#+end_src
+
+* Processes
+
+| =prodigy= | https://github.com/rejeep/prodigy.el |
+
+#+begin_src emacs-lisp
+(use-package prodigy
+  :bind ("C-c 8" . #'prodigy)
+  :config
+;;  (load "~/.config/emacs/services.el" 'noerror)
+)
+#+end_src
+
+* Mongo
+
+| =inf-mongo= | https://github.com/endofunky/inf-mongo |
+
+#+begin_src emacs-lisp
+(use-package inf-mongo)
+#+end_src
+
+* Postamble
+
+#+begin_src emacs-lisp
+;;; external.el ends here
+#+end_src
