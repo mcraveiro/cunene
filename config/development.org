@@ -137,6 +137,8 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
         magit-module-sections-nested nil
         magit-section-initial-visibility-alist
         '((modules . show) (stashes . show) (unpulled . show) (unpushed . show)))
+  (add-to-list 'magit-no-confirm 'stage-all-changes)
+  (add-to-list 'magit-no-confirm 'unstage-all-changes)
   (magit-add-section-hook
    'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
   (remove-hook 'magit-section-highlight-hook #'magit-section-highlight)

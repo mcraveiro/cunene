@@ -1,0 +1,42 @@
+:properties:
+:id: 58175204-C736-CAB4-F95B-66E153DCA708
+:end:
+#+title: Emacs Lisp Recipes
+#+author: Marco Craveiro
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+
+Useful bits of Emacs Lisp we found over the internet.
+
+* Compilation
+
+** Recompile packages
+
+To recompile all packages in a directory:
+
+#+begin_src emacs-lisp
+(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+#+end_src
+
+As per [[https://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory][How do I byte-compile everything in my .emacs.d directory?]]
+
+To recompile package directory:
+
+#+begin_src emacs-lisp
+(byte-recompile-directory package-user-dir nil 'force)
+#+end_src
+
+As per [[http://sodaware.sdf.org/notes/recompiling-all-emacs-packages/][Recompiling all Emacs packages]].
+
+To recompile vendor directory:
+
+#+begin_src emacs-lisp
+(byte-recompile-directory (expand-file-name "~/.emacs.d/vendor") 0)
+#+end_src
+
+** Check native compilation
+
+To see if native compilation is enabled:
+
+#+begin_src emacs-lisp
+(native-comp-available-p)
+#+end_src

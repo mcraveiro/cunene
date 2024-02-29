@@ -38,6 +38,11 @@ approach. The generated web pages are available as a web site:
 
 - https://mcraveiro.github.io/cunene/
 
+Index to content:
+
+- [[id:942E5349-A751-6124-855B-02887BD28B6E][Notes and comments]]
+- [[id:58175204-C736-CAB4-F95B-66E153DCA708][Emacs Lisp Recipes]]
+
 * Configuration
 
 The configuration itself is split into a small number of self-contained files to
