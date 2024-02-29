@@ -285,6 +285,7 @@ surrounded by word boundaries."
                             (name . "^\\**threads of")
                             (name . "^\\**breakpoints of")
                             (name . "^\\**Flycheck")
+                            (name . "^\\*Flymake Log\\*$")
                             (name . "^\\**sx-search-result*")
                             (name . "^\\**gud-dogen.knit")
                             (name . "^\\**Warnings*")
@@ -1198,7 +1199,6 @@ For the org-mode support, see:
          ("M-g a" . consult-org-agenda)
          ("M-g m" . consult-mark)
          ("C-x b" . consult-buffer)
-         ("<help> a" . consult-apropos)            ;; orig. apropos-command
          ("M-g g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)
          ("M-g m" . consult-mark)
@@ -1217,7 +1217,6 @@ For the org-mode support, see:
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
          ;; Isearch integration
-         ("M-s e" . consult-isearch)
          ("M-g l" . consult-line)
          ("M-s m" . consult-multi-occur)
          ("C-x c o" . consult-multi-occur)
@@ -1270,6 +1269,14 @@ For the org-mode support, see:
   :bind (("M-%" . anzu-query-replace)
          ("C-M-%" . anzu-query-replace-regexp)))
 #+end_src
+
+* Fonts
+
+#+begin_src emacs-lisp
+(use-package font-lock-ext
+  :load-path cunene/vendor-packages)
+#+end_src
+
 
 * Snippets
 

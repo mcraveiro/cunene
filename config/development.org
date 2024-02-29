@@ -606,6 +606,32 @@ again, I haven't see that as a problem."
                   )
                 hs-special-modes-alist)
           )
+
+(use-package csproj-mode)
+(use-package sln-mode
+  :load-path cunene/vendor-packages)
+(use-package sharper
+  :demand t
+  :bind
+  ("C-c n" . sharper-main-transient))
+#+end_src
+
+* Protobuf
+
+#+begin_src emacs-lisp
+(use-package protobuf-mode)
+#+end_src
+
+* Terraform
+
+#+begin_src emacs-lisp
+(use-package terraform-mode)
+#+end_src
+
+* Dockerfile
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode)
 #+end_src
 
 * Doxymacs

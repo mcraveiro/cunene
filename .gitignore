@@ -9,6 +9,7 @@ server
 # Generated files
 config/*.el
 config/*.elc
+vendor/*.elc
 
 # files we can't find out who is creating
 .emacs-buffers
