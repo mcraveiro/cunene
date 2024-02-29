@@ -153,10 +153,22 @@ any directory proferred by `consult-dir'."
           browse-url-edge-program "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")
   (setq browse-url-edge-program "/opt/microsoft/msedge/msedge"))
 
-(defun browse-url-edge (url &optional new-window)
-  "Open URL in Microsoft Edge."
-  (shell-command
-   (concat browse-url-edge-program " " url)))
+(setq browse-url-edge-arguments "")
+(defun browse-url-edge (url &optional _new-window)
+  "Ask the Google Edge WWW browser to load URL.
+Default to the URL around or before point.  The strings in
+variable `browse-url-edge-arguments' are also passed to
+Google Edge.
+The optional argument NEW-WINDOW is not used."
+  (interactive (browse-url-interactive-arg "URL: "))
+  (setq url (browse-url-encode-url url))
+  (let* ((process-environment (browse-url-process-environment)))
+    (apply #'start-process
+           (concat "google-edge " url) nil
+           browse-url-edge-program
+           (append
+            browse-url-edge-arguments
+            (list url)))))
 
 (setq cunene/browsers
       '(("Chrome" . browse-url-chrome)
