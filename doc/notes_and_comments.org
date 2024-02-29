@@ -32,11 +32,13 @@ Problems:
 
 - [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
 - [[https://github.com/rougier/dotemacs/blob/master/dotemacs.org][Nicholas Rougier's dot emacs.]]:
+- [[https://github.com/angrybacon/dotemacs/tree/master][dotemacs by angrybacon]]
 
 * Articles to read
 
 - [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life In Plain Text!]]
 - [[https://xenodium.com/emacs-quick-kill-process/][Emacs: quickly killing processes]]
+- [[https://www.n16f.net/blog/making-ielm-more-comfortable/][Making IELM More Comfortable]]
 
 * References
   :properties:

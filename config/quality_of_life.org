@@ -149,6 +149,7 @@ Here are what I consider better defaults as per my own experience.
 #+begin_src emacs-lisp
 ;; Do not ask to kill a buffer.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+(setq use-short-answers t)
 
 (defun cunene/diff-buffer-with-associated-file ()
   "View the differences between BUFFER and its associated file.

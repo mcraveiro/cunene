@@ -616,6 +616,13 @@ again, I haven't see that as a problem."
   ("C-c n" . sharper-main-transient))
 #+end_src
 
+* Clojure
+
+#+begin_src emacs-lisp
+(use-package clojure-mode)
+(use-package inf-clojure)
+#+end_src
+
 * Protobuf
 
 #+begin_src emacs-lisp

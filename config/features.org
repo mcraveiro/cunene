@@ -156,9 +156,10 @@ surrounded by word boundaries."
                             (mode . inferior-fsharp-mode)
                             (mode . fsharp-mode)))
                  ("csharp" (or
+                            (name . "^\\*sharper-log\\*$")
                             (mode . csharp-mode)
                             (mode . csproj-mode)
-                            (mode . sln-mode))
+                            (mode . sln-mode)))
                  ("java" (mode . java-mode))
                  ("kotlin" (mode . kotlin-mode))
                  ("ruby" (mode . ruby-mode))
@@ -186,6 +187,9 @@ surrounded by word boundaries."
                  ("t4" (name . ".tt$"))
                  ("bash" (mode . sh-mode))
                  ("awk" (mode . awk-mode))
+                 ("clojure" (or
+                             (mode . inf-clojure)
+                             (mode . clojure-mode)))
                  ("latex" (or
                            (name . ".tex$")
                            (name . ".texi$")
