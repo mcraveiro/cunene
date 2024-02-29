@@ -40,8 +40,8 @@ approach. The generated web pages are available as a web site:
 
 Index to content:
 
-- [[id:942E5349-A751-6124-855B-02887BD28B6E][Notes and comments]]
-- [[id:58175204-C736-CAB4-F95B-66E153DCA708][Emacs Lisp Recipes]]
+- [[./doc/notes_and_comments.org][Notes and comments]]
+- [[./doc/elisp_recepies.org][Emacs Lisp Recipes]]
 
 * Configuration
 
@@ -49,8 +49,8 @@ The configuration itself is split into a small number of self-contained files to
 make it easier to grok.
 
 - [[./config/core.org][Core]]
-- [[id:C14C28ED-B722-48A8-93E3-A10007EC4D03][Quality of Life]]
-- [[id:341DBB81-FE17-7064-5BC3-9A139E1FF48F][Features]]
-- [[id:6A53FD28-BBD1-1804-7233-027439130AF1][Development]]
-- [[id:F10318C4-5AB4-8624-A13B-0E3BAED0CB1D][Music]]
-- [[id:1A4D59C3-A56B-B7C4-54AB-6466F500580C][External]]
+- [[./config/quality_of_life.org][Quality of Life]]
+- [[./config/features.org][Features]]
+- [[./config/development.org][Development]]
+- [[./config/music.org][Music]]
+- [[./config/external.org][External]]
