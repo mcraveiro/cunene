@@ -195,6 +195,8 @@ surrounded by word boundaries."
                               (mode . gfm-mode)))
                  ("emacs-lisp" (or
                                 (mode . emacs-lisp-mode)
+                                (name . "^\\*Async-native-compile-log\\*$")
+                                (name . "^\\*ielm\\*$")
                                 (name . "^\\*Compile-Log\\*$")))
                  ("powershell" (or
                                 (mode . powershell-mode)
@@ -205,6 +207,7 @@ surrounded by word boundaries."
                  ("grep" (or
                           (name . "^\\*Occur\\*$")
                           (name . "^\\*Moccur\\*$")
+                          (name . "^\\*rg\\*$")
                           (mode . grep-mode)))
                  ("irc" (or
                          (mode . erc-list-mode)
@@ -242,6 +245,7 @@ surrounded by word boundaries."
                                   (mode . w3m-mode)
                                   (mode . verb-mode)
                                   (name . "^\\*Verb")
+                                  (name . "^\\*httpd\\*$")
                                   (mode . twittering-mode)))
                  ("music" (or
                            (mode . bongo-playlist-mode)
@@ -267,6 +271,7 @@ surrounded by word boundaries."
                           (name . "^\\*clangd")
                           (name . "^\\*company-")
                           (name . "^\\*omnisharp")
+                          (name . "^\\*Ilist")
                           (name . "^\\*lsp")))
                  ("system" (or
                             (name . "^\\*Packages\\*$")
@@ -304,6 +309,7 @@ surrounded by word boundaries."
                             (name . "^\\*compdb:")
                             (name . "^\\*Backtrace\\*$")
                             (name . "^\\*dashboard\\*$")
+                            (name . "^\\*timer-list\\*$")
                             (name . "^\\*Messages\\*$")))
                  ("Treemacs" (or
                               (name . "^Treemacs Update")

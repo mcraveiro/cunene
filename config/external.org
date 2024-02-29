@@ -147,9 +147,21 @@ any directory proferred by `consult-dir'."
 * Web Browsers
 
 #+begin_src emacs-lisp
+;; hard-code location of Chrome and Edge on Windows.
+(if (eq window-system 'w32)
+    (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"
+          browse-url-edge-program "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")
+  (setq browse-url-edge-program "/opt/microsoft/msedge/msedge"))
+
+(defun browse-url-edge (url &optional new-window)
+  "Open URL in Microsoft Edge."
+  (shell-command
+   (concat browse-url-edge-program " " url)))
+
 (setq cunene/browsers
       '(("Chrome" . browse-url-chrome)
         ("EWW" . eww-browse-url)
+        ("Edge" . browse-url-edge)
         ("Firefox" . browse-url-firefox)))
 
 (defun cunene/browse-url (&rest args)
@@ -160,9 +172,16 @@ any directory proferred by `consult-dir'."
 
 (setq browse-url-browser-function #'cunene/browse-url)
 
-;; hard-code location of Chrome on Windows.
-(if (eq window-system 'w32)
-    (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"))
+;; Sourced from here:
+;; - https://emacs.stackexchange.com/questions/50433/add-browser-bookmark-to-bookmark-browser
+(defun cunene/bookmark-url (url)
+  "Add URL to bookmarks."
+  (interactive "sBookmark URL: ")
+  (if (assoc url bookmark-alist)
+      (user-error "%s is already bookmarked" url)
+    (push `(,url . ((handler . ,(lambda (bookmark)
+                                  (browse-url (car bookmark))))))
+          bookmark-alist)))
 #+end_src
 
 * SSH
