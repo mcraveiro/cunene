@@ -188,7 +188,7 @@ surrounded by word boundaries."
                  ("bash" (mode . sh-mode))
                  ("awk" (mode . awk-mode))
                  ("clojure" (or
-                             (mode . inf-clojure)
+                             (mode . inf-clojure-mode)
                              (mode . clojure-mode)))
                  ("latex" (or
                            (name . ".tex$")
