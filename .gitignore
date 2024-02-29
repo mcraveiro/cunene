@@ -23,6 +23,7 @@ async-bytecomp.log
 transient
 auto-save-list
 eshell
+projects
 
 # Roam
 .org-id-locations-file
