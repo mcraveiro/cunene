@@ -31,6 +31,13 @@ this init without changing your configuration:
 emacs --no-init-file -l ./init.el
 #+end_src
 
+If for whatever reason you cannot download packages, I normally tag my elpa
+directory periodically. You can download it from the releases:
+
+- https://github.com/mcraveiro/cunene/releases
+
+Then have a look at the [[./doc/elisp_recepies.org][Emacs Lisp Recipes]] to recompile all packages.
+
 * Roam
 
 This project also stores all my knowledge about Emacs itself, using the org-roam
