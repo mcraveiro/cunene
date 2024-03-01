@@ -191,6 +191,7 @@ surrounded by word boundaries."
                             (mode . csproj-mode)
                             (mode . sln-mode)))
                  ("java" (mode . java-mode))
+                 ("csv" (mode . csv-mode))
                  ("kotlin" (mode . kotlin-mode))
                  ("ruby" (mode . ruby-mode))
                  ("perl" (mode . perl-mode))
@@ -356,7 +357,6 @@ surrounded by word boundaries."
                               (name . "^Treemacs Update")
                               (name . "^\\*nnimap imap.")))
                  )))))
-
 
 (use-package ibuffer-sidebar
   :commands (ibuffer-sidebar-toggle-sidebar)

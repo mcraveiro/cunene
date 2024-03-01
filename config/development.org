@@ -933,6 +933,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 #+end_src
 
 * CSV
+  :properties:
+  :id: 3E8F7DFC-EC7A-4364-400B-C8E43BA1499A
+  :end:
 
 #+begin_src emacs-lisp
 (use-package csv-mode)
