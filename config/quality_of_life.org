@@ -41,6 +41,9 @@ Changes to core behaviour to make life better.
 #+end_src
 
 * Garbage collection
+  :properties:
+  :id: F6DFF2D8-B2AD-4CA4-D183-F786C62F6339
+  :end:
 
 Improvements to default GC. Links:
 
@@ -60,6 +63,9 @@ Garbage-collect on focus-out, Emacs /should/ feel snappier overall.
 #+end_src
 
 * Better Defaults
+  :properties:
+  :id: D3BA141C-1259-2254-BBFB-A999BBB615C9
+  :end:
 
 Here are what I consider better defaults as per my own experience.
 
@@ -125,6 +131,9 @@ Here are what I consider better defaults as per my own experience.
 #+end_src
 
 * Text Size
+  :properties:
+  :id: 380650AA-3110-85B4-CC7B-BD02865F0565
+  :end:
 
 #+begin_src emacs-lisp
 ;; Font size
@@ -133,6 +142,9 @@ Here are what I consider better defaults as per my own experience.
 #+end_src
 
 * Buffers
+  :properties:
+  :id: 85ABB308-EF39-EF54-ED03-2652C7B0AC24
+  :end:
 
 ** Identification
 
@@ -252,6 +264,9 @@ something that augments and replaces the standard auto-save-mode.
 #+end_src
 
 * Key discoverability
+  :properties:
+  :id: 5F0EE55E-7570-5104-4B13-733F6C6F3E49
+  :end:
 
 If you type a prefix key (such as =C-x r=) and wait some time then display
 window with keys that can follow.
@@ -271,6 +286,9 @@ window with keys that can follow.
 #+end_src
 
 * Themes
+  :properties:
+  :id: 199B7C70-57E7-D054-2243-F1AEA3A854A4
+  :end:
 
 | =Doom One= | https://github.com/hlissner/emacs-doom-themes |
 
@@ -310,6 +328,9 @@ Links:
 #+end_src
 
 * Modeline
+  :properties:
+  :id: 113B20E8-5A4E-69D4-D63B-EC6685417C82
+  :end:
 
 | =diminish=       | https://github.com/emacsmirror/diminish          |
 | =hide-mode-line= | https://github.com/hlissner/emacs-hide-mode-line |
@@ -320,6 +341,9 @@ Links:
 #+end_src
 
 * Whitespace
+  :properties:
+  :id: 54BF3DC7-B8AE-42F4-1E2B-13A4002888C2
+  :end:
 
 #+begin_src emacs-lisp
 ;; Give details about white space usage
@@ -391,6 +415,9 @@ WIDTH is the size of the list."
 #+end_src
 
 * Exiting
+  :properties:
+  :id: DC8D1283-4821-F084-E8CB-E3FD36385B22
+  :end:
 
 Links:
 
@@ -422,6 +449,9 @@ Links:
 #+end_src
 
 * Dashboard
+  :properties:
+  :id: 72F50855-C290-B064-4893-3F2048094692
+  :end:
 
 | emacs-dashboard | https://github.com/emacs-dashboard/emacs-dashboard |
 
@@ -453,6 +483,9 @@ Links:
 #+end_src
 
 * Utilities
+  :properties:
+  :id: 8A51A922-06FA-9284-866B-02335E6AC817
+  :end:
 
 | thingatpt  | https://www.emacswiki.org/emacs/ThingAtPoint |
 
@@ -531,6 +564,9 @@ START and END mark the region."
 #+end_src
 
 * Region
+  :properties:
+  :id: 6D970862-A042-4874-C41B-C39FDB2B0C8E
+  :end:
 
 | =drag-stuff=          | https://github.com/rejeep/drag-stuff.el          |
 | =volatile-highlights= | https://github.com/k-talo/volatile-highlights.el |
@@ -565,6 +601,9 @@ START and END mark the region."
 #+end_src
 
 * Mark
+  :properties:
+  :id: 1FB4F408-01ED-D214-577B-B4FF133E6C43
+  :end:
 
 | =jump-tree= | https://github.com/yangwen0228/jump-tree |
 
@@ -574,6 +613,9 @@ START and END mark the region."
 #+end_src
 
 * Strings
+  :properties:
+  :id: 80E26356-8259-4B44-A8F3-5E3C33A9FF1F
+  :end:
 
 #+begin_src emacs-lisp
 (defun cunene/toggle-quotes ()
@@ -699,6 +741,9 @@ this command cycles the { , _, -} characters."
 #+end_src
 
 * Filling
+  :properties:
+  :id: 1D33821B-CD89-0804-022B-4CB76E2F4DDC
+  :end:
 
 From [[https://sachachua.com/dotemacs/#orgbeffc73][Sacha Chua's config]].
 
@@ -730,6 +775,9 @@ With the prefix argument UNFILL, unfill it instead."
 #+end_src
 
 * History
+  :properties:
+  :id: F6BDD902-DC7C-E1E4-0CCB-6774F62D2C56
+  :end:
 
 #+begin_src emacs-lisp
 (require 'saveplace)
@@ -753,6 +801,9 @@ With the prefix argument UNFILL, unfill it instead."
 #+end_src
 
 * Help
+  :properties:
+  :id: E4E96D56-D3E4-CDE4-C443-D82CCFC8F299
+  :end:
 
 #+begin_src emacs-lisp
 (use-package helpful
@@ -765,6 +816,9 @@ With the prefix argument UNFILL, unfill it instead."
 #+end_src
 
 * Prettify
+  :properties:
+  :id: 951ECB09-BB55-21F4-589B-BAC18C33FE4E
+  :end:
 
 Sources:
 

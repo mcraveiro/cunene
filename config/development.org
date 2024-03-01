@@ -41,6 +41,9 @@ Configuration related to programming.
 #+end_src
 
 * Version Control
+  :properties:
+  :id: 359E0F4C-C624-4FF4-A9B3-605A9A59013F
+  :end:
 
 | =git-commit=         | https://github.com/magit/magit/blob/master/lisp/git-commit.el |
 | =git-gutter-fringe=  | https://github.com/emacsorphanage/git-gutter-fringe           |
@@ -227,6 +230,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Project Management
+  :properties:
+  :id: ED77C960-46A7-EBF4-ECA3-9072AD8F2A86
+  :end:
 
 | Projectile | https://github.com/bbatsov/projectile |
 
@@ -248,6 +254,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Syntax Checking
+  :properties:
+  :id: 33CE11A4-5DFF-4094-54A3-EF53C3944A3F
+  :end:
 
 #+begin_src emacs-lisp
 (use-package flycheck :init (global-flycheck-mode))
@@ -262,6 +271,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Syntax Highlighting
+  :properties:
+  :id: 8E974461-5B8B-D9F4-BADB-C18A176F36BE
+  :end:
 
 #+begin_src emacs-lisp
 (use-package color-identifiers-mode
@@ -271,6 +283,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Eglot
+  :properties:
+  :id: 49C4B4A5-DA01-FC14-6743-DEA942D98798
+  :end:
 
 | eglot         | https://github.com/joaotavora/eglot      |
 | consult-eglot | https://github.com/mohkale/consult-eglot |
@@ -298,6 +313,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Diagrams
+  :properties:
+  :id: 41694A0E-457F-9384-F0C3-BE49E3737ED3
+  :end:
 
 #+begin_src emacs-lisp
 (use-package plantuml-mode
@@ -321,6 +339,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Parenthesis
+  :properties:
+  :id: 3ED3D8BE-A972-EDD4-2163-8312C780473A
+  :end:
 
 #+begin_src emacs-lisp
 (show-paren-mode 1)
@@ -343,6 +364,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Indentation
+  :properties:
+  :id: 522E6AEA-EB77-A634-9C3B-DEEFFE9A63E7
+  :end:
 
 #+begin_src emacs-lisp
 (use-package aggressive-indent)
@@ -354,6 +378,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 #+end_src
 
 * Deletion
+  :properties:
+  :id: A9CE6C54-365F-90C4-E0AB-8ED155D5FDE4
+  :end:
 
 | =smart-hungry-delete= | https://github.com/hrehfeld/emacs-smart-hungry-delete |
 
@@ -382,6 +409,9 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 #+end_src
 
 * Code Folding
+  :properties:
+  :id: 35652DDD-57E8-1E44-43CB-3EA7BD2677C3
+  :end:
 
 | =hideshow= | [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html][built-in]] |
 
@@ -409,6 +439,9 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 #+end_src
 
 * XML
+  :properties:
+  :id: 74D08CB2-AD6A-A924-989B-056790EFDF35
+  :end:
 
 #+begin_src emacs-lisp
 ;; https://emacs.stackexchange.com/questions/2884/the-old-how-to-fold-xml-question
@@ -482,6 +515,9 @@ START and END mark the region."
 #+end_src
 
 * FV
+  :properties:
+  :id: 7655EDEA-F434-4FB4-D49B-9699119EA331
+  :end:
 
 #+begin_src emacs-lisp
 (use-package fv-mode
@@ -517,6 +553,9 @@ START and END mark the region."
 #+end_src
 
 * Json
+  :properties:
+  :id: CF91D5F1-ECEA-3CF4-2C0B-BE8E94B5F0D7
+  :end:
 
 | =jq-format= | https://github.com/wbolster/emacs-jq-format |
 | =jq-mode=   | https://github.com/ljos/jq-mode             |
@@ -574,6 +613,9 @@ START and END mark the region."
 #+end_src
 
 * Markup
+  :properties:
+  :id: 8FC0E36E-258F-DF14-6A9B-420409877A8B
+  :end:
 
 #+begin_src emacs-lisp
 (use-package markdown-mode
@@ -591,6 +633,9 @@ START and END mark the region."
 #+end_src
 
 * C/C++
+  :properties:
+  :id: 88FD9DBC-0949-AC64-E683-3FD8B62D27A0
+  :end:
 
 #+begin_src emacs-lisp
 ;; Default these extensions to c++ mode
@@ -618,6 +663,9 @@ START and END mark the region."
 #+end_src
 
 * C#
+  :properties:
+  :id: C1FF33A7-84FB-6754-81F3-15492FEF9114
+  :end:
 
 #+begin_src emacs-lisp
 (use-package csharp-mode
@@ -730,6 +778,9 @@ again, I haven't see that as a problem."
 #+end_src
 
 * Clojure
+  :properties:
+  :id: DB7838ED-D513-1414-89D3-E5499CDD9C37
+  :end:
 
 #+begin_src emacs-lisp
 (use-package clojure-mode)
@@ -737,24 +788,36 @@ again, I haven't see that as a problem."
 #+end_src
 
 * Protobuf
+  :properties:
+  :id: 3D74984B-0203-9AB4-4C5B-9EDA961F98D9
+  :end:
 
 #+begin_src emacs-lisp
 (use-package protobuf-mode)
 #+end_src
 
 * Terraform
+  :properties:
+  :id: 57EA2C89-A930-4D44-6E63-364304403913
+  :end:
 
 #+begin_src emacs-lisp
 (use-package terraform-mode)
 #+end_src
 
 * Dockerfile
+  :properties:
+  :id: 2228868C-C213-DB24-A263-7C382136FC1F
+  :end:
 
 #+begin_src emacs-lisp
 (use-package dockerfile-mode)
 #+end_src
 
 * Doxymacs
+  :properties:
+  :id: 9778C07A-37CD-7D04-14FB-9124E67DDBF1
+  :end:
 
 | =doxymacs= | https://github.com/gittiver/doxymacs |
 
@@ -776,6 +839,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 #+end_src
 
 * Compilation
+  :properties:
+  :id: 424A04F9-974E-0174-BA9B-574C7D15A8CE
+  :end:
 
 #+begin_src emacs-lisp
 
@@ -807,6 +873,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 #+end_src
 
 * Lisp
+  :properties:
+  :id: 711A7A11-27A3-5074-1EFB-C81368C8F2E4
+  :end:
 
 | =persistent-scratch= | https://github.com/Fanael/persistent-scratch |
 
@@ -819,6 +888,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 #+end_src
 
 * Mustache
+  :properties:
+  :id: F5A8C2A2-3047-3E74-D0CB-5BFED679519B
+  :end:
 
 | =mustache= | https://github.com/mustache/emacs |
 
@@ -839,6 +911,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 #+end_src
 
 * SQL
+  :properties:
+  :id: 5B99B5B1-FF92-D8A4-E7C3-D4DAAA9AF88D
+  :end:
 
 | =sql-clickhouse= | https://github.com/rschwarz/sql-clickhouse |
 
@@ -847,6 +922,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 #+end_src
 
 * Yaml
+  :properties:
+  :id: B3E43C09-4990-3BA4-3ABB-85CCD69BE163
+  :end:
 
 | =yaml-mode= | [[https://github.com/yoshiki/yaml-mode]] |
 
@@ -855,6 +933,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 #+end_src
 
 * GPT
+  :properties:
+  :id: 06E0D9BD-F1FE-7D24-1C23-1089728BA29A
+  :end:
 
 #+begin_src emacs-lisp
 (use-package chatgpt-shell

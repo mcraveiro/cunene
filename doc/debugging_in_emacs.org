@@ -1,0 +1,24 @@
+:properties:
+:id: 7777CA17-4886-3964-512B-96F59C3BED5D
+:end:
+#+title: Debugging in Emacs
+#+author: Marco Craveiro
+#+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
+
+* EDebug
+
+Video by Dmitry M:
+
+- [[https://www.youtube.com/watch?v=560QrNt-a_w&ab_channel=DmitryM][Debugging org-noter with edebug in Emacs]]
+
+Key notes:
+
+#+begin_quote
+Using edebug in Emacs to troubleshoot a problem with the org-noter package.
+
+Some of the keyboard shortcuts I used:
+
+- =C-u C-M-x= to instrument a function so that edebugger can be used.
+- =Space= or =c= to step through the code
+- =H- or =M-x edebug-goto-here= to run to cursor
+#+end_quote

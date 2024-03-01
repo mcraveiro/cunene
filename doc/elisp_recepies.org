@@ -22,7 +22,7 @@ As per [[https://stackoverflow.com/questions/1217180/how-do-i-byte-compile-every
 To recompile package directory:
 
 #+begin_src emacs-lisp
-(byte-recompile-directory package-user-dir nil 'force)
+(byte-recompile-directory package-user-dir 0 'force)
 #+end_src
 
 As per [[http://sodaware.sdf.org/notes/recompiling-all-emacs-packages/][Recompiling all Emacs packages]].

@@ -42,6 +42,9 @@ Interaction with the outside world.
 
 
 * Shells
+  :properties:
+  :id: 564A7580-5A6E-DD64-C733-D0D5604FB41E
+  :end:
 
 ** Bash
 
@@ -146,6 +149,9 @@ any directory proferred by `consult-dir'."
 #+end_src
 
 * Grepping
+  :properties:
+  :id: 5B16D805-364F-EBF4-5D1B-B1ACECB48632
+  :end:
 
 | deadgrep | https://github.com/Wilfred/deadgrep |
 | rg       | https://github.com/dajva/rg.el      |
@@ -158,6 +164,9 @@ any directory proferred by `consult-dir'."
 #+end_src
 
 * Web Browsers
+  :properties:
+  :id: 922783F2-AAC2-8E84-A853-6CE81B4363C5
+  :end:
 
 #+begin_src emacs-lisp
 ;; hard-code location of Chrome and Edge on Windows.
@@ -210,6 +219,9 @@ The optional argument NEW-WINDOW is not used."
 #+end_src
 
 * SSH
+  :properties:
+  :id: 24C98A96-E9E8-4FB4-CF0B-6C58F63F9694
+  :end:
 
 | =ssh= | https://github.com/ieure/ssh-el =
 
@@ -248,6 +260,9 @@ The optional argument NEW-WINDOW is not used."
 #+end_src
 
 * Processes
+  :properties:
+  :id: 66882279-5623-6F14-FFFB-6D4E5175BA41
+  :end:
 
 | =prodigy= | https://github.com/rejeep/prodigy.el |
 
@@ -260,6 +275,9 @@ The optional argument NEW-WINDOW is not used."
 #+end_src
 
 * Mongo
+  :properties:
+  :id: DDB730BE-9FCA-62C4-39CB-47F1E0D2CEDA
+  :end:
 
 | =inf-mongo= | https://github.com/endofunky/inf-mongo |
 

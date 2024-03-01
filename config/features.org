@@ -41,6 +41,9 @@ Key features.
 #+end_src
 
 * Regular Expressions
+  :properties:
+  :id: 40EE8E40-7FC4-1C84-D10B-4B1BBC0AB1E4
+  :end:
 
 | =reb= | Built-in |
 
@@ -82,6 +85,9 @@ surrounded by word boundaries."
 #+end_src
 
 * Dired
+  :properties:
+  :id: 6F6357F1-16CF-9464-6FBB-87281D85635E
+  :end:
 
 #+begin_src emacs-lisp
 ;; Dired switches
@@ -130,6 +136,9 @@ surrounded by word boundaries."
 #+end_src
 
 * IBuffer
+  :properties:
+  :id: 3A49E027-84E2-E004-B013-A128FD1F779C
+  :end:
 
 #+begin_src emacs-lisp
 (use-package ibuffer
@@ -247,6 +256,9 @@ surrounded by word boundaries."
                  ("file management" (or
                                      (mode . dired-mode)
                                      (mode . tar-mode)))
+                 ("sidebars" (or
+                              (mode . dired-sidebar-mode)
+                              (mode . ibuffer-sidebar-mode)))
                  ("org" (mode . org-mode-))
                  ("text files" (or
                                 (mode . conf-unix-mode)
@@ -294,11 +306,12 @@ surrounded by word boundaries."
                                    (mode . help-mode)
                                    (mode . Man-mode)))
                  ("lsp" (or
-                          (name . "^\\*clangd")
-                          (name . "^\\*company-")
-                          (name . "^\\*omnisharp")
-                          (name . "^\\*Ilist")
-                          (name . "^\\*lsp")))
+                         (name . "^\\*eldoc")
+                         (name . "^\\*clangd")
+                         (name . "^\\*company-")
+                         (name . "^\\*omnisharp")
+                         (name . "^\\*Ilist")
+                         (name . "^\\*lsp")))
                  ("system" (or
                             (name . "^\\*Packages\\*$")
                             (name . "^\\*helm M-x\\*$")
@@ -804,6 +817,9 @@ ARGUMENT determines the visible heading."
 #+end_src
 
 * Completion
+  :properties:
+  :id: 3C29BFD0-83E4-8EA4-50BB-05E6BBC0E165
+  :end:
 
 #+begin_src emacs-lisp
 (use-package vertico
@@ -917,6 +933,9 @@ Company
 #+end_src
 
 * Undo
+  :properties:
+  :id: DD9052B1-705F-A3E4-6CFB-7EB7751A128B
+  :end:
 
 | =undo-tree= | https://gitlab.com/tsc25/undo-tree |
 
@@ -946,6 +965,9 @@ Company
 #+end_src
 
 * Bookmarks
+  :properties:
+  :id: 47C3534B-DA1C-4234-8013-DD0F7EF146E2
+  :end:
 
 | bm | https://github.com/joodland/bm |
 
@@ -1043,6 +1065,9 @@ For the org-mode support, see:
 #+end_src
 
 * Highlighting
+  :properties:
+  :id: 61455170-0313-8BB4-983B-BE24F43EFDD7
+  :end:
 
 | =beacon=  | https://github.com/Malabarba/beacon                                     |
 | =hi-lock= | https://www.masteringemacs.org/article/highlighting-by-word-line-regexp |
@@ -1091,6 +1116,9 @@ For the org-mode support, see:
 #+end_src
 
 * Search
+  :properties:
+  :id: E6C28FEF-1E20-3E14-E723-ABCBFAE58F4B
+  :end:
 
 | =consult=           | https://github.com/minad/consult             |
 | =consult-flycheck=  | https://github.com/minad/consult-flycheck    |
@@ -1187,6 +1215,9 @@ For the org-mode support, see:
 #+end_src
 
 * Fonts
+  :properties:
+  :id: 62E38260-6DDB-1964-47D3-F7A2C283619E
+  :end:
 
 #+begin_src emacs-lisp
 (use-package font-lock-ext
@@ -1195,6 +1226,9 @@ For the org-mode support, see:
 
 
 * Snippets
+  :properties:
+  :id: B6578DC4-1350-4834-1A93-1E3D4365747F
+  :end:
 
 #+begin_src emacs-lisp
 (setq-default abbrev-mode 1)
@@ -1211,6 +1245,9 @@ For the org-mode support, see:
 #+end_src
 
 * Spell checking
+  :properties:
+  :id: 57D83379-91DA-85B4-431B-5BAB6B59E332
+  :end:
 
 #+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -1218,6 +1255,9 @@ For the org-mode support, see:
 #+end_src
 
 * Thesaurus
+  :properties:
+  :id: 7CE8EBB4-69D4-79B4-E003-6356C0A98C04
+  :end:
 
 #+begin_src emacs-lisp
 (use-package define-word
@@ -1244,6 +1284,9 @@ For the org-mode support, see:
 #+end_src
 
 * Logs
+  :properties:
+  :id: E6D79640-8640-FCE4-C5AB-DD8BEDF415A9
+  :end:
 
 | logview | https://github.com/doublep/logview |
 
@@ -1264,6 +1307,9 @@ For the org-mode support, see:
 #+end_src
 
 * Workspaces
+  :properties:
+  :id: 29880417-F3E0-9D84-E863-037E0788AC99
+  :end:
 
 | eyebrowse | https://depp.brause.cc/eyebrowse |
 
@@ -1285,6 +1331,9 @@ For the org-mode support, see:
 #+end_src
 
 * Switching
+  :properties:
+  :id: DF48E66B-21D0-A734-6343-954CCAB7EDCD
+  :end:
 
 | ace-window | https://github.com/abo-abo/ace-window |
 
@@ -1305,6 +1354,9 @@ For the org-mode support, see:
 #+end_src
 
 * Diffing
+  :properties:
+  :id: 900750E0-B842-61F4-3DE3-5477D2A88EB8
+  :end:
 
 | =ztree=         | https://github.com/fourier/ztree                  |
 | =diff-at-point= | https://gitlab.com/ideasman42/emacs-diff-at-point |
@@ -1384,6 +1436,9 @@ expects some output that isn't there and triggers an error"
 #+end_src
 
 * IRC
+  :properties:
+  :id: 986964E9-A032-1BC4-2DF3-CBC324133C66
+  :end:
 
 #+begin_src emacs-lisp
 (setq erc-join-buffer 'bury)
@@ -1391,6 +1446,9 @@ expects some output that isn't there and triggers an error"
 #+end_src
 
 * Mastodon
+  :properties:
+  :id: 9AE0773B-297B-54C4-6123-C8391056FCD7
+  :end:
 
 #+begin_src emacs-lisp
 (use-package mastodon
