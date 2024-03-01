@@ -665,6 +665,7 @@ authoring documents with a fast and effective plain-text system.
         org-highlight-latex-and-related '(latex)
         org-descriptive-links t
         org-edit-src-content-indentation 0
+        org-src-preserve-indentation nil
         org-edit-src-persistent-message nil
         org-fontify-done-headline t
         org-fontify-quote-and-verse-blocks t
@@ -674,7 +675,7 @@ authoring documents with a fast and effective plain-text system.
         org-src-window-setup 'current-window
         org-startup-truncated nil
         org-support-shift-select 'always
-        org-adapt-indentation 'headline-data
+        org-adapt-indentation nil ;; 'headline-data https://emacs.stackexchange.com/questions/69199/is-there-indentation-in-org-src-blocks
         org-duration-format (quote h:mm)
         org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/223
   (require 'ob-shell)
