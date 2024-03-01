@@ -221,6 +221,7 @@ The optional argument NEW-WINDOW is not used."
                        (shell-dirtrack-mode t)
                        (setq dirtrackp nil))))
 
+(require 'tramp)
 (setq tramp-default-method "ssh")
 (setq ssh-explicit-args nil)
 (tramp-change-syntax 'default)

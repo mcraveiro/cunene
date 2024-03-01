@@ -1352,7 +1352,7 @@ For the org-mode support, see:
           ("dotnet"
            (format . "LEVEL TIMESTAMP [THREAD] NAME IGNORED - MESSAGE")
            (levels . "SLF4J"))
-          ))
+          )))
 #+end_src
 
 * Workspaces
