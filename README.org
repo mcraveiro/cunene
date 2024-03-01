@@ -50,6 +50,7 @@ Index to content:
 - [[./doc/notes_and_comments.org][Notes and comments]]
 - [[./doc/elisp_recepies.org][Emacs Lisp Recipes]]
 - [[./doc/debugging_in_emacs.org][Debugging in Emacs]]
+- [[./doc/interesting_modes.org][Interesting Modes]]
 
 * Configuration
 
