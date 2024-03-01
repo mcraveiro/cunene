@@ -932,6 +932,12 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 (use-package yaml-mode)
 #+end_src
 
+* CSV
+
+#+begin_src emacs-lisp
+(use-package csv-mode)
+#+end_src
+
 * GPT
   :properties:
   :id: 06E0D9BD-F1FE-7D24-1C23-1089728BA29A

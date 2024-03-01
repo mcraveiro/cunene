@@ -727,16 +727,17 @@ authoring documents with a fast and effective plain-text system.
 (use-package org-roam :after org)
 (use-package org-roam-ui :after org-roam)
 
-(add-to-list 'display-buffer-alist
-             '("\\*org-roam\\*"
-               (display-buffer-in-side-window)
-               ;; (dedicated . t)
-               (side . right)
-               (slot . 0)
-               (window-width . 0.25)
-               (preserve-size . (t nil))
-               (window-parameters . ((no-other-window . t)
-                                     (no-delete-other-windows . t)))))
+;; FIXME breaks flycheck
+;; (add-to-list 'display-buffer-alist
+;;              '("\\*org-roam\\*"
+;;                (display-buffer-in-side-window)
+;;                ;; (dedicated . t)
+;;                (side . right)
+;;                (slot . 0)
+;;                (window-width . 0.25)
+;;                (preserve-size . (t nil))
+;;                (window-parameters . ((no-other-window . t)
+;;                                      (no-delete-other-windows . t)))))
 
 ;; Get `org-roam-preview-visit' and friends to replace the main window. This
 ;;should be applicable only when `org-roam-mode' buffer is displayed in a

@@ -74,6 +74,14 @@ ORG-FILE-NAME file to operate on."
     (message (concat "Loading " elc-file-name "..."))
     (load-file elc-file-name)))
 
+;; FIXME: when troubleshooting package issues
+;; (require 'package)
+;; (setq package-archives
+;;       '(("gnu" . "https://elpa.gnu.org/packages/")
+;;         ("melpa" . "https://melpa.org/packages/")))
+
+;; (package-initialize)
+
 (let
     (
      ;; Configuration specific to startup.
