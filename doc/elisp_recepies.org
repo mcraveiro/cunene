@@ -30,7 +30,7 @@ As per [[http://sodaware.sdf.org/notes/recompiling-all-emacs-packages/][Recompil
 To recompile vendor directory:
 
 #+begin_src emacs-lisp
-(byte-recompile-directory (expand-file-name "~/.emacs.d/vendor") 0)
+(byte-recompile-directory (expand-file-name "~/.emacs.d/vendor") 0 'force)
 #+end_src
 
 ** Check native compilation

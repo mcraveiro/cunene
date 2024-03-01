@@ -1341,10 +1341,15 @@ For the org-mode support, see:
   :config
   (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap"))
   (setq logview-additional-submodes
-        '(("dogen"
+        '(
+          ("dogen"
            (format . "TIMESTAMP [LEVEL] [NAME]")
            (levels . "SLF4J")
-           (timestamp "ISO 8601 datetime + micros")))))
+           (timestamp "ISO 8601 datetime + micros"))
+          ("dotnet"
+           (format . "LEVEL TIMESTAMP [THREAD] NAME IGNORED - MESSAGE")
+           (levels . "SLF4J"))
+          ))
 #+end_src
 
 * Workspaces

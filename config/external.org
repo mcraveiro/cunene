@@ -43,6 +43,24 @@ Interaction with the outside world.
 
 * Shells
 
+** Bash
+
+#+begin_src emacs-lisp
+
+(defun cunene/create-named-bash-shell (name)
+  "Starts a new named bash shell. Bash must be in the path.
+NAME is the postfix for the buffer name."
+  (interactive "sName: ")
+  (let
+      ((explicit-shell-file-name "bash")
+       (explicit-bash-args '("--login" "-i"))
+       (buffer-name (concat "*shell - " name "*")))
+    (shell)
+    (rename-buffer buffer-name)))
+
+(global-set-key (kbd "C-x M") 'cunene/create-named-bash-shell)
+#+end_src
+
 ** Eshell
 
 Links:
@@ -105,9 +123,10 @@ any directory proferred by `consult-dir'."
 (defun cunene/create-named-eshell (name)
   "Create an eshell buffer named NAME."
   (interactive "sName: ")
-  (setq name (concat "*eshell - " name "*"))
-  (eshell)
-  (rename-buffer name))
+  (let
+      ((buffer-name (concat "*shell - " name "*")))
+    (eshell)
+    (rename-buffer buffer-name)))
 
 (global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
 #+end_src
@@ -207,6 +226,30 @@ The optional argument NEW-WINDOW is not used."
                        (setq ssh-directory-tracking-mode t)
                        (shell-dirtrack-mode t)
                        (setq dirtrackp nil))))
+
+(setq tramp-default-method "ssh")
+(setq ssh-explicit-args nil)
+(tramp-change-syntax 'default)
+
+;; Putty is expected to be on the path.
+(when (string-equal system-type "windows-nt")
+  (setq ssh-program "putty")
+  (add-to-list 'tramp-methods
+               `("plinkw"
+                 (tramp-login-program        "plink")
+                 ;; ("%h") must be a single element, see `tramp-compute-multi-hops'.
+                 (tramp-login-args           (("-l" "%u") ("-P" "%p") ("-t")
+                                              ("%h") ("\"")
+                                              (,(format
+                                                 "env 'TERM=%s' 'PROMPT_COMMAND=' 'PS1=%s'"
+                                                 tramp-terminal-type
+                                                 "$"))
+                                              ("/bin/sh") ("\"")))
+                 (tramp-remote-shell         "/bin/sh")
+                 (tramp-remote-shell-login   ("-l"))
+                 (tramp-remote-shell-args    ("-c"))
+                 (tramp-default-port         22))
+               ))
 #+end_src
 
 * Processes
@@ -227,7 +270,49 @@ The optional argument NEW-WINDOW is not used."
 
 #+begin_src emacs-lisp
 (use-package inf-mongo)
-#+end_src
+
+;; Examples:
+;; (cunene/mongo-oid-from-date "2023-03-09")
+;; (cunene/mongo-oid-from-date)
+(defun cunene/mongo-oid-from-date (&optional date)
+  "Return a valid MongoDB ObjectId for the specified DATE."
+  (let ((timestamp
+         (format "%x"
+                 (time-to-seconds
+                  (date-to-time (or date (current-time)))))) ;; FXIME: current time needs conversion
+         (machine-id (s-pad-right 3 "\x00" (format "%x" (cl-random 16777216))))
+         (pid (s-pad-right 2 "\x00" (format "%x" (emacs-pid))))
+         (increment (s-pad-right 3 "\x00" (format "%x" (cl-random 16777216)))))
+    (format "%s%s%s%s" timestamp machine-id pid increment))
+  )
+
+(defun cunene/object-id-to-timestamp (start end)
+  "Given a region with a mongo ObjectId, return the timestamp.
+START and END mark the region."
+  (interactive "r")
+  (let*
+      ((object-id (buffer-substring-no-properties (mark) (point)))
+       (timestamp-hex (substring-no-properties object-id 0 8))
+       (timestamp-num (string-to-number timestamp-hex 16)))
+    (message "Timestamp: %s"
+             (format-time-string "%Y-%m-%d %a %H:%M:%S" timestamp-num)))
+  )
+
+(defun cunene/timet-to-timestamp (start end)
+  "Given a region with a UNIX timestamp in time_t, return the human timestamp.
+START and END mark the region."
+  (interactive "r")
+  (let*
+      ((time-t-string (buffer-substring-no-properties (mark) (point)))
+       (timestamp-num (string-to-number time-t-string))
+       (timestamp-time (seconds-to-time timestamp-num)))
+    (message "Timestamp: %s"
+             (format-time-string "%Y-%m-%d %a %H:%M:%S" timestamp-time)))
+  )
+
+  #+end_src
+
+
 
 * Postamble
 

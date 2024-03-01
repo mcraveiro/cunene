@@ -512,6 +512,16 @@ START and END mark the region."
 
 ;; operations on thing at point.
 (require 'thingatpt)
+
+(defun cunene/to-excel-date (date)
+  "Convert DATE to an excel date. Example date: 2024-03-01."
+  (let* ((excel-epoch (encode-time '(0 0 0 1 1 1900)))
+         (excel-days (floor (-
+                             (float-time (date-to-time date))
+                             (float-time excel-epoch))
+                            86400)))
+    (+ excel-days 2)
+  ))
 #+end_src
 
 * Region

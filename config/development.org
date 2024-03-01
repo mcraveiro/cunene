@@ -405,9 +405,13 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
                                              (overlay-end ov)))
                         'face 'font-lock-type-face)))))
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-
-;; https://emacs.stackexchange.com/questions/2884/the-old-how-to-fold-xml-question
 (require 'hideshow)
+#+end_src
+
+* XML
+
+#+begin_src emacs-lisp
+;; https://emacs.stackexchange.com/questions/2884/the-old-how-to-fold-xml-question
 (require 'sgml-mode)
 (require 'nxml-mode)
 
@@ -422,6 +426,94 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 
 (add-hook 'nxml-mode-hook 'hs-minor-mode)
 (global-set-key (kbd "C-<tab>") 'hs-toggle-hiding)
+
+(defun cunene/escape-unindent-xml (start end)
+  "Convert XML into a single line, removing line breaks, etc and escape quotes.
+START and END mark the region."
+  (interactive "r")
+  (let
+      ((buffer (get-buffer-create "*decoded-content*"))
+       (pipeline "xmllint -exc-c14n --no-blanks - | sed 's/\"/\\\"/g'"))
+    (shell-command-on-region start end pipeline buffer)
+    (set-buffer buffer)
+    (switch-to-buffer-other-window buffer)))
+
+(defun cunene/unescape-indent-xml (start end)
+  "Convert escaped XML into indented XML.
+START and END mark the region."
+  (interactive "r")
+  (let*
+      ((original-contents (buffer-substring (+ start 1) (- end 1)))
+       (fixed-new-lines (replace-regexp-in-string "\\\\n" "" original-contents))
+       (fixed-quotes (replace-regexp-in-string "\\\\\\(.\\|\n\\)" "\\1" fixed-new-lines))
+       (buffer (get-buffer-create "*formatted-content*"))
+       (pipeline "xmllint.exe --format -"))
+    (set-buffer buffer)
+    (erase-buffer)
+    (insert fixed-quotes)
+    (shell-command-on-region (point-min) (point-max) pipeline buffer)
+    (xml-mode)
+    (switch-to-buffer-other-window buffer))
+  )
+
+(defun cunene/decode-xml (start end)
+  "Base64 decodes the region and unzips it, generating an XML buffer.
+START and END mark the region."
+  (interactive "r")
+  (let
+      ((buffer (get-buffer-create "*decoded-content*"))
+       (pipeline "base64 -d | openssl zlib -d | xmllint.exe --format -"))
+    (shell-command-on-region start end pipeline buffer)
+    (set-buffer buffer)
+    (xml-mode)
+    (switch-to-buffer-other-window buffer)))
+
+(defun cunene/decode (start end)
+  "Base64 decodes the region and unzips it.
+START and END mark the region."
+  (interactive "r")
+  (let
+      ((buffer (get-buffer-create "*decoded-content*"))
+       (pipeline "base64 -d | openssl zlib -d"))
+    (shell-command-on-region start end pipeline buffer)
+    (set-buffer buffer)
+    (switch-to-buffer-other-window buffer)))
+
+#+end_src
+
+* FV
+
+#+begin_src emacs-lisp
+(use-package fv-mode
+  :load-path cunene/vendor-packages)
+
+(defun cunene/decode-fv (start end)
+  "Base64 decodes the region and unzips it, generating an FV buffer.
+START and END mark the region."
+  (interactive "r")
+  (let
+      ((buffer (get-buffer-create "*decoded-content*"))
+       (pipeline "base64 -d | openssl zlib -d"))
+    (shell-command-on-region start end pipeline buffer)
+    (set-buffer buffer)
+    (fv-mode)
+    (switch-to-buffer-other-window buffer)))
+
+(defun cunene/indent-escape-fv (start end)
+  "Convert escaped XML into indented FV.
+START and END mark the region."
+  (interactive "r")
+  (let*
+      ((original-contents (buffer-substring (+ start 1) (- end 1)))
+       (fixed-new-lines (replace-regexp-in-string "\\\\n" "" original-contents))
+       (fixed-quotes (replace-regexp-in-string "\\\\\\(.\\|\n\\)" "\\1" fixed-new-lines))
+       (buffer (get-buffer-create "*formatted-content*")))
+    (set-buffer buffer)
+    (erase-buffer)
+    (insert fixed-quotes)
+    (fv-mode)
+    (switch-to-buffer-other-window buffer))
+  )
 #+end_src
 
 * Json
@@ -447,12 +539,12 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 #+end_src
 
 #+begin_src emacs-lisp
-(defun cunene/json-indent-region (start end)
+(defun cunene/indent-json (start end)
   "Indent region as JSON.
 START and END mark the region."
   (interactive "r")
   (let
-      ((buffer (get-buffer-create "*JSON Content*"))
+      ((buffer (get-buffer-create "*formatted-content*"))
        (pipeline "jq ."))
     (shell-command-on-region start end pipeline buffer)
     (set-buffer buffer)
@@ -460,6 +552,25 @@ START and END mark the region."
     (switch-to-buffer-other-window buffer)
     )
 )
+
+(defun cunene/unescape-indent-json (start end)
+  "Convert escaped JSON into indented JSON.
+START and END mark the region."
+  (interactive "r")
+  (let*
+      ((original-contents (buffer-substring (+ start 1) (- end 1)))
+       (fixed-new-lines (replace-regexp-in-string "\\\\n" "" original-contents))
+       (fixed-quotes (replace-regexp-in-string "\\\\\\(.\\|\n\\)" "\\1" fixed-new-lines))
+       (buffer (get-buffer-create "*formatted-content*"))
+       (pipeline "jq ."))
+    (set-buffer buffer)
+    (erase-buffer)
+    (insert fixed-quotes)
+    (shell-command-on-region (point-min) (point-max) pipeline buffer)
+    (json-mode)
+    (switch-to-buffer-other-window buffer))
+  )
+
 #+end_src
 
 * Markup
