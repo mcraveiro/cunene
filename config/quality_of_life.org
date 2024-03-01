@@ -294,6 +294,12 @@ Links:
 
 #+begin_src emacs-lisp
 (use-package all-the-icons)
+(use-package all-the-icons-dired)
+(use-package all-the-icons-completion)
+(use-package all-the-icons-ibuffer)
+(use-package all-the-icons-nerd-fonts)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config

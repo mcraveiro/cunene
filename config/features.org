@@ -97,8 +97,8 @@ surrounded by word boundaries."
 
 ;; always delete and copy recursively
 (require 'dired)
-(setq dired-recursive-deletes 'always)
-(setq dired-recursive-copies 'always)
+(setq dired-recursive-deletes 'always
+      dired-recursive-copies 'always)
 
 ;; if there is a dired buffer displayed in the next window, use its
 ;; current subdir, instead of the current subdir of this dired buffer
@@ -106,6 +106,9 @@ surrounded by word boundaries."
 
 ;; enable some really cool extensions like C-x C-j(dired-jump)
 (require 'dired-x)
+
+(use-package vscode-icon
+  :commands (vscode-icon-for-file))
 
 (use-package dired-sidebar
   :commands (dired-sidebar-toggle-sidebar)
@@ -117,10 +120,12 @@ surrounded by word boundaries."
   :config
   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
-  (setq dired-sidebar-subtree-line-prefix "__"
-        dired-sidebar-theme 'vscode
+  (setq dired-sidebar-theme 'icons
+        dired-sidebar-should-follow-file t
         dired-sidebar-use-term-integration t
         dired-sidebar-use-custom-font t
+        ;; dired-sidebar-face `(:family "Helvetica" :height 80)
+        dired-sidebar-face `(:height 0.6 :family "Source Code Pro")
         dired-sidebar-width 45))
 #+end_src
 
@@ -337,6 +342,19 @@ surrounded by word boundaries."
                               (name . "^Treemacs Update")
                               (name . "^\\*nnimap imap.")))
                  )))))
+
+
+(use-package ibuffer-sidebar
+  :commands (ibuffer-sidebar-toggle-sidebar)
+  :config
+  (setq ibuffer-sidebar-use-custom-font t
+        ibuffer-sidebar-face `(:family "Source Code Pro" :height 0.8)))
+
+(defun cunene/sidebar-toggle ()
+  "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
+  (interactive)
+  (dired-sidebar-toggle-sidebar)
+  (ibuffer-sidebar-toggle-sidebar))
 #+end_src
 
 ** Buffers and Windows
@@ -783,129 +801,6 @@ ARGUMENT determines the visible heading."
 	(quote
 	 (:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)))
   (setq org-duration-format (quote h:mm)))
-#+end_src
-
-* Treemacs
-
-Issues:
-
-- [[https://github.com/Alexander-Miller/treemacs/issues/846][#846: treemacs dired: unwanted indentation for directories]]
-
-#+begin_src emacs-lisp
-(use-package treemacs
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-          treemacs-deferred-git-apply-delay        0.5
-          treemacs-directory-name-transformer      #'identity
-          treemacs-display-in-side-window          t
-          treemacs-eldoc-display                   t
-          treemacs-file-event-delay                5000
-          treemacs-file-extension-regex            treemacs-last-period-regex-value
-          treemacs-file-follow-delay               0.5
-          treemacs-file-name-transformer           #'identity
-          treemacs-follow-after-init               t
-          treemacs-expand-after-init               t
-          treemacs-git-command-pipe                ""
-          treemacs-goto-tag-strategy               'refetch-index
-          treemacs-indentation                     2
-          treemacs-indentation-string              " "
-          treemacs-is-never-other-window           nil
-          treemacs-max-git-entries                 5000
-          treemacs-missing-project-action          'ask
-          treemacs-move-forward-on-expand          nil
-          treemacs-no-png-images                   nil
-          treemacs-no-delete-other-windows         t
-          treemacs-project-follow-cleanup          nil
-          treemacs-persist-file                    (cunene/cache-concat"treemacs/treemacs-persist")
-          treemacs-position                        'left
-          treemacs-read-string-input               'from-child-frame
-          treemacs-recenter-distance               0.1
-          treemacs-recenter-after-file-follow      t
-          treemacs-recenter-after-tag-follow       nil
-          treemacs-recenter-after-project-jump     'always
-          treemacs-recenter-after-project-expand   'on-distance
-          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
-          treemacs-show-cursor                     nil
-          treemacs-show-hidden-files               t
-          treemacs-silent-filewatch                nil
-          treemacs-silent-refresh                  nil
-          treemacs-sorting                         'alphabetic-asc
-          treemacs-select-when-already-in-treemacs 'move-back
-          treemacs-space-between-root-nodes        t
-          treemacs-tag-follow-cleanup              t
-          treemacs-tag-follow-delay                1.5
-          treemacs-user-mode-line-format           nil
-          treemacs-user-header-line-format         nil
-          treemacs-width                           45
-          treemacs-width-is-initially-locked       t
-          treemacs-text-scale                      -2
-          treemacs-workspace-switch-cleanup        nil)
-
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
-
-    (treemacs-follow-mode t)
-    ;; (treemacs-tag-follow-mode nil)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
-
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple)))
-
-    (treemacs-hide-gitignored-files-mode nil))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-
-(use-package treemacs-evil
-  :after (treemacs evil)
-  :ensure t)
-
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
-
-(use-package treemacs-icons-dired
-  :after (treemacs dired)
-  :ensure t
-  :config (treemacs-icons-dired-mode))
-
-(use-package treemacs-magit
-  :after (treemacs magit)
-  :ensure t)
-
-(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-  :ensure t
-  :config (treemacs-set-scope-type 'Perspectives))
-
-(use-package treemacs-all-the-icons)
-(treemacs-load-theme "all-the-icons")
-
-(defun cunene/setup-tab-width-treemacs-dired (&rest _)
-  "Set `tab-width' to 1, so tab characters don't ruin formatting."
-  (setq tab-width 1))
-
-(add-hook 'treemacs-mode-hook #'cunene/setup-tab-width-treemacs-dired)
-
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (setq-local tab-width 1)))
 #+end_src
 
 * Completion

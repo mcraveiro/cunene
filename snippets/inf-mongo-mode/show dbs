@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+name: show dbs
+key: sd
+--
+show dbs

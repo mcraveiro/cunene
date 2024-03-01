@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+name: show collections
+key: sc
+--
+show collections
