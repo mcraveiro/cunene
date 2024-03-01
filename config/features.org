@@ -106,6 +106,9 @@ surrounded by word boundaries."
 
 ;; enable some really cool extensions like C-x C-j(dired-jump)
 (require 'dired-x)
+
+(use-package dired-sidebar
+  :commands (dired-sidebar-toggle-sidebar))
 #+end_src
 
 * IBuffer
