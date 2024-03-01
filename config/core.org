@@ -86,6 +86,12 @@ Personal details.
 (setq user-mail-address "marco.craveiro@gmail.com")
 #+end_src
 
+* Security
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.authinfo.gpg\\'" . authinfo-mode))
+#+end_src
+
 * Messages
 
 #+begin_src emacs-lisp
