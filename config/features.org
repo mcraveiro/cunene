@@ -370,7 +370,10 @@ surrounded by word boundaries."
   (ibuffer-sidebar-toggle-sidebar))
 #+end_src
 
-** Buffers and Windows
+* Buffers and Windows
+  :properties:
+  :id: 7DD64BE4-0407-6694-9A7B-DE5E80A06977
+  :end:
 
 | =desktop=   | Built-in                                 |
 | =shackle=   | https://github.com/wasamasa/shackle      |
@@ -623,7 +626,10 @@ changes can be "undone" using the command =winner-undo=.
   (after-init . winner-mode))
 #+end_src
 
-** Org
+* Org
+  :properties:
+  :id: 671C48AA-22D4-8024-E16B-5A60D033DFE5
+  :end:
 
 | =org=         | Built-in                               |
 | =org-present= | https://github.com/rlister/org-present |
@@ -650,31 +656,35 @@ authoring documents with a fast and effective plain-text system.
   :hook
   (org-mode . auto-fill-mode)
   :config
-  (setq org-startup-folded t)
-  (setq org-adapt-indentation nil)
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-cycle-separator-lines 0)
-  (setq org-hide-leading-stars t)
-  (setq org-highlight-latex-and-related '(latex))
-  (setq org-descriptive-links t)
-  (setq org-edit-src-content-indentation 0)
-  (setq org-edit-src-persistent-message nil)
-  (setq org-fontify-done-headline t)
-  (setq org-fontify-quote-and-verse-blocks t)
-  (setq org-fontify-whole-heading-line t)
-  (setq org-return-follows-link t)
-  (setq org-src-tab-acts-natively t)
-  (setq org-src-window-setup 'current-window)
-  (setq org-startup-truncated nil)
-  (setq org-support-shift-select 'always)
-  (setq org-adapt-indentation 'headline-data)
-  (setq org-duration-format (quote h:mm))
-  (setq org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/2236
+  (setq org-startup-folded t
+        org-adapt-indentation nil
+        org-confirm-babel-evaluate nil
+        org-cycle-separator-lines 0
+        org-hide-leading-stars t
+        org-highlight-latex-and-related '(latex)
+        org-descriptive-links t
+        org-edit-src-content-indentation 0
+        org-edit-src-persistent-message nil
+        org-fontify-done-headline t
+        org-fontify-quote-and-verse-blocks t
+        org-fontify-whole-heading-line t
+        org-return-follows-link t
+        org-src-tab-acts-natively t
+        org-src-window-setup 'current-window
+        org-startup-truncated nil
+        org-support-shift-select 'always
+        org-adapt-indentation 'headline-data
+        org-duration-format (quote h:mm)
+        org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/223
   (require 'ob-shell)
   (require 'org-indent)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
+
+;; Follow org links on the same window.
+;; https://emacs.stackexchange.com/questions/62720/open-org-link-in-the-same-window
+(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 ;; too slow on large files.
 ;; (use-package org-superstar
@@ -714,6 +724,26 @@ authoring documents with a fast and effective plain-text system.
 (use-package org-present :after org)
 (use-package org-roam :after org)
 (use-package org-roam-ui :after org-roam)
+
+(add-to-list 'display-buffer-alist
+             '("\\*org-roam\\*"
+               (display-buffer-in-side-window)
+               ;; (dedicated . t)
+               (side . right)
+               (slot . 0)
+               (window-width . 0.25)
+               (preserve-size . (t nil))
+               (window-parameters . ((no-other-window . t)
+                                     (no-delete-other-windows . t)))))
+
+;; Get `org-roam-preview-visit' and friends to replace the main window. This
+;;should be applicable only when `org-roam-mode' buffer is displayed in a
+;;side-window.
+(add-hook 'org-roam-mode-hook
+          (lambda ()
+            (setq-local display-buffer--same-window-action
+                        '(display-buffer-use-some-window
+                          (main)))))
 
 (defun cunene/occur-non-ascii ()
   "Find any non-ascii characters in the current buffer."
@@ -811,8 +841,8 @@ ARGUMENT determines the visible heading."
                         (org-agenda-overriding-header "Today's Tasks")))))))
   ;; Formatting of time stamps in clock table.
   (setq org-time-clocksum-format
-	(quote
-	 (:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)))
+        (quote
+         (:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)))
   (setq org-duration-format (quote h:mm)))
 #+end_src
 

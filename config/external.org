@@ -163,7 +163,7 @@ any directory proferred by `consult-dir'."
 (use-package rg)
 #+end_src
 
-* Web Browsers
+* Web
   :properties:
   :id: 922783F2-AAC2-8E84-A853-6CE81B4363C5
   :end:
@@ -216,6 +216,9 @@ The optional argument NEW-WINDOW is not used."
     (push `(,url . ((handler . ,(lambda (bookmark)
                                   (browse-url (car bookmark))))))
           bookmark-alist)))
+
+;; Make addresses clickable
+(global-goto-address-mode)
 #+end_src
 
 * SSH
