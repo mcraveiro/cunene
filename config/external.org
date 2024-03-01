@@ -131,12 +131,6 @@ any directory proferred by `consult-dir'."
 (global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
 #+end_src
 
-** SSH
-
-#+begin_src emacs-lisp
-(use-package ssh)
-#+end_src
-
 ** Powershell
 
 | =powershell= | [[https://github.com/jschaf/powershell.el]] |
