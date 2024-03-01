@@ -1364,6 +1364,13 @@ For the org-mode support, see:
   (add-to-list 'window-persistent-parameters '(window-side . writable))
   (add-to-list 'window-persistent-parameters '(window-slot . writable))
   (eyebrowse-mode t))
+
+;; example: (cunene/eyebrowse-create-config "proj: code")
+(defun cunene/eyebrowse-create-config (name)
+  (eyebrowse-create-window-config)
+  (eyebrowse-rename-window-config
+   (eyebrowse--get 'current-slot) name)
+  )
 #+end_src
 
 * Switching
