@@ -29,21 +29,21 @@ if [ "$?" != "0" ]; then
     exit 1;
 fi
 
-# echo "Deleting ELC files..."
+echo "Deleting ELC files..."
 find ${temp_dir} -iname '*.elc' -exec rm {} \;
 if [ "$?" != "0" ]; then
     echo "Failed to delete ELC files.";
     exit 1;
 fi
 
-# echo "Generating tarball..."
+echo "Generating tarball..."
 tar -zcf elpa-${version}.tgz -C ${temp_dir} .
 if [ "$?" != "0" ]; then
     echo "Failed to generate tarball.";
     exit 1;
 fi
 
-# echo "Deleting temp directory ${temp_dir}..."
+echo "Deleting temp directory ${temp_dir}..."
 rm -rf ${temp_dir}
 if [ "$?" != "0" ]; then
     echo "Failed to delete temp directory.";
