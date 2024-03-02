@@ -324,7 +324,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (setq plantuml-indent-level 4)
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
   (if (eq window-system 'w32)
-      (setq plantuml-jar-path "C:/ProgramData/chocolatey/lib/plantuml/tools/plantuml.jar"
+      (setq plantuml-jar-path "C:/opt/plantuml/plantuml.jar"
             plantuml-default-exec-mode 'jar)
     (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
           plantuml-default-exec-mode 'executable)))

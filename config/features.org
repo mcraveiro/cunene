@@ -854,6 +854,19 @@ ARGUMENT determines the visible heading."
   :id: 3C29BFD0-83E4-8EA4-50BB-05E6BBC0E165
   :end:
 
+** Vertico
+
+| =vertico=           | https://github.com/minad/vertico             |
+
+#+begin_quote
+Vertico provides a performant and minimalistic vertical completion UI based on
+the default completion system. The focus of Vertico is to provide a UI which
+behaves correctly under all circumstances. By reusing the built-in facilities
+system, Vertico achieves full compatibility with built-in Emacs completion
+commands and completion tables. Vertico only provides the completion UI but aims
+to be highly flexible, extendable and modular.
+#+end_quote
+
 #+begin_src emacs-lisp
 (use-package vertico
   :init
@@ -869,6 +882,21 @@ ARGUMENT determines the visible heading."
   (:map vertico-map
         ("M-q" . vertico-quick-insert)
         ("C-q" . vertico-quick-exit)))
+#+end_src
+
+** Orderless
+
+| =orderless=         | https://github.com/oantolin/orderless        |
+
+#+begin_quote
+This package provides an orderless completion style that divides the pattern
+into space-separated components, and matches candidates that match all of the
+components in any order. Each component can match in any one of several ways:
+literally, as a regexp, as an initialism, in the flex style, or as multiple word
+prefixes. By default, regexp and literal matches are enabled.
+#+end_quote
+
+#+begin_src emacs-lisp
 
 ;; Use the `orderless' completion style. Additionally enable
 ;; `partial-completion' for file path expansion. `partial-completion' is
@@ -904,6 +932,31 @@ ARGUMENT determines the visible heading."
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
 
+;; Use `consult-completion-in-region' if Vertico is enabled.
+;; Otherwise use the default `completion--in-region' function.
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
+#+end_src
+
+** Marginalia
+
+| =marginalia= | https://github.com/minad/marginalia |
+
+#+begin_quote
+This package provides marginalia-mode which adds marginalia to the minibuffer
+completions. Marginalia are marks or annotations placed at the margin of the
+page of a book or in this case helpful colorful annotations placed at the margin
+of the minibuffer for your completion candidates. Marginalia can only add
+annotations to the completion candidates. It cannot modify the appearance of the
+candidates themselves, which are shown unaltered as supplied by the original
+command.
+#+end_quote
+#+begin_src emacs-lisp
+
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
   ;; Either bind `marginalia-cycle` globally or only in the minibuffer
@@ -918,22 +971,27 @@ ARGUMENT determines the visible heading."
   ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
-;; Use `consult-completion-in-region' if Vertico is enabled.
-;; Otherwise use the default `completion--in-region' function.
-(setq completion-in-region-function
-      (lambda (&rest args)
-        (apply (if vertico-mode
-                   #'consult-completion-in-region
-                 #'completion--in-region)
-               args)))
+(use-package all-the-icons-completion
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode))
 
-;; (use-package completing-read-xref
-;;   :load-path cunene/vendor-packages
-;;   :commands (completing-read-xref-show-xrefs completing-read-xref-show-xrefs)
-;;   :init (setq xref-show-definitions-function 'completing-read-xref-show-defs))
+(use-package completing-read-xref
+  :load-path cunene/vendor-packages
+  :commands (completing-read-xref-show-xrefs completing-read-xref-show-xrefs)
+  :init (setq xref-show-definitions-function 'completing-read-xref-show-defs))
 #+end_src
 
-Company
+** Company
+
+| =company-mode= | https://github.com/company-mode/company-mode |
+
+#+begin_quote
+Company is a text completion framework for Emacs. The name stands for "complete
+anything". It uses pluggable back-ends and front-ends to retrieve and display
+completion candidates.
+#+end_quote
 
 #+begin_src emacs-lisp
 (use-package company
@@ -963,6 +1021,99 @@ Company
 (use-package company-box
   :config (setq company-box-icons-alist 'company-box-icons-all-the-icons)
   :hook (company-mode . company-box-mode))
+#+end_src
+
+** Consult
+
+| =consult=           | https://github.com/minad/consult               |
+| =consult-flycheck=  | https://github.com/minad/consult-flycheck      |
+| =consult-dir=       | https://github.com/karthink/consult-dir        |
+| =consult-yasnippet= | https://github.com/mohkale/consult-yasnippet   |
+| =consult-flyspell=  | https://gitlab.com/OlMon/consult-flyspell      |
+| =flyspell-correct=  | https://github.com/d12frosted/flyspell-correct |
+
+#+begin_quote
+Consult provides search and navigation commands based on the Emacs completion
+function completing-read. Completion allows you to quickly select an item from a
+list of candidates. Consult offers asynchronous and interactive consult-grep and
+consult-ripgrep commands, and the line-based search command consult-line.
+Furthermore Consult provides an advanced buffer switching command consult-buffer
+to switch between buffers, recently opened files, bookmarks and buffer-like
+candidates from other sources. Some of the Consult commands are enhanced
+versions of built-in Emacs commands.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package consult
+  :bind (("C-x r x" . consult-register)
+         ("C-x r b" . consult-bookmark)
+         ("C-c k" . consult-kmacro)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complet-command
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ("M-g o" . consult-outline)
+         ("M-g h" . consult-org-heading)
+         ("M-g a" . consult-org-agenda)
+         ("M-g m" . consult-mark)
+         ("C-x b" . consult-buffer)
+         ("M-g g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-project-imenu)
+         ("M-g e" . consult-error)
+         ;; M-s bindings (search-map)
+         ("M-s f" . consult-find)
+         ("M-s L" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-g l" . consult-line)
+         ("M-s m" . consult-multi-occur)
+         ("C-x c o" . consult-multi-occur)
+         ("C-x c SPC" . consult-mark)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch)                 ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
+         ("M-s l" . consult-line))
+  :init
+  (setq register-preview-delay 0
+        register-preview-function #'consult-register-format)
+  :config
+  (setq consult-project-root-function #'projectile-project-root
+        consult-narrow-key "<"))
+
+(use-package consult-flycheck :after flycheck)
+
+;; Consult directory navigation
+(use-package consult-dir
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
+(use-package consult-yasnippet)
+
+(use-package flyspell-correct
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+(use-package consult-flyspell
+  :config
+  ;; default settings
+  (setq consult-flyspell-select-function nil
+        consult-flyspell-set-point-after-word t
+        consult-flyspell-always-check-buffer nil))
+(setq consult-flyspell-select-function 'flyspell-correct-at-point)
 #+end_src
 
 * Undo
@@ -1153,72 +1304,16 @@ For the org-mode support, see:
   :id: E6C28FEF-1E20-3E14-E723-ABCBFAE58F4B
   :end:
 
-| =consult=           | https://github.com/minad/consult             |
-| =consult-flycheck=  | https://github.com/minad/consult-flycheck    |
-| =consult-dir=       | https://github.com/karthink/consult-dir      |
 | =engine-mode=       | https://github.com/hrs/engine-mode           |
 | =anzu=              | https://github.com/emacsorphanage/anzu       |
-| =consult-yasnippet= | https://github.com/mohkale/consult-yasnippet |
+
+#+begin_quote
+engine-mode is a global minor mode for Emacs. It enables you to easily define
+search engines, bind them to keybindings, and query them from the comfort of
+your editor.
+#+end_quote
 
 #+begin_src emacs-lisp
-(use-package consult
-  :bind (("C-x r x" . consult-register)
-         ("C-x r b" . consult-bookmark)
-         ("C-c k" . consult-kmacro)
-         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complet-command
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame)
-         ("M-#" . consult-register-load)
-         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-         ("C-M-#" . consult-register)
-         ("M-g o" . consult-outline)
-         ("M-g h" . consult-org-heading)
-         ("M-g a" . consult-org-agenda)
-         ("M-g m" . consult-mark)
-         ("C-x b" . consult-buffer)
-         ("M-g g" . consult-goto-line)           ;; orig. goto-line
-         ("M-g o" . consult-outline)
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
-         ("M-g i" . consult-imenu)
-         ("M-g I" . consult-project-imenu)
-         ("M-g e" . consult-error)
-         ;; M-s bindings (search-map)
-         ("M-s f" . consult-find)
-         ("M-s L" . consult-locate)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
-         ("M-s m" . consult-multi-occur)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)
-         ;; Isearch integration
-         ("M-g l" . consult-line)
-         ("M-s m" . consult-multi-occur)
-         ("C-x c o" . consult-multi-occur)
-         ("C-x c SPC" . consult-mark)
-         :map isearch-mode-map
-         ("M-e" . consult-isearch)                 ;; orig. isearch-edit-string
-         ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
-         ("M-s l" . consult-line))
-  :init
-  (setq register-preview-delay 0
-        register-preview-function #'consult-register-format)
-  :config
-  (setq consult-project-root-function #'projectile-project-root
-        consult-narrow-key "<"))
-
-(use-package consult-flycheck :after flycheck)
-
-;; Consult directory navigation
-(use-package consult-dir
-  :bind (("C-x C-d" . consult-dir)
-         :map vertico-map
-         ("C-x C-d" . consult-dir)
-         ("C-x C-j" . consult-dir-jump-file)))
-
-(use-package consult-yasnippet)
 (use-package engine-mode
   :config
   (engine-mode t)

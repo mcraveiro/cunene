@@ -35,10 +35,14 @@ Problems:
 - [[https://github.com/angrybacon/dotemacs/tree/master][dotemacs by angrybacon]]
 
 * Articles to read
+  :properties:
+  :id: 2B6D93DA-D06B-0684-3703-BA329EABF94F
+  :end:
 
 - [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life In Plain Text!]]
 - [[https://xenodium.com/emacs-quick-kill-process/][Emacs: quickly killing processes]]
 - [[https://www.n16f.net/blog/making-ielm-more-comfortable/][Making IELM More Comfortable]]
+- [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless]]
 
 * References
   :properties:
