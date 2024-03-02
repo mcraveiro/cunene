@@ -287,3 +287,4 @@ them properly.
   and Vim plugin."
 - [[https://github.com/bling/fzf.el][fzf.el]]: "An Emacs front-end for [[https://github.com/junegunn/fzf][fzf]]."
 - [[https://github.com/sabof/stripe-buffer][stripe-buffer]]: "Use different background colors for even and odd lines."
+- [[https://github.com/dustinlacewell/linkmarks][linkmarks]]: "Linkmarks.el leverages org-mode for bookmarks [...]"

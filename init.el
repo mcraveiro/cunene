@@ -74,14 +74,20 @@
   "Location for site specific packages.")
 (add-to-list 'load-path cunene/site-lisp)
 
-(defun cunene/compile-and-load-file (el-file-name)
-  "Compile and load an org file.
-EL-FILE-NAME file to operate on."
+(defun cunene/compile-and-load-file (el-file-name &optional compile-only)
+  "Compile EL-FILE-NAME into ELC and load it unless COMPILE-ONLY."
+  (interactive)
   (let ((elc-file-name (concat (file-name-sans-extension el-file-name) ".elc")))
     (unless (file-newer-than-file-p el-file-name elc-file-name)
-      (byte-compile-file el-file-name))
-    (message (concat "Loading " elc-file-name "..."))
-    (load-file elc-file-name)))
+      (save-restriction
+        (setq byte-compile-warnings
+              '(not free-vars obsolete unresolved callargs redefine
+                  obsolete noruntime cl-warnings interactive-only))
+        (byte-compile-file el-file-name)))
+    (unless compile-only
+      (message (concat "Loading " elc-file-name "..."))
+      (load-file elc-file-name))
+    ))
 
 (require 'org-macs)
 (require 'ob-tangle)
@@ -129,15 +135,18 @@ ORG-FILE-NAME file to operate on."
        (lambda (value) (equal value '(org-babel-tangle t))))
   (put 'display-line-numbers-width 'safe-local-variable 'integerp)
 
-  ;; Tangle and compile if necessary only, then load the configuration
-  (let ((org-files (cunene/files-for-extension cunene/org-config ".org$")))
-    (dolist (org-file org-files)
-      (cunene/tangle-and-load-file org-file)))
+  ;; Tangle and compile if necessary, then load the configuration
+  (mapc 'cunene/tangle-and-load-file
+        (cunene/files-for-extension cunene/org-config ".org$"))
 
   ;; Load site-specific lisp code, if any exists.
-  (let ((site-files (cunene/files-for-extension cunene/site-lisp ".el$")))
-    (dolist (el-file site-files)
-      (cunene/compile-and-load-file el-file)))
+  (mapc 'cunene/compile-and-load-file
+        (cunene/files-for-extension cunene/site-lisp ".el$"))
+
+  ;; Compile vendor packages but do not load.
+  (mapc
+   (lambda (vendor-file) (cunene/compile-and-load-file vendor-file t))
+   (cunene/files-for-extension cunene/vendor-packages ".el$"))
 
   ;; Set the working directory to home regardless of where Emacs was started from
   (cd "~/")
