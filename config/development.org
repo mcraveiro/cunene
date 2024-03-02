@@ -956,6 +956,21 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 (use-package llama-cpp)
 #+end_src
 
+* Eldoc
+
+#+begin_src emacs-lisp
+(setq eldoc-echo-area-use-multiline-p nil)
+(use-package eldoc-box)
+#+end_src
+
+* HA Proxy
+
+| =haproxy-mode= | https://github.com/port19x/haproxy-mode |
+
+#+begin_src emacs-lisp
+(use-package haproxy-mode)
+#+end_src
+
 * Postamble
 
 #+begin_src emacs-lisp

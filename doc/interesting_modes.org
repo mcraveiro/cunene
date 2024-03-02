@@ -220,6 +220,8 @@ them properly.
   using font locking and text properties. The package styles headlines,
   keywords, tables and source blocks."
 - [[https://github.com/joshcho/ChatGPT.el][ChatGPT.el]]: "ChatGPT in Emacs."
+- [[https://github.com/karthink/gptel][gptel]]: "GPTel is a simple Large Language Model chat client for Emacs, with
+  support for multiple models and backends."
 - [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]: "ChatGPT and DALL-E Emacs shells + Org Babel."
 - [[https://github.com/emacs-openai/chatgpt][chatgpt]]: "Use ChatGPT inside Emacs. This Emacs Code extension allows you to
   use the official OpenAI API to generate code or natural language responses
@@ -290,3 +292,32 @@ them properly.
 - [[https://github.com/dustinlacewell/linkmarks][linkmarks]]: "Linkmarks.el leverages org-mode for bookmarks [...]"
 - [[https://github.com/jdtsmith/consult-jump-project][consult-jump-project]]: Quickly jump between projects, their files and buffers
   with consult.
+- [[https://github.com/jlumpe/ox-json/tree/master][ox-json]]: "JSON export back end for Emacs Org mode"
+- [[https://github.com/kaushalmodi/ox-hugo/tree/main][ox-hugo]]: "A carefully crafted Org exporter back-end for Hugo"
+- [[https://github.com/Lambda-Emacs/lambda-line][lambda-line]]: "Lambda-line is a custom status-line (or “mode-line) for Emacs.
+  It is configurable for use either as a header-line or as a footer-line."
+- [[https://github.com/Lambda-Emacs/lambda-themes][lambda-themes]]: "Lambda-themes is a collection of four higher and lower
+  contrast light and dark themes. The color palette is limited, and organized
+  according to function and salience. "
+- [[https://github.com/andras-simonyi/citeproc-el][citeproc-el]]: "A CSL 1.0.2 Citation Processor for Emacs."
+- [[https://github.com/andras-simonyi/citeproc-org][citeproc-org]]: "Renders Org mode citations and bibliographies during export in
+  Citation Style Language (CSL) styles using the citeproc-el library."
+- [[https://github.com/gongzhitaao/orgcss/tree/master][orgcss]]: "Stylesheet for Org-exported HTML"
+- [[https://github.com/Wilfred/mustache.el/tree/master][mustache.el]]: "a mustache templating library in Emacs Lisp"
+- [[https://github.com/ahyatt/llm][llm]]: "This library provides an interface for interacting with Large Language
+  Models (LLMs)."
+- [[https://github.com/s-kostyaev/elisa][elisa]]: "ELISA (Emacs Lisp Information System Assistant) is a project designed
+  to help Emacs users quickly find answers to their questions related to Emacs
+  and Emacs Lisp."
+- [[https://github.com/slime/slime][slime]]: "SLIME is the Superior Lisp Interaction Mode for Emacs."
+- [[https://github.com/pkryger/difftastic.el][difftastic.el]]: "The difftastic Emacs package is designed to integrate
+  difftastic - a structural diff tool - into your Emacs workflow, enhancing your
+  code review and comparison experience."
+- [[https://framagit.org/prouby/emacs-fetch][emacs-fetch]]: "Efetch (or emacs-fetch) is a elisp GNU Emacs extention system
+  information tool, inspired by neofetch." See also [[https://www.youtube.com/watch?v=cZgRLdetZ0g&ab_channel=CodePath][this video]].
+- [[https://github.com/psibi/justl.el][justl.el]]: "justl.el mode is a major mode for driving justfiles. As compared to
+  the just-mode, this mode is built for listing and executing the recipes in the
+  justfile via the transient keymaps. Also works with TRAMP."
+- [[https://github.com/RobertPlant/time-uuid-mode][time-uuid-mode]]: "Convert time based UUIDs into their ISO8601 date times and
+  preview them inline as an overlay."
+- [[https://github.com/cute-jumper/embrace.el][embrace.el]]: "Add/Change/Delete pairs based on expand-region."

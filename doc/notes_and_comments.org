@@ -28,11 +28,18 @@ Problems:
 - doom mode line explicit
 - ensure magit
 
+* Example org-roam sites
+
+- [[https://braindump.jethro.dev/][Jethro's Braindump]]
+- [[https://www.simsoup.info/SimSoup/News.html][SimSoup: News]]
+
 * Other =.emacs== to investigate
 
 - [[https://sachachua.com/dotemacs/#orgf26ab3f][Sacha's org config]].
 - [[https://github.com/rougier/dotemacs/blob/master/dotemacs.org][Nicholas Rougier's dot emacs.]]:
 - [[https://github.com/angrybacon/dotemacs/tree/master][dotemacs by angrybacon]]
+- [[https://github.com/daviwil/emacs-from-scratch/tree/master][Emacs From Scratch]]: "This is an example of a fully custom Emacs configuration
+  that you can use as inspiration when building your own!"
 
 * Articles to read
   :properties:
@@ -45,6 +52,13 @@ Problems:
 - [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless]]
 - [[https://github.com/alphapapa/emacs-package-dev-handbook][The Emacs Package Developer’s Handbook]]
 - [[https://github.com/AbstProcDo/Master-Emacs-From-Scratch-with-Solid-Procedures][Master Emacs From Scratch with Solid Procedures]]
+- [[https://cachestocaches.com/2020/3/org-mode-annotated-bibliography/][Managing my Annotated Bibliography with Emacs' Org Mode]]
+- [[https://github.com/org-roam/org-roam-ui/discussions/109#discussioncomment-2673862][Publishing org-roam-ui]]: How to publish the UI with the website. See also this
+  branch: [[https://github.com/org-roam/org-roam-ui/compare/main...jgru:org-roam-ui:add-export-capability][org-roam-ui:add-export-capability]]. Example site: https://o8vm.github.io/
+- [[https://writequit.org/articles/emacs-org-mode-generate-ids.html][Emacs Org-mode: Use good header ids!]]
+- [[https://klibert.pl/posts/supercharge-your-eval-expression-with-ielm.html][Supercharge your eval-expression with ielm!]] See also [[https://www.reddit.com/r/emacs/comments/18bm7qz/supercharge_your_evalexpression_with_ielm/][reddit discussion]].
+- [[https://utcc.utoronto.ca/~cks/space/blog/programming/EmacsMetaXRelevantCommands][How to make your GNU Emacs commands 'relevant' for M-X]]
+- [[https://endlessparentheses.com/a-quick-guide-to-directory-local-variables.html][A quick guide to directory-local (or project-specific) variables]]
 
 * References
   :properties:

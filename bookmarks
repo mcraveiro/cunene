@@ -2,7 +2,42 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("Cunene GitHub Tags" 0 18
+(#1=(#("Football Campeonato de Portugal - Group D Fixtures" 0 50
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://www.flashscore.com/football/portugal/campeonato-de-portugal-group-d/fixtures/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("LWM Archives" 0 12
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://lwn.net/Archives/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("QuantLib Blog Fooling around with quantlib" 0 42
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://quantlib.wordpress.com/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Emacs org-mode manual" 0 21
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://orgmode.org/manual/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Emacs org-roam manual" 0 21
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://www.orgroam.com/manual.html")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Twitter" 0 7
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://twitter.com/home")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Clojure By Example" 0 18
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://kimh.github.io/clojure-by-example/#about-this-page")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Cunene GitHub Tags" 0 18
       (bmkp-full-record #1#))
     (time 26083 29102 371819 431000)
     (visits . 0)
