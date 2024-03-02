@@ -14,9 +14,9 @@
 
 * About
 
-This repository contains my [[https://mcraveiro.github.io/index.html][personal]] [[https://www.gnu.org/software/emacs/][Emacs]] [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html][configuration]]. It is heavily based on
-others - copy and paste, mainly ([[id:5D02026A-5C55-A1C4-9603-A3D456463A55][References]]). It uses the literate
-config approach.
+This repository contains my [[https://mcraveiro.github.io/index.html][personal]] [[https://en.wikipedia.org/wiki/Emacs][Emacs]] [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html][configuration]]. It is heavily based on
+others - copy and paste, mainly ([[id:5D02026A-5C55-A1C4-9603-A3D456463A55][References]]). It uses the literate config
+approach.
 
 To use it, simply git clone the repo into =~/.emacs.d=:
 
