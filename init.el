@@ -51,12 +51,37 @@
    (vertical-scroll-bars . nil)))       ;; No vertical scroll-bars
 
 ;;
+;; Org-mode configuration location
+;;
+(defvar cunene/org-config
+  (expand-file-name "~/.emacs.d/config")
+  "Location for `org-mode' configuration.")
+(add-to-list 'load-path cunene/org-config)
+
+;;
 ;; All packages we could not find in the repositories are stored here.
 ;;
 (defvar cunene/vendor-packages
   (expand-file-name "~/.emacs.d/vendor")
   "Location for third-party packages.")
 (add-to-list 'load-path cunene/vendor-packages)
+
+;;
+;; Any code which we do not want to push to the public repo goes under here.
+;;
+(defvar cunene/site-lisp
+  (expand-file-name "~/.emacs.d/site-lisp")
+  "Location for site specific packages.")
+(add-to-list 'load-path cunene/site-lisp)
+
+(defun cunene/compile-and-load-file (el-file-name)
+  "Compile and load an org file.
+EL-FILE-NAME file to operate on."
+  (let ((elc-file-name (concat (file-name-sans-extension el-file-name) ".elc")))
+    (unless (file-newer-than-file-p el-file-name elc-file-name)
+      (byte-compile-file el-file-name))
+    (message (concat "Loading " elc-file-name "..."))
+    (load-file elc-file-name)))
 
 (require 'org-macs)
 (require 'ob-tangle)
@@ -65,14 +90,17 @@
 ORG-FILE-NAME file to operate on."
   (let ((el-file-name (concat (file-name-sans-extension org-file-name) ".el"))
         (elc-file-name (concat (file-name-sans-extension org-file-name) ".elc"))
-      (modification-time
+        (modification-time
          (file-attribute-modification-time (file-attributes org-file-name))))
     (message (concat "Tangling " org-file-name "..."))
     (unless (org-file-newer-than-p el-file-name modification-time)
-      (org-babel-tangle-file org-file-name el-file-name "emacs-lisp")
-      (byte-compile-file el-file-name))
-    (message (concat "Loading " elc-file-name "..."))
-    (load-file elc-file-name)))
+      (org-babel-tangle-file org-file-name el-file-name "emacs-lisp"))
+    (cunene/compile-and-load-file elc-file-name)))
+
+(defun cunene/files-for-extension (dir extension)
+  "Return all files at DIR that have EXTENSION, if any."
+  (if (file-directory-p dir)
+      (directory-files-recursively dir extension)))
 
 ;; FIXME: when troubleshooting package issues
 ;; (require 'package)
@@ -102,10 +130,14 @@ ORG-FILE-NAME file to operate on."
   (put 'display-line-numbers-width 'safe-local-variable 'integerp)
 
   ;; Tangle and compile if necessary only, then load the configuration
-  (let ((org-files
-         (directory-files-recursively (concat user-emacs-directory "config") ".org")))
+  (let ((org-files (cunene/files-for-extension cunene/org-config ".org")))
     (dolist (org-file org-files)
       (cunene/tangle-and-load-file org-file)))
+
+  ;; Load site-specific lisp code, if any exists.
+  (let ((site-files (cunene/files-for-extension cunene/site-lisp ".el")))
+    (dolist (el-file site-files)
+      (cunene/compile-and-load-file el-file)))
 
   ;; Set the working directory to home regardless of where Emacs was started from
   (cd "~/")
