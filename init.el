@@ -130,12 +130,12 @@ ORG-FILE-NAME file to operate on."
   (put 'display-line-numbers-width 'safe-local-variable 'integerp)
 
   ;; Tangle and compile if necessary only, then load the configuration
-  (let ((org-files (cunene/files-for-extension cunene/org-config ".org")))
+  (let ((org-files (cunene/files-for-extension cunene/org-config ".org$")))
     (dolist (org-file org-files)
       (cunene/tangle-and-load-file org-file)))
 
   ;; Load site-specific lisp code, if any exists.
-  (let ((site-files (cunene/files-for-extension cunene/site-lisp ".el")))
+  (let ((site-files (cunene/files-for-extension cunene/site-lisp ".el$")))
     (dolist (el-file site-files)
       (cunene/compile-and-load-file el-file)))
 

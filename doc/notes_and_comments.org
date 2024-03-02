@@ -43,6 +43,8 @@ Problems:
 - [[https://xenodium.com/emacs-quick-kill-process/][Emacs: quickly killing processes]]
 - [[https://www.n16f.net/blog/making-ielm-more-comfortable/][Making IELM More Comfortable]]
 - [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless]]
+- [[https://github.com/alphapapa/emacs-package-dev-handbook][The Emacs Package Developer’s Handbook]]
+- [[https://github.com/AbstProcDo/Master-Emacs-From-Scratch-with-Solid-Procedures][Master Emacs From Scratch with Solid Procedures]]
 
 * References
   :properties:

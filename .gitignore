@@ -10,6 +10,7 @@ server
 config/*.el
 config/*.elc
 vendor/*.elc
+site-lisp/*.elc
 
 # files we can't find out who is creating
 .emacs-buffers
