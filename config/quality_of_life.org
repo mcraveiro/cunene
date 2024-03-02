@@ -263,28 +263,6 @@ something that augments and replaces the standard auto-save-mode.
 (global-auto-revert-mode t)
 #+end_src
 
-* Key discoverability
-  :properties:
-  :id: 5F0EE55E-7570-5104-4B13-733F6C6F3E49
-  :end:
-
-If you type a prefix key (such as =C-x r=) and wait some time then display
-window with keys that can follow.
-
-#+begin_src emacs-lisp
-(use-package which-key
-  :init (which-key-mode 1)
-  :config
-  (which-key-setup-side-window-right-bottom)
-  (setq which-key-sort-order 'which-key-key-order-alpha
-        which-key-side-window-max-width 0.33
-        which-key-idle-delay 2
-        which-key-show-early-on-C-h t
-        which-key-idle-secondary-delay 0.05)
-  :diminish
-  which-key-mode)
-#+end_src
-
 * Themes
   :properties:
   :id: 199B7C70-57E7-D054-2243-F1AEA3A854A4
