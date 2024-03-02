@@ -2,10 +2,26 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("Cunene GitHub" 0 13
+(#1=(#("Cunene GitHub Tags" 0 18
       (bmkp-full-record #1#))
-    (time 26083 27697 310786 571000)
+    (time 26083 29102 371819 431000)
     (visits . 0)
+    (tags "emacs" "github")
+    (filename . "   - no file -")
+    (location . "https://github.com/mcraveiro/cunene/tags")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Cunene GitHub Releases" 0 22
+      (bmkp-full-record #1#))
+    (time 26083 29067 973821 425000)
+    (visits . 1)
+    (tags "emacs" "github")
+    (filename . "   - no file -")
+    (location . "https://github.com/mcraveiro/cunene/releases")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Cunene GitHub" 0 13
+      (bmkp-full-record #1#))
+    (time 26083 29014 270365 847000)
+    (visits . 2)
     (tags "emacs" "github")
     (filename . "   - no file -")
     (location . "https://github.com/mcraveiro/cunene")
