@@ -1,0 +1,27 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(#1=(#("Bookmark+ GitHub" 0 16
+      (bmkp-full-record #1#))
+    (tags "emacs" "github")
+    (time 26083 26292 679725 41000)
+    (visits . 4)
+    (filename . "   - no file -")
+    (location . "https://github.com/emacsmirror/bookmark-plus")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Google" 0 6
+      (bmkp-full-record #1#))
+    (buffer-name . "*eww*")
+    (buffer-name . "*eww*")
+    (front-context-string . "Gmail\nImages\nSig")
+    (rear-context-string)
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 2)
+    (time 26083 26158 880410 69000)
+    (created 26083 15261 665813 991000)
+    (position . 1)
+    (location . "https://www.google.com/?gws_rd=ssl")
+    (handler . bmkp-jump-eww))
+)
