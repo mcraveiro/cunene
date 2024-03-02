@@ -1,6 +1,6 @@
-:properties:
-:id: EFF6DB62-FAAD-6764-1DAB-CB7B497E0427
-:end:
+:PROPERTIES:
+:ID: EFF6DB62-FAAD-6764-1DAB-CB7B497E0427
+:END:
 #+title: Core
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
@@ -41,9 +41,9 @@ Basic configuration for core aspects of Emacs.
 #+end_src
 
 * GTK Warning
-  :properties:
-  :id: 51023D70-850E-2F54-AC43-CD0AED7D61B6
-  :end:
+  :PROPERTIES:
+  :ID: 51023D70-850E-2F54-AC43-CD0AED7D61B6
+  :END:
 
 On startup, because we use PGTK on X, we get an annoying warning. This gets rid
 of the warning.
@@ -81,9 +81,9 @@ If COMMAND returns with a non-zero exit code, signal an error."
 #+end_src
 
 * Identity
-  :properties:
-  :id: 198BF031-7998-A3A4-8223-57F1044EB2CC
-  :end:
+  :PROPERTIES:
+  :ID: 198BF031-7998-A3A4-8223-57F1044EB2CC
+  :END:
 
 Personal details.
 
@@ -93,18 +93,18 @@ Personal details.
 #+end_src
 
 * Security
-  :properties:
-  :id: ADAA3779-3E4C-53C4-FED3-5E52A6B2F636
-  :end:
+  :PROPERTIES:
+  :ID: ADAA3779-3E4C-53C4-FED3-5E52A6B2F636
+  :END:
 
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.authinfo.gpg\\'" . authinfo-mode))
 #+end_src
 
 * Messages
-  :properties:
-  :id: 8192D4F1-BD85-0714-988B-69296A9510F3
-  :end:
+  :PROPERTIES:
+  :ID: 8192D4F1-BD85-0714-988B-69296A9510F3
+  :END:
 
 #+begin_src emacs-lisp
 ;; Add timestamps to messages.
@@ -132,9 +132,9 @@ ARGS arguments to format string."
 #+end_src
 
 * Caching
-  :properties:
-  :id: 2F574904-CA02-2944-A27B-04719D871746
-  :end:
+  :PROPERTIES:
+  :ID: 2F574904-CA02-2944-A27B-04719D871746
+  :END:
 
 Use =.cache/= to contain local data. This is to avoid littering in the Emacs
 directory with an ever-growing number of packages used on a daily basis.
@@ -176,9 +176,9 @@ directory with an ever-growing number of packages used on a daily basis.
 #+end_src
 
 * Package Management
-  :properties:
-  :id: C12430B7-480A-7D94-9233-47AC282001EE
-  :end:
+  :PROPERTIES:
+  :ID: C12430B7-480A-7D94-9233-47AC282001EE
+  :END:
 
 | =package=            | Built-in                                              |
 | =use-package=        | https://github.com/jwiegley/use-package               |
@@ -226,9 +226,9 @@ Links:
 #+end_src
 
 * Backup files
-  :properties:
-  :id: 50999A40-7643-F244-EA23-A2A2DB1C5393
-  :end:
+  :PROPERTIES:
+  :ID: 50999A40-7643-F244-EA23-A2A2DB1C5393
+  :END:
 
 | =backup-walker= | https://github.com/lewang/backup-walker |
 
@@ -296,9 +296,9 @@ mode."
 #+end_src
 
 * Custom
-  :properties:
-  :id: 1DD87863-7D8B-8AB4-2CEB-0A06F8C29DB9
-  :end:
+  :PROPERTIES:
+  :ID: 1DD87863-7D8B-8AB4-2CEB-0A06F8C29DB9
+  :END:
 
 Have a single custom settings config file. Set up the customize file to its own
 separate file, instead of saving customize settings in init.el.
@@ -312,9 +312,9 @@ Try your best to make custom config clean.
 #+end_src
 
 * Kill Ring
-  :properties:
-  :id: C3712B8A-F8F7-A994-9113-101CF14B8455
-  :end:
+  :PROPERTIES:
+  :ID: C3712B8A-F8F7-A994-9113-101CF14B8455
+  :END:
 
 | browse-kill-ring | https://github.com/browse-kill-ring/browse-kill-ring |
 

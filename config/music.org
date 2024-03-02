@@ -42,9 +42,9 @@ Playing music from Emacs.
 
 
 * Bongo
-  :properties:
-  :id: B6DC005D-3FD4-C3E4-B18B-23E58B465B0A
-  :end:
+  :PROPERTIES:
+  :ID: B6DC005D-3FD4-C3E4-B18B-23E58B465B0A
+  :END:
 
 | =bongo= | https://github.com/dbrock/bongo |
 

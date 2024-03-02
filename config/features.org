@@ -41,9 +41,9 @@ Key features.
 #+end_src
 
 * Regular Expressions
-  :properties:
-  :id: 40EE8E40-7FC4-1C84-D10B-4B1BBC0AB1E4
-  :end:
+  :PROPERTIES:
+  :ID: 40EE8E40-7FC4-1C84-D10B-4B1BBC0AB1E4
+  :END:
 
 | =reb= | Built-in |
 
@@ -85,9 +85,9 @@ surrounded by word boundaries."
 #+end_src
 
 * Dired
-  :properties:
-  :id: 6F6357F1-16CF-9464-6FBB-87281D85635E
-  :end:
+  :PROPERTIES:
+  :ID: 6F6357F1-16CF-9464-6FBB-87281D85635E
+  :END:
 
 #+begin_src emacs-lisp
 ;; Dired switches
@@ -136,9 +136,9 @@ surrounded by word boundaries."
 #+end_src
 
 * IBuffer
-  :properties:
-  :id: 3A49E027-84E2-E004-B013-A128FD1F779C
-  :end:
+  :PROPERTIES:
+  :ID: 3A49E027-84E2-E004-B013-A128FD1F779C
+  :END:
 
 #+begin_src emacs-lisp
 (use-package ibuffer
@@ -372,9 +372,9 @@ surrounded by word boundaries."
 #+end_src
 
 * Buffers and Windows
-  :properties:
-  :id: 7DD64BE4-0407-6694-9A7B-DE5E80A06977
-  :end:
+  :PROPERTIES:
+  :ID: 7DD64BE4-0407-6694-9A7B-DE5E80A06977
+  :END:
 
 | =desktop=   | Built-in                                 |
 | =shackle=   | https://github.com/wasamasa/shackle      |
@@ -628,9 +628,9 @@ changes can be "undone" using the command =winner-undo=.
 #+end_src
 
 * Org
-  :properties:
-  :id: 671C48AA-22D4-8024-E16B-5A60D033DFE5
-  :end:
+  :PROPERTIES:
+  :ID: 671C48AA-22D4-8024-E16B-5A60D033DFE5
+  :END:
 
 | =org=         | Built-in                               |
 | =org-present= | https://github.com/rlister/org-present |
@@ -850,9 +850,9 @@ ARGUMENT determines the visible heading."
 #+end_src
 
 * Completion
-  :properties:
-  :id: 3C29BFD0-83E4-8EA4-50BB-05E6BBC0E165
-  :end:
+  :PROPERTIES:
+  :ID: 3C29BFD0-83E4-8EA4-50BB-05E6BBC0E165
+  :END:
 
 ** Vertico
 
@@ -1173,9 +1173,9 @@ files, ibuffer for a set of buffers, or customize for a set of variables.
 #+end_src
 
 * Undo
-  :properties:
-  :id: DD9052B1-705F-A3E4-6CFB-7EB7751A128B
-  :end:
+  :PROPERTIES:
+  :ID: DD9052B1-705F-A3E4-6CFB-7EB7751A128B
+  :END:
 
 | =undo-tree= | https://gitlab.com/tsc25/undo-tree |
 
@@ -1205,9 +1205,9 @@ files, ibuffer for a set of buffers, or customize for a set of variables.
 #+end_src
 
 * Bookmarks
-  :properties:
-  :id: 47C3534B-DA1C-4234-8013-DD0F7EF146E2
-  :end:
+  :PROPERTIES:
+  :ID: 47C3534B-DA1C-4234-8013-DD0F7EF146E2
+  :END:
 
 | bookmark+ | https://www.emacswiki.org/emacs/BookmarkPlus |
 
@@ -1320,9 +1320,9 @@ For the org-mode support, see:
 #+end_src
 
 * Highlighting
-  :properties:
-  :id: 61455170-0313-8BB4-983B-BE24F43EFDD7
-  :end:
+  :PROPERTIES:
+  :ID: 61455170-0313-8BB4-983B-BE24F43EFDD7
+  :END:
 
 | =beacon=  | https://github.com/Malabarba/beacon                                     |
 | =hi-lock= | https://www.masteringemacs.org/article/highlighting-by-word-line-regexp |
@@ -1371,9 +1371,9 @@ For the org-mode support, see:
 #+end_src
 
 * Search
-  :properties:
-  :id: E6C28FEF-1E20-3E14-E723-ABCBFAE58F4B
-  :end:
+  :PROPERTIES:
+  :ID: E6C28FEF-1E20-3E14-E723-ABCBFAE58F4B
+  :END:
 
 | =engine-mode=       | https://github.com/hrs/engine-mode           |
 | =anzu=              | https://github.com/emacsorphanage/anzu       |
@@ -1414,9 +1414,9 @@ your editor.
 #+end_src
 
 * Fonts
-  :properties:
-  :id: 62E38260-6DDB-1964-47D3-F7A2C283619E
-  :end:
+  :PROPERTIES:
+  :ID: 62E38260-6DDB-1964-47D3-F7A2C283619E
+  :END:
 
 #+begin_src emacs-lisp
 (use-package font-lock-ext
@@ -1425,9 +1425,9 @@ your editor.
 
 
 * Snippets
-  :properties:
-  :id: B6578DC4-1350-4834-1A93-1E3D4365747F
-  :end:
+  :PROPERTIES:
+  :ID: B6578DC4-1350-4834-1A93-1E3D4365747F
+  :END:
 
 #+begin_src emacs-lisp
 (setq-default abbrev-mode 1)
@@ -1444,9 +1444,9 @@ your editor.
 #+end_src
 
 * Spell checking
-  :properties:
-  :id: 57D83379-91DA-85B4-431B-5BAB6B59E332
-  :end:
+  :PROPERTIES:
+  :ID: 57D83379-91DA-85B4-431B-5BAB6B59E332
+  :END:
 
 #+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -1454,9 +1454,9 @@ your editor.
 #+end_src
 
 * Thesaurus
-  :properties:
-  :id: 7CE8EBB4-69D4-79B4-E003-6356C0A98C04
-  :end:
+  :PROPERTIES:
+  :ID: 7CE8EBB4-69D4-79B4-E003-6356C0A98C04
+  :END:
 
 #+begin_src emacs-lisp
 (use-package define-word
@@ -1483,9 +1483,9 @@ your editor.
 #+end_src
 
 * Logs
-  :properties:
-  :id: E6D79640-8640-FCE4-C5AB-DD8BEDF415A9
-  :end:
+  :PROPERTIES:
+  :ID: E6D79640-8640-FCE4-C5AB-DD8BEDF415A9
+  :END:
 
 | logview | https://github.com/doublep/logview |
 
@@ -1506,9 +1506,9 @@ your editor.
 #+end_src
 
 * Workspaces
-  :properties:
-  :id: 29880417-F3E0-9D84-E863-037E0788AC99
-  :end:
+  :PROPERTIES:
+  :ID: 29880417-F3E0-9D84-E863-037E0788AC99
+  :END:
 
 | eyebrowse | https://depp.brause.cc/eyebrowse |
 
@@ -1530,9 +1530,9 @@ your editor.
 #+end_src
 
 * Switching
-  :properties:
-  :id: DF48E66B-21D0-A734-6343-954CCAB7EDCD
-  :end:
+  :PROPERTIES:
+  :ID: DF48E66B-21D0-A734-6343-954CCAB7EDCD
+  :END:
 
 | ace-window | https://github.com/abo-abo/ace-window |
 
@@ -1553,9 +1553,9 @@ your editor.
 #+end_src
 
 * Diffing
-  :properties:
-  :id: 900750E0-B842-61F4-3DE3-5477D2A88EB8
-  :end:
+  :PROPERTIES:
+  :ID: 900750E0-B842-61F4-3DE3-5477D2A88EB8
+  :END:
 
 | =ztree=         | https://github.com/fourier/ztree                  |
 | =diff-at-point= | https://gitlab.com/ideasman42/emacs-diff-at-point |
@@ -1635,9 +1635,9 @@ expects some output that isn't there and triggers an error"
 #+end_src
 
 * IRC
-  :properties:
-  :id: 986964E9-A032-1BC4-2DF3-CBC324133C66
-  :end:
+  :PROPERTIES:
+  :ID: 986964E9-A032-1BC4-2DF3-CBC324133C66
+  :END:
 
 #+begin_src emacs-lisp
 (setq erc-join-buffer 'bury)
@@ -1645,9 +1645,9 @@ expects some output that isn't there and triggers an error"
 #+end_src
 
 * Mastodon
-  :properties:
-  :id: 9AE0773B-297B-54C4-6123-C8391056FCD7
-  :end:
+  :PROPERTIES:
+  :ID: 9AE0773B-297B-54C4-6123-C8391056FCD7
+  :END:
 
 #+begin_src emacs-lisp
 (use-package mastodon
