@@ -95,7 +95,6 @@
   "Tangle and load an org file.
 ORG-FILE-NAME file to operate on."
   (let ((el-file-name (concat (file-name-sans-extension org-file-name) ".el"))
-        (elc-file-name (concat (file-name-sans-extension org-file-name) ".elc"))
         (modification-time
          (file-attribute-modification-time (file-attributes org-file-name))))
     (message (concat "Tangling " org-file-name "..."))
