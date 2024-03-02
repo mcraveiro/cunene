@@ -1116,6 +1116,62 @@ versions of built-in Emacs commands.
 (setq consult-flyspell-select-function 'flyspell-correct-at-point)
 #+end_src
 
+** Embark
+
+| =embark= | https://github.com/oantolin/embark |
+
+#+begin_quote
+Embark makes it easy to choose a command to run based on what is near point,
+both during a minibuffer completion session (in a way familiar to Helm or
+Counsel users) and in normal buffers. Bind the command embark-act to a key and
+it acts like prefix-key for a keymap of actions (commands) relevant to the
+target around point. With point on an URL in a buffer you can open the URL in a
+browser or eww or download the file it points to. If while switching buffers you
+spot an old one, you can kill it right there and continue to select another.
+Embark comes preconfigured with over a hundred actions for common types of
+targets such as files, buffers, identifiers, s-expressions, sentences; and it is
+easy to add more actions and more target types. Embark can also collect all the
+candidates in a minibuffer to an occur-like buffer or export them to a buffer in
+a major-mode specific to the type of candidates, such as dired for a set of
+files, ibuffer for a set of buffers, or customize for a set of variables.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package embark
+  :ensure t
+
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("M-." . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc. You may adjust the
+  ;; Eldoc strategy, if you want to see the documentation from
+  ;; multiple providers. Beware that using this can be a little
+  ;; jarring since the message shown in the minibuffer can be more
+  ;; than one line, causing the modeline to move up and down:
+
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+#+end_src
+
 * Undo
   :properties:
   :id: DD9052B1-705F-A3E4-6CFB-7EB7751A128B

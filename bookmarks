@@ -2,11 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("Bookmark+ GitHub" 0 16
+(#1=(#("Cunene GitHub" 0 13
+      (bmkp-full-record #1#))
+    (time 26083 27697 310786 571000)
+    (visits . 0)
+    (tags "emacs" "github")
+    (filename . "   - no file -")
+    (location . "https://github.com/mcraveiro/cunene")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Bookmark+ GitHub" 0 16
       (bmkp-full-record #1#))
     (tags "emacs" "github")
-    (time 26083 26292 679725 41000)
-    (visits . 4)
+    (time 26083 26440 347774 566000)
+    (visits . 6)
     (filename . "   - no file -")
     (location . "https://github.com/emacsmirror/bookmark-plus")
     (handler . bmkp-jump-url-browse))
@@ -18,8 +26,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 2)
-    (time 26083 26158 880410 69000)
+    (visits . 3)
+    (time 26083 26423 755888 254000)
     (created 26083 15261 665813 991000)
     (position . 1)
     (location . "https://www.google.com/?gws_rd=ssl")
