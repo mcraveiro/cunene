@@ -1153,7 +1153,22 @@ versions of built-in Emacs commands.
   :id: 47C3534B-DA1C-4234-8013-DD0F7EF146E2
   :end:
 
+| bookmark+ | https://www.emacswiki.org/emacs/BookmarkPlus |
+
+#+begin_src emacs-lisp
+(use-package bookmark+
+  :load-path cunene/vendor-packages)
+#+end_src
+
 | bm | https://github.com/joodland/bm |
+
+#+begin_quote
+This package provides visible, buffer local, bookmarks and the ability to jump
+forward and backward to the next bookmark.
+
+It was created because I missed the bookmarks from M$ Visual Studio in GNU
+Emacs. I think they provide an easy way to navigate in a buffer.
+#+end_quote
 
 For the org-mode support, see:
 

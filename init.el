@@ -78,7 +78,7 @@
   "Compile EL-FILE-NAME into ELC and load it unless COMPILE-ONLY."
   (interactive)
   (let ((elc-file-name (concat (file-name-sans-extension el-file-name) ".elc")))
-    (unless (file-newer-than-file-p el-file-name elc-file-name)
+    (unless (file-newer-than-file-p elc-file-name el-file-name)
       (save-restriction
         (setq byte-compile-warnings
               '(not free-vars obsolete unresolved callargs redefine
@@ -101,7 +101,7 @@ ORG-FILE-NAME file to operate on."
     (message (concat "Tangling " org-file-name "..."))
     (unless (org-file-newer-than-p el-file-name modification-time)
       (org-babel-tangle-file org-file-name el-file-name "emacs-lisp"))
-    (cunene/compile-and-load-file elc-file-name)))
+    (cunene/compile-and-load-file el-file-name)))
 
 (defun cunene/files-for-extension (dir extension)
   "Return all files at DIR that have EXTENSION, if any."
@@ -135,6 +135,12 @@ ORG-FILE-NAME file to operate on."
        (lambda (value) (equal value '(org-babel-tangle t))))
   (put 'display-line-numbers-width 'safe-local-variable 'integerp)
 
+  ;; Compile vendor packages but do not load; Loading is done by org
+  ;; configuration.
+  (mapc
+   (lambda (vendor-file) (cunene/compile-and-load-file vendor-file t))
+   (cunene/files-for-extension cunene/vendor-packages ".el$"))
+
   ;; Tangle and compile if necessary, then load the configuration
   (mapc 'cunene/tangle-and-load-file
         (cunene/files-for-extension cunene/org-config ".org$"))
@@ -142,11 +148,6 @@ ORG-FILE-NAME file to operate on."
   ;; Load site-specific lisp code, if any exists.
   (mapc 'cunene/compile-and-load-file
         (cunene/files-for-extension cunene/site-lisp ".el$"))
-
-  ;; Compile vendor packages but do not load.
-  (mapc
-   (lambda (vendor-file) (cunene/compile-and-load-file vendor-file t))
-   (cunene/files-for-extension cunene/vendor-packages ".el$"))
 
   ;; Set the working directory to home regardless of where Emacs was started from
   (cd "~/")
