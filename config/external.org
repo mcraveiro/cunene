@@ -170,16 +170,23 @@ any directory proferred by `consult-dir'."
 
 #+begin_src emacs-lisp
 ;; hard-code location of Chrome and Edge on Windows.
-(if (eq window-system 'w32)
-    (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"
-          browse-url-edge-program "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")
-  (setq browse-url-edge-program "/opt/microsoft/msedge/msedge"))
 
-(setq browse-url-edge-arguments "")
-(defun browse-url-edge (url &optional _new-window)
+(defvar cunene/browse-url-edge-program
+  (if (eq system-type 'windows-nt)
+      "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
+    "/opt/microsoft/msedge/msedge")
+"The name by which to invoke the Edge program.")
+
+(if (eq system-type 'windows-nt)
+    (setq browse-url-chrome-program "C:/Program Files/Google/Chrome/Application/chrome"))
+
+(defvar cunene/browse-url-edge-arguments ""
+  "Additional arguments for Edge.")
+
+(defun cunene/browse-url-edge (url &optional _new-window)
   "Ask the Google Edge WWW browser to load URL.
 Default to the URL around or before point.  The strings in
-variable `browse-url-edge-arguments' are also passed to
+variable `cunene/browse-url-edge-arguments' are also passed to
 Google Edge.
 The optional argument NEW-WINDOW is not used."
   (interactive (browse-url-interactive-arg "URL: "))
@@ -187,27 +194,39 @@ The optional argument NEW-WINDOW is not used."
   (let* ((process-environment (browse-url-process-environment)))
     (apply #'start-process
            (concat "google-edge " url) nil
-           browse-url-edge-program
+           cunene/browse-url-edge-program
            (append
-            browse-url-edge-arguments
+            cunene/browse-url-edge-arguments
             (list url)))))
 
-(setq cunene/browsers
+(defvar cunene/browsers
       '(("Chrome" . browse-url-chrome)
         ("EWW" . eww-browse-url)
-        ("Edge" . browse-url-edge)
-        ("Firefox" . browse-url-firefox)))
+        ("Edge" . cunene/browse-url-edge)
+        ("Firefox" . browse-url-firefox))
+      "Available web browsers.")
+
+(defvar cunene/last-browser nil
+  "Last browser selected by the user.")
 
 (defun cunene/browse-url (&rest args)
-  "Select the prefered browser from a menu before opening the URL."
+  "Select the prefered browser from a menu before opening the URL.
+If ARGS are supplied, will always ask. Else it remember the user choice."
   (interactive)
-  (let ((browser (completing-read "WWW browser: " cunene/browsers nil t "")))
-    (apply (cdr (assoc browser cunene/browsers)) args)))
+  (if (or
+       (null cunene/last-browser)    ;; no previous browser?
+       (not (null (cl-first (cdr args))))) ;; any args supplied other than the URL?
+      (progn
+        (setq cunene/last-browser (completing-read "WWW browser: " cunene/browsers nil t ""))
+        (apply (cdr (assoc cunene/last-browser cunene/browsers)) args))
+    (apply (cdr (assoc cunene/last-browser cunene/browsers)) args)))
 
 (setq browse-url-browser-function #'cunene/browse-url)
 
 ;; Sourced from here:
 ;; - https://emacs.stackexchange.com/questions/50433/add-browser-bookmark-to-bookmark-browser
+;; FIXME this breaks bookmark display at present.
+(require 'bookmark)
 (defun cunene/bookmark-url (url)
   "Add URL to bookmarks."
   (interactive "sBookmark URL: ")
