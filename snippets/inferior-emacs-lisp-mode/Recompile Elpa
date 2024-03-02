@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: elpa
+# key: elpa
+# --
+(byte-recompile-directory package-user-dir 0 'force)
