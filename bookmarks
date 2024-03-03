@@ -2,7 +2,74 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("Football Campeonato de Portugal - Group D Fixtures" 0 50
+(#1=(#("GitLab MASD" 0 11
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://gitlab.com/DomainDrivenConsulting")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Google Photos" 0 13
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://photos.google.com/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Microsoft Outlook" 0 17
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://outlook.live.com/mail/0/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("GitHub MASD" 0 11
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://github.com/MASD-Project")
+    (handler . bmkp-jump-url-browse))
+#1=(#("CDash" 0 5
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://my.cdash.org/projects")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Gitter" 0 6
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://app.gitter.im/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Mastodon Emacs" 0 14
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://emacs.ch/home")
+    (handler . bmkp-jump-url-browse))
+#1=(#("OpenAI Chat GPT" 0 15
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://chat.openai.com/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Facebook Instagram" 0 18
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://www.instagram.com/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Google Gemini" 0 13
+      (bmkp-full-record #1#))
+    (time 26083 49497 731932 561000)
+    (visits . 0)
+    (filename . "   - no file -")
+    (location . "https://gemini.google.com/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Google Podcasts" 0 15
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://podcasts.google.com/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Google Mail" 0 11
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://mail.google.com/")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Marco Craveiro's Home Page" 0 26
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://mcraveiro.github.io/index.html")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Football Campeonato de Portugal - Group D Fixtures" 0 50
       (bmkp-full-record #1#))
     (filename . "   - no file -")
     (location . "https://www.flashscore.com/football/portugal/campeonato-de-portugal-group-d/fixtures/")
@@ -47,8 +114,8 @@
     (handler . bmkp-jump-url-browse))
 #1=(#("Cunene GitHub Releases" 0 22
       (bmkp-full-record #1#))
-    (time 26083 29067 973821 425000)
-    (visits . 1)
+    (time 26083 42631 528040 612000)
+    (visits . 3)
     (tags "emacs" "github")
     (filename . "   - no file -")
     (location . "https://github.com/mcraveiro/cunene/releases")
