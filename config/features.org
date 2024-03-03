@@ -1,6 +1,6 @@
-:properties:
-:id: 341DBB81-FE17-7064-5BC3-9A139E1FF48F
-:end:
+:PROPERTIES:
+:ID: 341DBB81-FE17-7064-5BC3-9A139E1FF48F
+:END:
 #+title: Features
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil

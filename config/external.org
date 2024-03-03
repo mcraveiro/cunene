@@ -1,6 +1,6 @@
-:properties:
-:id: 1A4D59C3-A56B-B7C4-54AB-6466F500580C
-:end:
+:PROPERTIES:
+:ID: 1A4D59C3-A56B-B7C4-54AB-6466F500580C
+:END:
 #+title: External
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil

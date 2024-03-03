@@ -1,6 +1,6 @@
-:properties:
-:id: 6A53FD28-BBD1-1804-7233-027439130AF1
-:end:
+:PROPERTIES:
+:ID: 6A53FD28-BBD1-1804-7233-027439130AF1
+:END:
 #+title: Development
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil

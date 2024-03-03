@@ -1,6 +1,6 @@
-:properties:
-:id: F10318C4-5AB4-8624-A13B-0E3BAED0CB1D
-:end:
+:PROPERTIES:
+:ID: F10318C4-5AB4-8624-A13B-0E3BAED0CB1D
+:END:
 #+title: Music
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil

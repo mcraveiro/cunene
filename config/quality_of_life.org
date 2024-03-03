@@ -1,6 +1,6 @@
-:properties:
-:id: C14C28ED-B722-48A8-93E3-A10007EC4D03
-:end:
+:PROPERTIES:
+:ID: C14C28ED-B722-48A8-93E3-A10007EC4D03
+:END:
 #+title: Quality of Life
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
