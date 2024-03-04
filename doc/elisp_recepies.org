@@ -1,6 +1,6 @@
-:properties:
-:id: 58175204-C736-CAB4-F95B-66E153DCA708
-:end:
+:PROPERTIES:
+:ID: 58175204-C736-CAB4-F95B-66E153DCA708
+:END:
 #+title: Emacs Lisp Recipes
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
@@ -11,7 +11,7 @@ Useful bits of Emacs Lisp we found over the internet.
 
 ** Recompile packages
 
-To recompile all packages in a directory:
+*** Recompile all packages in emacs home directory
 
 #+begin_src emacs-lisp
 (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
@@ -19,7 +19,7 @@ To recompile all packages in a directory:
 
 As per [[https://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory][How do I byte-compile everything in my .emacs.d directory?]]
 
-To recompile package directory:
+*** Recompile package directory
 
 #+begin_src emacs-lisp
 (byte-recompile-directory package-user-dir 0 'force)
@@ -27,10 +27,16 @@ To recompile package directory:
 
 As per [[http://sodaware.sdf.org/notes/recompiling-all-emacs-packages/][Recompiling all Emacs packages]].
 
-To recompile vendor directory:
+*** Recompile vendor directory
 
 #+begin_src emacs-lisp
 (byte-recompile-directory (expand-file-name "~/.emacs.d/vendor") 0 'force)
+#+end_src
+
+*** Recompile config directory
+
+#+begin_src emacs-lisp
+(byte-recompile-directory (expand-file-name "~/.emacs.d/config") 0 'force)
 #+end_src
 
 ** Check native compilation
@@ -39,4 +45,15 @@ To see if native compilation is enabled:
 
 #+begin_src emacs-lisp
 (native-comp-available-p)
+#+end_src
+
+* Org-mode
+
+** Tangle files
+
+#+begin_src emacs-lisp
+(mapc (lambda (org-file-name)
+        (let ((el-file-name (concat (file-name-sans-extension org-file-name) ".el")))
+          (org-babel-tangle-file org-file-name el-file-name "emacs-lisp")))
+      (cunene/files-for-extension cunene/org-config ".org$"))
 #+end_src

@@ -89,8 +89,16 @@
       (load-file elc-file-name))
     ))
 
+;; For tangling.
 (require 'org-macs)
 (require 'ob-tangle)
+
+;; Default to utf-8 encoding. Avoid problems with tangling.
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
 (defun cunene/tangle-and-load-file (org-file-name)
   "Tangle and load an org file.
 ORG-FILE-NAME file to operate on."

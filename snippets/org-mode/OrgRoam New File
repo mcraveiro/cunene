@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: OrgRoam New File
+# key: ornf
+# --
+:PROPERTIES:
+:ID: `(cunene/uuid-insert)`
+:END:

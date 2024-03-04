@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: Tangle Config
+# key: tancfg
+# --
+(mapc (lambda (org-file-name)
+        (let ((el-file-name (concat (file-name-sans-extension org-file-name) ".el")))
+          (org-babel-tangle-file org-file-name el-file-name "emacs-lisp")))
+      (cunene/files-for-extension cunene/org-config ".org$"))

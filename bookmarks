@@ -2,7 +2,43 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("GitLab MASD" 0 11
+(#1=(#("Cunene - Config" 0 15
+      (bmkp-full-record #1#))
+    (buffer-name . "config")
+    (front-context-string . "quality_of_life.")
+    (rear-context-string . "8K Mar  3 01:05 ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(26085 51398 232558 122000))
+    (created . #2#)
+    (position . 951)
+    (filename . "/home/marco/.emacs.d/config/")
+    (dired-directory . "~/.emacs.d/config/")
+    (dired-marked)
+    (dired-switches . "-lGh1v --group-directories-first")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#("Cunene - .emacs.d" 0 17
+      (bmkp-full-record #1#))
+    (buffer-name . ".emacs.d")
+    (front-context-string . "config\n  drwxr-x")
+    (rear-context-string . "0K Mar  4 08:55 ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(26085 51389 144603 208000))
+    (created . #2#)
+    (position . 266)
+    (filename . "/home/marco/.emacs.d/")
+    (dired-directory . "~/.emacs.d/")
+    (dired-marked)
+    (dired-switches . "-lGh1v --group-directories-first")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#("GitLab MASD" 0 11
       (bmkp-full-record #1#))
     (filename . "   - no file -")
     (location . "https://gitlab.com/DomainDrivenConsulting")
@@ -71,6 +107,8 @@
     (handler . bmkp-jump-url-browse))
 #1=(#("Football Campeonato de Portugal - Group D Fixtures" 0 50
       (bmkp-full-record #1#))
+    (time 26085 49166 671659 97000)
+    (visits . 0)
     (filename . "   - no file -")
     (location . "https://www.flashscore.com/football/portugal/campeonato-de-portugal-group-d/fixtures/")
     (handler . bmkp-jump-url-browse))
