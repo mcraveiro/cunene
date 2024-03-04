@@ -25,6 +25,7 @@ transient
 auto-save-list
 eshell
 projects
+paimon.el/*
 
 # Roam
 .org-id-locations-file
