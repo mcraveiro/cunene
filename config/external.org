@@ -347,7 +347,11 @@ START and END mark the region."
 
   #+end_src
 
+* Logging
 
+#+begin_src emacs-lisp
+(use-package paimon)
+#+end_src
 
 * Postamble
 

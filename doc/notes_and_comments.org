@@ -59,6 +59,7 @@ Problems:
 - [[https://klibert.pl/posts/supercharge-your-eval-expression-with-ielm.html][Supercharge your eval-expression with ielm!]] See also [[https://www.reddit.com/r/emacs/comments/18bm7qz/supercharge_your_evalexpression_with_ielm/][reddit discussion]].
 - [[https://utcc.utoronto.ca/~cks/space/blog/programming/EmacsMetaXRelevantCommands][How to make your GNU Emacs commands 'relevant' for M-X]]
 - [[https://endlessparentheses.com/a-quick-guide-to-directory-local-variables.html][A quick guide to directory-local (or project-specific) variables]]
+- [[https://joaotavora.github.io/yasnippet/snippet-development.html#org6796ab7][YAS - Writing snippets]]
 
 * References
   :properties:
