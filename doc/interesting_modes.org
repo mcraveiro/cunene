@@ -321,3 +321,6 @@ them properly.
 - [[https://github.com/RobertPlant/time-uuid-mode][time-uuid-mode]]: "Convert time based UUIDs into their ISO8601 date times and
   preview them inline as an overlay."
 - [[https://github.com/cute-jumper/embrace.el][embrace.el]]: "Add/Change/Delete pairs based on expand-region."
+- [[https://github.com/alphapapa/activities.el][activities.el]]: "Inspired by Genera’s and KDE’s concepts of “activities”, this
+  Emacs library allows the user to manage frames/tabs, windows, and buffers
+  according to their purpose. "

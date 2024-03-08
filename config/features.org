@@ -1440,7 +1440,8 @@ your editor.
         ("C-c & t" . yas-describe-tables)
         ("C-c & &" . org-mark-ring-goto)))
 
-(use-package yasnippet-snippets :defer)
+(use-package yasnippet-snippets
+  :init (yasnippet-snippets-initialize))
 #+end_src
 
 * Spell checking

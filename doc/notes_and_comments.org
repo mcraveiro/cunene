@@ -60,6 +60,8 @@ Problems:
 - [[https://utcc.utoronto.ca/~cks/space/blog/programming/EmacsMetaXRelevantCommands][How to make your GNU Emacs commands 'relevant' for M-X]]
 - [[https://endlessparentheses.com/a-quick-guide-to-directory-local-variables.html][A quick guide to directory-local (or project-specific) variables]]
 - [[https://joaotavora.github.io/yasnippet/snippet-development.html#org6796ab7][YAS - Writing snippets]]
+- [[https://ismailefe.org/blog/emacs_functions/][My Must Emacs Functions]]
+- [[https://arialdomartini.github.io/emacs-surround][Emacs: Let's surround!]]
 
 * References
   :properties:

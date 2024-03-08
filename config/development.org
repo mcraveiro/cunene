@@ -291,10 +291,18 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 | consult-eglot | https://github.com/mohkale/consult-eglot |
 
 #+begin_src emacs-lisp
-(use-package eglot)
+(use-package eglot
+  :bind (("C-RET" . eglot-code-actions)))
 (use-package flycheck-eglot)
 (use-package consult-eglot)
-(use-package imenu-list)
+
+(use-package imenu-list
+  :config
+  (setq imenu-list-auto-resize t)
+  (add-hook 'imenu-list-major-mode-hook
+            (lambda ()
+              (read-only-mode)
+              (hl-minor-mode))))
 
 (defun cunene/path-to-omnisharp ()
   "Returns the path to the LSP server for C#."

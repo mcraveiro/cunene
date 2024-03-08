@@ -252,6 +252,7 @@ If ARGS are supplied, will always ask. Else it remember the user choice."
   :config  (add-hook 'ssh-mode-hook
                      (lambda ()
                        (setq ssh-directory-tracking-mode t)
+                       (push '(ssh-mode comint-input-ring comint-input-ring-index comint-bol) consult-mode-histories)
                        (shell-dirtrack-mode t)
                        (setq dirtrackp nil))))
 

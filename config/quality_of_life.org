@@ -783,8 +783,23 @@ With the prefix argument UNFILL, unfill it instead."
   :ID: E4E96D56-D3E4-CDE4-C443-D82CCFC8F299
   :END:
 
+Links:
+
+- [[https://d12frosted.io/posts/2019-06-26-emacs-helpful.html][Emacs: reusing window for helpful buffers]]
+
 #+begin_src emacs-lisp
 (use-package helpful
+  :config
+  (setq helpful-switch-buffer-function #'cunene/helpful-switch-to-buffer)
+
+  (defun cunene/helpful-switch-to-buffer (buffer-or-name)
+    "Switch to helpful BUFFER-OR-NAME.
+
+The logic is simple, if we are currently in the helpful buffer,
+reuse it's window, otherwise create new one."
+    (if (eq major-mode 'helpful-mode)
+        (switch-to-buffer buffer-or-name)
+      (pop-to-buffer buffer-or-name)))
   :bind
   (("C-h f" . helpful-callable)
    ("C-h v" . helpful-variable)
