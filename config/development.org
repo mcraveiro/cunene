@@ -335,7 +335,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=16384")
   (add-to-list 'plantuml-java-args "-DPLANTUML_SECURITY_PROFILE=UNSECURE")
   (setq plantuml-jar-output-type-opt "png")
-  (add-to-list 'plantuml-jar-args "-Playout=elk")
+  ;; (add-to-list 'plantuml-jar-args "-Playout=elk")
   (add-to-list 'plantuml-jar-args "-v")
 
   (if (eq system-type 'windows-nt)
@@ -359,9 +359,10 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
     (display-buffer plantuml-buffer-name)
     ;; copied from plantuml-jar-start-process, which uses stdin (e.g. -p)
     (apply #'start-process
-            "PLANTUML" plantuml-buffer-name plantuml-executable-path
-            `(,@plantuml-executable-args
-              ,(plantuml-jar-output-type-opt plantuml-output-type)
+            "PLANTUML" plantuml-buffer-name plantuml-java-command
+            `(,@plantuml-java-args
+              ,plantuml-jar-path
+              ,(plantuml-jar-output-type-opt plantuml-jar-output-type-opt)
               ,@plantuml-jar-args
               ,plantuml-diagram))))
 
