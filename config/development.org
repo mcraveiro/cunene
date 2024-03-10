@@ -302,7 +302,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-hook 'imenu-list-major-mode-hook
             (lambda ()
               (read-only-mode)
-              (hl-minor-mode))))
+              (hl-line-mode))))
 
 (defun cunene/path-to-omnisharp ()
   "Returns the path to the LSP server for C#."
@@ -330,12 +330,38 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :mode "\\.plantuml\\'"
   :config
   (setq plantuml-indent-level 4)
-  (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=8192") ;; 65536
-  (if (eq window-system 'w32)
+  (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=16384")
+  (add-to-list 'plantuml-java-args "-DPLANTUML_SECURITY_PROFILE=UNSECURE")
+  (setq plantuml-jar-output-type-opt "png")
+  (add-to-list 'plantuml-jar-args "-Playout=elk")
+  (add-to-list 'plantuml-jar-args "-v")
+
+  (if (eq system-type 'windows-nt)
       (setq plantuml-jar-path "C:/opt/plantuml/plantuml.jar"
             plantuml-default-exec-mode 'jar)
     (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
           plantuml-default-exec-mode 'executable)))
+
+(require 'plantuml-mode)
+(defun cunene/plantuml-make-diagram ()
+  "Create a diagram from a PlantUML buffer."
+  (interactive)
+  (let* ((plantuml-diagram (buffer-file-name))
+         (process-query-on-exit-flag nil)
+         (plantuml-buffer-name
+          (concat "PlantUML: " (file-name-nondirectory plantuml-diagram))))
+    (with-current-buffer (get-buffer-create plantuml-buffer-name)
+      (erase-buffer)
+      (goto-char (point-max))
+      (insert "Starting PlantUML "(format-time-string "%D %-I:%M %p")))
+    (display-buffer plantuml-buffer-name)
+    ;; copied from plantuml-jar-start-process, which uses stdin (e.g. -p)
+    (apply #'start-process
+            "PLANTUML" plantuml-buffer-name plantuml-executable-path
+            `(,@plantuml-executable-args
+              ,(plantuml-jar-output-type-opt plantuml-output-type)
+              ,@plantuml-jar-args
+              ,plantuml-diagram))))
 
 (use-package flycheck-plantuml
   :ensure t

@@ -506,21 +506,6 @@ ARG to set the direction."
   (toggle-horizontal-scroll-bar arg)
   (toggle-scroll-bar arg))
 
-(defun cunene/plantuml-make-diagram ()
-  "Create a diagram from a PlantUML buffer."
-  (interactive)
-  (let* ((jvm_args " -DPLANTUML_LIMIT_SIZE=16384 -Djava.awt.headless=true -DPLANTUML_SECURITY_PROFILE=UNSECURE")
-         (jar_path "/usr/share/plantuml/plantuml.jar ")
-         (jar_args (concat " -jar " jar_path))
-         (command (concat "java " jvm_args jar_args " -Playout=elk -tpng -v " (buffer-file-name)))
-         (plant-buffer-name (concat "PlantUML: "
-                                    (file-name-nondirectory (buffer-file-name)))))
-    (with-current-buffer (get-buffer-create plant-buffer-name)
-      (erase-buffer)
-      (goto-char (point-max))
-      (insert "Starting PlantUML "(format-time-string "%D %-I:%M %p")))
-    (start-process-shell-command "PlantUML" plant-buffer-name command)))
-
 (defun cunene/flush-blank-lines (start end)
   "Remove blank lines.
 START and END mark the region."

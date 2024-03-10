@@ -1493,8 +1493,8 @@ your editor.
 #+begin_src emacs-lisp
 (use-package logview
   :config
-  (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap"))
-  (setq logview-additional-submodes
+  (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap")
+        logview-additional-submodes
         '(
           ("dogen"
            (format . "TIMESTAMP [LEVEL] [NAME]")
@@ -1502,8 +1502,8 @@ your editor.
            (timestamp "ISO 8601 datetime + micros"))
           ("dotnet"
            (format . "LEVEL TIMESTAMP [THREAD] NAME IGNORED - MESSAGE")
-           (levels . "SLF4J"))
-          )))
+           (levels . "SLF4J"))))
+  (add-hook 'logview-mode-hook #'read-only-mode))
 #+end_src
 
 * Workspaces
