@@ -179,6 +179,7 @@ surrounded by word boundaries."
   (setq ibuffer-saved-filter-groups ;; Group buffers
         (quote (("home"
                  ("c++" (mode . c++-mode))
+                 ("images" (mode . image-mode))
                  ("python" (or
                             (mode . python-mode)
                             (name . "^\\*Python\\*$")))
@@ -222,6 +223,7 @@ surrounded by word boundaries."
                  ("clojure" (or
                              (mode . inf-clojure-mode)
                              (mode . clojure-mode)))
+                 ("plantuml" (mode . plantuml-mode))
                  ("latex" (or
                            (name . ".tex$")
                            (name . ".texi$")
@@ -272,6 +274,7 @@ surrounded by word boundaries."
                              (name . "^\\*Assoc file dif")
                              (mode . diff-mode)))
                  ("version control" (or
+                                     (name . "^\\.gitignore")
                                      (name . "^\\*svn-")
                                      (name . "^\\*vc")
                                      (name . "^\\*cvs")
@@ -283,6 +286,7 @@ surrounded by word boundaries."
                               (name . "^\\*Lexer Output\\*$")))
                  ("web browsing" (or
                                   (mode . w3m-mode)
+                                  (mode . eww-mode)
                                   (mode . verb-mode)
                                   (name . "^\\*Verb")
                                   (name . "^\\*httpd\\*$")

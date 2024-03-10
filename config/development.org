@@ -299,8 +299,10 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (use-package imenu-list
   :config
   (setq imenu-list-auto-resize t)
+
   (add-hook 'imenu-list-major-mode-hook
             (lambda ()
+              (imenu-list-minor-mode
               (read-only-mode)
               (hl-line-mode))))
 
