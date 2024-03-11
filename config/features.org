@@ -1217,7 +1217,10 @@ files, ibuffer for a set of buffers, or customize for a set of variables.
 
 #+begin_src emacs-lisp
 (use-package bookmark+
-  :load-path cunene/vendor-packages)
+  :load-path cunene/vendor-packages
+  :config
+  (setq bookmark-default-file (concat user-emacs-directory "bookmarks")
+        bookmark-save-flag 1))
 #+end_src
 
 | bm | https://github.com/joodland/bm |
@@ -1317,10 +1320,6 @@ For the org-mode support, see:
           (bm-bookmark-remove  bookmark)))
     (when (> bm-verbosity-level 0)
       (message "Bookmark not found."))))
-
-(setq
- bookmark-default-file (cunene/cache-concat "bookmarks/bookmarks")
- bookmark-save-flag 1)
 #+end_src
 
 * Highlighting

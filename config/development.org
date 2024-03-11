@@ -335,6 +335,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=16384")
   (add-to-list 'plantuml-java-args "-DPLANTUML_SECURITY_PROFILE=UNSECURE")
   (setq plantuml-jar-output-type-opt "png")
+  (add-hook 'plantuml-mode-hook 'whitespace-mode)
   ;; (add-to-list 'plantuml-jar-args "-Playout=elk")
   (add-to-list 'plantuml-jar-args "-v")
 
