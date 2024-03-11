@@ -529,7 +529,7 @@ START and END mark the region."
   "Open Windows Explorer on the current directory."
   (interactive)
   (if (eq system-type 'windows-nt)
-      (shell-command "explorer .")
+      (start-process "EXPLORER" nil "explorer" ".")
     (message "Command only available on Windows.")))
 #+end_src
 

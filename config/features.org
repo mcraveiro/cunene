@@ -1445,6 +1445,17 @@ your editor.
 
 (use-package yasnippet-snippets
   :init (yasnippet-snippets-initialize))
+
+;; useful with YAS. See:
+;; https://emacs.stackexchange.com/questions/45629/template-for-new-file
+(use-package autoinsert
+  :config
+  (setq auto-insert-query nil)
+  (auto-insert-mode 1)
+  (add-hook 'find-file-hook 'auto-insert)
+  ;; (setq auto-insert-alist nil) ;; remove this like to restore defaults
+  ;; (add-to-list 'auto-insert-alist  '("CMakeLists\\.txt$" . [nega/yas-cmake-bp]))
+  )
 #+end_src
 
 * Spell checking
