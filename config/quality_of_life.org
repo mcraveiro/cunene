@@ -843,6 +843,22 @@ Sources:
 (add-hook 'prog-mode-hook 'cunene/prog-mode-configure-prettify-symbols-alist)
 #+end_src
 
+* Processes
+
+#+begin_src emacs-lisp
+;; Example: (is-process-running "myprocess")
+(defun cunene/is-process-running (process-name)
+  "Check if a system process named PROCESS-NAME is running."
+  (let* ((process-list-command
+         (if (eq system-type 'windows-nt)
+             "pslist"
+           "ps aux"))
+         (pipeline
+          (concat process-list-command "| grep -v grep |" (format "grep -c '%s'" process-name)))
+         (output (shell-command-to-string pipeline)))
+    (not (zerop (string-to-number (string-trim output))))))
+#+end_src
+
 * Postamble
 
 #+begin_src emacs-lisp
