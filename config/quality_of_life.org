@@ -524,6 +524,13 @@ START and END mark the region."
                             86400)))
     (+ excel-days 2)
   ))
+
+(defun cunene/open-directory-on-windows-explorer()
+  "Open Windows Explorer on the current directory."
+  (interactive)
+  (if (eq system-type 'windows-nt)
+      (shell-command "explorer .")
+    (message "Command only available on Windows.")))
 #+end_src
 
 * Region
