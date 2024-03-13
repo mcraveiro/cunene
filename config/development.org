@@ -292,8 +292,11 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 #+begin_src emacs-lisp
 (use-package eglot
-  :bind (("C-RET" . eglot-code-actions)))
-(use-package flycheck-eglot)
+  :bind (("M-RET" . eglot-code-actions)))
+(use-package
+  flycheck-eglot
+  :init
+  (global-flycheck-eglot-mode))
 (use-package consult-eglot)
 
 (use-package imenu-list
@@ -811,6 +814,8 @@ again, I haven't see that as a problem."
   :load-path cunene/vendor-packages)
 (use-package sharper
   :demand t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.sln\\'" . sln-mode))
   :bind
   ("C-c n" . sharper-main-transient))
 #+end_src
