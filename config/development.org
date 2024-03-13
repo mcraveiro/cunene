@@ -429,7 +429,7 @@ Delete whitespace between words, parenthesis and other delimiters in a smart (du
 #+begin_src emacs-lisp
 (use-package smart-hungry-delete
   :bind (("<backspace>" . smart-hungry-delete-backward-char)
-         ("C-d" . smart-hungry-delete-forward-char))
+         ("<deletechar>" . smart-hungry-delete-forward-char))
   :defer nil ;; dont defer so we can add our functions to hooks
   :config (smart-hungry-delete-add-default-hooks))
 
@@ -657,6 +657,7 @@ START and END mark the region."
 
 #+begin_src emacs-lisp
 (use-package markdown-mode
+  :ensure t
   :bind (("C-c C-s a" . markdown-table-align))
   :mode ("\\.md$" . gfm-mode))
 #+end_src
@@ -709,7 +710,6 @@ START and END mark the region."
 (use-package csharp-mode
   :config
   (defun cunene/csharp-mode-setup ()
-    (company-mode)
     (flycheck-mode)
     (c-toggle-hungry-state 1)
     (setq indent-tabs-mode nil)

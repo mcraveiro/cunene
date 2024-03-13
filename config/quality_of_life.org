@@ -533,6 +533,23 @@ START and END mark the region."
     (message "Command only available on Windows.")))
 #+end_src
 
+* Editing
+
+| iedit | https://github.com/victorhge/iedit |
+
+#+begin_quote
+This package includes Emacs minor modes (iedit-mode and iedit-rectangle-mode)
+based on a API library (iedit-lib) and allows you to alter one occurrence of
+some text in a buffer (possibly narrowed) or region, and simultaneously have
+other occurrences changed in the same way, with visual feedback as you type.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package iedit
+  :ensure t
+  :bind ("C-:" . iedit-mode))
+#+end_src
+
 * Region
   :PROPERTIES:
   :ID: 6D970862-A042-4874-C41B-C39FDB2B0C8E

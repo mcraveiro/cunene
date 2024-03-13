@@ -987,44 +987,148 @@ command.
   :init (setq xref-show-definitions-function 'completing-read-xref-show-defs))
 #+end_src
 
-** Company
+** Corfu
 
-| =company-mode= | https://github.com/company-mode/company-mode |
+| Corfu | https://github.com/minad/corfu |
 
 #+begin_quote
-Company is a text completion framework for Emacs. The name stands for "complete
-anything". It uses pluggable back-ends and front-ends to retrieve and display
-completion candidates.
+Corfu enhances in-buffer completion with a small completion popup. The current
+candidates are shown in a popup below or above the point. The candidates can be
+selected by moving up and down. Corfu is the minimalistic in-buffer completion
+counterpart of the Vertico minibuffer UI.
 #+end_quote
 
 #+begin_src emacs-lisp
-(use-package company
-  :config (add-hook 'prog-mode-hook 'company-mode))
-
-(use-package company-posframe
-  :init (company-posframe-mode 1)
+(use-package corfu
+  :ensure t
+  ;; Optional customizations
   :config
-  (setq company-idle-delay 0.3
-        company-show-numbers t
-        company-tooltip-align-annotations t
-        company-async-timeout 15
-        company-minimum-prefix-length 2
-        company-dabbrev-downcase nil
-        company-dabbrev-other-buffers t
-        company-auto-complete nil
-        company-dabbrev-code-other-buffers 'all
-        company-dabbrev-code-everywhere t
-        company-dabbrev-code-ignore-case t
-        company-minimum-prefix-length 1
-        company-transformers nil
-        company-lsp-async t
-        company-lsp-cache-candidates nil)
+  (setq corfu-quit-no-match 'separator)
+  corfu-echo-mode
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-separator ?\s)          ;; Orderless field separator
+  (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-preview-current nil)    ;; Disable current candidate preview
+  (corfu-preselect 'prompt)      ;; Preselect the prompt
+  (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  (corfu-scroll-margin 5)        ;; Use scroll margin
 
-  :diminish)
+  ;; Enable Corfu only for certain modes.
+  :hook ((prog-mode . corfu-mode)
+         (shell-mode . corfu-mode)
+         (eshell-mode . corfu-mode))
 
-(use-package company-box
-  :config (setq company-box-icons-alist 'company-box-icons-all-the-icons)
-  :hook (company-mode . company-box-mode))
+  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+  ;; be used globally (M-/).  See also the customization variable
+  ;; `global-corfu-modes' to exclude certain modes.
+  :init
+  (global-corfu-mode)
+  (setq corfu-popupinfo-delay 0.2)
+  (corfu-popupinfo-mode))
+
+(use-package nerd-icons-corfu
+  :ensure t
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
+
+  ;; Optionally:
+  (setq nerd-icons-corfu-mapping
+        '((array :style "cod" :icon "symbol_array" :face font-lock-type-face)
+          (boolean :style "cod" :icon "symbol_boolean" :face font-lock-builtin-face)
+          ;; ...
+          (t :style "cod" :icon "code" :face font-lock-warning-face))))
+
+(use-package pcmpl-args
+  :ensure t)
+
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (setq-local corfu-auto nil)
+            (corfu-mode)))
+
+;; (defun corfu-send-shell (&rest _)
+;;   "Send completion candidate when inside comint/eshell."
+;;   (cond
+;;    ((and (derived-mode-p 'eshell-mode) (fboundp 'eshell-send-input))
+;;     (eshell-send-input))
+;;    ((and (derived-mode-p 'comint-mode)  (fboundp 'comint-send-input))
+;;     (comint-send-input))))
+
+;; (advice-add #'corfu-insert :after #'corfu-send-shell)
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+
+  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+  (setq read-extended-command-predicate
+        #'command-completion-default-include-p)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete))
+
+#+end_src
+
+#+RESULTS:
+
+** Cape
+
+| Cape | https://github.com/minad/cape |
+
+#+begin_quote
+Cape provides Completion At Point Extensions which can be used in combination
+with Corfu, Company or the default completion UI. The completion backends used
+by completion-at-point are so called completion-at-point-functions (Capfs).
+#+end_quote
+
+#+begin_src emacs-lisp
+;; Add extensions
+(use-package cape
+  :ensure t
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-elisp-symbol)
+         ("C-c p e" . cape-elisp-block)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p :" . cape-emoji)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  (add-to-list 'completion-at-point-functions #'cape-history)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-dict)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
 #+end_src
 
 ** Consult
