@@ -2,7 +2,12 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("Cunene - Config" 0 15
+(#1=(#("Google Search" 0 13
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (location . "https://www.google.com/?gws_rd=ssl")
+    (handler . bmkp-jump-url-browse))
+#1=(#("Cunene - Config" 0 15
       (bmkp-full-record #1#))
     (buffer-name . "config")
     (front-context-string . "quality_of_life.")
@@ -144,16 +149,16 @@
     (handler . bmkp-jump-url-browse))
 #1=(#("Cunene GitHub Tags" 0 18
       (bmkp-full-record #1#))
-    (time 26083 29102 371819 431000)
-    (visits . 0)
+    (time 26098 14406 449506 328000)
+    (visits . 1)
     (tags "emacs" "github")
     (filename . "   - no file -")
     (location . "https://github.com/mcraveiro/cunene/tags")
     (handler . bmkp-jump-url-browse))
 #1=(#("Cunene GitHub Releases" 0 22
       (bmkp-full-record #1#))
-    (time 26083 42631 528040 612000)
-    (visits . 3)
+    (time 26098 14395 41500 290000)
+    (visits . 4)
     (tags "emacs" "github")
     (filename . "   - no file -")
     (location . "https://github.com/mcraveiro/cunene/releases")
@@ -174,18 +179,4 @@
     (filename . "   - no file -")
     (location . "https://github.com/emacsmirror/bookmark-plus")
     (handler . bmkp-jump-url-browse))
-#1=(#("Google" 0 6
-      (bmkp-full-record #1#))
-    (buffer-name . "*eww*")
-    (buffer-name . "*eww*")
-    (front-context-string . "Gmail\nImages\nSig")
-    (rear-context-string)
-    (front-context-region-string)
-    (rear-context-region-string)
-    (visits . 3)
-    (time 26083 26423 755888 254000)
-    (created 26083 15261 665813 991000)
-    (position . 1)
-    (location . "https://www.google.com/?gws_rd=ssl")
-    (handler . bmkp-jump-eww))
 )
