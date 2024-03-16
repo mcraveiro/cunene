@@ -308,9 +308,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
   (add-hook 'imenu-list-major-mode-hook
             (lambda ()
-              (imenu-list-minor-mode
+              (imenu-list-minor-mode)
               (read-only-mode)
-              (hl-line-mode)))))
+              (hl-line-mode))))
 
 (defun cunene/path-to-omnisharp ()
   "Returns the path to the LSP server for C#."

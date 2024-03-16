@@ -629,6 +629,22 @@ character of the string."
         (insert new-c)
         (replace-string new-c old-c nil (1+ start) end)))))
 
+(defun cunene/backslash-slash-toggle ()
+  "Replace backslash/slash in the current region or line.
+If the current line contains more backslash char than slashes, then replace
+them to slashes, else replace slashes to backslashes. If there's a text
+selection, work on the selected text."
+  (interactive)
+  (let (li bds)
+    (setq bds
+          (if (region-active-p)
+              (cons (region-beginning) (region-end))
+            (bounds-of-thing-at-point 'line)))
+    (setq li (buffer-substring-no-properties (car bds) (cdr bds)))
+    (if (> (count 47 li) (count 92 li))
+        (progn (replace-string "/" "\\" nil (car bds) (cdr bds)))
+      (progn (replace-string "\\" "/" nil (car bds) (cdr bds))))))
+
 (defun cunene/space-to-underscore-region (start end)
   "Replace space by underscore in region.
 START and END mark the region."
