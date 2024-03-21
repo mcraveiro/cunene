@@ -10,7 +10,7 @@ Key features.
 * Preamble
 
 #+begin_src emacs-lisp
-;;; features.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;;; features.el --- Cunene: My emacs configuration. -*- lexical-binding: t -*-
 ;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
 ;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
 

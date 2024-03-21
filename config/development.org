@@ -10,7 +10,7 @@ Configuration related to programming.
 * Preamble
 
 #+begin_src emacs-lisp
-;;; core.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;;; core.el  --- Cunene: My emacs configuration. -*- lexical-binding: t -*-
 ;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
 ;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
 
@@ -325,7 +325,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 ;; Improve performance by not logging debug info.
 ;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
 ;;
-(fset #'jsonrpc--log-event #'ignore)
+; (fset #'jsonrpc--log-event #'ignore)
 #+end_src
 
 * Diagrams
@@ -916,6 +916,12 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 (require 'ansi-color)
 (add-hook 'compilation-filter-hook #'cunene/colorize-compilation-buffer)
+
+(defun cunene/recompile-quietly ()
+  "Re-compile without changing the window configuration."
+  (interactive)
+  (save-window-excursion
+    (recompile)))
 #+end_src
 
 * Lisp

@@ -10,7 +10,7 @@ Changes to core behaviour to make life better.
 * Preamble
 
 #+begin_src emacs-lisp
-;;; quality_of_life.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;;; quality_of_life.el --- Cunene: My emacs configuration. -*- lexical-binding: t -*-
 ;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
 ;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
 
@@ -585,6 +585,23 @@ other occurrences changed in the same way, with visual feedback as you type.
 ;; note - this should be after volatile-highlights is required
 ;; add the ability to cut the current line, without marking it
 (require 'rect)
+
+;; WSL only. As per this post:
+;; https://www.fredgruber.org/post/wsl_emacs_clipboard/
+;;
+(defun cunene/wsl-copy-clip(&rest _args)
+  "Write the region to a file and then copy it to the Windows clipboard."
+  (setq mytemp (make-temp-file "winclip"))
+  (write-region (current-kill 0 t) nil mytemp)
+  (shell-command (concat "clip.exe<" mytemp))
+  (delete-file mytemp))
+;; (advice-add 'kill-new :after #'cunene/wsl-copy-clip)
+
+(defun cunene/wsl-copy-selected-text (start end)
+  (interactive "r")
+  (if (use-region-p)
+      (let ((text (buffer-substring-no-properties start end)))
+        (shell-command (concat "echo '" text "' | clip.exe")))))
 #+end_src
 
 * Mark

@@ -1,4 +1,4 @@
-;;; init.el --- My Emacs configuration -*- lexical-binding: t; -*-
+;;; init.el --- Cunene: My emacs configuration. -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2024 Marco Craveiro
 

@@ -10,7 +10,7 @@ Interaction with the outside world.
 * Preamble
 
 #+begin_src emacs-lisp
-;;; external.el --- Cunene: My emacs configuration Copyright © 2021 Marco Craveiro
+;;; external.el --- Cunene: My emacs configuration. -*- lexical-binding: t -*-
 ;; Author: Marco Craveiro <marco_craveiro@gmail.com> URL:
 ;; https://github.com/mcraveiro/prelude Version: 0.0.3 Keywords: convenience
 
@@ -78,6 +78,10 @@ Todo:
 #+begin_src emacs-lisp
 (use-package eshell
   :config
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq-local imenu-generic-expression
+                          '(("Prompt" " $ \\(.*\\)" 1)))))
   (require 'em-hist)
   (require 'em-alias)
   (add-to-list
@@ -96,6 +100,7 @@ Todo:
               ;; ([remap eshell-previous-matching-input-from-input] . helm-eshell-history)
               ;; ([remap eshell-list-history] . helm-eshell-history)
               ))
+
 
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
