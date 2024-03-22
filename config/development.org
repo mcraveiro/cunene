@@ -144,6 +144,11 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
   (add-to-list 'magit-no-confirm 'unstage-all-changes)
   (magit-add-section-hook
    'magit-status-sections-hook 'magit-insert-modules-overview 'magit-insert-merge-log)
+  (magit-add-section-hook 'magit-status-sections-hook
+                          'magit-insert-assume-unchanged-files nil t)
+  ;; insert the hidden files section in the magit status buffer.
+  (magit-add-section-hook 'magit-status-sections-hook
+                          'magit-insert-skip-worktree-files nil t)
   (remove-hook 'magit-section-highlight-hook #'magit-section-highlight)
   (remove-hook 'server-switch-hook 'magit-commit-diff)
   (remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff))
