@@ -324,3 +324,19 @@ them properly.
 - [[https://github.com/alphapapa/activities.el][activities.el]]: "Inspired by Genera’s and KDE’s concepts of “activities”, this
   Emacs library allows the user to manage frames/tabs, windows, and buffers
   according to their purpose. "
+- [[https://github.com/fritzgrabo/project-tab-groups][project-tab-groups]]: "Provides a global minor mode that enhances the Emacs
+  built-in project.el library to support keeping projects isolated in named tab
+  groups."
+- [[https://github.com/casouri/vundo][vundo]]: "Vundo (visual undo) displays the undo history as a tree and lets you
+  move in the tree to go back to previous buffer states. To use vundo, type M-x
+  vundo RET in the buffer you want to undo. A"
+- [[https://github.com/hlissner/emacs-solaire-mode][emacs-solaire-mode]]: "solaire-mode is an aesthetic plugin designed to visually
+  distinguish "real" buffers (i.e. file-visiting code buffers where you do most
+  of your work) from "unreal" buffers (like popups, sidebars, log buffers,
+  terminals, etc) by giving the latter a slightly different -- often darker --
+  background:"
+- [[https://codeberg.org/akib/emacs-flymake-popon][emacs-flymake-popon]]: "Flymake diagnostics on cursor hover"
+- [[https://www.emacswiki.org/emacs/VolatileHighlights][VolatileHighlights]]: "VolatileHighlights highlights changes to the buffer
+  caused by commands such as ‘undo’, ‘yank’/’yank-pop’, etc. The highlight
+  disappears at the next command. The highlighting gives useful visual feedback
+  for what your operation actually changed in the buffer."

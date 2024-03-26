@@ -40,6 +40,7 @@ Problems:
 - [[https://github.com/angrybacon/dotemacs/tree/master][dotemacs by angrybacon]]
 - [[https://github.com/daviwil/emacs-from-scratch/tree/master][Emacs From Scratch]]: "This is an example of a fully custom Emacs configuration
   that you can use as inspiration when building your own!"
+- [[https://github.com/danieljamesross/emacs.d][emacs.d]]: danieljamesross's emacs.d
 
 * Articles to read
   :properties:
@@ -62,6 +63,44 @@ Problems:
 - [[https://joaotavora.github.io/yasnippet/snippet-development.html#org6796ab7][YAS - Writing snippets]]
 - [[https://ismailefe.org/blog/emacs_functions/][My Must Emacs Functions]]
 - [[https://arialdomartini.github.io/emacs-surround][Emacs: Let's surround!]]
+- [[http://yummymelon.com/devnull/improving-emacs-isearch-usability-with-transient.html][Improving Emacs isearch Usability with Transient]]
+- [[https://sachachua.com/dotemacs/index.html#mastodon-org-contacts-complete][mastodon-org-contacts-complete]]. See also:
+  - [[https://stackoverflow.com/questions/67824561/completion-at-point-function-that-returns-the-cdr][completion-at-point function that returns the cdr]]
+  - [[https://github.com/moesenle/rosemacs-debs/blob/master/rosemacs.el][rosemacs.el]]
+- [[https://tsdh.org/posts/2021-06-21-using-eldoc-with-magit.html][Using Eldoc with Magit]]
+- [[https://blog.costan.ro/post/2022-02-22-emacs-completion-system/][Completion system]]
+- [[https://utcc.utoronto.ca/~cks/space/blog/programming/EmacsUnderstandingCompletion][My understanding of various sorts of completion in GNU Emacs]]
+- [[https://www.emacswiki.org/emacs/sql-complete.el][sql-complete.el]]
+- [[https://emacsredux.com/blog/2014/12/05/converting-between-symbols-and-strings/][Converting Between Symbols and Strings]]
+- [[https://stackoverflow.com/questions/11272632/how-to-create-a-column-view-in-emacs-lisp][How to create a column view in Emacs Lisp?]]
+- [[https://github.com/emacsorphanage/mongo/blob/master/mongo.el][mongo.el]]
+
+#+begin_src emacs-lisp
+  (define-derived-mode mymode tabulated-list-mode "mymode" "Major mode My Mode, just a test"
+  (setq tabulated-list-format [("Col1" 18 t)
+                               ("Col2" 12 nil)
+                               ("Col3"  10 t)
+                               ("Col4" 0 nil)])
+  (setq tabulated-list-padding 2)
+  (setq tabulated-list-sort-key (cons "Col3" nil))
+  (tabulated-list-init-header))
+
+(defun print-current-line-id ()
+  (interactive)
+   (message (concat "current line ID is: " (tabulated-list-get-id))))
+
+(defun my-listing-command ()
+  (interactive)
+  (pop-to-buffer "*MY MODE*" nil)
+  (mymode)
+  (setq tabulated-list-entries (list
+                (list "1" ["1" "2" "3" "4"])
+                (list "2" ["a" "b" "c" "d"])))
+  (tabulated-list-print t))
+#+end_src
+
+- [[https://www.reddit.com/r/emacs/comments/1ems7u/never_switch_to_compilation_buffer/][Never switch to compilation buffer]]
+- [[https://www.reddit.com/r/emacs/comments/d0dexw/compilation_buffer_in_background/][Compilation buffer in background]]
 
 * References
   :properties:
