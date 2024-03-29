@@ -37,6 +37,13 @@
 - add support for systemd in prodigy and possibly for sc.exe.
 - on file open choose the yas template.
 - change jump tree to only remember xref jumps.
+- save ielm history into cache.
+- remove ielm elipsis:
+
+#+begin_src emacs-lisp
+(setq print-length 1024)
+(setq print-level 100)
+#+end_src
 
 * Example org-roam sites
 
