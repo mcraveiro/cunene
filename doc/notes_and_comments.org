@@ -5,14 +5,7 @@
 #+author: Marco Craveiro
 #+options: <:nil c:nil todo:nil ^:nil d:nil date:nil author:nil toc:nil html-postamble:nil
 
-Things we need to remember to change:
-
-- remove the C-arrows behaviour in org-ref when on top of a cite.
-- org-mode use of M-arrows.
-- transient history is not in cache.
-- chrome link does not work on linux, using windows path for browser.
-
-* Missing modes
+* Tasks
 
 - add null to pretty symbols
 - mustache templates
@@ -20,13 +13,30 @@ Things we need to remember to change:
 - pdf tools
 - remove all calls for custom; move custom to end, raise SO ticket for local
   sockets issue on windows.
-
-Problems:
-
-- end of init: custom-initialize-reset: local sockets are not supported
-- convert all evals after load into requires
+- remove the C-arrows behaviour in org-ref when on top of a cite.
+- org-mode use of M-arrows.
+- transient history is not in cache.
+- chrome link does not work on linux, using windows path for browser.
+- eshell history is not in cache.
+- always asks to confirm dir locals for org roam.
 - doom mode line explicit
-- ensure magit
+- fix code actions in eglot.
+- create a dashboard per environment, with network shares, logs etc. Or some
+  kind of way of initialising a dashboard per env.
+- add TRX mode.
+- xref completion does not seem to load with init.
+- replace undo tree with vundo.
+- replace flycheck with flymake.
+- replace dimmer with solaire mode.
+- install macrostep to expand macros.
+- fix alignment issues with org mode.
+- add completion support for mongo, or set it up with LSP.
+- add duck db support for sql mode.
+- create named completion buffers for each project.
+- do not raise compilation buffer on compile.
+- add support for systemd in prodigy and possibly for sc.exe.
+- on file open choose the yas template.
+- change jump tree to only remember xref jumps.
 
 * Example org-roam sites
 
