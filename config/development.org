@@ -242,20 +242,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 | Projectile | https://github.com/bbatsov/projectile |
 
 #+begin_src emacs-lisp
-(setq projectile-known-projects-file
-      (cunene/cache-concat "projectile/bookmarks.eld"))
-(setq projectile-cache-file
-      (cunene/cache-concat "projectile/projectile.cache"))
-
-(use-package projectile
-  :init
-  (projectile-mode +1)
-  :bind (:map projectile-mode-map
-              ("C-c p" . projectile-command-map))
-  :config
-  (setq projectile-enable-caching t))
-
-(use-package ibuffer-projectile :after projectile)
+(use-package project)
 #+end_src
 
 * Syntax Checking

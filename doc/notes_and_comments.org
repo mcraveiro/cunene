@@ -88,6 +88,7 @@
 - [[https://blog.costan.ro/post/2022-02-22-emacs-completion-system/][Completion system]]
 - [[https://utcc.utoronto.ca/~cks/space/blog/programming/EmacsUnderstandingCompletion][My understanding of various sorts of completion in GNU Emacs]]
 - [[https://www.emacswiki.org/emacs/sql-complete.el][sql-complete.el]]
+- [[https://jethrokuan.github.io/org-roam-guide/][How I Take Notes with Org-roam]]
 - [[https://emacsredux.com/blog/2014/12/05/converting-between-symbols-and-strings/][Converting Between Symbols and Strings]]
 - [[https://stackoverflow.com/questions/11272632/how-to-create-a-column-view-in-emacs-lisp][How to create a column view in Emacs Lisp?]]
 - [[https://github.com/emacsorphanage/mongo/blob/master/mongo.el][mongo.el]]
