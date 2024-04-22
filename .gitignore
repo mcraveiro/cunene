@@ -30,3 +30,6 @@ paimon.el/*
 # Roam
 .org-id-locations-file
 .org-roam.db
+
+ellama-sessions/
+tree-sitter/
