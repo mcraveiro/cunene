@@ -709,23 +709,49 @@ START and END mark the region."
   :END:
 
 #+begin_src emacs-lisp
-(defun cunene/csharp-mode-setup ()
-  (flycheck-mode)
-  (c-toggle-hungry-state 1)
-  (setq indent-tabs-mode nil)
-  (setq c-syntactic-indentation t)
-  (c-set-style "ellemtel")
-  (setq c-basic-offset 4)
-  (setq truncate-lines t)
-  (setq tab-width 4)
-  (setq evil-shift-width 4))
+
+
+;; (defun cunene/csharp-ts-indent-style()
+;;   "Override the built-in indentation style with some additional rules"
+;;   `(
+;;     ;; align function arguments to the start of the first one, offset if standalone
+;;     ((match nil "argument_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+;;     ((parent-is "argument_list") (nth-sibling 1) 0)
+;;     ;; same for parameters
+;;     ((match nil "parameter_list" nil 1 1) parent-bol c-ts-mode-indent-offset)
+;;     ((parent-is "parameter_list") (nth-sibling 1) 0)
+;;     ;; indent inside case blocks
+;;     ((parent-is "case_statement") standalone-parent c-ts-mode-indent-offset)
+;;     ;; do not indent preprocessor statements
+;;     ((node-is "preproc") column-0 0)
+;;     ;; append to bsd style
+;;     ,@(alist-get 'bsd (csharp-ts-mode--indent-styles 'cpp))))
+;; (setq c-ts-mode-indent-style #'fa/c-ts-indent-style)
 
 (use-package csharp-mode
   :config
+  (defun cunene/csharp-mode-setup ()
+    (flycheck-mode)
+    (c-toggle-hungry-state 1)
+    (setq indent-tabs-mode nil)
+    (setq c-syntactic-indentation t)
+    (c-set-style "ellemtel")
+    (setq c-basic-offset 4)
+    (setq truncate-lines t)
+    (setq tab-width 4)
+    (setq evil-shift-width 4))
   (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
 
-(add-hook 'csharp-ts-mode-hook 'cunene/csharp-mode-setup t)
 (add-to-list 'major-mode-remap-alist '(csharp-mode . csharp-ts-mode))
+
+(add-hook 'csharp-ts-mode-hook
+          (lambda ()
+            (setq c-sharp csharp-ts-mode--indent-rules
+                  `((c-sharp
+                     ,@(alist-get 'c-sharp csharp-ts-mode--indent-rules)
+                     ((parent-is "parameter_list") parent-bol csharp-ts-mode-indent-offset)
+                     ((parent-is "member_access_expression") parent-bol csharp-ts-mode-indent-offset))))))
+
 
 (defun csharp-hs-forward-sexp (&optional arg)
   "I set hs-forward-sexp-func to this function.
