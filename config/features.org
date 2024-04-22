@@ -188,6 +188,7 @@ surrounded by word boundaries."
                             (mode . fsharp-mode)))
                  ("csharp" (or
                             (name . "^\\*sharper-log\\*$")
+                            (mode . csharp-ts-mode)
                             (mode . csharp-mode)
                             (mode . csproj-mode)
                             (mode . sln-mode)))
@@ -289,6 +290,7 @@ surrounded by word boundaries."
                                   (mode . eww-mode)
                                   (mode . verb-mode)
                                   (name . "^\\*Verb")
+                                  (name . "^\\HTTP")
                                   (name . "^\\*httpd\\*$")
                                   (mode . twittering-mode)))
                  ("music" (or
@@ -367,6 +369,8 @@ surrounded by word boundaries."
   :config
   (setq ibuffer-sidebar-use-custom-font t
         ibuffer-sidebar-face `(:family "Source Code Pro" :height 0.8)))
+
+(use-package ibuffer-vc)
 
 (defun cunene/sidebar-toggle ()
   "Toggle both `dired-sidebar' and `ibuffer-sidebar'."

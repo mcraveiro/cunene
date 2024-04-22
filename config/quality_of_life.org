@@ -351,6 +351,7 @@ Links:
 (add-hook 'sql-mode-hook 'whitespace-mode)
 (add-hook 'ruby-mode-hook 'whitespace-mode)
 (add-hook 'diff-mode-hook 'whitespace-mode)
+(add-hook 'csharp-ts-mode-hook 'whitespace-mode)
 (add-hook 'c-mode-common-hook 'whitespace-mode)
 (add-hook 'cmake-mode-hook 'whitespace-mode)
 (add-hook 'emacs-lisp-mode-hook 'whitespace-mode)

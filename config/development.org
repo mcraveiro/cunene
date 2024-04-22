@@ -239,8 +239,6 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :ID: ED77C960-46A7-EBF4-ECA3-9072AD8F2A86
   :END:
 
-| Projectile | https://github.com/bbatsov/projectile |
-
 #+begin_src emacs-lisp
 (use-package project)
 #+end_src
@@ -274,6 +272,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-to-list 'color-identifiers:modes-alist
                '(csharp-mode "" "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)"
                              (nil font-lock-variable-name-face tree-sitter-hl-face:variable)))
+  (add-to-list 'color-identifiers:modes-alist
+               '(csharp-ts-mode "" "\\_<\\([a-zA-Z_$]\\(?:\\s_\\|\\sw\\)*\\)"
+                                (nil font-lock-variable-name-face tree-sitter-hl-face:variable)))
   (add-hook 'prog-mode-hook 'color-identifiers-mode))
 #+end_src
 
@@ -311,7 +312,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
     "/home/marco/local/omnisharp/OmniSharp.exe"))
 
 (add-to-list 'eglot-server-programs
-             `(csharp-mode . (,(cunene/path-to-omnisharp) "-lsp")))
+             `((csharp-mode csharp-ts-mode) . (,(cunene/path-to-omnisharp) "-lsp")))
 
 ;;
 ;; Improve performance by not logging debug info.
@@ -372,6 +373,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 (with-eval-after-load "org"
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+
+(add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
+
 #+end_src
 
 * Parenthesis
@@ -705,19 +709,23 @@ START and END mark the region."
   :END:
 
 #+begin_src emacs-lisp
+(defun cunene/csharp-mode-setup ()
+  (flycheck-mode)
+  (c-toggle-hungry-state 1)
+  (setq indent-tabs-mode nil)
+  (setq c-syntactic-indentation t)
+  (c-set-style "ellemtel")
+  (setq c-basic-offset 4)
+  (setq truncate-lines t)
+  (setq tab-width 4)
+  (setq evil-shift-width 4))
+
 (use-package csharp-mode
   :config
-  (defun cunene/csharp-mode-setup ()
-    (flycheck-mode)
-    (c-toggle-hungry-state 1)
-    (setq indent-tabs-mode nil)
-    (setq c-syntactic-indentation t)
-    (c-set-style "ellemtel")
-    (setq c-basic-offset 4)
-    (setq truncate-lines t)
-    (setq tab-width 4)
-    (setq evil-shift-width 4))
   (add-hook 'csharp-mode-hook 'cunene/csharp-mode-setup t))
+
+(add-hook 'csharp-ts-mode-hook 'cunene/csharp-mode-setup t)
+(add-to-list 'major-mode-remap-alist '(csharp-mode . csharp-ts-mode))
 
 (defun csharp-hs-forward-sexp (&optional arg)
   "I set hs-forward-sexp-func to this function.
@@ -982,7 +990,13 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   :END:
 
 #+begin_src emacs-lisp
-(use-package csv-mode)
+(use-package csv-mode
+  :hook
+  (csv-mode . (lambda ()
+                (csv-align-mode)
+                (csv-header-line)
+                (hl-line-mode)
+                (read-only-mode))))
 #+end_src
 
 * GPT
@@ -998,6 +1012,14 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
       (auth-source-pick-first-password :host "api.openai.com")))))
 
 (use-package llama-cpp)
+
+(use-package ellama
+  :init
+  (setopt ellama-language "English")
+  (require 'llm-ollama)
+  (setopt ellama-provider
+          (make-llm-ollama
+           :chat-model "llama3" :embedding-model "llama3")))
 #+end_src
 
 * Eldoc

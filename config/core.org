@@ -263,7 +263,7 @@ Handle sensitive data as per this article:
 - [[https://anirudhsasikumar.net/blog/2005.01.21.html][Disabling Backup and Auto-save in Emacs]]
 
 #+begin_src emacs-lisp
-(define-minor-mode sensitive-mode
+(define-minor-mode sensitive-minor-mode
   "For sensitive files like password lists.
 It disables backup creation and auto saving.
 
