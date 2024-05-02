@@ -746,10 +746,10 @@ START and END mark the region."
 
 (add-hook 'csharp-ts-mode-hook
           (lambda ()
-            (setq c-sharp csharp-ts-mode--indent-rules
+            (setq csharp-ts-mode--indent-rules
                   `((c-sharp
                      ,@(alist-get 'c-sharp csharp-ts-mode--indent-rules)
-                     ((parent-is "parameter_list") parent-bol csharp-ts-mode-indent-offset)
+                     ((parent-is "parameter_list") first-sibling 1)
                      ((parent-is "member_access_expression") parent-bol csharp-ts-mode-indent-offset))))))
 
 
@@ -1043,9 +1043,12 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   :init
   (setopt ellama-language "English")
   (require 'llm-ollama)
-  (setopt ellama-provider
-          (make-llm-ollama
-           :chat-model "llama3" :embedding-model "llama3")))
+  (setopt ellama-providers
+          '(("llama3" . (make-llm-ollama
+                         :chat-model "llama3" :embedding-model "llama3"))
+            ("phi3" . (make-llm-ollama
+                         :chat-model "phi3" :embedding-model "phi3"))))
+  )
 #+end_src
 
 * Eldoc

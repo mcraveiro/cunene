@@ -1204,6 +1204,9 @@ versions of built-in Emacs commands.
   (setq consult-project-root-function #'projectile-project-root
         consult-narrow-key "<"))
 
+(setq xref-show-xrefs-function #'consult-xref
+      xref-show-definitions-function #'consult-xref)
+
 (use-package consult-flycheck :after flycheck)
 
 ;; Consult directory navigation
