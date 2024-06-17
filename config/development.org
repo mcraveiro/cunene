@@ -1047,7 +1047,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
           '(("llama3" . (make-llm-ollama
                          :chat-model "llama3" :embedding-model "llama3"))
             ("phi3" . (make-llm-ollama
-                         :chat-model "phi3" :embedding-model "phi3"))))
+                         :chat-model "phi3" :embedding-model "phi3"))
+            ("codellama" . (make-llm-ollama
+                            :chat-model "codellama:7b" :embedding-model "codellama:7b"))))
   )
 #+end_src
 
