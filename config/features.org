@@ -807,11 +807,32 @@ authoring documents with a fast and effective plain-text system.
         org-adapt-indentation nil ;; 'headline-data https://emacs.stackexchange.com/questions/69199/is-there-indentation-in-org-src-blocks
         org-duration-format (quote h:mm)
         org-fold-core-style 'overlays) ;; https://github.com/org-roam/org-roam/pull/223
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (awk . t)
+     (calc .t)
+     (emacs-lisp . t)
+     (gnuplot . t)
+     (latex . t)
+     ; (ledger . t)
+     (js . t)
+     ; (http . t)
+     (python . t)
+     (gnuplot . t)
+     (R . t)
+     ; (sh . t)
+     (sql . t)
+     (sqlite . t)
+     ; (mustache . t)
+     (plantuml . t)))
+
   (require 'ob-shell)
   (require 'org-indent)
   (add-to-list 'org-babel-load-languages '(shell . t))
   (modify-syntax-entry ?' "'" org-mode-syntax-table)
   (advice-add 'org-src--construct-edit-buffer-name :override #'cunene/org-src-buffer-name))
+
 
 ;; Follow org links on the same window.
 ;; https://emacs.stackexchange.com/questions/62720/open-org-link-in-the-same-window

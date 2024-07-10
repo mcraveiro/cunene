@@ -342,7 +342,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
       (setq plantuml-jar-path "C:/opt/plantuml/plantuml.jar"
             plantuml-default-exec-mode 'jar)
     (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
-          plantuml-default-exec-mode 'executable)))
+          plantuml-default-exec-mode 'executable))
+  (setq org-plantuml-jar-path plantuml-jar-path))
 
 (require 'plantuml-mode)
 (defun cunene/plantuml-make-diagram ()
@@ -357,14 +358,15 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
       (goto-char (point-max))
       (insert "Starting PlantUML "(format-time-string "%D %-I:%M %p")))
     (display-buffer plantuml-buffer-name)
+    (clear-image-cache)
     ;; copied from plantuml-jar-start-process, which uses stdin (e.g. -p)
     (apply #'start-process
-            "PLANTUML" plantuml-buffer-name plantuml-java-command
-            `(,@plantuml-java-args
-              ,plantuml-jar-path
-              ,(plantuml-jar-output-type-opt plantuml-jar-output-type-opt)
-              ,@plantuml-jar-args
-              ,plantuml-diagram))))
+           "PLANTUML" plantuml-buffer-name plantuml-java-command
+           `(,@plantuml-java-args
+             ,plantuml-jar-path
+             ,(plantuml-jar-output-type-opt plantuml-jar-output-type-opt)
+             ,@plantuml-jar-args
+             ,plantuml-diagram))))
 
 (use-package flycheck-plantuml
   :ensure t
@@ -703,6 +705,13 @@ START and END mark the region."
 (use-package cmake-mode)
 #+end_src
 
+* Statistics
+
+#+begin_src emacs-lisp
+(use-package ess)
+#+end_src
+
+
 * C#
   :PROPERTIES:
   :ID: C1FF33A7-84FB-6754-81F3-15492FEF9114
@@ -982,18 +991,11 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 #+begin_src emacs-lisp
 (use-package mustache-mode
-  :ensure t
-  :config
-;;  (org-babel-do-load-languages 'org-babel-load-languages
-                               ;; '((mustache     . t)))
-)
+  :ensure t)
 
 (use-package mustache
   :ensure t
-  :config
-;;  (org-babel-do-load-languages 'org-babel-load-languages
-;;                             '((mustache     . t)))
-)
+  :config)
 #+end_src
 
 * SQL
@@ -1061,7 +1063,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
             ("codestral" . (make-llm-ollama
                             :chat-model "codestral:latest" :embedding-model "codestral:latest"))
             ("codeqwen" . (make-llm-ollama
-                            :chat-model "codeqwen:latest" :embedding-model "codeqwen:latest"))
+                           :chat-model "codeqwen:latest" :embedding-model "codeqwen:latest"))
+            ("gemma2" . (make-llm-ollama
+                         :chat-model "gemma2" :embedding-model ":gemma2"))
             ))
   )
 #+end_src
