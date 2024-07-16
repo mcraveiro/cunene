@@ -92,6 +92,7 @@
 - [[https://emacsredux.com/blog/2014/12/05/converting-between-symbols-and-strings/][Converting Between Symbols and Strings]]
 - [[https://stackoverflow.com/questions/11272632/how-to-create-a-column-view-in-emacs-lisp][How to create a column view in Emacs Lisp?]]
 - [[https://github.com/emacsorphanage/mongo/blob/master/mongo.el][mongo.el]]
+- [[https://xenodium.com/inline-previous-result-and-why-you-should-edebug/][Inline previous result and why you should edebug]]
 
 #+begin_src emacs-lisp
   (define-derived-mode mymode tabulated-list-mode "mymode" "Major mode My Mode, just a test"

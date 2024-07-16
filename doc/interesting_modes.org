@@ -340,3 +340,15 @@ them properly.
   caused by commands such as ‘undo’, ‘yank’/’yank-pop’, etc. The highlight
   disappears at the next command. The highlighting gives useful visual feedback
   for what your operation actually changed in the buffer."
+- [[https://github.com/suonlight/multi-vterm][multi-vterm]]: "Managing multiple vterm buffers in Emacs This package is
+  inspired by multi-term.el"
+- [[https://github.com/benma/visual-regexp.el][visual-regexp.el]]: "visual-regexp for Emacs is like replace-regexp, but with
+  live visual feedback directly in the buffer. Check out visual-regexp-steroids
+  if you want to use modern regular expressions instead of Emacs-style regular
+  expressions."
+- [[https://github.com/xenodium/ready-player][ready-player]]: "A lightweight major mode to open media (audio/video) files in
+  an Emacs buffer."
+- [[https://github.com/Imymirror/mrds-mode][mrds-mode]]: org-roam with multiple directories.
+- [[https://github.com/nobiot/org-remark][org-remark]]: "Org-remark lets you highlight and annotate text files, websites,
+  EPUB books and Info documentation with using Org mode." Note: name change from
+  Org-marginalia to Org-remark.

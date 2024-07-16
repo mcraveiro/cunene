@@ -673,6 +673,10 @@ START and END mark the region."
   :mode ("\\.org\\'" . org-mode)
   :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
 )
+
+(use-package swagger-to-org)
+(use-package swagg)
+
 #+end_src
 
 * C/C++
@@ -958,7 +962,8 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
       (ansi-color-apply-on-region (point-min) (point-max)))))
 
 (require 'ansi-color)
-(add-hook 'compilation-filter-hook #'cunene/colorize-compilation-buffer)
+(setq compilation-filter-hook nil)
+;; (add-hook 'compilation-filter-hook #'cunene/colorize-compilation-buffer)
 
 (defun cunene/recompile-quietly ()
   "Re-compile without changing the window configuration."
@@ -1066,6 +1071,10 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
                            :chat-model "codeqwen:latest" :embedding-model "codeqwen:latest"))
             ("gemma2" . (make-llm-ollama
                          :chat-model "gemma2" :embedding-model ":gemma2"))
+            ("qwen2" . (make-llm-ollama
+                         :chat-model "qwen2:latest" :embedding-model ":qwen2"))
+            ("mistral" . (make-llm-ollama
+                          :chat-model "mistral:latest" :embedding-model ":mistral"))
             ))
   )
 #+end_src
