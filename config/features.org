@@ -1371,6 +1371,9 @@ versions of built-in Emacs commands.
         consult-flyspell-set-point-after-word t
         consult-flyspell-always-check-buffer nil))
 (setq consult-flyspell-select-function 'flyspell-correct-at-point)
+
+(use-package consult-gh
+  :after consult)
 #+end_src
 
 ** Embark

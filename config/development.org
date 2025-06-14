@@ -154,6 +154,48 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
   (remove-hook 'with-editor-filter-visit-hook 'magit-commit-diff))
 
 (use-package git-timemachine)
+
+(defun cunene/magit-create-feature-branch (branch-name)
+  "Create a new feature branch from BRANCH-NAME and push to origin.
+Spaces in BRANCH-NAME are converted to underscores and prefixed with 'feature/'.
+Uses 'main' as the default base branch. Stashes any uncommitted changes temporarily."
+  (interactive "sEnter branch name (spaces will become underscores): ")
+  (let* ((clean-name (replace-regexp-in-string " " "_" branch-name))
+         (feature-branch (concat "feature/" clean-name))
+         (default-branch (or (and (magit-rev-verify "main") "main") "master"))
+         (had-uncommitted-changes (magit-anything-modified-p))
+         (stash-name (format "WIP before creating %s" feature-branch)))
+
+    ;; Check for uncommitted changes and stash if needed
+    (when had-uncommitted-changes
+      (message "Stashing uncommitted changes...")
+      (magit-stash-both stash-name))
+
+    (unwind-protect
+        (progn
+          ;; Checkout the default branch
+          (message "checkout %s" default-branch)
+          (magit-checkout default-branch)
+          ;; Pull latest changes
+          (message "pull latest")
+          (magit-pull-from-upstream nil)
+          ;; Create and checkout new feature branch
+          (message "create new branch and checkout")
+          (magit-branch-and-checkout feature-branch default-branch)
+          ;; Push to origin with tracking
+          (message "push to origin")
+          (magit-push-current-to-pushremote feature-branch)
+          (message "Created and pushed feature branch: %s (based on %s)" feature-branch default-branch))
+
+      ;; Restore stashed changes if we stashed anything
+      (when had-uncommitted-changes
+        (message "Restoring stashed changes...")
+        (magit-stash--apply "apply" stash-name)
+        (magit-stash-drop stash-name)
+        )
+
+      )))
+
 #+end_src
 
 #+begin_src emacs-lisp
@@ -309,7 +351,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   "Returns the path to the LSP server for C#."
   (if (eq window-system 'w32)
       "c:/opt/omnisharp-roslyn/latest/omnisharp-roslyn/OmniSharp.exe"
-    "/home/marco/local/omnisharp/OmniSharp.exe"))
+    "/home/marco/local/omnisharp/OmniSharp"))
 
 (add-to-list 'eglot-server-programs
              `((csharp-mode csharp-ts-mode) . (,(cunene/path-to-omnisharp) "-lsp")))
@@ -860,6 +902,16 @@ again, I haven't see that as a problem."
   (add-to-list 'auto-mode-alist '("\\.sln\\'" . sln-mode))
   :bind
   ("C-c n" . sharper-main-transient))
+
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
+  (setq web-mode-engines-alist
+        '(("razor"    . "\\.cshtml\\'")
+          ("blade"  . "\\.blade\\.")
+          ("svelte" . "\\.svelte\\."))))
 #+end_src
 
 * Clojure
@@ -1077,6 +1129,12 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
                           :chat-model "mistral:latest" :embedding-model ":mistral"))
             ))
   )
+
+
+(use-package claude-code :ensure t
+  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :config (claude-code-mode)
+  :bind-keymap ("C-c c" . claude-code-command-map))
 #+end_src
 
 * Eldoc

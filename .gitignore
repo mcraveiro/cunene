@@ -33,3 +33,6 @@ paimon.el/*
 
 ellama-sessions/
 tree-sitter/
+session.*
+*.elc
+ielm-history.eld
