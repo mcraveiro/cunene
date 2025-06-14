@@ -183,17 +183,17 @@ Uses 'main' as the default base branch. Stashes any uncommitted changes temporar
           (message "create new branch and checkout")
           (magit-branch-and-checkout feature-branch default-branch)
           ;; Push to origin with tracking
-          (message "push to origin")
-          (magit-push-current-to-pushremote feature-branch)
+          (message "push to origin new")
+          (magit-git-push feature-branch (format "origin/%s" feature-branch) '("--set-upstream"))
           (message "Created and pushed feature branch: %s (based on %s)" feature-branch default-branch))
 
       ;; Restore stashed changes if we stashed anything
       (when had-uncommitted-changes
         (message "Restoring stashed changes...")
-        (magit-stash--apply "apply" stash-name)
-        (magit-stash-drop stash-name)
-        )
-
+        (let ((stash-ref (car (magit-list-stashes))))
+          (when stash-ref
+            (magit-stash-apply stash-ref)
+            (magit-stash-drop stash-ref))))
       )))
 
 #+end_src
