@@ -160,7 +160,7 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 Spaces in BRANCH-NAME are converted to underscores and prefixed with 'feature/'.
 Uses 'main' as the default base branch. Stashes any uncommitted changes temporarily."
   (interactive "sEnter branch name (spaces will become underscores): ")
-  (let* ((clean-name (replace-regexp-in-string " " "_" branch-name))
+  (let* ((clean-name (downcase (replace-regexp-in-string " " "_" branch-name)))
          (feature-branch (concat "feature/" clean-name))
          (default-branch (or (and (magit-rev-verify "main") "main") "master"))
          (had-uncommitted-changes (magit-anything-modified-p))
