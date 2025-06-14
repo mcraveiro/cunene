@@ -1764,6 +1764,13 @@ your editor.
 (use-package logview
   :config
   (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap")
+        logview-additional-level-mappings
+        '(
+          ("dotnet" . ((error       "Error" "Fatal")
+                       (warning     "Warning")
+                       (information "Information")
+                       (debug       "Debug")
+                       (trace       "Verbose" "Trace"))))
         logview-additional-submodes
         '(
           ("dogen"
@@ -1772,7 +1779,11 @@ your editor.
            (timestamp "ISO 8601 datetime + micros"))
           ("dotnet"
            (format . "LEVEL TIMESTAMP [THREAD] NAME IGNORED - MESSAGE")
-           (levels . "SLF4J"))))
+           (levels . "SLF4J"))
+          ("serilog"
+           (format . "TIMESTAMP [LEVEL] MESSAGE")
+           (levels . "dotnet")
+           (timestamp "ISO 8601 datetime"))))
   (add-hook 'logview-mode-hook #'read-only-mode))
 #+end_src
 
