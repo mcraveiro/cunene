@@ -117,6 +117,8 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 #+end_quote
 
 #+begin_src emacs-lisp
+(use-package transient :ensure (:fetcher github :repo "magit/transient"))
+
 (use-package magit
   :bind
   (:map magit-file-section-map
@@ -903,15 +905,15 @@ again, I haven't see that as a problem."
   :bind
   ("C-c n" . sharper-main-transient))
 
-(use-package web-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
-  (setq web-mode-engines-alist
-        '(("razor"    . "\\.cshtml\\'")
-          ("blade"  . "\\.blade\\.")
-          ("svelte" . "\\.svelte\\."))))
+;; (use-package web-mode
+;;   :config
+;;   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
+;;   (setq web-mode-engines-alist
+;;         '(("razor"    . "\\.cshtml\\'")
+;;           ("blade"  . "\\.blade\\.")
+;;           ("svelte" . "\\.svelte\\."))))
 #+end_src
 
 * Clojure
@@ -1092,7 +1094,7 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
                 (read-only-mode))))
 #+end_src
 
-* GPT
+* LLMs
   :PROPERTIES:
   :ID: 06E0D9BD-F1FE-7D24-1C23-1089728BA29A
   :END:
@@ -1132,9 +1134,15 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 
 (use-package claude-code :ensure t
-  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :straight (:type git :host github :repo "stevemolitor/claude-code.el")
   :config (claude-code-mode)
   :bind-keymap ("C-c c" . claude-code-command-map))
+
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup))
 #+end_src
 
 * Eldoc

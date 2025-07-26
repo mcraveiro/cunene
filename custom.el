@@ -15,34 +15,33 @@
                        chatgpt-shell citeproc-org cmake-mode
                        color-identifiers-mode company-box company-posframe
                        consult-dir consult-eglot consult-flycheck
-                       consult-flyspell consult-gh consult-yasnippet corfu crux
-                       csproj-mode csv-mode dashboard define-word diff-at-point
-                       diminish dimmer dired-sidebar docker dockerfile-mode
-                       doom-modeline doom-themes dotnet drag-stuff eldoc-box
-                       ellama embark-consult engine-mode eshell-git-prompt evil
-                       expand-region eyebrowse flycheck-eglot flycheck-plantuml
+                       consult-flyspell consult-yasnippet corfu crux csproj-mode
+                       csv-mode dashboard define-word diff-at-point diminish
+                       dimmer dired-sidebar docker dockerfile-mode doom-modeline
+                       doom-themes drag-stuff eldoc-box ellama embark-consult
+                       engine-mode eshell-git-prompt evil expand-region
+                       eyebrowse flycheck-eglot flycheck-plantuml
                        flyspell-correct git-gutter-fringe git-messenger
                        git-modes git-timemachine google-this haproxy-mode
                        helpful hide-mode-line hl-todo ibuffer-git
                        ibuffer-project ibuffer-projectile ibuffer-sidebar
                        ibuffer-vc iedit imenu-list inf-clojure inf-mongo
                        jq-format jq-mode json-mode jump-tree llama-cpp logview
-                       marginalia markdown-mode mastodon msgu mustache
-                       mustache-mode nerd-icons-corfu orderless
+                       marginalia markdown-mode mastodon msgu multi-vterm
+                       mustache mustache-mode nerd-icons-corfu orderless
                        org-fancy-priorities org-present org-roam-ui paimon
-                       pcmpl-args persistent-scratch powershell prodigy
-                       project-shells protobuf-mode rainbow-delimiters
-                       rainbow-mode redis rg sharper smart-hungry-delete
-                       smartparens sql-clickhouse ssh super-save terraform-mode
+                       pcmpl-args pdf-tools persistent-scratch powershell
+                       prodigy project-shells protobuf-mode rainbow-delimiters
+                       rainbow-mode rg sharper smart-hungry-delete smartparens
+                       sql-clickhouse ssh super-save terraform-mode
                        treemacs-icons-dired treemacs-magit treemacs-persp
                        treemacs-projectile treemacs-tab-bar undo-tree verb
-                       vertico volatile-highlights vscode-icon web-mode windswap
+                       vertico volatile-highlights vscode-icon vterm windswap
                        yaml-mode yasnippet-snippets ztree))
  '(package-vc-selected-packages
    '((claude-code :url "https://github.com/stevemolitor/claude-code.el")))
  '(safe-local-variable-values
-   '((checkdoc-allow-quoting-nil-and-t . t)
-     (eval setq-local org-roam-db-location
+   '((eval setq-local org-roam-db-location
            (expand-file-name ".org-roam.db" org-roam-directory))
      (eval setq-local org-roam-directory
            (expand-file-name
