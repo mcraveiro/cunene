@@ -1006,6 +1006,14 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 ;; save buffers whenc compiling without asking
 (setq compilation-ask-about-save nil)
 
+;; Project-specific compilation buffer names
+(setq compilation-buffer-name-function
+      (lambda (mode-name)
+        (let ((project (project-current)))
+          (if project
+              (format "*%s: %s*" mode-name (project-name project))
+            (format "*%s*" mode-name)))))
+
 ;; Compilation from Emacs. From prelude.
 (defun cunene/colorize-compilation-buffer ()
   "Colorize a compilation mode buffer."
