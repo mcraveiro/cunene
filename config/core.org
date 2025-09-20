@@ -190,14 +190,16 @@ Links:
 
 - [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html][Your editor is malware]]
 
-#+begin_src emacs-lisp
-(require 'package)
-(setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+Disabled package.el, trying elpaca.
 
-(package-initialize)
+#+begin_src emacs-lisp
+;; (require 'package)
+;; (setq package-archives
+;;       '(("gnu" . "https://elpa.gnu.org/packages/")
+;;         ("melpa" . "https://melpa.org/packages/")
+;;         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+
+;; (package-initialize)
 #+end_src
 
 Install the =use-package= dependency.
@@ -207,23 +209,23 @@ Links:
 - [[https://github.com/jwiegley/use-package/issues/202][#202: use-package-always-defer]]
 
 #+begin_src emacs-lisp
-(with-eval-after-load 'use-package
-  (setq-default
-   use-package-always-defer nil     ;; Let auto-loading be managed by package.el
-   use-package-always-ensure t))    ;; Install packages if not present in the system
+;; (with-eval-after-load 'use-package
+;;   (setq-default
+;;    use-package-always-defer nil     ;; Let auto-loading be managed by package.el
+;;    use-package-always-ensure t))    ;; Install packages if not present in the system
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package t))
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package t))
 
-(eval-when-compile
-  (require 'use-package))
+;; (eval-when-compile
+;;   (require 'use-package))
 
-;; Fix strange issue on windows.
-(use-package bind-key
-  :config
-  (add-to-list 'same-window-buffer-names "*Personal Keybindings*"))
-(require 'bind-key)
+;; ;; Fix strange issue on windows.
+;; (use-package bind-key
+;;   :config
+;;   (add-to-list 'same-window-buffer-names "*Personal Keybindings*"))
+;; (require 'bind-key)
 #+end_src
 
 * Backup files
@@ -277,7 +279,7 @@ mode."
   :lighter " Sensitive"
   ;; The minor mode bindings.
   :keymap nil
-  (if (symbol-value sensitive-mode)
+  (if (symbol-value sensitive-minor-mode)
       (progn
         ;; disable backups
         (set (make-local-variable 'backup-inhibited) t)

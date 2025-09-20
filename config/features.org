@@ -1809,6 +1809,61 @@ your editor.
   (eyebrowse-rename-window-config
    (eyebrowse--get 'current-slot) name)
   )
+
+(defun cunene/eyebrowse-select-slot ()
+    "Display a list of eyebrowse slots and allow switching to selected slot."
+    (interactive)
+    (let ((slots (eyebrowse--get 'window-configs))
+          (buffer (progn
+            (ignore-errors (kill-buffer "*Eyebrowse Slots*"))
+            (get-buffer-create "*Eyebrowse Slots*")))
+          slot-list)
+      ;; Prepare slot list with slot numbers and names
+      (dolist (slot slots)
+        (let* ((slot-num (car slot))
+               (window-config (cdr slot))
+               (slot-name (eyebrowse-format-slot slot))
+               (marker (if (= slot-num (eyebrowse--get 'current-slot)) "[current]" "")))
+          (push (list slot-num
+                     (format "%s %s\n"
+                            slot-name marker))
+                slot-list)))
+
+      ;; Sort by slot number
+      (setq slot-list (sort slot-list (lambda (a b) (< (car a) (car b)))))
+
+      ;; Create buffer content
+      (with-current-buffer buffer
+        (erase-buffer)
+        (dolist (slot slot-list)
+          (insert (format "%s" (cadr slot))))
+
+        ;; Set up local keymap
+        (let ((map (make-sparse-keymap)))
+          (define-key map (kbd "RET") 'cunene/eyebrowse-select-slot-at-point)
+          (define-key map (kbd "q") 'quit-window)
+          (define-key map (kbd "C-g") 'quit-window)
+          (use-local-map map))
+
+        ;; Store slot data for selection
+        (setq-local eyebrowse-slot-data slot-list)
+        (goto-char (point-min)))
+
+      ;; Display buffer
+      (pop-to-buffer buffer)
+      (read-only-mode)
+      (hl-line-mode)))
+
+(defun cunene/eyebrowse-select-slot-at-point ()
+    "Switch to the eyebrowse slot at current line."
+    (interactive)
+    (let* ((line-num (1- (line-number-at-pos)))
+           (slot-data (nth line-num eyebrowse-slot-data)))
+      (when (and slot-data (>= line-num 0))
+        (let ((slot-num (car slot-data)))
+          (quit-window)
+          (message (format "%s" slot-num))
+          (eyebrowse-switch-to-window-config slot-num)))))
 #+end_src
 
 * Switching

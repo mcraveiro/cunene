@@ -117,6 +117,8 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 #+end_quote
 
 #+begin_src emacs-lisp
+(use-package transient :ensure (:fetcher github :repo "magit/transient"))
+
 (use-package magit
   :bind
   (:map magit-file-section-map
@@ -300,6 +302,17 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
                (reusable-frames . visible)
                (side            . bottom)
                (window-height   . 0.2)))
+
+(use-package flyover
+  :ensure (:fetcher github :repo "konrad1977/flyover")
+  :config
+  (add-hook 'flycheck-mode-hook #'flyover-mode)
+  (setq flyover-levels '(error warning info))
+  (setq flyover-use-theme-colors t)
+  (setq flyover-background-lightness 45)
+  (setq flyover-percent-darker 40)
+  (setq flyover-text-tint 'lighter)
+  (setq flyover-text-tint-percent 50))
 #+end_src
 
 * Syntax Highlighting
@@ -351,10 +364,22 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   "Returns the path to the LSP server for C#."
   (if (eq window-system 'w32)
       "c:/opt/omnisharp-roslyn/latest/omnisharp-roslyn/OmniSharp.exe"
-    "/home/marco/local/omnisharp/OmniSharp"))
+    (concat (expand-file-name "~")  "/local/omnisharp/OmniSharp"))
 
-(add-to-list 'eglot-server-programs
-             `((csharp-mode csharp-ts-mode) . (,(cunene/path-to-omnisharp) "-lsp")))
+(defun cunene/path-to-postgrestools ()
+  "Returns the path to the LSP server for Postgres SQL."
+  (concat (expand-file-name "~")
+          "/local/postgrestools/postgrestools-0.10.0"))
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               `((csharp-mode csharp-ts-mode) . (,(cunene/path-to-omnisharp) "-lsp"))))
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               `((sql-mode) . (,(cunene/path-to-postgrestools) "lsp-proxy"))))q
+
+
 
 ;;
 ;; Improve performance by not logging debug info.
@@ -903,15 +928,15 @@ again, I haven't see that as a problem."
   :bind
   ("C-c n" . sharper-main-transient))
 
-(use-package web-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
-  (setq web-mode-engines-alist
-        '(("razor"    . "\\.cshtml\\'")
-          ("blade"  . "\\.blade\\.")
-          ("svelte" . "\\.svelte\\."))))
+;; (use-package web-mode
+;;   :config
+;;   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
+;;   (setq web-mode-engines-alist
+;;         '(("razor"    . "\\.cshtml\\'")
+;;           ("blade"  . "\\.blade\\.")
+;;           ("svelte" . "\\.svelte\\."))))
 #+end_src
 
 * Clojure
@@ -1004,6 +1029,14 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 ;; save buffers whenc compiling without asking
 (setq compilation-ask-about-save nil)
 
+;; Project-specific compilation buffer names
+(setq compilation-buffer-name-function
+      (lambda (mode-name)
+        (let ((project (project-current)))
+          (if project
+              (format "*%s: %s*" mode-name (project-name project))
+            (format "*%s*" mode-name)))))
+
 ;; Compilation from Emacs. From prelude.
 (defun cunene/colorize-compilation-buffer ()
   "Colorize a compilation mode buffer."
@@ -1022,6 +1055,17 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   (interactive)
   (save-window-excursion
     (recompile)))
+
+(use-package alert
+  :ensure (:fetcher github :repo "jwiegley/alert")
+  :custom
+  (alert-default-style 'mode-line)
+  :init
+  (defun alert-after-finish-in-background (buf str)
+    (when (or (not (get-buffer-window buf 'visible)) (not (frame-focus-state)))
+      (alert str :buffer buf))))
+
+(add-hook 'compilation-finish-functions #'alert-after-finish-in-background)
 #+end_src
 
 * Lisp
@@ -1066,6 +1110,9 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 (use-package sql-clickhouse)
 #+end_src
 
+
+
+
 * Yaml
   :PROPERTIES:
   :ID: B3E43C09-4990-3BA4-3ABB-85CCD69BE163
@@ -1092,7 +1139,7 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
                 (read-only-mode))))
 #+end_src
 
-* GPT
+* LLMs
   :PROPERTIES:
   :ID: 06E0D9BD-F1FE-7D24-1C23-1089728BA29A
   :END:
@@ -1132,9 +1179,15 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 
 (use-package claude-code :ensure t
-  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :straight (:type git :host github :repo "stevemolitor/claude-code.el")
   :config (claude-code-mode)
   :bind-keymap ("C-c c" . claude-code-command-map))
+
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup))
 #+end_src
 
 * Eldoc
@@ -1150,6 +1203,16 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 #+begin_src emacs-lisp
 (use-package haproxy-mode)
+#+end_src
+
+
+* SystemD
+
+#+begin_src emacs-lisp
+(use-package systemd
+  :ensure (:host github :repo "holomorph/systemd-mode")
+  :config
+  (add-to-list 'auto-mode-alist '("\\.service\\'" . systemd-mode)))
 #+end_src
 
 * Postamble

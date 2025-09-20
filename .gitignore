@@ -36,3 +36,5 @@ tree-sitter/
 session.*
 *.elc
 ielm-history.eld
+elpaca
+init.el~
