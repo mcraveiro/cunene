@@ -279,7 +279,7 @@ mode."
   :lighter " Sensitive"
   ;; The minor mode bindings.
   :keymap nil
-  (if (symbol-value sensitive-mode)
+  (if (symbol-value sensitive-minor-mode)
       (progn
         ;; disable backups
         (set (make-local-variable 'backup-inhibited) t)

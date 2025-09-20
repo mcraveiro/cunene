@@ -296,13 +296,23 @@ Links:
 (use-package all-the-icons-nerd-fonts)
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
+;; (use-package doom-modeline
+;;   :hook (after-init . doom-modeline-mode)
+;;   :config
+;;   (setq doom-modeline-buffer-file-name-style 'buffer-name)
+;;   (setq doom-modeline-major-mode-icon t)
+;;   ;; Whether display the buffer encoding.
+;;   (setq doom-modeline-buffer-encoding nil))
+
+(use-package punch-line
+  :ensure (:fetcher github :repo "konrad1977/punch-line")
+  :hook (after-init . punch-line-mode)
   :config
-  (setq doom-modeline-buffer-file-name-style 'buffer-name)
-  (setq doom-modeline-major-mode-icon t)
-  ;; Whether display the buffer encoding.
-  (setq doom-modeline-buffer-encoding nil))
+  (setq punch-line-left-separator "  ")
+  (setq punch-line-right-separator "  ")
+  (setq punch-line-modal-size 'large)
+  (setq punch-line-modal-divider-style 'arrow)
+  (setq punch-show-weather-info nil))
 #+end_src
 
 * Modeline
