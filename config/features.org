@@ -776,6 +776,13 @@ authoring documents with a fast and effective plain-text system.
 #+end_quote
 
 #+begin_src emacs-lisp
+(defun cunene/org-mode-hook ()
+  "Hook to run in org mode."
+  ;; Make sure Org's native completions are prioritized
+  (setq-local completion-at-point-functions
+              (append (list #'org-pcomplete-initial) ; Org's native completion
+                      completion-at-point-functions)))
+
 (use-package org
   :ensure nil
   :bind
@@ -785,6 +792,7 @@ authoring documents with a fast and effective plain-text system.
    ("C-c l" . org-store-link))
   :hook
   (org-mode . auto-fill-mode)
+  (org-mode . cunene/org-mode-hook)
   :config
   (setq org-startup-folded t
         org-adapt-indentation nil
@@ -815,16 +823,16 @@ authoring documents with a fast and effective plain-text system.
      (emacs-lisp . t)
      (gnuplot . t)
      (latex . t)
-     ; (ledger . t)
+     ;; (ledger . t)
      (js . t)
-     ; (http . t)
+     ;; (http . t)
      (python . t)
      (gnuplot . t)
      (R . t)
-     ; (sh . t)
+     ;; (sh . t)
      (sql . t)
      (sqlite . t)
-     ; (mustache . t)
+     ;; (mustache . t)
      (plantuml . t)))
 
   (require 'ob-shell)
