@@ -119,6 +119,13 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 #+begin_src emacs-lisp
 (use-package transient :ensure (:fetcher github :repo "magit/transient"))
 
+(defun cunene/git-commit-mode-hook ()
+  "Hook to run when enabling git commit mode."
+  (setq-local completion-at-point-functions
+              (append (list #'cape-dict)
+                      completion-at-point-functions)))
+(add-hook 'git-commit-mode-hook 'cunene/git-commit-mode-hook)
+
 (use-package magit
   :bind
   (:map magit-file-section-map
@@ -352,7 +359,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 (use-package imenu-list
   :config
-  (setq imenu-list-auto-resize t)
+  (setq imenu-list-auto-resize nil
+        imenu-list-size 35)
 
   (add-hook 'imenu-list-major-mode-hook
             (lambda ()
@@ -733,7 +741,7 @@ START and END mark the region."
   :mode ("\\.md$" . gfm-mode))
 #+end_src
 
-** REST
+* REST
 
 #+begin_src emacs-lisp
 (use-package verb
@@ -1194,7 +1202,42 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 #+begin_src emacs-lisp
 (setq eldoc-echo-area-use-multiline-p nil)
-(use-package eldoc-box)
+
+(defun cunene/real-buffer-p (&optional buffer)
+  "Determines whether buffer is real."
+  (let ((buffer-name (buffer-name buffer)))
+    (or (and (not (minibufferp))
+             (buffer-file-name buffer))
+        (string-equal "*scratch*" buffer-name)
+        (string-match-p ".~.*~" buffer-name)
+        (string-match-p "FILE=/" buffer-name)
+        (string-match-p "\*edit-indirect .*\*" buffer-name)
+        (string-match-p "\*Org Src .*\*" buffer-name))))
+
+(use-package eldoc-box
+  :hook ((eldoc-mode . cunene/eldoc-box-enable)
+         (eldoc-box-buffer . cunene/eldoc-box-buffer-setup))
+  :config
+  (setq x-wait-for-event-timeout 0
+        eldoc-idle-delay 3
+        eldoc-box-max-pixel-width 640
+        eldoc-box-max-pixel-height 480)
+  (set-face-attribute
+   'eldoc-box-border nil
+   :background (face-attribute 'mode-line-inactive :background))
+  (add-hook 'eglot-managed-mode-hook #'cunene/eldoc-box-enable t)
+  :custom-face
+  (eldoc-box-body ((t (:background "gray16"))))
+  :init
+  (defun cunene/eldoc-box-enable ()
+    "Helper function that enables `eldoc-box-hover-at-point-mode' for real buffers only."
+    (interactive)
+    (when (cunene/real-buffer-p)
+      (eldoc-box-hover-at-point-mode)))
+  (defun cunene/eldoc-box-buffer-setup ()
+    (unless word-wrap (toggle-word-wrap))))
+
+
 #+end_src
 
 * HA Proxy
