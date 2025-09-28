@@ -114,7 +114,7 @@ Personal details.
          (now-ms (nth 2 nowtime)))
     (concat (format-time-string "[%Y-%m-%dT%T" nowtime) (format ".%d]" now-ms))))
 
-(defun cunene/ad-timestamp-message (FORMAT-STRING &rest args)
+(defun cunene/add-timestamp-message (FORMAT-STRING &rest args)
   "Advice to run before `message' to prepend a timestamp to each message.
 
 FORMAT-STRING string for the message.
@@ -128,7 +128,7 @@ ARGS arguments to format string."
           (newline))
         (insert (cunene/current-time-microseconds) " ")))))
 
-(advice-add 'message :before 'cunene/ad-timestamp-message)
+(advice-add 'message :before 'cunene/add-timestamp-message)
 #+end_src
 
 * Caching

@@ -166,8 +166,9 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 
 (defun cunene/magit-create-feature-branch (branch-name)
   "Create a new feature branch from BRANCH-NAME and push to origin.
-Spaces in BRANCH-NAME are converted to underscores and prefixed with 'feature/'.
-Uses 'main' as the default base branch. Stashes any uncommitted changes temporarily."
+Spaces in BRANCH-NAME are converted to underscores and prefixed with
+'feature/'.  Uses 'main' as the default base branch. Stashes any
+uncommitted changes temporarily."
   (interactive "sEnter branch name (spaces will become underscores): ")
   (let* ((clean-name (downcase (replace-regexp-in-string " " "_" branch-name)))
          (feature-branch (concat "feature/" clean-name))
@@ -372,7 +373,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   "Returns the path to the LSP server for C#."
   (if (eq window-system 'w32)
       "c:/opt/omnisharp-roslyn/latest/omnisharp-roslyn/OmniSharp.exe"
-    (concat (expand-file-name "~")  "/local/omnisharp/OmniSharp"))
+    (concat (expand-file-name "~")  "/local/omnisharp/OmniSharp")))
 
 (defun cunene/path-to-postgrestools ()
   "Returns the path to the LSP server for Postgres SQL."
@@ -385,15 +386,13 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               `((sql-mode) . (,(cunene/path-to-postgrestools) "lsp-proxy"))))q
-
-
+               `((sql-mode) . (,(cunene/path-to-postgrestools) "lsp-proxy"))))
 
 ;;
 ;; Improve performance by not logging debug info.
 ;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
 ;;
-; (fset #'jsonrpc--log-event #'ignore)
+(fset #'jsonrpc--log-event #'ignore)
 #+end_src
 
 * Diagrams
@@ -764,15 +763,17 @@ START and END mark the region."
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
 
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (c-set-offset 'innamespace 0) ;; Do not indent namespaces.
-            (c-set-offset 'arglist-intro '+) ;; indent function args properly
-            (c-set-offset 'arglist-cont-nonempty '+)
-            (c-toggle-hungry-state 1)          ;; use hungry delete.
-            (auto-fill-mode 1)                 ;; auto fill comments
-            (setq c-basic-offset tab-width)
-            (setq c-default-style "stroustrup")))
+(defun cunene/c-mode-common-hook ()
+  (local-set-key (kbd "C-c o") 'ff-find-other-file)
+  (c-set-offset 'innamespace 0)      ;; Do not indent namespaces.
+  (c-set-offset 'arglist-intro '+)   ;; indent function args properly
+  (c-set-offset 'arglist-cont-nonempty '+)
+  (c-toggle-hungry-state 1)          ;; use hungry delete.
+  (auto-fill-mode 1)                 ;; auto fill comments
+  (setq c-basic-offset tab-width
+        c-default-style "stroustrup"))
+
+(add-hook 'c-mode-common-hook 'cunene/c-mode-common-hook)
 
 ;; Key bindings
 (eval-after-load 'cc-mode
@@ -1261,5 +1262,5 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 * Postamble
 
 #+begin_src emacs-lisp
-;;; core.el ends here
+;;; development.el ends here
 #+end_src

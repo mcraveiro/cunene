@@ -1152,19 +1152,29 @@ selected by moving up and down. Corfu is the minimalistic in-buffer completion
 counterpart of the Vertico minibuffer UI.
 #+end_quote
 
+See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon, and Corfu-doc]]
+
 #+begin_src emacs-lisp
 (use-package corfu
   :ensure t
-  ;; Optional customizations
+  :init
+  (global-corfu-mode 1)
+  (corfu-popupinfo-mode 1)
   :config
-  (setq corfu-quit-no-match 'separator)
-  corfu-echo-mode
+  (corfu-echo-mode)
   :custom
+  (corfu-count 12)
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto nil)               ;; Only use `corfu' when calling `completion-at-point' or
+                                 ;; `indent-for-tab-command'
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.25)
+  (corfu-min-width 80)
+  (corfu-max-width corfu-min-width)
+  (corfu-echo-documentation t)
   (corfu-separator ?\s)          ;; Orderless field separator
   (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-quit-no-match t)        ;; Quit when there is no match
   (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect 'prompt)      ;; Preselect the prompt
   (corfu-on-exact-match nil)     ;; Configure handling of exact matches
@@ -1183,17 +1193,35 @@ counterpart of the Vertico minibuffer UI.
   (setq corfu-popupinfo-delay 0.2)
   (corfu-popupinfo-mode))
 
-(use-package nerd-icons-corfu
-  :ensure t
-  :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
+;; Enable Corfu more generally for every minibuffer, as long as no other
+;; completion UI is active. If you use Mct or Vertico as your main minibuffer
+;; completion UI. From
+;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
+(defun corfu-enable-always-in-minibuffer ()
+  "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+  (unless (or (bound-and-true-p mct--active) ; Useful if I ever use MCT
+              (bound-and-true-p vertico--input))
+    (setq-local corfu-auto nil)       ; Ensure auto completion is disabled
+    (corfu-mode 1)))
+(add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 
-  ;; Optionally:
-  (setq nerd-icons-corfu-mapping
-        '((array :style "cod" :icon "symbol_array" :face font-lock-type-face)
-          (boolean :style "cod" :icon "symbol_boolean" :face font-lock-builtin-face)
-          ;; ...
-          (t :style "cod" :icon "code" :face font-lock-warning-face))))
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  ;:custom
+  ; (kind-icon-blend-background t)
+  ; (kind-icon-default-face 'corfu-default) ; only needed with blend-background
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(use-package corfu-popupinfo
+  :after corfu
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay '(0.25 . 0.1))
+  (corfu-popupinfo-hide nil)
+  :config
+  (corfu-popupinfo-mode))
 
 (use-package pcmpl-args
   :ensure t)
