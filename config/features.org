@@ -832,6 +832,7 @@ authoring documents with a fast and effective plain-text system.
      ;; (sh . t)
      (sql . t)
      (sqlite . t)
+     (verb . t)
      ;; (mustache . t)
      (plantuml . t)))
 
@@ -1165,7 +1166,7 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
   :custom
   (corfu-count 12)
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto nil)               ;; Only use `corfu' when calling `completion-at-point' or
+  (corfu-auto t)               ;; Only use `corfu' when calling `completion-at-point' or
                                  ;; `indent-for-tab-command'
   (corfu-auto-prefix 2)
   (corfu-auto-delay 0.25)
@@ -1802,6 +1803,11 @@ your editor.
   (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap")
         logview-additional-level-mappings
         '(
+          ("android" . ((error       "E" "F")
+                        (warning     "W")
+                        (information "I")
+                        (debug       "D")
+                        (trace       "V")))
           ("dotnet" . ((error       "Error" "Fatal")
                        (warning     "Warning")
                        (information "Information")
@@ -1809,6 +1815,10 @@ your editor.
                        (trace       "Verbose" "Trace"))))
         logview-additional-submodes
         '(
+          ("android"
+           (format . "TIMESTAMP IGNORED IGNORED LEVEL NAME")
+           (levels . "android")
+           (timestamp))
           ("dogen"
            (format . "TIMESTAMP [LEVEL] [NAME]")
            (levels . "SLF4J")
@@ -1817,7 +1827,7 @@ your editor.
            (format . "LEVEL TIMESTAMP [THREAD] NAME IGNORED - MESSAGE")
            (levels . "SLF4J"))
           ("serilog"
-           (format . "TIMESTAMP [LEVEL] MESSAGE")
+           (format . "TIMESTAMP [LEVEL] NAME - MESSAGE")
            (levels . "dotnet")
            (timestamp "ISO 8601 datetime"))))
   (add-hook 'logview-mode-hook #'read-only-mode))

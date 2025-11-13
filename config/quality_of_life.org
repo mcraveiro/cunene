@@ -925,7 +925,24 @@ Sources:
           (concat process-list-command "| grep -v grep |" (format "grep -c '%s'" process-name)))
          (output (shell-command-to-string pipeline)))
     (not (zerop (string-to-number (string-trim output))))))
+
+(use-package proced
+  :ensure nil
+  :commands proced
+  :bind (("C-M-p" . proced))
+  :custom
+  (proced-auto-update-flag t)
+  (proced-goal-attribute nil)
+  (proced-show-remote-processes t)
+  (proced-enable-color-flag t)
+  (proced-format 'custom)
+  :config
+  (add-to-list
+   'proced-format-alist
+   '(custom user pid ppid sess tree pcpu pmem rss start time state (args comm))))
 #+end_src
+
+
 
 * Postamble
 

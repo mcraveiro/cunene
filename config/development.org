@@ -293,6 +293,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 #+begin_src emacs-lisp
 (use-package project)
+
 #+end_src
 
 * Syntax Checking
@@ -311,16 +312,16 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
                (side            . bottom)
                (window-height   . 0.2)))
 
-(use-package flyover
-  :ensure (:fetcher github :repo "konrad1977/flyover")
-  :config
-  (add-hook 'flycheck-mode-hook #'flyover-mode)
-  (setq flyover-levels '(error warning info))
-  (setq flyover-use-theme-colors t)
-  (setq flyover-background-lightness 45)
-  (setq flyover-percent-darker 40)
-  (setq flyover-text-tint 'lighter)
-  (setq flyover-text-tint-percent 50))
+;; (use-package flyover
+;;   :ensure (:fetcher github :repo "konrad1977/flyover")
+;;   :config
+;;   (add-hook 'flycheck-mode-hook #'flyover-mode)
+;;   (setq flyover-levels '(error warning info))
+;;   (setq flyover-use-theme-colors t)
+;;   (setq flyover-background-lightness 45)
+;;   (setq flyover-percent-darker 40)
+;;   (setq flyover-text-tint 'lighter)
+;;   (setq flyover-text-tint-percent 50))
 #+end_src
 
 * Syntax Highlighting
@@ -393,6 +394,19 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 ;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
 ;;
 (fset #'jsonrpc--log-event #'ignore)
+
+(use-package symbols-outline
+  :ensure t
+  :bind ("C-c i" . symbols-outline-show)
+  :init
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (setq-local symbols-outline-fetch-fn #'symbols-outline-lsp-fetch)))
+  :config
+  (setq symbols-outline-window-position 'right)
+  (setq symbols-outline-window-width 40)
+  (symbols-outline-follow-mode))
+
 #+end_src
 
 * Diagrams
@@ -405,8 +419,12 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :mode "\\.plantuml\\'"
   :config
   (setq plantuml-indent-level 4)
+  (setq plantuml-java-args nil)
+  (add-to-list 'plantuml-java-args "-jar")
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=16384")
   (add-to-list 'plantuml-java-args "-DPLANTUML_SECURITY_PROFILE=UNSECURE")
+  (add-to-list 'plantuml-java-args "-Djava.awt.headless=true")
+
   (setq plantuml-jar-output-type-opt "png")
   (add-hook 'plantuml-mode-hook 'whitespace-mode)
   ;; (add-to-list 'plantuml-jar-args "-Playout=elk")
@@ -686,6 +704,9 @@ START and END mark the region."
 ;; Format JSON / JSONlines with JQ
 (use-package jq-format)
 
+(use-package jwt
+  :ensure (:fetcher github :repo "joshbax189/jwt-el"))
+
 ;; (use-package hierarchy
 ;;   :ensure t)
 
@@ -790,6 +811,16 @@ START and END mark the region."
 #+begin_src emacs-lisp
 (use-package ess)
 #+end_src
+
+* Python
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :defer t)
+#+end_src
+
+,
 
 
 * C#
@@ -937,15 +968,37 @@ again, I haven't see that as a problem."
   :bind
   ("C-c n" . sharper-main-transient))
 
-;; (use-package web-mode
-;;   :config
-;;   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
-;;   (setq web-mode-engines-alist
-;;         '(("razor"    . "\\.cshtml\\'")
-;;           ("blade"  . "\\.blade\\.")
-;;           ("svelte" . "\\.svelte\\."))))
+(use-package web-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
+  (setq web-mode-engines-alist
+        '(("razor"    . "\\.cshtml\\'")
+          ("blade"  . "\\.blade\\.")
+          ("svelte" . "\\.svelte\\."))))
+
+; Associate .cshtml files with web-mode
+(add-to-list 'auto-mode-alist '("\\.razor?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
+
+;; Enable Razor engine for .cshtml files (this recognizes C# in @-blocks)
+(setq web-mode-engines-alist
+      '(("razor" . "\\.cshtml\\'")
+        ("razor" . "\\.razor\\'")))
+
+;; Optional: Enable auto-indentation and other niceties
+(add-hook 'web-mode-hook
+          (lambda ()
+            (local-set-key (kbd "RET") 'newline-and-indent)
+            (electric-indent-mode t)
+            ;; Set a reasonable indent width (adjust as needed)
+            (setq web-mode-markup-indent-offset 4
+                  web-mode-css-indent-offset 4
+                  web-mode-code-indent-offset 4
+                  web-mode-script-padding 4
+                  web-mode-style-padding 4)))
 #+end_src
 
 * Clojure
@@ -1039,12 +1092,34 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 (setq compilation-ask-about-save nil)
 
 ;; Project-specific compilation buffer names
-(setq compilation-buffer-name-function
-      (lambda (mode-name)
-        (let ((project (project-current)))
-          (if project
-              (format "*%s: %s*" mode-name (project-name project))
-            (format "*%s*" mode-name)))))
+(defun cunene/compilation-buffer-name (mode-name)
+  "Return the compilation buffer name for the current project.
+Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`."
+  (let ((project (ignore-errors (project-current))))
+    (if project
+        (format "*%s: %s*" mode-name (project-name project))
+      (format "*%s*" mode-name))))
+
+(setq compilation-buffer-name-function #'cunene/compilation-buffer-name)
+
+(defun cunene/compile (command)
+  "Run COMMAND in compilation mode, reusing existing compilation window."
+  (let ((compilation-buffer-name-function (lambda (_mode) "*compilation*"))
+        (compilation-auto-jump-to-first-error nil)
+        (compilation-scroll-output 'first-error))
+
+    ;; First, try to find and reuse the existing compilation window
+    (if-let ((comp-buf (get-buffer "*compilation*"))
+             (comp-win (get-buffer-window comp-buf t))) ; t = any frame
+        (progn
+          (with-current-buffer comp-buf
+            (compile command)
+            (set-window-point comp-win (point-max))))
+      ;; If no existing compilation window, create one but don't switch to it
+      (let ((display-buffer-overriding-action '(display-buffer-no-window)))
+        (compile command)))))
+
+(setq build--compile 'cunene/compile)
 
 ;; Compilation from Emacs. From prelude.
 (defun cunene/colorize-compilation-buffer ()
@@ -1065,16 +1140,26 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   (save-window-excursion
     (recompile)))
 
-(use-package alert
-  :ensure (:fetcher github :repo "jwiegley/alert")
-  :custom
-  (alert-default-style 'mode-line)
-  :init
-  (defun alert-after-finish-in-background (buf str)
-    (when (or (not (get-buffer-window buf 'visible)) (not (frame-focus-state)))
-      (alert str :buffer buf))))
+;; (use-package alert
+;;   :ensure (:fetcher github :repo "jwiegley/alert")
+;;   :custom
+;;   (alert-default-style 'mode-line)
+;;   :init
+;;   (defun alert-after-finish-in-background (buf str)
+;;     (when (or (not (get-buffer-window buf 'visible)) (not (frame-focus-state)))
+;;       (alert str :buffer buf))))
 
-(add-hook 'compilation-finish-functions #'alert-after-finish-in-background)
+;; (add-hook 'compilation-finish-functions #'alert-after-finish-in-background)
+
+(defun cunene/play-sound-for-operation(buffer status)
+  "Plays a sound for success or failure."
+  (let ((sound (if (string-match "^finished" status)
+                   "/home/marco/Music/power-down-7103.mp3"
+                 "/home/marco/Music/thud-sound-effect-319090.mp3")))
+    (call-process "paplay" nil 0 nil sound)))
+
+
+(add-hook 'compilation-finish-functions 'cunene/play-sound-for-operation)
 #+end_src
 
 * Lisp
@@ -1117,10 +1202,10 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 #+begin_src emacs-lisp
 (use-package sql-clickhouse)
+
+(setq sql-ms-program "/opt/mssql-tools18/bin/sqlcmd")
+(setq sql-ms-options '("-C")) ; trust self-signed cert
 #+end_src
-
-
-
 
 * Yaml
   :PROPERTIES:

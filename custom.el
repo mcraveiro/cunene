@@ -4,7 +4,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
-   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_02.org"))
+   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_04.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_03.org"
+     "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_02.org"
+     "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_01.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_02.org"))
  '(package-selected-packages
    '(docker ztree yasnippet-snippets yaml-mode windswap vscode-icon
             volatile-highlights vertico verb undo-tree treemacs-tab-bar
