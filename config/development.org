@@ -312,6 +312,9 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
                (side            . bottom)
                (window-height   . 0.2)))
 
+(with-eval-after-load 'flycheck
+  (setq flycheck-emacs-lisp-load-path 'inherit))
+
 ;; (use-package flyover
 ;;   :ensure (:fetcher github :repo "konrad1977/flyover")
 ;;   :config
@@ -820,9 +823,6 @@ START and END mark the region."
   :defer t)
 #+end_src
 
-,
-
-
 * C#
   :PROPERTIES:
   :ID: C1FF33A7-84FB-6754-81F3-15492FEF9114
@@ -1104,12 +1104,13 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
 
 (defun cunene/compile (command)
   "Run COMMAND in compilation mode, reusing existing compilation window."
-  (let ((compilation-buffer-name-function (lambda (_mode) "*compilation*"))
+  (let ((compilation-buffer-name
+         (funcall compilation-buffer-name-function "compilation"))
         (compilation-auto-jump-to-first-error nil)
         (compilation-scroll-output 'first-error))
 
     ;; First, try to find and reuse the existing compilation window
-    (if-let ((comp-buf (get-buffer "*compilation*"))
+    (if-let ((comp-buf (get-buffer compilation-buffer-name))
              (comp-win (get-buffer-window comp-buf t))) ; t = any frame
         (progn
           (with-current-buffer comp-buf
@@ -1140,24 +1141,12 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
   (save-window-excursion
     (recompile)))
 
-;; (use-package alert
-;;   :ensure (:fetcher github :repo "jwiegley/alert")
-;;   :custom
-;;   (alert-default-style 'mode-line)
-;;   :init
-;;   (defun alert-after-finish-in-background (buf str)
-;;     (when (or (not (get-buffer-window buf 'visible)) (not (frame-focus-state)))
-;;       (alert str :buffer buf))))
-
-;; (add-hook 'compilation-finish-functions #'alert-after-finish-in-background)
-
-(defun cunene/play-sound-for-operation(buffer status)
-  "Plays a sound for success or failure."
+(defun cunene/play-sound-for-operation (buffer status)
+  "Plays a sound for success or failure using pw-play."
   (let ((sound (if (string-match "^finished" status)
                    "/home/marco/Music/power-down-7103.mp3"
                  "/home/marco/Music/thud-sound-effect-319090.mp3")))
-    (call-process "paplay" nil 0 nil sound)))
-
+    (call-process "pw-play" nil 0 nil "--volume=0.5" sound)))
 
 (add-hook 'compilation-finish-functions 'cunene/play-sound-for-operation)
 #+end_src
