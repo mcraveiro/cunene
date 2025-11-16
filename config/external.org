@@ -61,7 +61,7 @@ NAME is the postfix for the buffer name."
     (shell)
     (rename-buffer buffer-name)))
 
-(global-set-key (kbd "C-x M") 'cunene/create-named-bash-shell)
+;; (global-set-key (kbd "C-x M") 'cunene/create-named-bash-shell)
 #+end_src
 
 ** Eshell
@@ -80,8 +80,9 @@ Todo:
   :config
   (add-hook 'eshell-mode-hook
             (lambda ()
-              (setq-local imenu-generic-expression
-                          '(("Prompt" " $ \\(.*\\)" 1)))))
+              ;; Only set this once, it shouldn't need to be local
+              (setq imenu-generic-expression
+                    '(("Prompt" "^ \\$ \\(.*\\)" 1)))))  ; More specific regex
   (require 'em-hist)
   (require 'em-alias)
   (add-to-list
@@ -103,10 +104,10 @@ Todo:
 
 
 ;; Start a new eshell even if one is active.
-(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+;; (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
 ;; Start a regular shell if you prefer that.
-(global-set-key (kbd "C-x M-m") 'shell)
+;; (global-set-key (kbd "C-x M-m") 'shell)
 
 (defun eshell/z (&optional regexp)
     "Navigate to a previously visited directory in eshell, or to
@@ -136,7 +137,7 @@ any directory proferred by `consult-dir'."
     (eshell)
     (rename-buffer buffer-name)))
 
-(global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
+;; (global-set-key (kbd "C-x m") 'cunene/create-named-eshell)
 #+end_src
 
 ** Powershell
@@ -152,18 +153,19 @@ any directory proferred by `consult-dir'."
 #+begin_src emacs-lisp
 (use-package eat
   :preface
-  (defun my--eat-open (file)
+  (defun cunene/eat-open-file (file)
     "Helper function to open files from eat terminal."
     (interactive)
-    (if (file-exists-p file)
-        (find-file-other-window file t)
-      (warn "File doesn't exist")))
-  :init
+    (condition-case err
+        (if (file-exists-p file)
+            (find-file-other-window file t)
+          (user-error "File doesn't exist: %s" file))
+      (error (message "Failed to open file: %s" (error-message-string err)))))  :init
   (add-to-list 'project-switch-commands '(eat-project "Eat terminal") t)
   (add-to-list 'project-switch-commands '(eat-project-other-window "Eat terminal other window") t)
   (add-to-list 'project-kill-buffer-conditions '(major-mode . eat-mode))
   :config
-  (add-to-list 'eat-message-handler-alist (cons "open" 'my--eat-open))
+  (add-to-list 'eat-message-handler-alist (cons "open" 'cunene/eat-open-file))
   (setq process-adaptive-read-buffering nil) ; makes EAT a lot quicker!
   (setq eat-term-name "xterm-256color") ; https://codeberg.org/akib/emacs-eat/issues/119"
   (setq eat-kill-buffer-on-exit t)
@@ -196,7 +198,8 @@ any directory proferred by `consult-dir'."
 ;; (use-package deadgrep
 ;;   :ensure t)
 
-(use-package rg)
+(use-package rg
+  :ensure t)
 #+end_src
 
 * Web
@@ -245,17 +248,16 @@ The optional argument NEW-WINDOW is not used."
 (defvar cunene/last-browser nil
   "Last browser selected by the user.")
 
-(defun cunene/browse-url (&rest args)
-  "Select the prefered browser from a menu before opening the URL.
-If ARGS are supplied, will always ask. Else it remember the user choice."
-  (interactive)
-  (if (or
-       (null cunene/last-browser)    ;; no previous browser?
-       (not (null (cl-first (cdr args))))) ;; any args supplied other than the URL?
-      (progn
-        (setq cunene/last-browser (completing-read "WWW browser: " cunene/browsers nil t ""))
-        (apply (cdr (assoc cunene/last-browser cunene/browsers)) args))
-    (apply (cdr (assoc cunene/last-browser cunene/browsers)) args)))
+(defun cunene/browse-url (url &optional new-window)
+  "Select browser from menu, remembering choice."
+  (interactive (browse-url-interactive-arg "URL: "))
+  (when (or (null cunene/last-browser)
+            current-prefix-arg)  ; Use prefix arg to force choice
+    (setq cunene/last-browser
+          (completing-read "Browser: " cunene/browsers nil t)))
+  (if-let ((browser-fn (cdr (assoc cunene/last-browser cunene/browsers))))
+      (funcall browser-fn url new-window)
+    (error "No browser selected")))
 
 (setq browse-url-browser-function #'cunene/browse-url)
 
@@ -263,14 +265,35 @@ If ARGS are supplied, will always ask. Else it remember the user choice."
 ;; - https://emacs.stackexchange.com/questions/50433/add-browser-bookmark-to-bookmark-browser
 ;; FIXME this breaks bookmark display at present.
 (require 'bookmark)
-(defun cunene/bookmark-url (url)
-  "Add URL to bookmarks."
-  (interactive "sBookmark URL: ")
-  (if (assoc url bookmark-alist)
-      (user-error "%s is already bookmarked" url)
-    (push `(,url . ((handler . ,(lambda (bookmark)
-                                  (browse-url (car bookmark))))))
-          bookmark-alist)))
+(defun cunene/bookmark-url (url &optional name)
+  "Add URL to bookmarks with an optional NAME.
+If NAME is not provided, prompt for it.
+URL should be a valid web address."
+  (interactive
+   (let ((url (read-string "URL: " (or (thing-at-point-url-at-point) ""))))
+     (list url (read-string "Bookmark name: " url))))
+
+  ;; Validate URL format
+  (unless (string-match-p "^\\(https?\\|ftp\\|file\\)://" url)
+    (user-error "Invalid URL format: %s" url))
+
+  (let ((bookmark-name (or name url)))
+    ;; Check if bookmark already exists
+    (when (assoc bookmark-name bookmark-alist)
+      (if (y-or-n-p (format "Bookmark '%s' already exists. Replace? " bookmark-name))
+          (bookmark-delete bookmark-name)
+        (user-error "Bookmark creation canceled")))
+
+    ;; Create the bookmark
+    (bookmark-store bookmark-name nil
+                    `((filename . ,url)
+                      (handler . (lambda (bm)
+                                   (browse-url (bookmark-get-filename bm))))))
+
+    ;; Save to disk
+    (bookmark-save)
+
+    (message "Bookmarked: %s -> %s" bookmark-name url)))
 
 ;; Make addresses clickable
 (add-hook 'prog-mode-hook #'goto-address-prog-mode)

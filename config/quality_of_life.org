@@ -50,7 +50,11 @@ Improvements to default GC. Links:
 - [[https://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/][Why are you changing gc-cons-threshold?]]
 
 #+begin_src emacs-lisp
-(setq-default gc-cons-threshold (* 8 1024 1024))      ; Bump up garbage collection threshold.
+(setq-default gc-cons-threshold (* 64 1024 1024))      ; Bump up garbage collection threshold.
+
+;; Only GC when idle for a while, not on every focus change
+(run-with-idle-timer 10 t #'garbage-collect)
+
 #+end_src
 
 Garbage-collect on focus-out, Emacs /should/ feel snappier overall.
@@ -160,7 +164,7 @@ Here are what I consider better defaults as per my own experience.
 
 #+begin_src emacs-lisp
 ;; Do not ask to kill a buffer.
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+;; (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (setq use-short-answers t)
 
 (defun cunene/diff-buffer-with-associated-file ()
@@ -216,31 +220,19 @@ Returns nil if no differences found, t otherwise."
       (kill-buffer buf))))
 (add-hook 'kill-buffer-hook 'cunene/kill-associated-diff-buf)
 
-(defun cunene/de-context-kill (arg)
-  "Show differences when killing buffer.
-ARG is true, always kill."
-  (interactive "p")
+(defun cunene/smart-kill-buffer ()
+  "Kill buffer with confirmation if modified."
+  (interactive)
   (if (and (buffer-modified-p)
-             buffer-file-name
-             (not (string-match "\\*.*\\*" (buffer-name)))
-             ;; erc buffers will be automatically saved
-             (not (eq major-mode 'erc-mode))
-             (= 1 arg))
-    (let ((differences 't))
-      (when (file-exists-p buffer-file-name)
-        (setq differences (cunene/diff-buffer-with-associated-file)))
+           buffer-file-name
+           (not (string-match-p "\\*.*\\*" (buffer-name)))
+           (not (eq major-mode 'erc-mode)))
+      (when (y-or-n-p (format "Buffer %s modified; kill anyway? " (buffer-name)))
+        (set-buffer-modified-p nil)
+        (kill-buffer (current-buffer)))
+    (kill-buffer (current-buffer))))
 
-      (if (y-or-n-p (format "Buffer %s modified; Kill anyway? " buffer-file-name))
-          (progn
-            (set-buffer-modified-p nil)
-            (kill-buffer (current-buffer)))))
-    (if (and (boundp 'gnuserv-minor-mode)
-             gnuserv-minor-mode)
-        (gnuserv-edit)
-      (set-buffer-modified-p nil)
-      (kill-buffer (current-buffer)))))
-
-(global-set-key (kbd "C-x k") 'cunene/de-context-kill)
+(global-set-key (kbd "C-x k") #'cunene/smart-kill-buffer)
 #+end_src
 
 ** Saving
@@ -260,7 +252,9 @@ something that augments and replaces the standard auto-save-mode.
   (super-save-mode +1))
 
 ;; revert buffers automatically when underlying files are changed externally
-(global-auto-revert-mode t)
+;; (global-auto-revert-mode t)
+(setq global-auto-revert-non-file-buffers nil)  ; Don't revert non-file buffers
+(setq auto-revert-verbose nil)  ; Don't message about reverting
 #+end_src
 
 * Themes
@@ -296,13 +290,13 @@ Links:
 (use-package all-the-icons-nerd-fonts)
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
-;; (use-package doom-modeline
-;;   :hook (after-init . doom-modeline-mode)
-;;   :config
-;;   (setq doom-modeline-buffer-file-name-style 'buffer-name)
-;;   (setq doom-modeline-major-mode-icon t)
-;;   ;; Whether display the buffer encoding.
-;;   (setq doom-modeline-buffer-encoding nil))
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  (setq doom-modeline-major-mode-icon t)
+  ;; Whether display the buffer encoding.
+  (setq doom-modeline-buffer-encoding nil))
 
 (use-package punch-line
   :ensure (:fetcher github :repo "konrad1977/punch-line")
@@ -324,7 +318,7 @@ Links:
 | =hide-mode-line= | https://github.com/hlissner/emacs-hide-mode-line |
 
 #+begin_src emacs-lisp
-(use-package diminish)
+; (use-package diminish)
 (use-package hide-mode-line)
 #+end_src
 
@@ -336,39 +330,34 @@ Links:
 #+begin_src emacs-lisp
 ;; Give details about white space usage
 (require 'whitespace)
-(autoload 'whitespace-toggle-options
-  "whitespace" "Toggle local `whitespace-mode' options." t)
+
+;; Use a lighter approach for most modes
+(defun cunene/light-whitespace ()
+  "Enable only essential whitespace highlighting (tabs and trailing spaces)
+  and color them red."
+  (interactive)
+  (setq whitespace-style '(face tabs spaces trailing))
+  (set-face-attribute 'whitespace-tab nil :background "light coral")
+  (set-face-attribute 'whitespace-trailing nil :background "light coral")
+  (whitespace-mode 1))
+
+;; Only enable heavy whitespace where truly needed
+;; (add-hook 'prog-mode-hook #'cunene/light-whitespace)
+;; (autoload 'whitespace-toggle-options
+;;  "whitespace" "Toggle local `whitespace-mode' options." t)
 
 ;; limit line length
 (setq whitespace-line-column 80)
-
-;; What to highlight
-(setq whitespace-style
-      '(face tabs trailing lines-tail space-before-tab empty space-after-tab
-             tab-mark))
 
 ;; Indicate if empty lines exist at end of the buffer
 (set-default 'indicate-empty-lines t)
 
 ;; do not use global mode whitespace
-(global-whitespace-mode 0)
-(setq whitespace-global-modes nil)
-
-;; Show whitespaces on these modes
-(add-hook 'sh-mode-hook 'whitespace-mode)
-(add-hook 'snippet-mode-hook 'whitespace-mode)
-(add-hook 'tex-mode-hook 'whitespace-mode)
-(add-hook 'sql-mode-hook 'whitespace-mode)
-(add-hook 'ruby-mode-hook 'whitespace-mode)
-(add-hook 'diff-mode-hook 'whitespace-mode)
-(add-hook 'csharp-ts-mode-hook 'whitespace-mode)
-(add-hook 'c-mode-common-hook 'whitespace-mode)
-(add-hook 'cmake-mode-hook 'whitespace-mode)
-(add-hook 'emacs-lisp-mode-hook 'whitespace-mode)
-(add-hook 'dos-mode-hook 'whitespace-mode)
-(add-hook 'org-mode-hook 'whitespace-mode)
-(add-hook 'js-mode-hook 'whitespace-mode)
-(add-hook 'js2-mode-hook 'whitespace-mode)
+(setq whitespace-style '(face tabs spaces trailing))
+;; (set-face-attribute 'whitespace-tab nil :background "light coral")
+;; (set-face-attribute 'whitespace-trailing nil :background "light coral")
+(global-whitespace-mode 1)
+(setq whitespace-global-modes t)
 
 ;; do not clean whitespace on windows.
 (if (not (eq window-system 'w32))
@@ -811,9 +800,11 @@ With the prefix argument UNFILL, unfill it instead."
   :END:
 
 #+begin_src emacs-lisp
-(require 'saveplace)
-(setq save-place-file (cunene/cache-concat "saveplace/places"))
-(save-place-mode 1)
+(use-package saveplace
+  :config
+  (setq save-place-file (cunene/cache-concat "saveplace/places"))
+  (setq save-place-forget-unreadable-files t)  ; Don't choke on bad entries
+  (save-place-mode 1))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist

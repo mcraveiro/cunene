@@ -4,7 +4,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
-   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_04.org"
+   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_05.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_04.org"
      "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_03.org"
      "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_02.org"
      "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_01.org"
@@ -35,7 +36,7 @@
             all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion
             aggressive-indent))
  '(safe-local-variable-values
-   '((cmake-tab-width . 4)
+   '((checkdoc-allow-quoting-nil-and-t . t)
      (eval setq-local org-roam-db-location
            (expand-file-name ".org-roam.db" org-roam-directory))
      (eval setq-local org-roam-directory

@@ -74,15 +74,10 @@ Display indicators in the left fringe for Git changes.
 
 #+begin_src emacs-lisp
 (use-package git-gutter-fringe
-  :preface
-  (defun cunene/git-gutter-enable ()
-    (when-let* ((buffer (buffer-file-name))
-                (backend (vc-backend buffer)))
-      (require 'git-gutter)
-      (require 'git-gutter-fringe)
-      (git-gutter-mode 1)))
   :hook
-  (after-change-major-mode . cunene/git-gutter-enable)
+  ;; Only enable for file buffers in version control
+  ((find-file . git-gutter-mode)
+   (after-revert-hook . git-gutter-mode))
   :config
   (define-fringe-bitmap 'git-gutter-fr:added [255] nil nil '(center t))
   (define-fringe-bitmap 'git-gutter-fr:deleted [255 255 255 255] nil nil 'bottom)
@@ -429,7 +424,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   (add-to-list 'plantuml-java-args "-Djava.awt.headless=true")
 
   (setq plantuml-jar-output-type-opt "png")
-  (add-hook 'plantuml-mode-hook 'whitespace-mode)
+  ;; (add-hook 'plantuml-mode-hook 'whitespace-mode)
   ;; (add-to-list 'plantuml-jar-args "-Playout=elk")
   (add-to-list 'plantuml-jar-args "-v")
 
@@ -522,7 +517,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 | =smart-hungry-delete= | https://github.com/hrehfeld/emacs-smart-hungry-delete |
 
 #+begin_quote
-Delete whitespace between words, parenthesis and other delimiters in a smart (dumb) way.
+Delete whitespace between words, parenthesis and other delimiters in a smart
+(dumb) way.
 #+end_quote
 
 #+begin_src emacs-lisp
@@ -1243,8 +1239,8 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
   (setopt ellama-providers
           '(("llama3" . (make-llm-ollama
                          :chat-model "llama3" :embedding-model "llama3"))
-            ("phi3" . (make-llm-ollama
-                         :chat-model "phi3" :embedding-model "phi3"))
+            ("phi4" . (make-llm-ollama
+                         :chat-model "phi3" :embedding-model "phi4"))
             ("codellama" . (make-llm-ollama
                             :chat-model "codellama:7b" :embedding-model "codellama:7b"))
             ("codestral" . (make-llm-ollama
@@ -1270,6 +1266,7 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
   :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
+  (setq claude-code-ide-cli-path "~/.local/bin/claude")
   (claude-code-ide-emacs-tools-setup))
 #+end_src
 

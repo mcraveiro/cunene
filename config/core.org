@@ -54,15 +54,15 @@ Links:
 
 #+begin_src emacs-lisp
 (defun cunene/call-process-to-string (command &rest args)
-  "Call COMMAND with ARGS; return stdout.
-
-If COMMAND returns with a non-zero exit code, signal an error."
+  "Call COMMAND with ARGS; return stdout or nil on failure."
   (declare (indent 0))
-  (with-temp-buffer
-    (let ((code (apply #'call-process command nil '(t nil) nil args)))
-      (unless (= 0 code)
-        (error "%s exited with exit code %s" command code)))
-    (string-trim (buffer-string))))
+  (condition-case err
+      (with-temp-buffer
+        (let ((code (apply #'call-process command nil '(t nil) nil args)))
+          (if (= 0 code)
+              (string-trim (buffer-string))
+            nil)))  ; Return nil instead of erroring
+    (error nil)))   ; Catch any other errors and return nil
 
 (defun cunene/kill-gtk-warning ()
   "Deletes the GTK warning window."
@@ -77,7 +77,7 @@ If COMMAND returns with a non-zero exit code, signal an error."
       (cunene/call-process-to-string
        "xdotool" "windowclose" window-id))))
 
-(cunene/kill-gtk-warning)
+(add-hook 'after-init-hook #'cunene/kill-gtk-warning)
 #+end_src
 
 * Identity
@@ -128,7 +128,8 @@ ARGS arguments to format string."
           (newline))
         (insert (cunene/current-time-microseconds) " ")))))
 
-(advice-add 'message :before 'cunene/add-timestamp-message)
+;; Possible performance impact.
+;; (advice-add 'message :before 'cunene/add-timestamp-message)
 #+end_src
 
 * Caching
@@ -279,18 +280,12 @@ mode."
   :lighter " Sensitive"
   ;; The minor mode bindings.
   :keymap nil
-  (if (symbol-value sensitive-minor-mode)
+  (if sensitive-minor-mode
       (progn
-        ;; disable backups
-        (set (make-local-variable 'backup-inhibited) t)
-        ;; disable auto-save
-        (if auto-save-default
-            (auto-save-mode -1)))
-    ;; resort to default value of backup-inhibited
+        (setq-local backup-inhibited t)
+        (auto-save-mode -1))  ; Just disable it, no need to check auto-save-default
     (kill-local-variable 'backup-inhibited)
-    ;; resort to default auto save setting
-    (if auto-save-default
-        (auto-save-mode 1))))
+    (auto-save-mode 1)))  ; Re-enable if it was enabled
 
 (add-to-list 'auto-mode-alist '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode))
 
@@ -328,12 +323,15 @@ Try your best to make custom config clean.
 From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
 
 #+begin_src emacs-lisp
-(defadvice kill-region (before slick-cut activate compile)
-  "When called interactively with no active region, kill a single line instead."
+(defun cunene/smart-kill-region (beg end)
+  "Kill region or current line if no region active."
   (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-beginning-position 2))))
+  (kill-region beg end))
+
+(global-set-key (kbd "C-w") #'cunene/smart-kill-region)
 #+end_src
 
 Browse kill ring.
