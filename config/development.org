@@ -74,15 +74,10 @@ Display indicators in the left fringe for Git changes.
 
 #+begin_src emacs-lisp
 (use-package git-gutter-fringe
-  :preface
-  (defun cunene/git-gutter-enable ()
-    (when-let* ((buffer (buffer-file-name))
-                (backend (vc-backend buffer)))
-      (require 'git-gutter)
-      (require 'git-gutter-fringe)
-      (git-gutter-mode 1)))
   :hook
-  (after-change-major-mode . cunene/git-gutter-enable)
+  ;; Only enable for file buffers in version control
+  ((find-file . git-gutter-mode)
+   (after-revert-hook . git-gutter-mode))
   :config
   (define-fringe-bitmap 'git-gutter-fr:added [255] nil nil '(center t))
   (define-fringe-bitmap 'git-gutter-fr:deleted [255 255 255 255] nil nil 'bottom)
@@ -118,6 +113,13 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 
 #+begin_src emacs-lisp
 (use-package transient :ensure (:fetcher github :repo "magit/transient"))
+
+(defun cunene/git-commit-mode-hook ()
+  "Hook to run when enabling git commit mode."
+  (setq-local completion-at-point-functions
+              (append (list #'cape-dict)
+                      completion-at-point-functions)))
+(add-hook 'git-commit-mode-hook 'cunene/git-commit-mode-hook)
 
 (use-package magit
   :bind
@@ -159,8 +161,9 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 
 (defun cunene/magit-create-feature-branch (branch-name)
   "Create a new feature branch from BRANCH-NAME and push to origin.
-Spaces in BRANCH-NAME are converted to underscores and prefixed with 'feature/'.
-Uses 'main' as the default base branch. Stashes any uncommitted changes temporarily."
+Spaces in BRANCH-NAME are converted to underscores and prefixed with
+'feature/'.  Uses 'main' as the default base branch. Stashes any
+uncommitted changes temporarily."
   (interactive "sEnter branch name (spaces will become underscores): ")
   (let* ((clean-name (downcase (replace-regexp-in-string " " "_" branch-name)))
          (feature-branch (concat "feature/" clean-name))
@@ -285,6 +288,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 #+begin_src emacs-lisp
 (use-package project)
+
 #+end_src
 
 * Syntax Checking
@@ -303,16 +307,19 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
                (side            . bottom)
                (window-height   . 0.2)))
 
-(use-package flyover
-  :ensure (:fetcher github :repo "konrad1977/flyover")
-  :config
-  (add-hook 'flycheck-mode-hook #'flyover-mode)
-  (setq flyover-levels '(error warning info))
-  (setq flyover-use-theme-colors t)
-  (setq flyover-background-lightness 45)
-  (setq flyover-percent-darker 40)
-  (setq flyover-text-tint 'lighter)
-  (setq flyover-text-tint-percent 50))
+(with-eval-after-load 'flycheck
+  (setq flycheck-emacs-lisp-load-path 'inherit))
+
+;; (use-package flyover
+;;   :ensure (:fetcher github :repo "konrad1977/flyover")
+;;   :config
+;;   (add-hook 'flycheck-mode-hook #'flyover-mode)
+;;   (setq flyover-levels '(error warning info))
+;;   (setq flyover-use-theme-colors t)
+;;   (setq flyover-background-lightness 45)
+;;   (setq flyover-percent-darker 40)
+;;   (setq flyover-text-tint 'lighter)
+;;   (setq flyover-text-tint-percent 50))
 #+end_src
 
 * Syntax Highlighting
@@ -352,7 +359,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 (use-package imenu-list
   :config
-  (setq imenu-list-auto-resize t)
+  (setq imenu-list-auto-resize nil
+        imenu-list-size 35)
 
   (add-hook 'imenu-list-major-mode-hook
             (lambda ()
@@ -364,7 +372,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   "Returns the path to the LSP server for C#."
   (if (eq window-system 'w32)
       "c:/opt/omnisharp-roslyn/latest/omnisharp-roslyn/OmniSharp.exe"
-    (concat (expand-file-name "~")  "/local/omnisharp/OmniSharp"))
+    (concat (expand-file-name "~")  "/local/omnisharp/OmniSharp")))
 
 (defun cunene/path-to-postgrestools ()
   "Returns the path to the LSP server for Postgres SQL."
@@ -377,15 +385,26 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               `((sql-mode) . (,(cunene/path-to-postgrestools) "lsp-proxy"))))q
-
-
+               `((sql-mode) . (,(cunene/path-to-postgrestools) "lsp-proxy"))))
 
 ;;
 ;; Improve performance by not logging debug info.
 ;; https://www.reddit.com/r/emacs/comments/1447fy2/looking_for_help_in_improving_typescript_eglot/
 ;;
-; (fset #'jsonrpc--log-event #'ignore)
+(fset #'jsonrpc--log-event #'ignore)
+
+(use-package symbols-outline
+  :ensure t
+  :bind ("C-c i" . symbols-outline-show)
+  :init
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (setq-local symbols-outline-fetch-fn #'symbols-outline-lsp-fetch)))
+  :config
+  (setq symbols-outline-window-position 'right)
+  (setq symbols-outline-window-width 40)
+  (symbols-outline-follow-mode))
+
 #+end_src
 
 * Diagrams
@@ -398,10 +417,14 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :mode "\\.plantuml\\'"
   :config
   (setq plantuml-indent-level 4)
+  (setq plantuml-java-args nil)
+  (add-to-list 'plantuml-java-args "-jar")
   (add-to-list 'plantuml-java-args "-DPLANTUML_LIMIT_SIZE=16384")
   (add-to-list 'plantuml-java-args "-DPLANTUML_SECURITY_PROFILE=UNSECURE")
+  (add-to-list 'plantuml-java-args "-Djava.awt.headless=true")
+
   (setq plantuml-jar-output-type-opt "png")
-  (add-hook 'plantuml-mode-hook 'whitespace-mode)
+  ;; (add-hook 'plantuml-mode-hook 'whitespace-mode)
   ;; (add-to-list 'plantuml-jar-args "-Playout=elk")
   (add-to-list 'plantuml-jar-args "-v")
 
@@ -494,7 +517,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 | =smart-hungry-delete= | https://github.com/hrehfeld/emacs-smart-hungry-delete |
 
 #+begin_quote
-Delete whitespace between words, parenthesis and other delimiters in a smart (dumb) way.
+Delete whitespace between words, parenthesis and other delimiters in a smart
+(dumb) way.
 #+end_quote
 
 #+begin_src emacs-lisp
@@ -679,6 +703,9 @@ START and END mark the region."
 ;; Format JSON / JSONlines with JQ
 (use-package jq-format)
 
+(use-package jwt
+  :ensure (:fetcher github :repo "joshbax189/jwt-el"))
+
 ;; (use-package hierarchy
 ;;   :ensure t)
 
@@ -733,7 +760,7 @@ START and END mark the region."
   :mode ("\\.md$" . gfm-mode))
 #+end_src
 
-** REST
+* REST
 
 #+begin_src emacs-lisp
 (use-package verb
@@ -756,15 +783,17 @@ START and END mark the region."
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
 
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (c-set-offset 'innamespace 0) ;; Do not indent namespaces.
-            (c-set-offset 'arglist-intro '+) ;; indent function args properly
-            (c-set-offset 'arglist-cont-nonempty '+)
-            (c-toggle-hungry-state 1)          ;; use hungry delete.
-            (auto-fill-mode 1)                 ;; auto fill comments
-            (setq c-basic-offset tab-width)
-            (setq c-default-style "stroustrup")))
+(defun cunene/c-mode-common-hook ()
+  (local-set-key (kbd "C-c o") 'ff-find-other-file)
+  (c-set-offset 'innamespace 0)      ;; Do not indent namespaces.
+  (c-set-offset 'arglist-intro '+)   ;; indent function args properly
+  (c-set-offset 'arglist-cont-nonempty '+)
+  (c-toggle-hungry-state 1)          ;; use hungry delete.
+  (auto-fill-mode 1)                 ;; auto fill comments
+  (setq c-basic-offset tab-width
+        c-default-style "stroustrup"))
+
+(add-hook 'c-mode-common-hook 'cunene/c-mode-common-hook)
 
 ;; Key bindings
 (eval-after-load 'cc-mode
@@ -782,6 +811,13 @@ START and END mark the region."
 (use-package ess)
 #+end_src
 
+* Python
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :defer t)
+#+end_src
 
 * C#
   :PROPERTIES:
@@ -928,15 +964,37 @@ again, I haven't see that as a problem."
   :bind
   ("C-c n" . sharper-main-transient))
 
-;; (use-package web-mode
-;;   :config
-;;   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
-;;   (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
-;;   (setq web-mode-engines-alist
-;;         '(("razor"    . "\\.cshtml\\'")
-;;           ("blade"  . "\\.blade\\.")
-;;           ("svelte" . "\\.svelte\\."))))
+(use-package web-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.svelte?\\'" . web-mode))
+  (setq web-mode-engines-alist
+        '(("razor"    . "\\.cshtml\\'")
+          ("blade"  . "\\.blade\\.")
+          ("svelte" . "\\.svelte\\."))))
+
+; Associate .cshtml files with web-mode
+(add-to-list 'auto-mode-alist '("\\.razor?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
+
+;; Enable Razor engine for .cshtml files (this recognizes C# in @-blocks)
+(setq web-mode-engines-alist
+      '(("razor" . "\\.cshtml\\'")
+        ("razor" . "\\.razor\\'")))
+
+;; Optional: Enable auto-indentation and other niceties
+(add-hook 'web-mode-hook
+          (lambda ()
+            (local-set-key (kbd "RET") 'newline-and-indent)
+            (electric-indent-mode t)
+            ;; Set a reasonable indent width (adjust as needed)
+            (setq web-mode-markup-indent-offset 4
+                  web-mode-css-indent-offset 4
+                  web-mode-code-indent-offset 4
+                  web-mode-script-padding 4
+                  web-mode-style-padding 4)))
 #+end_src
 
 * Clojure
@@ -1030,12 +1088,35 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 (setq compilation-ask-about-save nil)
 
 ;; Project-specific compilation buffer names
-(setq compilation-buffer-name-function
-      (lambda (mode-name)
-        (let ((project (project-current)))
-          (if project
-              (format "*%s: %s*" mode-name (project-name project))
-            (format "*%s*" mode-name)))))
+(defun cunene/compilation-buffer-name (mode-name)
+  "Return the compilation buffer name for the current project.
+Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`."
+  (let ((project (ignore-errors (project-current))))
+    (if project
+        (format "*%s: %s*" mode-name (project-name project))
+      (format "*%s*" mode-name))))
+
+(setq compilation-buffer-name-function #'cunene/compilation-buffer-name)
+
+(defun cunene/compile (command)
+  "Run COMMAND in compilation mode, reusing existing compilation window."
+  (let ((compilation-buffer-name
+         (funcall compilation-buffer-name-function "compilation"))
+        (compilation-auto-jump-to-first-error nil)
+        (compilation-scroll-output 'first-error))
+
+    ;; First, try to find and reuse the existing compilation window
+    (if-let ((comp-buf (get-buffer compilation-buffer-name))
+             (comp-win (get-buffer-window comp-buf t))) ; t = any frame
+        (progn
+          (with-current-buffer comp-buf
+            (compile command)
+            (set-window-point comp-win (point-max))))
+      ;; If no existing compilation window, create one but don't switch to it
+      (let ((display-buffer-overriding-action '(display-buffer-no-window)))
+        (compile command)))))
+
+(setq build--compile 'cunene/compile)
 
 ;; Compilation from Emacs. From prelude.
 (defun cunene/colorize-compilation-buffer ()
@@ -1056,16 +1137,14 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   (save-window-excursion
     (recompile)))
 
-(use-package alert
-  :ensure (:fetcher github :repo "jwiegley/alert")
-  :custom
-  (alert-default-style 'mode-line)
-  :init
-  (defun alert-after-finish-in-background (buf str)
-    (when (or (not (get-buffer-window buf 'visible)) (not (frame-focus-state)))
-      (alert str :buffer buf))))
+(defun cunene/play-sound-for-operation (buffer status)
+  "Plays a sound for success or failure using pw-play."
+  (let ((sound (if (string-match "^finished" status)
+                   "/home/marco/Music/power-down-7103.mp3"
+                 "/home/marco/Music/thud-sound-effect-319090.mp3")))
+    (call-process "pw-play" nil 0 nil "--volume=0.5" sound)))
 
-(add-hook 'compilation-finish-functions #'alert-after-finish-in-background)
+(add-hook 'compilation-finish-functions 'cunene/play-sound-for-operation)
 #+end_src
 
 * Lisp
@@ -1108,10 +1187,10 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 #+begin_src emacs-lisp
 (use-package sql-clickhouse)
+
+(setq sql-ms-program "/opt/mssql-tools18/bin/sqlcmd")
+(setq sql-ms-options '("-C")) ; trust self-signed cert
 #+end_src
-
-
-
 
 * Yaml
   :PROPERTIES:
@@ -1160,8 +1239,8 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   (setopt ellama-providers
           '(("llama3" . (make-llm-ollama
                          :chat-model "llama3" :embedding-model "llama3"))
-            ("phi3" . (make-llm-ollama
-                         :chat-model "phi3" :embedding-model "phi3"))
+            ("phi4" . (make-llm-ollama
+                         :chat-model "phi3" :embedding-model "phi4"))
             ("codellama" . (make-llm-ollama
                             :chat-model "codellama:7b" :embedding-model "codellama:7b"))
             ("codestral" . (make-llm-ollama
@@ -1187,6 +1266,7 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
   :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
+  (setq claude-code-ide-cli-path "~/.local/bin/claude")
   (claude-code-ide-emacs-tools-setup))
 #+end_src
 
@@ -1194,7 +1274,42 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 #+begin_src emacs-lisp
 (setq eldoc-echo-area-use-multiline-p nil)
-(use-package eldoc-box)
+
+(defun cunene/real-buffer-p (&optional buffer)
+  "Determines whether buffer is real."
+  (let ((buffer-name (buffer-name buffer)))
+    (or (and (not (minibufferp))
+             (buffer-file-name buffer))
+        (string-equal "*scratch*" buffer-name)
+        (string-match-p ".~.*~" buffer-name)
+        (string-match-p "FILE=/" buffer-name)
+        (string-match-p "\*edit-indirect .*\*" buffer-name)
+        (string-match-p "\*Org Src .*\*" buffer-name))))
+
+(use-package eldoc-box
+  :hook ((eldoc-mode . cunene/eldoc-box-enable)
+         (eldoc-box-buffer . cunene/eldoc-box-buffer-setup))
+  :config
+  (setq x-wait-for-event-timeout 0
+        eldoc-idle-delay 3
+        eldoc-box-max-pixel-width 640
+        eldoc-box-max-pixel-height 480)
+  (set-face-attribute
+   'eldoc-box-border nil
+   :background (face-attribute 'mode-line-inactive :background))
+  (add-hook 'eglot-managed-mode-hook #'cunene/eldoc-box-enable t)
+  :custom-face
+  (eldoc-box-body ((t (:background "gray16"))))
+  :init
+  (defun cunene/eldoc-box-enable ()
+    "Helper function that enables `eldoc-box-hover-at-point-mode' for real buffers only."
+    (interactive)
+    (when (cunene/real-buffer-p)
+      (eldoc-box-hover-at-point-mode)))
+  (defun cunene/eldoc-box-buffer-setup ()
+    (unless word-wrap (toggle-word-wrap))))
+
+
 #+end_src
 
 * HA Proxy
@@ -1218,5 +1333,5 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 * Postamble
 
 #+begin_src emacs-lisp
-;;; core.el ends here
+;;; development.el ends here
 #+end_src

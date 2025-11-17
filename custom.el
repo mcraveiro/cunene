@@ -3,9 +3,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(org-agenda-files
-   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_02.org"))
+   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_05.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_04.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_03.org"
+     "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_02.org"
+     "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_01.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_02.org"))
  '(package-selected-packages
    '(docker ztree yasnippet-snippets yaml-mode windswap vscode-icon
             volatile-highlights vertico verb undo-tree treemacs-tab-bar
@@ -31,10 +35,8 @@
             beacon backup-walker anzu all-the-icons-nerd-fonts
             all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion
             aggressive-indent))
- '(package-vc-selected-packages
-   '((claude-code :url "https://github.com/stevemolitor/claude-code.el")))
  '(safe-local-variable-values
-   '((cmake-tab-width . 4)
+   '((checkdoc-allow-quoting-nil-and-t . t)
      (eval setq-local org-roam-db-location
            (expand-file-name ".org-roam.db" org-roam-directory))
      (eval setq-local org-roam-directory
@@ -45,5 +47,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 5.0))))
- '(dired-sidebar-face ((t (:height 0.8 :foundry "Helvetica"))) t))
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 5.0)))))

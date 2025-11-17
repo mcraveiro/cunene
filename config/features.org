@@ -776,6 +776,48 @@ authoring documents with a fast and effective plain-text system.
 #+end_quote
 
 #+begin_src emacs-lisp
+(defun cunene/org-mode-hook ()
+  "Hook to run in org mode."
+  ;; Only enable org-specific completion if needed
+  (when (bound-and-true-p corfu-mode)
+    (setq-local completion-at-point-functions
+                (cons #'org-pcomplete-initial
+                      (remq #'org-pcomplete-initial
+                            completion-at-point-functions)))))
+
+(defun cunene/run-org-expand-on-xref-return ()
+  "Run the Org expansion function after jumping to a location
+  via xref (like from *grep* or *compilation*)."
+  (when (derived-mode-p 'org-mode)
+    (cunene/org-expand-at-point)))
+
+;; Attach this function to the hook for all xref jumps
+(add-hook 'xref-after-return-hook 'cunene/run-org-expand-on-xref-return)
+
+(defun cunene/org-expand-at-point ()
+  "Expand Org headings around point when opening file, ensuring the
+  current heading and its content are fully visible."
+  (interactive)
+  (org-show-context)
+  (org-reveal)
+  (when (org-at-heading-p)
+    (org-show-subtree)))
+
+(add-hook 'org-mode-hook 'cunene/org-expand-at-point)
+
+(defun cunene/run-org-expand-on-error-return ()
+  "Run the Org expansion function after jumping to a location
+  via next-error (like from *grep* or *compilation*)."
+
+  ;; Only execute this function if the target buffer is in org-mode
+  (when (derived-mode-p 'org-mode)
+    ;; Crucial: Org Mode needs a moment to settle after the jump
+    ;; so the point is correctly positioned before calling the expansion functions.
+    (run-at-time "0.1 sec" nil 'cunene/org-expand-at-point)))
+
+;; Attach the fix to the generic Emacs hook for all next-error jumps
+(add-hook 'next-error-hook 'cunene/run-org-expand-on-error-return)
+
 (use-package org
   :ensure nil
   :bind
@@ -785,8 +827,9 @@ authoring documents with a fast and effective plain-text system.
    ("C-c l" . org-store-link))
   :hook
   (org-mode . auto-fill-mode)
+  (org-mode . cunene/org-mode-hook)
   :config
-  (setq org-startup-folded t
+  (setq org-startup-folded 'showeverything
         org-adapt-indentation nil
         org-confirm-babel-evaluate nil
         org-cycle-separator-lines 0
@@ -815,16 +858,17 @@ authoring documents with a fast and effective plain-text system.
      (emacs-lisp . t)
      (gnuplot . t)
      (latex . t)
-     ; (ledger . t)
+     ;; (ledger . t)
      (js . t)
-     ; (http . t)
+     ;; (http . t)
      (python . t)
      (gnuplot . t)
      (R . t)
-     ; (sh . t)
+     ;; (sh . t)
      (sql . t)
      (sqlite . t)
-     ; (mustache . t)
+     (verb . t)
+     ;; (mustache . t)
      (plantuml . t)))
 
   (require 'ob-shell)
@@ -875,7 +919,18 @@ authoring documents with a fast and effective plain-text system.
 (use-package citeproc-org :after org)
 (use-package org-present :after org)
 (use-package org-roam :after org)
-(use-package org-roam-ui :after org-roam)
+
+(use-package org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 
 ;; FIXME breaks flycheck
 ;; (add-to-list 'display-buffer-alist
@@ -1004,6 +1059,34 @@ ARGUMENT determines the visible heading."
   :ID: 3C29BFD0-83E4-8EA4-50BB-05E6BBC0E165
   :END:
 
+** Safety
+
+#+begin_src emacs-lisp
+;; Limit completion candidates globally
+(defun cunene/safe-completion (orig-fn &rest args)
+  "Wrapper to limit completion candidates."
+  (let ((result (apply orig-fn args)))
+    (when (and (listp result) (> (length result) 200))
+      (setq result (seq-take result 1000)))
+    result))
+
+;; Apply safety wrapper to completion functions
+(advice-add 'completion-pcm--all-completions :around #'cunene/safe-completion)
+(advice-add 'all-completions :around #'cunene/safe-completion)
+
+(defun debug-completions ()
+  "Debug completion behavior."
+  (interactive)
+  (message "Vertico mode: %s" vertico-mode)
+  (message "Completion styles: %s" completion-styles)
+  (message "Command history length: %s" (length extended-command-history))
+  (let ((completions (all-completions "rg" obarray 'commandp)))
+    (message "rg completions: %d candidates" (length completions))
+    (message "First 10: %s" (seq-take completions 10))))
+
+
+#+end_src
+
 ** Vertico
 
 | =vertico=           | https://github.com/minad/vertico             |
@@ -1022,8 +1105,10 @@ to be highly flexible, extendable and modular.
   :init
   (vertico-mode)
   :config
-  (setq vertico-resize t) ;; Grow and shrink the Vertico minibuffer
-  (setq vertico-cycle t)) ;; enable cycling for `vertico-next' and `vertico-previous'.
+  (setq vertico-cycle t ;; enable cycling for `vertico-next' and `vertico-previous'.
+        vertico-resize t ;; Grow and shrink the Vertico minibuffer
+        vertico-count 15
+        vertico-sort-function 'vertico-sort-history-alpha))
 
 ;; from vendor directory.
 (use-package vertico-quick
@@ -1056,7 +1141,7 @@ prefixes. By default, regexp and literal matches are enabled.
 (use-package orderless
   :config
   (setq
-   completion-styles '(orderless)
+   completion-styles '(basic orderless)
    completion-category-defaults nil
    completion-category-overrides '((file (styles partial-completion)))))
 
@@ -1144,72 +1229,104 @@ selected by moving up and down. Corfu is the minimalistic in-buffer completion
 counterpart of the Vertico minibuffer UI.
 #+end_quote
 
+See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon, and Corfu-doc]]
+
 #+begin_src emacs-lisp
 (use-package corfu
   :ensure t
-  ;; Optional customizations
+  :init
   :config
-  (setq corfu-quit-no-match 'separator)
-  corfu-echo-mode
-  :custom
-  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
-  (corfu-separator ?\s)          ;; Orderless field separator
-  (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  (corfu-preview-current nil)    ;; Disable current candidate preview
-  (corfu-preselect 'prompt)      ;; Preselect the prompt
-  (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  (corfu-scroll-margin 5)        ;; Use scroll margin
-
-  ;; Enable Corfu only for certain modes.
+  (setq corfu-count 12
+        corfu-cycle t                    ;; Enable cycling for `corfu-next/previous'
+        corfu-auto t                     ;; Only use `corfu' when calling `completion-at-point' or
+                                         ;; `indent-for-tab-command'
+        corfu-auto-prefix 2
+        corfu-auto-delay 0.25
+        corfu-min-width 80
+        corfu-max-width corfu-min-width
+        corfu-echo-documentation t
+        corfu-separator ?\s              ;; Orderless field separator
+        corfu-quit-at-boundary nil       ;; Never quit at completion boundary
+        corfu-quit-no-match t            ;; Quit when there is no match
+        corfu-preview-current nil        ;; Disable current candidate preview
+        corfu-preselect 'prompt          ;; Preselect the prompt
+        corfu-on-exact-match nil         ;; Configure handling of exact matches
+        corfu-scroll-margin 5            ;; Use scroll margin
+        corfu-popupinfo-delay 0.2)
+  (global-corfu-mode 1)
+  (corfu-popupinfo-mode 1)
+  (corfu-echo-mode)
   :hook ((prog-mode . corfu-mode)
          (shell-mode . corfu-mode)
-         (eshell-mode . corfu-mode))
+         (eshell-mode . corfu-mode)))
 
-  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-  ;; be used globally (M-/).  See also the customization variable
-  ;; `global-corfu-modes' to exclude certain modes.
-  :init
-  (global-corfu-mode)
-  (setq corfu-popupinfo-delay 0.2)
-  (corfu-popupinfo-mode))
+;; Enable Corfu more generally for every minibuffer, as long as no other
+;; completion UI is active. If you use Mct or Vertico as your main minibuffer
+;; completion UI. From
+;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
+(defun corfu-enable-always-in-minibuffer ()
+  "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+  (unless (or (bound-and-true-p mct--active) ; Useful if I ever use MCT
+              (bound-and-true-p vertico--input))
+    (setq-local corfu-auto nil)       ; Ensure auto completion is disabled
+    (corfu-mode 1)))
+(add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 
-(use-package nerd-icons-corfu
+(use-package kind-icon
   :ensure t
+  :after corfu
+  ;:custom
+  ; (kind-icon-blend-background t)
+  ; (kind-icon-default-face 'corfu-default) ; only needed with blend-background
   :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-  ;; Optionally:
-  (setq nerd-icons-corfu-mapping
-        '((array :style "cod" :icon "symbol_array" :face font-lock-type-face)
-          (boolean :style "cod" :icon "symbol_boolean" :face font-lock-builtin-face)
-          ;; ...
-          (t :style "cod" :icon "code" :face font-lock-warning-face))))
+(use-package corfu-popupinfo
+  :after corfu
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay '(0.25 . 0.1))
+  (corfu-popupinfo-hide nil)
+  :config
+  (corfu-popupinfo-mode))
 
 (use-package pcmpl-args
   :ensure t)
+
+;; Completion performance monitoring
+(defun cunene/completion-performance-check ()
+  "Check if completion is taking too long."
+  (when (and (bound-and-true-p corfu-mode)
+             corfu--candidates
+             (> (length corfu--candidates) 500))
+    (message "Warning: Large completion set (%d candidates)"
+             (length corfu--candidates))
+    t))
+
+(defun cunene/reset-completion ()
+  "Emergency reset of completion systems."
+  (interactive)
+  (global-corfu-mode -1)
+  (corfu-popupinfo-mode -1)
+  (vertico-mode -1)
+  (setq completion-at-point-functions nil)
+  (message "Completion systems reset. Use M-x global-corfu-mode to re-enable."))
+
+(global-set-key (kbd "C-c C-r") #'cunene/reset-completion)
+
+(add-hook 'corfu--post-command-hook #'cunene/completion-performance-check)
 
 (add-hook 'eshell-mode-hook
           (lambda ()
             (setq-local corfu-auto nil)
             (corfu-mode)))
 
-;; (defun corfu-send-shell (&rest _)
-;;   "Send completion candidate when inside comint/eshell."
-;;   (cond
-;;    ((and (derived-mode-p 'eshell-mode) (fboundp 'eshell-send-input))
-;;     (eshell-send-input))
-;;    ((and (derived-mode-p 'comint-mode)  (fboundp 'comint-send-input))
-;;     (comint-send-input))))
-
-;; (advice-add #'corfu-insert :after #'corfu-send-shell)
-
 ;; A few more useful configurations...
 (use-package emacs
   :init
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
+  (setq completion-cycle-threshold 3  ;; TAB cycle if there are only few candidates
+        completions-max-height 10
+        completions-detailed t)
 
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
@@ -1240,40 +1357,17 @@ by completion-at-point are so called completion-at-point-functions (Capfs).
   :ensure t
   ;; Bind dedicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
+  :bind (("C-c p p" . completion-at-point)
+         ("C-c p d" . cape-dabbrev)
          ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-elisp-symbol)
-         ("C-c p e" . cape-elisp-block)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p :" . cape-emoji)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+         ("C-c p k" . cape-keyword))
   :init
-  ;; Add to the global default value of `completion-at-point-functions' which is
-  ;; used by `completion-at-point'.  The order of the functions matters, the
-  ;; first function returning a result wins.  Note that the list of buffer-local
-  ;; completion functions takes precedence over the global list.
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-  (add-to-list 'completion-at-point-functions #'cape-history)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+  ;; Remove problematic or redundant backends
+  ;; (remove-from-list 'completion-at-point-functions #'cape-elisp-block)
+  ;; (remove-from-list 'completion-at-point-functions #'cape-history)
 )
 #+end_src
 
@@ -1424,6 +1518,21 @@ files, ibuffer for a set of buffers, or customize for a set of variables.
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none)))))
+
+(with-eval-after-load 'embark
+  (defun cunene/embark-eshell-send (candidate)
+    "Send candidate to eshell."
+    (when (derived-mode-p 'eshell-mode)
+      (insert candidate)
+      (eshell-send-input)))
+
+  (add-to-list 'embark-keymap-alist
+               '(eshell-mode . cunene/embark-eshell-map))
+
+  (defvar cunene/embark-eshell-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "RET") #'cunene/embark-eshell-send)
+      map)))
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
@@ -1766,6 +1875,11 @@ your editor.
   (setq logview-cache-filename (cunene/cache-concat "logview/logview-cache.extmap")
         logview-additional-level-mappings
         '(
+          ("android" . ((error       "E" "F")
+                        (warning     "W")
+                        (information "I")
+                        (debug       "D")
+                        (trace       "V")))
           ("dotnet" . ((error       "Error" "Fatal")
                        (warning     "Warning")
                        (information "Information")
@@ -1773,6 +1887,10 @@ your editor.
                        (trace       "Verbose" "Trace"))))
         logview-additional-submodes
         '(
+          ("android"
+           (format . "TIMESTAMP IGNORED IGNORED LEVEL NAME")
+           (levels . "android")
+           (timestamp))
           ("dogen"
            (format . "TIMESTAMP [LEVEL] [NAME]")
            (levels . "SLF4J")
@@ -1781,7 +1899,7 @@ your editor.
            (format . "LEVEL TIMESTAMP [THREAD] NAME IGNORED - MESSAGE")
            (levels . "SLF4J"))
           ("serilog"
-           (format . "TIMESTAMP [LEVEL] MESSAGE")
+           (format . "TIMESTAMP [LEVEL] NAME - MESSAGE")
            (levels . "dotnet")
            (timestamp "ISO 8601 datetime"))))
   (add-hook 'logview-mode-hook #'read-only-mode))
