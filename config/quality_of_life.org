@@ -336,7 +336,7 @@ Links:
   "Enable only essential whitespace highlighting (tabs and trailing spaces)
   and color them red."
   (interactive)
-  (setq whitespace-style '(face tabs spaces trailing))
+  (setq whitespace-style '(face tabs trailing))
   (set-face-attribute 'whitespace-tab nil :background "light coral")
   (set-face-attribute 'whitespace-trailing nil :background "light coral")
   (whitespace-mode 1))
@@ -353,7 +353,7 @@ Links:
 (set-default 'indicate-empty-lines t)
 
 ;; do not use global mode whitespace
-(setq whitespace-style '(face tabs spaces trailing))
+(setq whitespace-style '(face tabs trailing))
 ;; (set-face-attribute 'whitespace-tab nil :background "light coral")
 ;; (set-face-attribute 'whitespace-trailing nil :background "light coral")
 (global-whitespace-mode 1)
