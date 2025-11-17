@@ -3,86 +3,84 @@ Content-Type: application/x-bongo-library
 "
 "
 #("  [Bongo logo]
-" 2 14 (rear-nonsticky (display) display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/bongo-logo.pbm" :type pbm :foreground "#d4d4d4" :background "#1e1e1e")))
+" 0 2 (fontified t) 2 14 (fontified t rear-nonsticky (display) display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/bongo-logo.pbm" :type pbm :foreground "#d4d4d4" :background "#1e1e1e")))
 "
 "
 #("  Welcome to Bongo, the buffer-oriented media player!
-" 0 53 (face (bongo-comment)))
+" 0 53 (fontified t))
 "
 "
 #("  This is a Bongo library buffer.  It's empty now, but in a
-" 0 59 (face (bongo-comment)))
+" 0 59 (fontified t))
 #("  few moments it could hold your entire media collection ---
-" 0 60 (face (bongo-comment)))
+" 0 60 (fontified t))
 #("  or just the parts that you are currently interested in.
-" 0 57 (face (bongo-comment)))
+" 0 57 (fontified t))
 "
 "
 #("  To insert local media files or directories, use `i'.
-" 0 51 (face (bongo-comment)) 51 52 (face (bongo-comment bold)) 52 54 (face (bongo-comment)))
+" 0 51 (fontified t) 51 52 (fontified t) 52 54 (fontified t))
 #("  To insert the URL of a media file or stream, use `I u RET'.
-" 0 52 (face (bongo-comment)) 52 59 (face (bongo-comment bold)) 59 61 (face (bongo-comment)))
+" 0 52 (fontified t) 52 59 (fontified t) 59 61 (fontified t))
 #("  To insert other things, use `I TAB' to list possibilities.
-" 0 31 (face (bongo-comment)) 31 36 (face (bongo-comment bold)) 36 60 (face (bongo-comment)))
+" 0 31 (fontified t) 31 36 (fontified t) 36 60 (fontified t))
 "
 "
 #("  To enqueue tracks in the nearest playlist buffer, use `e'.
-" 0 57 (face (bongo-comment)) 57 58 (face (bongo-comment bold)) 58 60 (face (bongo-comment)))
+" 0 57 (fontified t) 57 58 (fontified t) 58 60 (fontified t))
 #("  To hop to the nearest playlist buffer, use `h'.
-" 0 46 (face (bongo-comment)) 46 47 (face (bongo-comment bold)) 47 49 (face (bongo-comment)))
+" 0 46 (fontified t) 46 47 (fontified t) 47 49 (fontified t))
 "
 "
 #("  Enabled backends: mpg123, VLC, ogg123
-" 0 20 (face (bongo-comment)) 20 26 (face (bongo-comment bold) bongo-enabled-backends-list t) 26 28 (face (bongo-comment) bongo-enabled-backends-list t) 28 31 (face (bongo-comment bold) bongo-enabled-backends-list t) 31 33 (face (bongo-comment) bongo-enabled-backends-list t) 33 39 (face (bongo-comment bold) bongo-enabled-backends-list t))
+" 0 20 (fontified t) 20 26 (fontified t bongo-enabled-backends-list t) 26 28 (fontified t bongo-enabled-backends-list t) 28 31 (fontified t bongo-enabled-backends-list t) 31 33 (fontified t bongo-enabled-backends-list t) 33 39 (fontified t bongo-enabled-backends-list t))
 #("  To modify this list, customize `bongo-enabled-backends'.
-" 0 23 (face (bongo-comment)) 23 32 (help-args (bongo-enabled-backends) category help-customize-variable-button button (t) face (underline bongo-comment)) 32 58 (face (bongo-comment)))
+" 0 23 (fontified t) 23 32 (fontified t help-args (bongo-enabled-backends) category help-customize-variable-button button (t)) 32 58 (fontified t))
 "
 "
 #("  Bongo is free software licensed under the GNU GPL.
-" 0 52 (face (bongo-comment)))
+" 0 52 (fontified t))
 #("  Report bugs to <bongo-devel@nongnu.org>.
-" 0 42 (face (bongo-comment)))
-#("  ◾ Dark Underground Techno Live Mix DJ Set 2019 (Berlin, Berghain) Mixed by JARYMANE _ Mix 1-1GOrynyXJQ4
-" 0 1 (display (space :width (16) :height (16))) 2 105 (follow-link t mouse-face highlight face bongo-track-title) 105 106 (bongo-file-name "/home/marco/Music/◾ Dark Underground Techno Live Mix DJ Set 2019 (Berlin, Berghain) Mixed by JARYMANE _ Mix 1-1GOrynyXJQ4.webm"))
+" 0 42 (fontified t))
 "
 "
 #("    SomaFM: Deep Space One
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 26 (follow-link t mouse-face highlight face bongo-track-title) 26 27 (bongo-uri-title "SomaFM: Deep Space One" bongo-file-name "http://ice1.somafm.com/deepspaceone-128.mp3"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 26 (fontified t follow-link t mouse-face highlight) 26 27 (bongo-file-name "http://ice1.somafm.com/deepspaceone-128.mp3" bongo-uri-title "SomaFM: Deep Space One"))
 #("    SomaFM: Drone Zone
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 22 (follow-link t mouse-face highlight face bongo-track-title) 22 23 (bongo-uri-title "SomaFM: Drone Zone" bongo-file-name "http://ice1.somafm.com/dronezone-128.mp3"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 22 (fontified t follow-link t mouse-face highlight) 22 23 (bongo-file-name "http://ice1.somafm.com/dronezone-128.mp3" bongo-uri-title "SomaFM: Drone Zone"))
 #("    SomaFM: Space Station
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 22 (follow-link t mouse-face highlight face bongo-track-title) 22 23 (bongo-file-name "http://ice1.somafm.com/spacestation-128.mp3" bongo-uri-title "SomaFM: Space Station"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 22 (fontified t follow-link t mouse-face highlight) 22 23 (fontified t bongo-file-name "http://ice1.somafm.com/spacestation-128.mp3" bongo-uri-title "SomaFM: Space Station") 23 25 (fontified t))
 #("    SomaFM: Groove Salad
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :background "#1e1e1e" :foreground "#d4d4d4")) 4 24 (follow-link t mouse-face highlight face bongo-track-title) 24 25 (bongo-uri-title "SomaFM: Groove Salad" bongo-file-name "http://ice1.somafm.com/groovesalad-128.mp3"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :background "#1e1e1e" :foreground "#d4d4d4")) 3 4 (fontified t) 4 24 (fontified t follow-link t mouse-face highlight) 24 25 (bongo-file-name "http://ice1.somafm.com/groovesalad-128.mp3" bongo-uri-title "SomaFM: Groove Salad"))
 #("    SomaFM: Mission Control
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :background "#1e1e1e" :foreground "#d4d4d4")) 4 27 (follow-link t mouse-face highlight face bongo-track-title) 27 28 (bongo-uri-title "SomaFM: Mission Control" bongo-file-name "http://ice1.somafm.com/missioncontrol-128.mp3"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :background "#1e1e1e" :foreground "#d4d4d4")) 3 4 (fontified t) 4 27 (fontified t follow-link t mouse-face highlight) 27 28 (bongo-file-name "http://ice1.somafm.com/missioncontrol-128.mp3" bongo-uri-title "SomaFM: Mission Control"))
 #("    SmoothBeats
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :background "#1e1e1e" :foreground "#d4d4d4")) 4 15 (face bongo-track-title mouse-face highlight follow-link t) 15 16 (bongo-uri-title "SmoothBeats" bongo-file-name "http://scfire-mtc-aa05.stream.aol.com:80/stream/1012"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :background "#1e1e1e" :foreground "#d4d4d4")) 3 4 (fontified t) 4 15 (fontified t mouse-face highlight follow-link t) 15 16 (bongo-file-name "http://scfire-mtc-aa05.stream.aol.com:80/stream/1012" bongo-uri-title "SmoothBeats"))
 #("    NRK Alltid Klassisk (Norway)
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 32 (follow-link t mouse-face highlight face bongo-track-title) 32 33 (bongo-uri-title "NRK Alltid Klassisk (Norway)" bongo-file-name "http://lyd.nrk.no/nrk_radio_klassisk_mp3_h"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 32 (fontified t follow-link t mouse-face highlight) 32 33 (bongo-file-name "http://lyd.nrk.no/nrk_radio_klassisk_mp3_h" bongo-uri-title "NRK Alltid Klassisk (Norway)"))
 #("    RNA1
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 8 (face bongo-track-title mouse-face highlight follow-link t) 8 9 (bongo-uri-title "RNA1" bongo-file-name "mms://streaming.gisp.pt:12000/rna1"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 8 (fontified t mouse-face highlight follow-link t) 8 9 (bongo-file-name "mms://streaming.gisp.pt:12000/rna1" bongo-uri-title "RNA1"))
 #("    HBR1 - Dream Factory
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 24 (follow-link t mouse-face highlight face bongo-track-title) 24 25 (bongo-uri-title "HBR1 - Dream Factory" bongo-file-name "http://ubuntu.hbr1.com:19800/ambient.ogg"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 24 (fontified t follow-link t mouse-face highlight) 24 25 (bongo-file-name "http://ubuntu.hbr1.com:19800/ambient.ogg" bongo-uri-title "HBR1 - Dream Factory"))
 #("    HBR1 - I.D.M. Tranceponder
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 30 (follow-link t mouse-face highlight face bongo-track-title) 30 31 (bongo-uri-title "HBR1 - I.D.M. Tranceponder" bongo-file-name "http://ubuntu.hbr1.com:19800/trance.ogg"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 30 (fontified t follow-link t mouse-face highlight) 30 31 (bongo-file-name "http://ubuntu.hbr1.com:19800/trance.ogg" bongo-uri-title "HBR1 - I.D.M. Tranceponder"))
 #("    Zen Radio
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 13 (face bongo-track-title mouse-face highlight follow-link t) 13 14 (bongo-uri-title "Zen Radio" bongo-file-name "http://zenradio.fr:8800"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 13 (fontified t mouse-face highlight follow-link t) 13 14 (bongo-file-name "http://zenradio.fr:8800" bongo-uri-title "Zen Radio"))
 #("    Psychedelik - Ambient
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 25 (face bongo-track-title mouse-face highlight follow-link t) 25 26 (bongo-uri-title "Psychedelik - Ambient" bongo-file-name "http://88.191.102.69:8002"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 25 (fontified t mouse-face highlight follow-link t) 25 26 (bongo-file-name "http://88.191.102.69:8002" bongo-uri-title "Psychedelik - Ambient"))
 #("    Psychedelik - Psytrance
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 27 (face bongo-track-title mouse-face highlight follow-link t) 27 28 (bongo-uri-title "Psychedelik - Psytrance" bongo-file-name "http://88.191.102.69:8000"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 27 (fontified t mouse-face highlight follow-link t) 27 28 (bongo-file-name "http://88.191.102.69:8000" bongo-uri-title "Psychedelik - Psytrance"))
 #("    Psychedelik - Live Mixes
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 28 (face bongo-track-title mouse-face highlight follow-link t) 28 29 (bongo-uri-title "Psychedelik - Live Mixes" bongo-file-name "http://88.191.102.69:8020"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 28 (fontified t mouse-face highlight follow-link t) 28 29 (bongo-file-name "http://88.191.102.69:8020" bongo-uri-title "Psychedelik - Live Mixes"))
 #("    Smooth Lounge
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 17 (face bongo-track-title mouse-face highlight follow-link t) 17 18 (bongo-uri-title "Smooth Lounge" bongo-file-name "http://sl128.hnux.com"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 17 (fontified t mouse-face highlight follow-link t) 17 18 (bongo-file-name "http://sl128.hnux.com" bongo-uri-title "Smooth Lounge"))
 #("    HBR1.com - Tronic Lounge
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 28 (follow-link t mouse-face highlight face bongo-track-title) 28 29 (bongo-uri-title "HBR1.com - Tronic Lounge" bongo-file-name "http://ubuntu.hbr1.com:19800/tronic.ogg"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 28 (fontified t follow-link t mouse-face highlight) 28 29 (bongo-file-name "http://ubuntu.hbr1.com:19800/tronic.ogg" bongo-uri-title "HBR1.com - Tronic Lounge"))
 #("    Whisperings - Solo Piano Radio
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 34 (follow-link t mouse-face highlight face bongo-track-title) 34 35 (bongo-uri-title "Whisperings - Solo Piano Radio" bongo-file-name "http://pianosolo.streamguys.net/live.m3u"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 34 (fontified t follow-link t mouse-face highlight) 34 35 (bongo-file-name "http://pianosolo.streamguys.net/live.m3u" bongo-uri-title "Whisperings - Solo Piano Radio"))
 #("    Dub Radio
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 13 (face bongo-track-title mouse-face highlight follow-link t) 13 14 (bongo-uri-title "Dub Radio" bongo-file-name "http://stream.dubradio.at:7100/"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 13 (fontified t mouse-face highlight follow-link t) 13 14 (bongo-file-name "http://stream.dubradio.at:7100/" bongo-uri-title "Dub Radio"))
 #("    Radio Dismuke
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 17 (face bongo-track-title mouse-face highlight follow-link t) 17 18 (bongo-uri-title "Radio Dismuke" bongo-file-name "http://74.208.197.50:8087/"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 17 (fontified t mouse-face highlight follow-link t) 17 18 (bongo-file-name "http://74.208.197.50:8087/" bongo-uri-title "Radio Dismuke"))
 #("    Red Light Radio
-" 0 1 (display (space :width (16) :height (16))) 2 3 (display (image :ascent center :file "/home/marco/.emacs.d/elpa/bongo-20201002.1020/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 4 19 (face bongo-track-title mouse-face highlight follow-link t) 19 20 (bongo-uri-title "Red Light Radio" bongo-file-name "http://www.michielgardner.nl:8000/redlightradio"))
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 19 (fontified t mouse-face highlight follow-link t) 19 20 (bongo-file-name "http://www.michielgardner.nl:8000/redlightradio" bongo-uri-title "Red Light Radio"))

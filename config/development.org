@@ -73,15 +73,21 @@ Auto-fill commit messages.
 Display indicators in the left fringe for Git changes.
 
 #+begin_src emacs-lisp
+;; (use-package git-gutter
+;;   :ensure t
+;;   :hook (prog-mode . git-gutter-mode)
+;;   :config
+;;   (setq git-gutter:update-interval 0.02))
+
 (use-package git-gutter-fringe
   :hook
   ;; Only enable for file buffers in version control
   ((find-file . git-gutter-mode)
    (after-revert-hook . git-gutter-mode))
   :config
-  (define-fringe-bitmap 'git-gutter-fr:added [255] nil nil '(center t))
-  (define-fringe-bitmap 'git-gutter-fr:deleted [255 255 255 255] nil nil 'bottom)
-  (define-fringe-bitmap 'git-gutter-fr:modified [255] nil nil '(center t)))
+  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 
 (use-package git-messenger
   :bind ("C-x G" . git-messenger:popup-message)

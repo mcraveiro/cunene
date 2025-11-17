@@ -191,7 +191,7 @@ surrounded by word boundaries."
           treemacs-space-between-root-nodes        t
           treemacs-tag-follow-cleanup              t
           treemacs-tag-follow-delay                1.5
-          treemacs-text-scale                      nil
+          treemacs-text-scale                      -2
           treemacs-user-mode-line-format           nil
           treemacs-user-header-line-format         nil
           treemacs-wide-toggle-width               70
@@ -1108,7 +1108,9 @@ to be highly flexible, extendable and modular.
   (setq vertico-cycle t ;; enable cycling for `vertico-next' and `vertico-previous'.
         vertico-resize t ;; Grow and shrink the Vertico minibuffer
         vertico-count 15
-        vertico-sort-function 'vertico-sort-history-alpha))
+        vertico-sort-function 'vertico-sort-history-alpha
+        vertico-buffer-name-format "%s"
+        completion-history-threshold 50))
 
 ;; from vendor directory.
 (use-package vertico-quick
@@ -1141,9 +1143,10 @@ prefixes. By default, regexp and literal matches are enabled.
 (use-package orderless
   :config
   (setq
-   completion-styles '(basic orderless)
-   completion-category-defaults nil
-   completion-category-overrides '((file (styles partial-completion)))))
+   completion-styles '(flex orderless basic)
+   completion-category-defaults '((buffer (styles substring)))
+   completion-category-overrides '((file (styles partial-completion)))
+   completion-history-threshold 50))
 
 ;; A few more useful configurations...
 (use-package emacs
@@ -1235,6 +1238,9 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
 (use-package corfu
   :ensure t
   :init
+  :bind
+  ;; Another key binding can be used, such as S-SPC.
+  (:map corfu-map ("SPC" . corfu-insert-separator))
   :config
   (setq corfu-count 12
         corfu-cycle t                    ;; Enable cycling for `corfu-next/previous'
@@ -1733,9 +1739,9 @@ For the org-mode support, see:
 (global-set-key (kbd "C-<f12>") 'highlight-symbol-next)
 (global-set-key (kbd "M-<f12>") 'highlight-symbol-prev)
 
-(use-package dimmer
-  :custom (dimmer-fraction 0.3)
-  :config (dimmer-mode))
+;; (use-package dimmer
+;;   :custom (dimmer-fraction 0.3)
+;;   :config (dimmer-mode))
 #+end_src
 
 * Search
