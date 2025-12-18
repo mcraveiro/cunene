@@ -118,7 +118,11 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 #+end_quote
 
 #+begin_src emacs-lisp
-(use-package transient :ensure (:fetcher github :repo "magit/transient"))
+(use-package transient
+  :ensure (:fetcher github :repo "magit/transient")
+  :config
+  (setq transient-default-level 5)
+  (setq transient-mode-line-format nil))
 
 (defun cunene/git-commit-mode-hook ()
   "Hook to run when enabling git commit mode."
@@ -233,11 +237,7 @@ section for now.
  transient-levels-file (cunene/cache-concat "transient/levels.el")
  transient-values-file (cunene/cache-concat "transient/values.el"))
 
-(use-package transient
-  :init
-  :config
-  (setq transient-default-level 5)
-  (setq transient-mode-line-format nil))
+;; transient config is in the first use-package transient declaration above
 #+end_src
 
 Automatically detect the need for smerge.
@@ -246,7 +246,6 @@ Automatically detect the need for smerge.
 (use-package smerge-mode
   :ensure nil  ;; Built-in
   :commands smerge-mode
-  :bind ("C-c '" . hydra-smerge/body)
   :init
   (defun cunene/maybe-enable-smerge ()
     (save-excursion
@@ -285,7 +284,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
       ("C" smerge-combine-with-next)
       ("r" smerge-resolve)
       ("k" smerge-kill-current)
-      ("q" nil "cancel" :color blue)))
+      ("q" nil "cancel" :color blue))
+  (global-set-key (kbd "C-c '") 'hydra-smerge/body))
 #+end_src
 
 * Project Management

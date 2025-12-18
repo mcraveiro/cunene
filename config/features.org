@@ -868,7 +868,7 @@ authoring documents with a fast and effective plain-text system.
      ;; (sh . t)
      (sql . t)
      (sqlite . t)
-     (verb . t)
+     ;; (verb . t)  ;; ob-verb loaded by verb package
      ;; (mustache . t)
      (plantuml . t)))
 
