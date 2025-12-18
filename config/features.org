@@ -1820,6 +1820,7 @@ your editor.
 ;; useful with YAS. See:
 ;; https://emacs.stackexchange.com/questions/45629/template-for-new-file
 (use-package autoinsert
+  :ensure nil  ;; Built-in
   :config
   (setq auto-insert-query nil)
   (auto-insert-mode 1)
