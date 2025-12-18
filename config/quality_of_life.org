@@ -298,21 +298,19 @@ Links:
   (setq doom-modeline-buffer-encoding nil)
   (doom-modeline-mode 1))
 
-;; FIXME: punch-line has multiple undeclared dependencies (nerd-icons, mode-line-hud)
-;; Uncomment after packages are installed and restart Emacs
-;; (use-package nerd-icons
-;;   :ensure t)
+(use-package nerd-icons
+  :ensure t)
 
-;; (use-package punch-line
-;;   :ensure (:fetcher github :repo "konrad1977/punch-line")
-;;   :after nerd-icons
-;;   :config
-;;   (setq punch-line-left-separator "  ")
-;;   (setq punch-line-right-separator "  ")
-;;   (setq punch-line-modal-size 'large)
-;;   (setq punch-line-modal-divider-style 'arrow)
-;;   (setq punch-show-weather-info nil)
-;;   (punch-line-mode 1))
+(use-package punch-line
+  :ensure (:fetcher github :repo "konrad1977/punch-line")
+  :after nerd-icons
+  :config
+  (setq punch-line-left-separator "  ")
+  (setq punch-line-right-separator "  ")
+  (setq punch-line-modal-size 'large)
+  (setq punch-line-modal-divider-style 'arrow)
+  (setq punch-show-weather-info nil)
+  (punch-line-mode 1))
 #+end_src
 
 * Modeline

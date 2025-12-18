@@ -1045,11 +1045,9 @@ again, I haven't see that as a problem."
 #+begin_src emacs-lisp
 (use-package dockerfile-mode)
 
-;; FIXME: docker package has transient compatibility issues during bootstrap
-;; Uncomment after packages are installed and restart Emacs
-;; (use-package docker
-;;   :ensure t
-;;   :bind ("C-c d" . docker))
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker))
 #+end_src
 
 
@@ -1269,19 +1267,17 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
   )
 
 
-;; FIXME: transient compatibility issues during bootstrap
-;; Uncomment after packages are installed and restart Emacs
-;; (use-package claude-code :ensure t
-;;   :straight (:type git :host github :repo "stevemolitor/claude-code.el")
-;;   :config (claude-code-mode)
-;;   :bind-keymap ("C-c c" . claude-code-command-map))
+(use-package claude-code
+  :ensure (:fetcher github :repo "stevemolitor/claude-code.el")
+  :config (claude-code-mode)
+  :bind-keymap ("C-c c" . claude-code-command-map))
 
-;; (use-package claude-code-ide
-;;   :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
-;;   :bind ("C-c C-'" . claude-code-ide-menu)
-;;   :config
-;;   (setq claude-code-ide-cli-path "~/.local/bin/claude")
-;;   (claude-code-ide-emacs-tools-setup))
+(use-package claude-code-ide
+  :ensure (:fetcher github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (setq claude-code-ide-cli-path "~/.local/bin/claude")
+  (claude-code-ide-emacs-tools-setup))
 #+end_src
 
 * Eldoc

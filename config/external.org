@@ -199,10 +199,8 @@ any directory proferred by `consult-dir'."
 ;; (use-package deadgrep
 ;;   :ensure t)
 
-;; FIXME: transient compatibility issues during bootstrap
-;; Uncomment after packages are installed and restart Emacs
-;; (use-package rg
-;;   :ensure t)
+(use-package rg
+  :ensure t)
 #+end_src
 
 * Web

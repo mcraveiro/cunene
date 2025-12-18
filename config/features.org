@@ -241,11 +241,9 @@ surrounded by word boundaries."
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :ensure t)
 
-;; FIXME: transient compatibility issues during bootstrap
-;; Uncomment after packages are installed and restart Emacs
-;; (use-package treemacs-magit
-;;   :after (treemacs magit)
-;;   :ensure t)
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
 
 (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
@@ -923,15 +921,13 @@ authoring documents with a fast and effective plain-text system.
 (use-package org-present :after org)
 (use-package org-roam :after org)
 
-;; FIXME: simple-httpd dependency fails with elpaca
-;; Uncomment after fixing simple-httpd installation
-;; (use-package org-roam-ui
-;;     :after org-roam
-;;     :config
-;;     (setq org-roam-ui-sync-theme t
-;;           org-roam-ui-follow t
-;;           org-roam-ui-update-on-save t
-;;           org-roam-ui-open-on-start t))
+(use-package org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
 
 ;; FIXME breaks flycheck
 ;; (add-to-list 'display-buffer-alist
@@ -1152,6 +1148,7 @@ prefixes. By default, regexp and literal matches are enabled.
 
 ;; A few more useful configurations...
 (use-package emacs
+  :ensure nil
   :init
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; Alternatively try `consult-completing-read-multiple'.
@@ -1285,6 +1282,7 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package corfu-popupinfo
+  :ensure nil  ;; Part of corfu
   :after corfu
   :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
@@ -1326,6 +1324,7 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
 
 ;; A few more useful configurations...
 (use-package emacs
+  :ensure nil
   :init
   (setq completion-cycle-threshold 3  ;; TAB cycle if there are only few candidates
         completions-max-height 10
