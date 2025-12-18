@@ -246,7 +246,7 @@ Automatically detect the need for smerge.
 (use-package smerge-mode
   :ensure nil  ;; Built-in
   :commands smerge-mode
-  :bind ("C-c '" . hydra-hsmerge/body)
+  :bind ("C-c '" . hydra-smerge/body)
   :init
   (defun cunene/maybe-enable-smerge ()
     (save-excursion
@@ -853,6 +853,7 @@ START and END mark the region."
 ;; (setq c-ts-mode-indent-style #'fa/c-ts-indent-style)
 
 (use-package csharp-mode
+  :ensure nil  ;; Built-in in Emacs 29+
   :config
   (defun cunene/csharp-mode-setup ()
     (flycheck-mode)
