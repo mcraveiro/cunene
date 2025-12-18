@@ -448,8 +448,8 @@ Links:
   (setq dashboard-set-init-info t)
   (setq dashboard-items '((recents  . 10)
                           (bookmarks . 5)
-                          (projects . 5)
-                          (agenda . 5)))
+                          (projects . 5)))
+                          ;; (agenda . 5)))  ;; Slow - loads org-agenda at startup
 
   ;; Remap Open Dashboard
   ;; From https://github.com/emacs-dashboard/emacs-dashboard/issues/236
