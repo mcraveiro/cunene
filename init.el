@@ -45,7 +45,7 @@
 (setq-default
  default-frame-alist
  '(
-   (font . "Hack 9")                    ;; Font to use
+   ;; (font . "Consolas 10")                    ;; Font to use
    (fullscreen . fullboth)              ;; Maximize the window by default
    (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
    (left-fringe . 8)                    ;; Thin left fringe
