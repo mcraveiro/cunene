@@ -285,7 +285,7 @@ Links:
 #+begin_src emacs-lisp
 (use-package all-the-icons)
 (use-package all-the-icons-dired)
-(use-package all-the-icons-completion)
+;; all-the-icons-completion is in features.org with more config
 (use-package all-the-icons-ibuffer)
 (use-package all-the-icons-nerd-fonts)
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
