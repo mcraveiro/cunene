@@ -179,6 +179,12 @@ any directory proferred by `consult-dir'."
     (global-set-key (kbd "C-c o T") 'eat-other-window)
     (define-key project-prefix-map (kbd "t") 'eat-project)
     (define-key project-prefix-map (kbd "T") 'eat-project-other-window))
+
+(use-package vterm
+  :ensure t
+  :config
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-kill-buffer-on-exit t))
 #+end_src
 
 ** General
