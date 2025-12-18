@@ -804,6 +804,7 @@ With the prefix argument UNFILL, unfill it instead."
 
 #+begin_src emacs-lisp
 (use-package saveplace
+  :ensure nil  ;; Built-in
   :config
   (setq save-place-file (cunene/cache-concat "saveplace/places"))
   (setq save-place-forget-unreadable-files t)  ; Don't choke on bad entries
@@ -811,6 +812,7 @@ With the prefix argument UNFILL, unfill it instead."
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
+  :ensure nil  ;; Built-in
   :init
   (savehist-mode +1)
   :config
