@@ -169,7 +169,7 @@ ORG-FILE-NAME file to operate on."
     (elpaca-generate-autoloads "elpaca" repo)
     (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
 ;; Tell elpaca to ignore built-in pseudo-packages (must be set before packages are queued)
-(defvar elpaca-ignored-dependencies '(emacs cl-lib seq map org))
+(defvar elpaca-ignored-dependencies '(emacs cl-lib seq map org json))
 
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
