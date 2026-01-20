@@ -44,6 +44,8 @@ Content-Type: application/x-bongo-library
 " 0 42 (fontified t))
 "
 "
+#("  SomaFM: Dark Zone
+" 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 19 (fontified t follow-link t mouse-face highlight) 19 20 (bongo-file-name "https://somafm.com/darkzone.pls" bongo-uri-title "SomaFM: Dark Zone"))
 #("    SomaFM: Deep Space One
 " 0 1 (fontified t display (space :width (16) :height (16))) 1 2 (fontified t) 2 3 (fontified t display (image :ascent center :file "/home/marco/.emacs.d/elpaca/builds/bongo/images/uri-track-icon.png" :type png :foreground "#d4d4d4" :background "#1e1e1e")) 3 4 (fontified t) 4 26 (fontified t follow-link t mouse-face highlight) 26 27 (bongo-file-name "http://ice1.somafm.com/deepspaceone-128.mp3" bongo-uri-title "SomaFM: Deep Space One"))
 #("    SomaFM: Drone Zone

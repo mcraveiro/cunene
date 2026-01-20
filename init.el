@@ -39,7 +39,7 @@
 
 ;; (set-frame-font "Inconsolata 11" nil t)
 ;; (set-frame-font "Fira Mono 10" nil t)
-;; (set-frame-font "Hack 10" nil t)
+;; (set-frame-font "Hack 9" nil t)
 ;; (set-frame-font "JetBrainsMono Nerd Font 10" nil t)
 
 (setq-default

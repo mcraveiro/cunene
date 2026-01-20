@@ -3,8 +3,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8"
+     "d97ac0baa0b67be4f7523795621ea5096939a47e8b46378f79e78846e0e4ad3d" default))
  '(org-agenda-files
-   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_05.org"
+   '("/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_09.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_08.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_07.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_06.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_05.org"
      "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_04.org"
      "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_03.org"
      "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_02.org"
@@ -36,7 +43,7 @@
             all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion
             aggressive-indent))
  '(safe-local-variable-values
-   '((checkdoc-allow-quoting-nil-and-t . t)
+   '((checkdoc-package-keywords-flag) (checkdoc-allow-quoting-nil-and-t . t)
      (eval setq-local org-roam-db-location
            (expand-file-name ".org-roam.db" org-roam-directory))
      (eval setq-local org-roam-directory

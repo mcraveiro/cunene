@@ -80,6 +80,7 @@ Display indicators in the left fringe for Git changes.
 ;;   (setq git-gutter:update-interval 0.02))
 
 (use-package git-gutter-fringe
+  :ensure t
   :hook
   ;; Only enable for file buffers in version control
   ((find-file . git-gutter-mode)
@@ -94,6 +95,15 @@ Display indicators in the left fringe for Git changes.
   :config
   (setq git-messenger:show-detail t
         git-messenger:use-magit-popup t))
+
+
+;; (use-package forge
+;;   :ensure t
+;;   :after magit
+;;   :config
+;;   ;; Optional: Add your GitHub token if you want to avoid frequent authentication
+;;   ;; (setq forge-alist (append forge-alist '((github "api.github.com" "github.com" forge-github-repository))))
+;;   )
 #+end_src
 
 Major modes for Git-specific files.
@@ -809,6 +819,20 @@ START and END mark the region."
      ))
 
 (use-package cmake-mode)
+#+end_src
+
+* Common Lisp
+
+#+begin_src emacs-lisp
+;; Load SLIME
+(load (expand-file-name "/home/marco/.quicklisp/slime-helper.el"))
+
+;; Set up SLIME
+(setq inferior-lisp-program "sbcl")
+(setq slime-contribs '(slime-fancy))
+
+;; Basic preferences
+(show-paren-mode 1)
 #+end_src
 
 * Statistics

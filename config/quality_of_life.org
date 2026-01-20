@@ -132,6 +132,10 @@ Here are what I consider better defaults as per my own experience.
 ;; repeat pop mark command without the need for C-u
 (setq set-mark-command-repeat-pop t)
 (setq image-auto-resize 0.7)
+
+;; Allow larger images to be displayed (default max-image-size is 0.5 = 50% of frame)
+(setq max-image-size nil)              ; nil = no limit
+(setq image-max-pixel-count (* 1024 1024 100)) ; ~100 megapixels
 #+end_src
 
 * Text Size
@@ -252,7 +256,7 @@ something that augments and replaces the standard auto-save-mode.
   (super-save-mode +1))
 
 ;; revert buffers automatically when underlying files are changed externally
-;; (global-auto-revert-mode t)
+(global-auto-revert-mode t)
 (setq global-auto-revert-non-file-buffers nil)  ; Don't revert non-file buffers
 (setq auto-revert-verbose nil)  ; Don't message about reverting
 #+end_src
