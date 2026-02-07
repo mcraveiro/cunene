@@ -73,6 +73,48 @@ Source:
         bongo-enabled-backends '(vlc mpv)
         bongo-vlc-program-name "cvlc")
 
+
+(defun cunene/setup-bongo-library ()
+  "Set up a modern Bongo library with radio stations."
+  (interactive)
+  (if (derived-mode-p 'bongo-library-mode)
+      (let ((inhibit-read-only t))
+        ;; Clear existing content
+        (message "here4")
+        (erase-buffer)
+
+        ;; Add header section
+        (insert "🎵 Bongo Player\n\n")
+        (insert "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n")
+        (insert "Welcome to Bongo - Your Emacs Media Center\n\n")
+        (insert "This library buffer is your gateway to music and audio in Emacs.\n")
+        (insert "Add your media collection or explore the curated radio stations below.\n\n")
+
+        ;; Add quick start section
+        (insert "Quick Start\n\n")
+        (insert "📁 Local Files\n")
+        (insert "  Press 'i' to insert local files or directories\n\n")
+        (insert "🌐 Online Content\n")
+        (insert "  Press 'I u RET' to insert URLs or streams\n")
+        (insert "  Press 'I TAB' to explore other insertion options\n\n")
+        (insert "🎧 Playback Control\n")
+        (insert "  Press 'e' to enqueue tracks in playlist\n")
+        (insert "  Press 'h' to jump to playlist buffer\n\n")
+
+        (insert "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n")
+
+        ;; Add radio stations using Bongo's proper insertion methods
+        (insert "📻 Curated Radio Stations\n\n")
+
+        ;; Now use bongo commands to properly insert the radio stations
+        (bongo-insert-url "http://ice1.somafm.com/deepspaceone-128.mp3" "SomaFM: Deep Space One")
+        (bongo-insert-url "http://ice1.somafm.com/dronezone-128.mp3" "SomaFM: Drone Zone")
+        (bongo-insert-url "http://ice1.somafm.com/spacestation-128.mp3" "SomaFM: Space Station")
+        (bongo-insert-url "http://ice1.somafm.com/groovesalad-128.mp3" "SomaFM: Groove Salad")
+        ;; Add more stations as needed...
+
+        (bongo-library-mode)))))
+
 ;;   ;;; Bongo playlist buffer
 ;;   (defvar cunene/bongo-playlist-delimiter
 ;;     "\n******************************\n\n"
@@ -340,7 +382,7 @@ Source:
   ;;        ("<C-return>" . cunene/bongo-dired-insert)
   ;;        ("C-c SPC" . cunene/bongo-dired-insert)
   ;;        ("C-c +" . cunene/bongo-dired-make-playlist-file))
-  )
+  ;; )
 #+end_src
 
 * Postamble

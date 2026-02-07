@@ -81,6 +81,11 @@ Display indicators in the left fringe for Git changes.
 ;;   (setq git-gutter:update-interval 0.02))
 
 (use-package git-gutter-fringe
+  :ensure t
+  :hook
+  ;; Only enable for file buffers in version control
+  ((find-file . git-gutter-mode)
+   (after-revert-hook . git-gutter-mode))
   :config
   (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
@@ -94,6 +99,15 @@ Display indicators in the left fringe for Git changes.
   :config
   (setq git-messenger:show-detail t
         git-messenger:use-magit-popup t))
+
+
+;; (use-package forge
+;;   :ensure t
+;;   :after magit
+;;   :config
+;;   ;; Optional: Add your GitHub token if you want to avoid frequent authentication
+;;   ;; (setq forge-alist (append forge-alist '((github "api.github.com" "github.com" forge-github-repository))))
+;;   )
 #+end_src
 
 Major modes for Git-specific files.
@@ -814,6 +828,20 @@ START and END mark the region."
 (use-package cmake-mode)
 #+end_src
 
+* Common Lisp
+
+#+begin_src emacs-lisp
+;; Load SLIME
+(load (expand-file-name "/home/marco/.quicklisp/slime-helper.el"))
+
+;; Set up SLIME
+(setq inferior-lisp-program "sbcl")
+(setq slime-contribs '(slime-fancy))
+
+;; Basic preferences
+(show-paren-mode 1)
+#+end_src
+
 * Statistics
 
 #+begin_src emacs-lisp
@@ -1202,6 +1230,14 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
 
 (setq sql-ms-program "/opt/mssql-tools18/bin/sqlcmd")
 (setq sql-ms-options '("-C")) ; trust self-signed cert
+
+(add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (run-at-time "0.1 sec" nil
+                         (lambda (buf)
+                           (with-current-buffer buf
+                             (setq-local truncate-lines t)))
+                         (current-buffer))))
 #+end_src
 
 * Yaml
@@ -1280,6 +1316,121 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
   :config
   (setq claude-code-ide-cli-path "~/.local/bin/claude")
   (claude-code-ide-emacs-tools-setup))
+
+(defvar-local cunene/claude-prompt-edit--target-buffer nil
+  "The Claude Code terminal buffer that this edit buffer is associated with.")
+
+(defvar cunene/claude-prompt-edit-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c '") #'cunene/claude-prompt-edit-send)
+    (define-key map (kbd "C-c C-c") #'cunene/claude-prompt-edit-send-and-submit)
+    (define-key map (kbd "C-c C-k") #'cunene/claude-prompt-edit-cancel)
+    map)
+  "Keymap for `cunene/claude-prompt-edit-mode'.")
+
+(define-minor-mode cunene/claude-prompt-edit-mode
+  "Minor mode for editing Claude Code prompts in a dedicated buffer.
+
+\\{cunene/claude-prompt-edit-mode-map}"
+  :lighter " Claude-Edit"
+  :keymap cunene/claude-prompt-edit-mode-map
+  (when cunene/claude-prompt-edit-mode
+    (setq header-line-format
+          (substitute-command-keys
+           "Edit prompt.  \\[cunene/claude-prompt-edit-send]: send  \
+\\[cunene/claude-prompt-edit-send-and-submit]: send+submit  \
+\\[cunene/claude-prompt-edit-cancel]: cancel"))))
+
+(defun cunene/claude-prompt-edit--buffer-name (terminal-buffer)
+  "Return the name for the prompt edit buffer associated with TERMINAL-BUFFER."
+  (format "*claude-prompt-edit[%s]*"
+          (replace-regexp-in-string
+           "\\*claude-code\\[\\(.*\\)\\]\\*" "\\1"
+           (buffer-name terminal-buffer))))
+
+(defun cunene/claude-prompt-edit--send-text (text &optional submit)
+  "Send TEXT to the terminal, optionally pressing return if SUBMIT is non-nil.
+Handles multi-line text by converting newlines to backslash+return sequences."
+  (let ((lines (split-string text "\n")))
+    (dotimes (i (length lines))
+      (let ((line (nth i lines)))
+        (claude-code-ide--terminal-send-string line)
+        (when (< i (1- (length lines)))
+          (claude-code-ide--terminal-send-string "\\")
+          (sit-for 0.05)
+          (claude-code-ide--terminal-send-return)
+          (sit-for 0.05)))))
+  (when submit
+    (sit-for 0.1)
+    (claude-code-ide--terminal-send-return)))
+
+(defun cunene/claude-prompt-edit--close-buffer ()
+  "Close the current prompt edit buffer and its window."
+  (let ((edit-window (get-buffer-window (current-buffer))))
+    (kill-buffer (current-buffer))
+    (when (window-live-p edit-window)
+      (delete-window edit-window))))
+
+(defun cunene/claude-prompt-edit-send ()
+  "Send the edited prompt to the terminal without pressing return."
+  (interactive)
+  (unless cunene/claude-prompt-edit-mode
+    (user-error "Not in a Claude prompt edit buffer"))
+  (let ((text (string-trim (buffer-string)))
+        (target-buffer cunene/claude-prompt-edit--target-buffer))
+    (unless (and target-buffer (buffer-live-p target-buffer))
+      (user-error "Target Claude buffer no longer exists"))
+    (cunene/claude-prompt-edit--close-buffer)
+    (with-current-buffer target-buffer
+      (cunene/claude-prompt-edit--send-text text nil))
+    (message "Sent prompt to Claude (no submit)")))
+
+(defun cunene/claude-prompt-edit-send-and-submit ()
+  "Send the edited prompt to the terminal and press return to submit."
+  (interactive)
+  (unless cunene/claude-prompt-edit-mode
+    (user-error "Not in a Claude prompt edit buffer"))
+  (let ((text (string-trim (buffer-string)))
+        (target-buffer cunene/claude-prompt-edit--target-buffer))
+    (unless (and target-buffer (buffer-live-p target-buffer))
+      (user-error "Target Claude buffer no longer exists"))
+    (cunene/claude-prompt-edit--close-buffer)
+    (with-current-buffer target-buffer
+      (cunene/claude-prompt-edit--send-text text t))
+    (message "Sent and submitted prompt to Claude")))
+
+(defun cunene/claude-prompt-edit-cancel ()
+  "Cancel editing and close the prompt edit buffer without sending."
+  (interactive)
+  (unless cunene/claude-prompt-edit-mode
+    (user-error "Not in a Claude prompt edit buffer"))
+  (cunene/claude-prompt-edit--close-buffer)
+  (message "Prompt edit cancelled"))
+
+(defun cunene/claude-prompt-edit ()
+  "Open a buffer to compose a prompt for Claude Code.
+The prompt can be edited with full Emacs editing capabilities.
+
+Keybindings in the edit buffer:
+  C-c '     - Send prompt to terminal (for review, no submit)
+  C-c C-c   - Send prompt and submit (press Return)
+  C-c C-k   - Cancel and close without sending"
+  (interactive)
+  (let ((buffer-name (claude-code-ide--get-buffer-name)))
+    (if-let ((terminal-buffer (get-buffer buffer-name)))
+        (let* ((edit-buffer-name (cunene/claude-prompt-edit--buffer-name terminal-buffer))
+               (edit-buffer (get-buffer-create edit-buffer-name)))
+          (with-current-buffer edit-buffer
+            (erase-buffer)
+            (text-mode)
+            (cunene/claude-prompt-edit-mode 1)
+            (setq-local cunene/claude-prompt-edit--target-buffer terminal-buffer))
+          (display-buffer edit-buffer
+                          '((display-buffer-below-selected)
+                            (window-height . 10)))
+          (select-window (get-buffer-window edit-buffer))
+          (message "Compose your prompt.  C-c ' to send, C-c C-c to send+submit, C-c C-k to cancel"))
+      (user-error "No Claude Code session for this project"))))
 #+end_src
 
 * Eldoc

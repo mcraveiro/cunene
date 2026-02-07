@@ -180,6 +180,49 @@ any directory proferred by `consult-dir'."
     (define-key project-prefix-map (kbd "t") 'eat-project)
     (define-key project-prefix-map (kbd "T") 'eat-project-other-window))
 
+(defun cunene/projectile--eat (&optional new-process other-window)
+  "Invoke `eat' in the project's root.
+
+Use argument NEW-PROCESS to indicate creation of a new process instead.
+Use argument OTHER-WINDOW to indicate whether the buffer should
+be displayed in a different window.
+
+Switch to the project-specific eat buffer if it already exists."
+  (let* ((project (projectile-acquire-root))
+         (buffer-name (projectile-generate-process-name "eat" new-process project)))
+    (unless (require 'eat nil 'noerror)
+      (error "Package 'eat' is not available"))
+    (if (buffer-live-p (get-buffer buffer-name))
+        (if other-window
+            (switch-to-buffer-other-window buffer-name)
+          (switch-to-buffer buffer-name))
+      ;; Start a new eat process with the desired buffer name
+      (let ((eat-buffer-name buffer-name))  ; ← This is the key!
+        (projectile-with-default-dir project
+          (eat)))  ; ← eat uses eat-buffer-name internally
+      ;; After starting, ensure we're in the right buffer/window
+      (if other-window
+          (switch-to-buffer-other-window buffer-name)
+        (switch-to-buffer buffer-name)))))
+
+(defun cunene/projectile-run-eat (&optional arg)
+  "Invoke `eat' in the project's root.
+
+Switch to the project specific term buffer if it already exists.
+
+Use a prefix argument ARG to indicate creation of a new process instead."
+  (interactive "P")
+  (cunene/projectile--eat arg))
+
+(defun cunene/projectile-run-eat-other-window (&optional arg)
+  "Invoke `eat' in the project's root.
+
+Switch to the project specific term buffer if it already exists.
+
+Use a prefix argument ARG to indicate creation of a new process instead."
+  (interactive "P")
+  (cunene/projectile--eat arg 'other-window))
+
 (use-package vterm
   :ensure t
   :config
@@ -364,6 +407,33 @@ URL should be a valid web address."
   :config
 ;;  (load "~/.config/emacs/services.el" 'noerror)
 )
+
+(defun cunene/prodigy-filter-by-tag (tag)
+  "Open a Prodigy buffer showing only services with TAG."
+  (interactive
+   (list (intern (completing-read "Tag: "
+                                  (delete-dups
+                                   (mapcar #'symbol-name
+                                           (apply #'append
+                                                  (mapcar (lambda (s)
+                                                            (plist-get s :tags))
+                                                          prodigy-services))))))))
+  (let ((buffer-name (format "*prodigy - %s*" tag)))
+    (with-current-buffer (get-buffer-create buffer-name)
+      (prodigy-mode)
+      (setq-local prodigy--filtered-tag tag)
+      (prodigy-refresh))
+    (switch-to-buffer buffer-name)))
+
+(defun cunene/prodigy--filter-services-by-tag (orig-fun)
+  (if (bound-and-true-p prodigy--filtered-tag)
+      (cl-remove-if-not
+       (lambda (svc)
+         (member prodigy--filtered-tag (plist-get svc :tags)))
+       prodigy-services)
+    (funcall orig-fun)))
+
+(advice-add #'prodigy-services :around #'cunene/prodigy--filter-services-by-tag)
 #+end_src
 
 * Mongo

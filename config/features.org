@@ -898,6 +898,31 @@ authoring documents with a fast and effective plain-text system.
   :config
   (setq org-fancy-priorities-list '("🅰" "🅱" "🅲" "🅳" "🅴")))
 
+(with-eval-after-load 'ol
+  (org-link-set-parameters
+   "proj"
+   :follow (lambda (path)
+             "Follow a `proj:' link, opening the file relative to the project root."
+             (require 'project) ; Ensure project.el is loaded
+             (let* ((proj (project-current))
+                    (root (if proj (project-root proj) default-directory)))
+               (org-mark-ring-push) ; Allow jumping back with C-c &
+               (find-file (expand-file-name path root))))
+   :face '(:foreground "SkyBlue" :underline t) ; Make them look distinct
+   :help-echo "Open project-relative file")) ; Tooltip text
+
+;; (use-package ox-taskjuggler
+;;   :ensure t
+;;   :after org)
+
+(use-package org-transclusion
+  :ensure t
+  :commands (org-transclusion-mode))
+
+; (with-eval-after-load 'org
+;  (require `org-transclusion-font-lock)
+;  (org-transclusion-font-lock-mode +1))
+
 (use-package hl-todo
   :ensure t
   :bind (:map hl-todo-mode-map
@@ -949,6 +974,43 @@ authoring documents with a fast and effective plain-text system.
             (setq-local display-buffer--same-window-action
                         '(display-buffer-use-some-window
                           (main)))))
+
+(defun cunene/org-roam-validate-id-links ()
+  "Validate all org-roam ID links by checking the database.
+Reports any 'id' links that point to non-existent nodes."
+  (interactive)
+  (let ((broken-links '())
+        ;; Query the database for ALL links of type 'id'
+        (id-links-query "SELECT source, dest FROM links WHERE type = 'id'"))
+    (message "Querying org-roam database for broken ID links...")
+    (dolist (link (org-roam-db-query id-links-query))
+      (pcase-let ((`(,source-id ,dest-id) link))
+        ;; For each link, check if the destination node exists
+        (unless (org-roam-node-from-id dest-id)
+          ;; If it doesn't exist, add it to our list of broken links
+          (let* ((source-node (org-roam-node-from-id source-id))
+                 (source-file (when source-node (org-roam-node-file source-node))))
+            (push (list source-file source-id dest-id) broken-links)))))
+
+    ;; Display the results
+    (if (null broken-links)
+        (message "All org-roam ID links are valid! 🎉")
+      (let ((buf (get-buffer-create "*Org-Roam Broken ID Links*")))
+        (with-current-buffer buf
+          (setq buffer-read-only nil)
+          (erase-buffer)
+          (insert "=== Org-Roam Broken ID Links Report ===\n\n")
+          (dolist (link (nreverse broken-links))
+            (pcase-let ((`(,source-file ,source-id ,dest-id) link))x
+              (insert (format "In file: %s\n" (or source-file "Unknown")))
+              (insert (format "  Source Node ID: %s\n" source-id))
+              (insert (format "  Points to non-existent ID: %s\n" dest-id))
+              (insert "----------------------------------------\n")))
+          (goto-char (point-min))
+          (special-mode)
+          (setq buffer-read-only t))
+        (pop-to-buffer buf)
+        (message (format "Found %d broken ID link(s). See '*Org-Roam Broken ID Links*' buffer." (length broken-links)))))))
 
 (defun cunene/occur-non-ascii ()
   "Find any non-ascii characters in the current buffer."
@@ -1068,9 +1130,10 @@ ARGUMENT determines the visible heading."
       (setq result (seq-take result 1000)))
     result))
 
+;; FIXME: does not work well. use only when having performance issues.
 ;; Apply safety wrapper to completion functions
-(advice-add 'completion-pcm--all-completions :around #'cunene/safe-completion)
-(advice-add 'all-completions :around #'cunene/safe-completion)
+;; (advice-add 'completion-pcm--all-completions :around #'cunene/safe-completion)
+;;(advice-add 'all-completions :around #'cunene/safe-completion)
 
 (defun debug-completions ()
   "Debug completion behavior."
