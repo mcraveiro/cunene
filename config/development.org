@@ -1220,6 +1220,14 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
 
 (setq sql-ms-program "/opt/mssql-tools18/bin/sqlcmd")
 (setq sql-ms-options '("-C")) ; trust self-signed cert
+
+(add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (run-at-time "0.1 sec" nil
+                         (lambda (buf)
+                           (with-current-buffer buf
+                             (setq-local truncate-lines t)))
+                         (current-buffer))))
 #+end_src
 
 * Yaml

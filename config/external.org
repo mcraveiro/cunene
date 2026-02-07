@@ -400,6 +400,33 @@ URL should be a valid web address."
   :config
 ;;  (load "~/.config/emacs/services.el" 'noerror)
 )
+
+(defun cunene/prodigy-filter-by-tag (tag)
+  "Open a Prodigy buffer showing only services with TAG."
+  (interactive
+   (list (intern (completing-read "Tag: "
+                                  (delete-dups
+                                   (mapcar #'symbol-name
+                                           (apply #'append
+                                                  (mapcar (lambda (s)
+                                                            (plist-get s :tags))
+                                                          prodigy-services))))))))
+  (let ((buffer-name (format "*prodigy - %s*" tag)))
+    (with-current-buffer (get-buffer-create buffer-name)
+      (prodigy-mode)
+      (setq-local prodigy--filtered-tag tag)
+      (prodigy-refresh))
+    (switch-to-buffer buffer-name)))
+
+(defun cunene/prodigy--filter-services-by-tag (orig-fun)
+  (if (bound-and-true-p prodigy--filtered-tag)
+      (cl-remove-if-not
+       (lambda (svc)
+         (member prodigy--filtered-tag (plist-get svc :tags)))
+       prodigy-services)
+    (funcall orig-fun)))
+
+(advice-add #'prodigy-services :around #'cunene/prodigy--filter-services-by-tag)
 #+end_src
 
 * Mongo

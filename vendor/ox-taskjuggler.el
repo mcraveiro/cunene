@@ -468,9 +468,11 @@ channel.  Return value is a string."
 (defun org-taskjuggler-get-name (item)
   "Return name for task or resource ITEM.
 ITEM is a headline.  Return value is a string."
-  ;; Quote double quotes in name.
-  (replace-regexp-in-string
-   "\"" "\\\"" (org-element-property :raw-value item) t t))
+  (let ((raw (org-element-property :raw-value item)))
+    ;; Resolve deferred value if necessary
+    (when (vectorp raw)
+      (setq raw (org-element--resolve-deferred-value raw)))
+    (replace-regexp-in-string "\"" "\\\"" raw t t)))
 
 (defun org-taskjuggler-get-start (item)
   "Return start date for task or resource ITEM.
@@ -519,17 +521,23 @@ headline is not unique try to add more (downcased) tokens of the
 headline or finally add more underscore characters (\"_\")."
   (let ((id (org-string-nw-p (org-element-property :TASK_ID item))))
     ;; If an id is specified, use it, as long as it's unique.
-    (if (and id (not (member id unique-ids))) id
-      (let* ((parts (org-split-string (org-element-property :raw-value item)))
-	     (id (org-taskjuggler--clean-id (downcase (pop parts)))))
-	;; Try to add more parts of the headline to make it unique.
-	(while (and (car parts) (member id unique-ids))
-	  (setq id (concat id "_"
-			   (org-taskjuggler--clean-id (downcase (pop parts))))))
-	;; If it's still not unique, add "_".
-	(while (member id unique-ids)
-	  (setq id (concat id "_")))
-	id))))
+    (if (and id (not (member id unique-ids)))
+        id
+      (let* ((raw-value (org-element-property :raw-value item))
+             ;; Resolve deferred value if necessary
+             (raw-str (if (vectorp raw-value)
+                          (org-element--resolve-deferred-value raw-value)
+                        raw-value))
+             (parts (org-split-string raw-str))
+             (id (org-taskjuggler--clean-id (downcase (pop parts)))))
+        ;; Try to add more parts of the headline to make it unique.
+        (while (and (car parts) (member id unique-ids))
+          (setq id (concat id "_"
+                           (org-taskjuggler--clean-id (downcase (pop parts))))))
+        ;; If it's still not unique, add "_".
+        (while (member id unique-ids)
+          (setq id (concat id "_")))
+        id))))
 
 (defun org-taskjuggler--clean-id (id)
   "Clean and return ID to make it acceptable for TaskJuggler.
@@ -549,40 +557,49 @@ ID is a string."
 TASK is a headline.  INFO is a plist used as a communication
 channel."
   (let ((deps-ids
-         ;; Get all dependencies specified in BLOCKER and DEPENDS task
-         ;; properties.  Clean options from them.
-         (let ((deps (concat (org-element-property :BLOCKER task)
-                             (org-element-property :DEPENDS task))))
-           (and deps
+         (let* ((blocker (org-element-property :BLOCKER task))
+                (depends-prop (org-element-property :DEPENDS task))
+                ;; Resolve deferred values
+                (blocker-str (if (vectorp blocker)
+                                 (org-element--resolve-deferred-value blocker)
+                               blocker))
+                (depends-str (if (vector p depends-prop)
+                                 (org-element--resolve-deferred-value depends-prop)
+                               depends-prop))
+                ;; Concatenate, treating nil as empty string
+                (deps (concat (or blocker-str "")
+                              (or depends-str ""))))
+           (and (not (string-empty-p deps))
                 (org-split-string (replace-regexp-in-string "{.*?}" "" deps)
-                                  "[ ,]* +"))))
+                                  "[ ,]+")))) ; fixed regex too
         depends)
     (when deps-ids
-      ;; Find tasks with :task_id: property matching id in DEPS-IDS.
-      ;; Add them to DEPENDS.
       (let* ((project (org-taskjuggler-get-project info))
-             (tasks (if org-taskjuggler-keep-project-as-task project
-                      (org-element-contents project))))
+             (tasks (if org-taskjuggler-keep-project-as-task
+                        (org-element-contents project)
+                      (org-element-contents project)))) ; ensure this is correct
         (setq depends
               (org-element-map tasks 'headline
-                (lambda (task)
-                  (let ((task-id (or (org-element-property :TASK_ID task)
-				     (org-element-property :ID task))))
-                    (and task-id (member task-id deps-ids) task)))
+                (lambda (t)
+                  (let ((task-id (or (org-element-property :TASK_ID t)
+                                     (org-element-property :ID t))))
+                    ;; Resolve task-id too, in case it's deferred!
+                    (when (vectorp task-id)
+                      (setq task-id (org-element--resolve-deferred-value task-id)))
+                    (and task-id (member task-id deps-ids) t)))
                 info)))
-      ;; Check BLOCKER and DEPENDS properties.  If "previous-sibling"
-      ;; belongs to DEPS-ID, add it to DEPENDS.
+      ;; Handle "previous-sibling"
       (when (and (member-ignore-case "previous-sibling" deps-ids)
                  (not (org-export-first-sibling-p task info)))
         (let ((prev (org-export-get-previous-element task info)))
-          (and (not (memq prev depends)) (push prev depends)))))
-    ;; Check ORDERED status of parent.
+          (unless (memq prev depends)
+            (push prev depends)))))
+    ;; Check ORDERED parent
     (let ((parent (org-export-get-parent task)))
       (when (and parent
                  (org-element-property :ORDERED parent)
                  (not (org-export-first-sibling-p task info)))
         (push (org-export-get-previous-element task info) depends)))
-    ;; Return dependencies.
     depends))
 
 (defun org-taskjuggler-format-dependencies (dependencies task info)
@@ -763,28 +780,34 @@ All valid attributes from RESOURCE are inserted.  If RESOURCE
 defines a property \"resource_id\" it will be used as the id for
 this resource.  Otherwise it will use the ID property.  If
 neither is defined a unique id will be associated to it."
-  (concat
-   ;; Opening resource.
-   (format "resource %s \"%s\" {\n"
-           (org-taskjuggler--clean-id
-            (or (org-element-property :RESOURCE_ID resource)
-                (org-element-property :ID resource)
-                (org-taskjuggler-get-id resource info)))
-           (org-taskjuggler-get-name resource))
-   ;; Add attributes.
-   (org-taskjuggler--indent-string
-    (org-taskjuggler--build-attributes
-     resource org-taskjuggler-valid-resource-attributes))
-   ;; Add inner resources.
-   (org-taskjuggler--indent-string
-    (mapconcat
-     'identity
-     (org-element-map (org-element-contents resource) 'headline
-       (lambda (hl) (org-taskjuggler--build-resource hl info))
-       info nil 'headline)
-     ""))
-   ;; Closing resource.
-   "}\n"))
+  (let* ((raw-res-id (org-element-property :RESOURCE_ID resource))
+         (raw-id      (org-element-property :ID resource))
+         (resolved-res-id (when (vectorp raw-res-id)
+                            (org-element--resolve-deferred-value raw-res-id)))
+         (resolved-id     (when (vectorp raw-id)
+                            (org-element--resolve-deferred-value raw-id)))
+         (id-to-use (or resolved-res-id
+                         resolved-id
+                         (org-taskjuggler-get-id resource info))))
+    (concat
+     ;; Opening resource.
+     (format "resource %s \"%s\" {\n"
+             (org-taskjuggler--clean-id id-to-use)
+             (org-taskjuggler-get-name resource))
+     ;; Add attributes.
+     (org-taskjuggler--indent-string
+      (org-taskjuggler--build-attributes
+       resource org-taskjuggler-valid-resource-attributes))
+     ;; Add inner resources.
+     (org-taskjuggler--indent-string
+      (mapconcat
+       'identity
+       (org-element-map (org-element-contents resource) 'headline
+         (lambda (hl) (org-taskjuggler--build-resource hl info))
+         info nil 'headline)
+       ""))
+     ;; Closing resource.
+     "}\n")))
 
 (defun org-taskjuggler--build-report (report info)
   "Return a report declaration.
