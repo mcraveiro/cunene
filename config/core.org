@@ -152,7 +152,6 @@ directory with an ever-growing number of packages used on a daily basis.
     (make-directory (file-name-directory path) t)
     path))
 
-(eval-when-compile (require 'request))
 (with-eval-after-load 'request
   (setq request-storage-directory (cunene/cache-concat "request/")))
 (eval-when-compile (require 'tramp))

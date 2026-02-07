@@ -36,8 +36,7 @@
             all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion
             aggressive-indent))
  '(safe-local-variable-values
-   '((checkdoc-allow-quoting-nil-and-t . t)
-     (eval setq-local org-roam-db-location
+   '((eval setq-local org-roam-db-location
            (expand-file-name ".org-roam.db" org-roam-directory))
      (eval setq-local org-roam-directory
            (expand-file-name
