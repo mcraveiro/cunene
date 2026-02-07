@@ -45,7 +45,7 @@
 (setq-default
  default-frame-alist
  '(
-   (font . "Hack 9")                    ;; Font to use
+   ;; (font . "Consolas 10")                    ;; Font to use
    (fullscreen . fullboth)              ;; Maximize the window by default
    (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
    (left-fringe . 8)                    ;; Thin left fringe
@@ -84,14 +84,17 @@
   (interactive)
   (let ((elc-file-name (concat (file-name-sans-extension el-file-name) ".elc")))
     (unless (file-newer-than-file-p elc-file-name el-file-name)
-      (save-restriction
-        (setq byte-compile-warnings
-              '(not free-vars obsolete unresolved callargs redefine
-                  obsolete noruntime cl-warnings interactive-only))
-        (byte-compile-file el-file-name)))
+      ;; Suppress all byte-compile warnings during bootstrap (packages not installed yet)
+      (let ((byte-compile-warnings nil)
+            (byte-compile-verbose nil)
+            (warning-minimum-level :emergency))
+        ;; Ignore byte-compile errors during bootstrap
+        (ignore-errors (byte-compile-file el-file-name))))
     (unless compile-only
-      (message (concat "Loading " elc-file-name "..."))
-      (load-file elc-file-name))
+      ;; Fall back to .el file if .elc doesn't exist (compilation failed)
+      (let ((file-to-load (if (file-exists-p elc-file-name) elc-file-name el-file-name)))
+        (message (concat "Loading " file-to-load "..."))
+        (load-file file-to-load)))
     ))
 
 ;; For tangling.
@@ -165,13 +168,24 @@ ORG-FILE-NAME file to operate on."
     (require 'elpaca)
     (elpaca-generate-autoloads "elpaca" repo)
     (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
+;; Tell elpaca to ignore built-in pseudo-packages (must be set before packages are queued)
+(defvar elpaca-ignored-dependencies '(emacs cl-lib seq map org json project eglot))
+
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
 ;; Install use-package support
 (elpaca elpaca-use-package
   ;; Enable use-package :ensure support for Elpaca.
-  (elpaca-use-package-mode))
+  (elpaca-use-package-mode)
+  ;; Assume all use-package declarations should install packages
+  (setq use-package-always-ensure t))
+
+;; Block until elpaca-use-package is installed and elpaca-use-package-mode is active.
+;; This is required because the org config files are loaded during init (before
+;; after-init-hook runs elpaca-process-queues), so we need elpaca-use-package-mode
+;; to be active before use-package calls in the org files are executed.
+(elpaca-wait)
 
 (let
     (

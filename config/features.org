@@ -263,26 +263,27 @@ surrounded by word boundaries."
 
 #+begin_src emacs-lisp
 (use-package ibuffer
+  :ensure nil  ;; Built-in
   :bind
   (:map ibuffer-mode-map
         ("/ e" . ibuffer-filter-by-ede-project)
         ("% e" . ibuffer-mark-by-ede-project-regexp)
         ("s e" . ibuffer-do-sort-by-ede-project))
   :config
-  (require 'all-the-icons)
   (progn
     (global-set-key (kbd "<f5>") 'ibuffer) ;; Shortcut for ibuffer
-    (when (display-graphic-p) ;; Display buffer icons on GUI
-      (define-ibuffer-column icon (:name " ")
-        (let ((icon (if (and buffer-file-name
-                             (all-the-icons-match-to-alist buffer-file-name
-                                                           all-the-icons-regexp-icon-alist))
-                        (all-the-icons-icon-for-file (file-name-nondirectory buffer-file-name)
-                                                     :height 0.9 :v-adjust -0.05)
-                      (all-the-icons-icon-for-mode major-mode :height 0.9 :v-adjust -0.05))))
-          (if (symbolp icon)
-              (setq icon (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.9 :v-adjust -0.05))
-            icon))))
+    (with-eval-after-load 'all-the-icons
+      (when (display-graphic-p) ;; Display buffer icons on GUI
+        (define-ibuffer-column icon (:name " ")
+          (let ((icon (if (and buffer-file-name
+                               (all-the-icons-match-to-alist buffer-file-name
+                                                             all-the-icons-regexp-icon-alist))
+                          (all-the-icons-icon-for-file (file-name-nondirectory buffer-file-name)
+                                                       :height 0.9 :v-adjust -0.05)
+                        (all-the-icons-icon-for-mode major-mode :height 0.9 :v-adjust -0.05))))
+            (if (symbolp icon)
+                (setq icon (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.9 :v-adjust -0.05))
+              icon)))))
     (add-hook 'ibuffer-mode-hook ;; Setup filter groups
               #'(lambda ()
                  (ibuffer-auto-mode 1)
@@ -867,7 +868,7 @@ authoring documents with a fast and effective plain-text system.
      ;; (sh . t)
      (sql . t)
      (sqlite . t)
-     (verb . t)
+     ;; (verb . t)  ;; ob-verb loaded by verb package
      ;; (mustache . t)
      (plantuml . t)))
 
@@ -946,16 +947,12 @@ authoring documents with a fast and effective plain-text system.
 (use-package org-roam :after org)
 
 (use-package org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
 
 ;; FIXME breaks flycheck
 ;; (add-to-list 'display-buffer-alist
@@ -1024,24 +1021,25 @@ Reports any 'id' links that point to non-existent nodes."
 (add-hook 'org-export-before-parsing-hook 'org-ref-acronyms-before-parsing)
 (add-hook 'org-export-before-parsing-hook 'org-ref-glossary-before-parsing)
 
-(setq org-latex-pdf-process
-      '("latexmk -shell-escape -bibtex -pdf %f"))
-(setq org-latex-listings t)
-(setq bibtex-dialect 'biblatex)
-(add-to-list 'org-latex-packages-alist '("" "listings"))
-(add-to-list 'org-latex-packages-alist '("" "color"))
-(setq org-highlight-latex-and-related nil)
+(with-eval-after-load 'ox-latex
+  (setq org-latex-pdf-process
+        '("latexmk -shell-escape -bibtex -pdf %f"))
+  (setq org-latex-listings t)
+  (setq bibtex-dialect 'biblatex)
+  (add-to-list 'org-latex-packages-alist '("" "listings"))
+  (add-to-list 'org-latex-packages-alist '("" "color"))
+  (setq org-highlight-latex-and-related nil)
 
-;; add classic thesis
-(add-to-list 'org-latex-classes
-             '("scrreprt" "\\documentclass[11pt]{scrreprt}"
-               ("\\part{%s}" . "\\part*{%s}")
-               ("\\chapter{%s}" . "\\chapter*{%s}")
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  ;; add classic thesis
+  (add-to-list 'org-latex-classes
+               '("scrreprt" "\\documentclass[11pt]{scrreprt}"
+                 ("\\part{%s}" . "\\part*{%s}")
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1165,18 +1163,18 @@ to be highly flexible, extendable and modular.
 
 #+begin_src emacs-lisp
 (use-package vertico
-  :init
-  (vertico-mode)
   :config
   (setq vertico-cycle t ;; enable cycling for `vertico-next' and `vertico-previous'.
         vertico-resize t ;; Grow and shrink the Vertico minibuffer
         vertico-count 15
         vertico-sort-function 'vertico-sort-history-alpha
         vertico-buffer-name-format "%s"
-        completion-history-threshold 50))
+        completion-history-threshold 50)
+  (vertico-mode 1))
 
 ;; from vendor directory.
 (use-package vertico-quick
+  :ensure nil
   :load-path cunene/vendor-packages
   :bind
   (:map vertico-map
@@ -1213,6 +1211,7 @@ prefixes. By default, regexp and literal matches are enabled.
 
 ;; A few more useful configurations...
 (use-package emacs
+  :ensure nil
   :init
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; Alternatively try `consult-completing-read-multiple'.
@@ -1264,13 +1263,8 @@ command.
   :bind (("M-A" . marginalia-cycle)
          :map minibuffer-local-map
          ("M-A" . marginalia-cycle))
-
-  ;; The :init configuration is always executed (Not lazy!)
-  :init
-
-  ;; Must be in the :init section of use-package such that the mode gets
-  ;; enabled right away. Note that this forces loading the package.
-  (marginalia-mode))
+  :config
+  (marginalia-mode 1))
 
 (use-package all-the-icons-completion
   :after (marginalia all-the-icons)
@@ -1279,6 +1273,7 @@ command.
   (all-the-icons-completion-mode))
 
 (use-package completing-read-xref
+  :ensure nil
   :load-path cunene/vendor-packages
   :commands (completing-read-xref-show-xrefs completing-read-xref-show-xrefs)
   :init (setq xref-show-definitions-function 'completing-read-xref-show-defs))
@@ -1300,7 +1295,6 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
 #+begin_src emacs-lisp
 (use-package corfu
   :ensure t
-  :init
   :bind
   ;; Another key binding can be used, such as S-SPC.
   (:map corfu-map ("SPC" . corfu-insert-separator))
@@ -1325,21 +1319,21 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
   (global-corfu-mode 1)
   (corfu-popupinfo-mode 1)
   (corfu-echo-mode)
-  :hook ((prog-mode . corfu-mode)
-         (shell-mode . corfu-mode)
-         (eshell-mode . corfu-mode)))
+  (add-hook 'prog-mode-hook #'corfu-mode)
+  (add-hook 'shell-mode-hook #'corfu-mode)
+  (add-hook 'eshell-mode-hook #'corfu-mode)
 
-;; Enable Corfu more generally for every minibuffer, as long as no other
-;; completion UI is active. If you use Mct or Vertico as your main minibuffer
-;; completion UI. From
-;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
-(defun corfu-enable-always-in-minibuffer ()
-  "Enable Corfu in the minibuffer if Vertico/Mct are not active."
-  (unless (or (bound-and-true-p mct--active) ; Useful if I ever use MCT
-              (bound-and-true-p vertico--input))
-    (setq-local corfu-auto nil)       ; Ensure auto completion is disabled
-    (corfu-mode 1)))
-(add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
+  ;; Enable Corfu more generally for every minibuffer, as long as no other
+  ;; completion UI is active. If you use Mct or Vertico as your main minibuffer
+  ;; completion UI. From
+  ;; https://github.com/minad/corfu#completing-with-corfu-in-the-minibuffer
+  (defun corfu-enable-always-in-minibuffer ()
+    "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+    (unless (or (bound-and-true-p mct--active) ; Useful if I ever use MCT
+                (bound-and-true-p vertico--input))
+      (setq-local corfu-auto nil)       ; Ensure auto completion is disabled
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1))
 
 (use-package kind-icon
   :ensure t
@@ -1351,6 +1345,7 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package corfu-popupinfo
+  :ensure nil  ;; Part of corfu
   :after corfu
   :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
@@ -1392,6 +1387,7 @@ See also [[https://kristofferbalintona.me/posts/202202270056/][Corfu, Kind-icon,
 
 ;; A few more useful configurations...
 (use-package emacs
+  :ensure nil
   :init
   (setq completion-cycle-threshold 3  ;; TAB cycle if there are only few candidates
         completions-max-height 10
@@ -1651,6 +1647,7 @@ files, ibuffer for a set of buffers, or customize for a set of variables.
 
 #+begin_src emacs-lisp
 (use-package bookmark+
+  :ensure nil
   :load-path cunene/vendor-packages
   :config
   (setq bookmark-default-file (concat user-emacs-directory "bookmarks")
@@ -1788,7 +1785,7 @@ For the org-mode support, see:
     (set-buffer "*Buffer List*")
     (hl-line-mode)))
 
-(use-package beacon :init (beacon-mode 1))
+(use-package beacon :config (beacon-mode 1))
 (require 'hi-lock)
 
 (defun cunene/unhighlight-symbol-at-point ()
@@ -1857,6 +1854,7 @@ your editor.
 
 #+begin_src emacs-lisp
 (use-package font-lock-ext
+  :ensure nil
   :load-path cunene/vendor-packages)
 #+end_src
 
@@ -1870,19 +1868,22 @@ your editor.
 (setq-default abbrev-mode 1)
 
 (use-package yasnippet
-  :hook (after-init . yas-global-mode)
   :diminish yas
   :bind
   (:map yas-minor-mode-map
         ("C-c & t" . yas-describe-tables)
-        ("C-c & &" . org-mark-ring-goto)))
+        ("C-c & &" . org-mark-ring-goto))
+  :config
+  (yas-global-mode 1))
 
 (use-package yasnippet-snippets
-  :init (yasnippet-snippets-initialize))
+  :after yasnippet
+  :config (yasnippet-snippets-initialize))
 
 ;; useful with YAS. See:
 ;; https://emacs.stackexchange.com/questions/45629/template-for-new-file
 (use-package autoinsert
+  :ensure nil  ;; Built-in
   :config
   (setq auto-insert-query nil)
   (auto-insert-mode 1)
@@ -1912,23 +1913,23 @@ your editor.
   :config
   (setq define-word-default-service 'wordnik)
   (defun url-http-user-agent-string ()
-  "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36
-"))
+    "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36
+")
 
-(defun cunene/define-word (&rest args)
-  "Create a buffer for display word instead of using messages."
-  (interactive)
-  (let
-      ((buffer (get-buffer-create "Define Word")))
-    (set-buffer buffer)
-    (erase-buffer)
-    (set-buffer-major-mode buffer)
-    (apply 'insert args)
-    (display-buffer buffer)))
+  (defun cunene/define-word (&rest args)
+    "Create a buffer for display word instead of using messages."
+    (interactive)
+    (let
+        ((buffer (get-buffer-create "Define Word")))
+      (set-buffer buffer)
+      (erase-buffer)
+      (set-buffer-major-mode buffer)
+      (apply 'insert args)
+      (display-buffer buffer)))
 
-(setq define-word-displayfn-alist
-      (cl-loop for (service . _) in define-word-services
-               collect (cons service #'cunene/define-word)))
+  (setq define-word-displayfn-alist
+        (cl-loop for (service . _) in define-word-services
+                 collect (cons service #'cunene/define-word))))
 #+end_src
 
 * Logs

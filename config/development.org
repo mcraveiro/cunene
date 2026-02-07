@@ -65,9 +65,10 @@ Git modes.
 Auto-fill commit messages.
 
 #+begin_src emacs-lisp
-(use-package git-commit
-  :hook
-  (git-commit-mode . (lambda () (setq-local fill-column 72))))
+;; (use-package git-commit
+;;   :ensure nil  ;; Part of magit, not a standalone package
+;;   :hook
+;;   (git-commit-mode . (lambda () (setq-local fill-column 72))))
 #+end_src
 
 Display indicators in the left fringe for Git changes.
@@ -88,7 +89,10 @@ Display indicators in the left fringe for Git changes.
   :config
   (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom)
+  ;; Only enable for file buffers in version control
+  (add-hook 'find-file-hook #'git-gutter-mode)
+  (add-hook 'after-revert-hook #'git-gutter-mode))
 
 (use-package git-messenger
   :bind ("C-x G" . git-messenger:popup-message)
@@ -128,7 +132,11 @@ Git clients exist, only Magit and Git itself deserve to be called porcelains.
 #+end_quote
 
 #+begin_src emacs-lisp
-(use-package transient :ensure (:fetcher github :repo "magit/transient"))
+(use-package transient
+  :ensure (:fetcher github :repo "magit/transient")
+  :config
+  (setq transient-default-level 5)
+  (setq transient-mode-line-format nil))
 
 (defun cunene/git-commit-mode-hook ()
   "Hook to run when enabling git commit mode."
@@ -243,58 +251,56 @@ section for now.
  transient-levels-file (cunene/cache-concat "transient/levels.el")
  transient-values-file (cunene/cache-concat "transient/values.el"))
 
-(use-package transient
-  :init
-  :config
-  (setq transient-default-level 5)
-  (setq transient-mode-line-format nil))
+;; transient config is in the first use-package transient declaration above
 #+end_src
 
 Automatically detect the need for smerge.
 
 #+begin_src emacs-lisp
-(use-package smerge-mode
-  :commands smerge-mode
-  :bind ("C-c '" . hydra-hsmerge/body)
-  :init
-  (defun cunene/maybe-enable-smerge ()
-    (save-excursion
-      (goto-char (point-min))
-      (when (re-search-forward "^<<<<<<< " nil t)
-        (smerge-mode 1))))
-  (add-hook 'find-file-hook 'cunene/maybe-enable-smerge)
-  (add-hook 'after-revert-hook 'cunene/maybe-enable-smerge)
-
-  :config
-  (defhydra hydra-smerge (:hint nil
-                          :pre (smerge-mode 1)
-                          :post (smerge-auto-leave))
-    "
-^Move^       ^Keep^               ^Diff^                 ^Other^
-^^-----------^^-------------------^^---------------------^^-------
-_n_ext       _b_ase               _<_: upper/base        _C_ombine
-_p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
-^^           _l_ower (other)      _>_: base/lower        _k_ill current
-^^           _a_ll                _R_efine
-^^           _RET_: current       _E_diff
-"
-      ("n" smerge-next)
-      ("p" smerge-prev)
-      ("b" smerge-keep-base)
-      ("u" smerge-keep-upper)
-      ("l" smerge-keep-lower)
-      ("a" smerge-keep-all)
-      ("RET" smerge-keep-current)
-      ("\C-m" smerge-keep-current)
-      ("<" smerge-diff-base-upper)
-      ("=" smerge-diff-upper-lower)
-      (">" smerge-diff-base-lower)
-      ("R" smerge-refine)
-      ("E" smerge-ediff)
-      ("C" smerge-combine-with-next)
-      ("r" smerge-resolve)
-      ("k" smerge-kill-current)
-      ("q" nil "cancel" :color blue)))
+;; Commented out - requires hydra package
+;; (use-package smerge-mode
+;;   :ensure nil  ;; Built-in
+;;   :commands smerge-mode
+;;   :init
+;;   (defun cunene/maybe-enable-smerge ()
+;;     (save-excursion
+;;       (goto-char (point-min))
+;;       (when (re-search-forward "^<<<<<<< " nil t)
+;;         (smerge-mode 1))))
+;;   (add-hook 'find-file-hook 'cunene/maybe-enable-smerge)
+;;   (add-hook 'after-revert-hook 'cunene/maybe-enable-smerge)
+;;
+;;   :config
+;;   (defhydra hydra-smerge (:hint nil
+;;                           :pre (smerge-mode 1)
+;;                           :post (smerge-auto-leave))
+;;     "
+;; ^Move^       ^Keep^               ^Diff^                 ^Other^
+;; ^^-----------^^-------------------^^---------------------^^-------
+;; _n_ext       _b_ase               _<_: upper/base        _C_ombine
+;; _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
+;; ^^           _l_ower (other)      _>_: base/lower        _k_ill current
+;; ^^           _a_ll                _R_efine
+;; ^^           _RET_: current       _E_diff
+;; "
+;;       ("n" smerge-next)
+;;       ("p" smerge-prev)
+;;       ("b" smerge-keep-base)
+;;       ("u" smerge-keep-upper)
+;;       ("l" smerge-keep-lower)
+;;       ("a" smerge-keep-all)
+;;       ("RET" smerge-keep-current)
+;;       ("\C-m" smerge-keep-current)
+;;       ("<" smerge-diff-base-upper)
+;;       ("=" smerge-diff-upper-lower)
+;;       (">" smerge-diff-base-lower)
+;;       ("R" smerge-refine)
+;;       ("E" smerge-ediff)
+;;       ("C" smerge-combine-with-next)
+;;       ("r" smerge-resolve)
+;;       ("k" smerge-kill-current)
+;;       ("q" nil "cancel" :color blue))
+;;   (global-set-key (kbd "C-c '") 'hydra-smerge/body))
 #+end_src
 
 * Project Management
@@ -303,7 +309,8 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
   :END:
 
 #+begin_src emacs-lisp
-(use-package project)
+(use-package project
+  :ensure nil)  ;; Built-in
 
 #+end_src
 
@@ -366,6 +373,7 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 
 #+begin_src emacs-lisp
 (use-package eglot
+  :ensure nil  ;; Built-in in Emacs 29+
   :bind (("M-RET" . eglot-code-actions)))
 (use-package
   flycheck-eglot
@@ -449,30 +457,29 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
             plantuml-default-exec-mode 'jar)
     (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
           plantuml-default-exec-mode 'executable))
-  (setq org-plantuml-jar-path plantuml-jar-path))
+  (setq org-plantuml-jar-path plantuml-jar-path)
 
-(require 'plantuml-mode)
-(defun cunene/plantuml-make-diagram ()
-  "Create a diagram from a PlantUML buffer."
-  (interactive)
-  (let* ((plantuml-diagram (buffer-file-name))
-         (process-query-on-exit-flag nil)
-         (plantuml-buffer-name
-          (concat "PlantUML: " (file-name-nondirectory plantuml-diagram))))
-    (with-current-buffer (get-buffer-create plantuml-buffer-name)
-      (erase-buffer)
-      (goto-char (point-max))
-      (insert "Starting PlantUML "(format-time-string "%D %-I:%M %p")))
-    (display-buffer plantuml-buffer-name)
-    (clear-image-cache)
-    ;; copied from plantuml-jar-start-process, which uses stdin (e.g. -p)
-    (apply #'start-process
-           "PLANTUML" plantuml-buffer-name plantuml-java-command
-           `(,@plantuml-java-args
-             ,plantuml-jar-path
-             ,(plantuml-jar-output-type-opt plantuml-jar-output-type-opt)
-             ,@plantuml-jar-args
-             ,plantuml-diagram))))
+  (defun cunene/plantuml-make-diagram ()
+    "Create a diagram from a PlantUML buffer."
+    (interactive)
+    (let* ((plantuml-diagram (buffer-file-name))
+           (process-query-on-exit-flag nil)
+           (plantuml-buffer-name
+            (concat "PlantUML: " (file-name-nondirectory plantuml-diagram))))
+      (with-current-buffer (get-buffer-create plantuml-buffer-name)
+        (erase-buffer)
+        (goto-char (point-max))
+        (insert "Starting PlantUML "(format-time-string "%D %-I:%M %p")))
+      (display-buffer plantuml-buffer-name)
+      (clear-image-cache)
+      ;; copied from plantuml-jar-start-process, which uses stdin (e.g. -p)
+      (apply #'start-process
+             "PLANTUML" plantuml-buffer-name plantuml-java-command
+             `(,@plantuml-java-args
+               ,plantuml-jar-path
+               ,(plantuml-jar-output-type-opt plantuml-jar-output-type-opt)
+               ,@plantuml-jar-args
+               ,plantuml-diagram)))))
 
 (use-package flycheck-plantuml
   :ensure t
@@ -495,15 +502,14 @@ _p_rev       _u_pper (mine)       _=_: upper/lower       _r_esolve
 (show-paren-mode 1)
 
 (use-package rainbow-delimiters
-  :hook ((prog-mode org-mode) . rainbow-mode)
   :config
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'org-mode-hook #'rainbow-delimiters-mode))
 
 (use-package smartparens
   :diminish
-  :init
-  (show-smartparens-global-mode +1)
   :config
+  (show-smartparens-global-mode +1)
   (setq sp-autoskip-closing-pair 'always))
 
 (use-package rainbow-mode
@@ -670,6 +676,7 @@ START and END mark the region."
 
 #+begin_src emacs-lisp
 (use-package fv-mode
+  :ensure nil
   :load-path cunene/vendor-packages)
 
 (defun cunene/decode-fv (start end)
@@ -875,6 +882,7 @@ START and END mark the region."
 ;; (setq c-ts-mode-indent-style #'fa/c-ts-indent-style)
 
 (use-package csharp-mode
+  :ensure nil  ;; Built-in in Emacs 29+
   :config
   (defun cunene/csharp-mode-setup ()
     (flycheck-mode)
@@ -986,6 +994,7 @@ again, I haven't see that as a problem."
 
 (use-package csproj-mode)
 (use-package sln-mode
+  :ensure nil
   :load-path cunene/vendor-packages)
 (use-package sharper
   :demand t
@@ -1084,6 +1093,7 @@ TODO: for some reason we do not trigger the mode with =/**=, it seems to require
 
 #+begin_src emacs-lisp
 (use-package doxymacs
+  :ensure nil
   :load-path cunene/vendor-packages
   :config
   ;; syntax highlighting for doxygen keywords.
@@ -1295,13 +1305,13 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
   )
 
 
-(use-package claude-code :ensure t
-  :straight (:type git :host github :repo "stevemolitor/claude-code.el")
+(use-package claude-code
+  :ensure (:fetcher github :repo "stevemolitor/claude-code.el")
   :config (claude-code-mode)
   :bind-keymap ("C-c c" . claude-code-command-map))
 
 (use-package claude-code-ide
-  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :ensure (:fetcher github :repo "manzaltu/claude-code-ide.el")
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
   (setq claude-code-ide-cli-path "~/.local/bin/claude")
@@ -1440,8 +1450,8 @@ Keybindings in the edit buffer:
         (string-match-p "\*Org Src .*\*" buffer-name))))
 
 (use-package eldoc-box
-  :hook ((eldoc-mode . cunene/eldoc-box-enable)
-         (eldoc-box-buffer . cunene/eldoc-box-buffer-setup))
+  :custom-face
+  (eldoc-box-body ((t (:background "gray16"))))
   :config
   (setq x-wait-for-event-timeout 0
         eldoc-idle-delay 3
@@ -1450,17 +1460,18 @@ Keybindings in the edit buffer:
   (set-face-attribute
    'eldoc-box-border nil
    :background (face-attribute 'mode-line-inactive :background))
-  (add-hook 'eglot-managed-mode-hook #'cunene/eldoc-box-enable t)
-  :custom-face
-  (eldoc-box-body ((t (:background "gray16"))))
-  :init
+
   (defun cunene/eldoc-box-enable ()
     "Helper function that enables `eldoc-box-hover-at-point-mode' for real buffers only."
     (interactive)
     (when (cunene/real-buffer-p)
       (eldoc-box-hover-at-point-mode)))
   (defun cunene/eldoc-box-buffer-setup ()
-    (unless word-wrap (toggle-word-wrap))))
+    (unless word-wrap (toggle-word-wrap)))
+
+  (add-hook 'eldoc-mode-hook #'cunene/eldoc-box-enable)
+  (add-hook 'eldoc-box-buffer-hook #'cunene/eldoc-box-buffer-setup)
+  (add-hook 'eglot-managed-mode-hook #'cunene/eldoc-box-enable t))
 
 
 #+end_src

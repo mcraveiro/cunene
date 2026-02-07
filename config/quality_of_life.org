@@ -289,28 +289,32 @@ Links:
 #+begin_src emacs-lisp
 (use-package all-the-icons)
 (use-package all-the-icons-dired)
-(use-package all-the-icons-completion)
+;; all-the-icons-completion is in features.org with more config
 (use-package all-the-icons-ibuffer)
 (use-package all-the-icons-nerd-fonts)
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 (use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
   :config
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
   (setq doom-modeline-major-mode-icon t)
   ;; Whether display the buffer encoding.
-  (setq doom-modeline-buffer-encoding nil))
+  (setq doom-modeline-buffer-encoding nil)
+  (doom-modeline-mode 1))
+
+(use-package nerd-icons
+  :ensure t)
 
 (use-package punch-line
   :ensure (:fetcher github :repo "konrad1977/punch-line")
-  :hook (after-init . punch-line-mode)
+  :after nerd-icons
   :config
   (setq punch-line-left-separator "  ")
   (setq punch-line-right-separator "  ")
   (setq punch-line-modal-size 'large)
   (setq punch-line-modal-divider-style 'arrow)
-  (setq punch-show-weather-info nil))
+  (setq punch-show-weather-info nil)
+  (punch-line-mode 1))
 #+end_src
 
 * Modeline
@@ -439,6 +443,7 @@ Links:
 
 #+begin_src emacs-lisp
 (use-package dashboard
+  :bind (("<f8>" . cunene/new-dashboard))
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-set-heading-icons t)
@@ -447,21 +452,18 @@ Links:
   (setq dashboard-set-init-info t)
   (setq dashboard-items '((recents  . 10)
                           (bookmarks . 5)
-                          (projects . 5)
-                          (agenda . 5))))
+                          (projects . 5)))
+                          ;; (agenda . 5)))  ;; Slow - loads org-agenda at startup
 
-;; Remap Open Dashboard
-;; From https://github.com/emacs-dashboard/emacs-dashboard/issues/236
-(require 'dashboard)
-(defun cunene/new-dashboard ()
-  "Jump to the dashboard buffer, if doesn't exists create one."
-  (interactive)
-  (switch-to-buffer dashboard-buffer-name)
-  (dashboard-mode)
-  (dashboard-insert-startupify-lists)
-  (dashboard-refresh-buffer))
-
-(global-set-key (kbd "<f8>") 'cunene/new-dashboard)
+  ;; Remap Open Dashboard
+  ;; From https://github.com/emacs-dashboard/emacs-dashboard/issues/236
+  (defun cunene/new-dashboard ()
+    "Jump to the dashboard buffer, if doesn't exists create one."
+    (interactive)
+    (switch-to-buffer dashboard-buffer-name)
+    (dashboard-mode)
+    (dashboard-insert-startupify-lists)
+    (dashboard-refresh-buffer)))
 #+end_src
 
 * Utilities
@@ -484,6 +486,7 @@ Assorted utility functions for which we could not yet establish a good category.
   :config (crux-with-region-or-line kill-region))
 
 (use-package uuid
+  :ensure nil
   :load-path cunene/vendor-packages)
 
 (require 'uuid)
@@ -617,7 +620,7 @@ other occurrences changed in the same way, with visual feedback as you type.
 
 #+begin_src emacs-lisp
 (use-package jump-tree
-  :init (global-jump-tree-mode))
+  :config (global-jump-tree-mode))
 #+end_src
 
 * Strings
@@ -805,6 +808,7 @@ With the prefix argument UNFILL, unfill it instead."
 
 #+begin_src emacs-lisp
 (use-package saveplace
+  :ensure nil  ;; Built-in
   :config
   (setq save-place-file (cunene/cache-concat "saveplace/places"))
   (setq save-place-forget-unreadable-files t)  ; Don't choke on bad entries
@@ -812,6 +816,7 @@ With the prefix argument UNFILL, unfill it instead."
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
+  :ensure nil  ;; Built-in
   :init
   (savehist-mode +1)
   :config
