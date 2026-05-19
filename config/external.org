@@ -223,6 +223,39 @@ Use a prefix argument ARG to indicate creation of a new process instead."
   (interactive "P")
   (cunene/projectile--eat arg 'other-window))
 
+(defun cunene/projectile-eat-run-command (command label)
+  "Start COMMAND in an eat buffer in the project's root.
+LABEL is used in the buffer name, e.g. \"*eat PROJECT - LABEL*\".
+If a buffer with that name already exists, switch to it."
+  (let* ((project (projectile-acquire-root))
+         (project-name (projectile-project-name))
+         (buffer-name (format "*eat %s - %s*" project-name label)))
+    (unless (require 'eat nil 'noerror)
+      (error "Package 'eat' is not available"))
+    (if (buffer-live-p (get-buffer buffer-name))
+        (switch-to-buffer buffer-name)
+      (let ((eat-buffer-name buffer-name))
+        (projectile-with-default-dir project
+          (eat)))
+      (switch-to-buffer buffer-name)
+      ;; Send the command once the shell is ready
+      (run-at-time 0.5 nil
+                   (lambda (buf cmd)
+                     (when (buffer-live-p buf)
+                       (with-current-buffer buf
+                         (eat-term-send-string eat-terminal (concat cmd "\n")))))
+                   (get-buffer buffer-name) command))))
+
+(defun cunene/projectile-run-gemini ()
+  "Start Gemini CLI in an eat buffer in the project's root."
+  (interactive)
+  (cunene/projectile-eat-run-command "gemini" "gemini"))
+
+(defun cunene/projectile-run-qwen ()
+  "Start Qwen in an eat buffer in the project's root."
+  (interactive)
+  (cunene/projectile-eat-run-command "qwen" "qwen"))
+
 (use-package vterm
   :ensure t
   :config
@@ -408,8 +441,9 @@ URL should be a valid web address."
 ;;  (load "~/.config/emacs/services.el" 'noerror)
 )
 
-(defun cunene/prodigy-filter-by-tag (tag)
-  "Open a Prodigy buffer showing only services with TAG."
+(defun cunene/prodigy-filter-by-tag (tag &optional buffer-label)
+  "Open a Prodigy buffer showing only services with TAG.
+BUFFER-LABEL, if non-nil, is used in the buffer name instead of TAG."
   (interactive
    (list (intern (completing-read "Tag: "
                                   (delete-dups
@@ -418,12 +452,27 @@ URL should be a valid web address."
                                                   (mapcar (lambda (s)
                                                             (plist-get s :tags))
                                                           prodigy-services))))))))
-  (let ((buffer-name (format "*prodigy - %s*" tag)))
-    (with-current-buffer (get-buffer-create buffer-name)
-      (prodigy-mode)
+  (let* ((buf-name (format "*prodigy - %s*" (or buffer-label tag)))
+         (prodigy-buffer-name buf-name))
+    (with-current-buffer (get-buffer-create buf-name)
+      (unless (eq major-mode 'prodigy-mode)
+        (prodigy-mode))
       (setq-local prodigy--filtered-tag tag)
+      (prodigy-start-status-check-timer)
       (prodigy-refresh))
-    (switch-to-buffer buffer-name)))
+    (switch-to-buffer buf-name)))
+
+(defun cunene/prodigy-for-project ()
+  "Open a Prodigy buffer filtered to the current project's tag.
+Derives the tag from the project directory name (e.g. \"Baobab.local1\"
+yields tag `local1').  The buffer is named after the full directory
+name so that multiple checkouts with the same suffix stay separate."
+  (interactive)
+  (let* ((pr (project-current t))
+         (root (directory-file-name (expand-file-name (project-root pr))))
+         (dir-name (file-name-nondirectory root))
+         (tag (intern dir-name)))
+    (cunene/prodigy-filter-by-tag tag dir-name)))
 
 (defun cunene/prodigy--filter-services-by-tag (orig-fun)
   (if (bound-and-true-p prodigy--filtered-tag)
@@ -434,6 +483,20 @@ URL should be a valid web address."
     (funcall orig-fun)))
 
 (advice-add #'prodigy-services :around #'cunene/prodigy--filter-services-by-tag)
+
+;; prodigy-maybe-refresh only refreshes the buffer named by prodigy-buffer-name
+;; (default: "*prodigy*"). Filtered buffers created by cunene/prodigy-filter-by-tag
+;; have different names, so they never get auto-refreshed by the status-check timer.
+;; Override to refresh ALL live prodigy-mode buffers instead.
+(defun cunene/prodigy-refresh-all-buffers ()
+  "Refresh all live prodigy-mode buffers."
+  (dolist (buf (buffer-list))
+    (when (buffer-live-p buf)
+      (with-current-buffer buf
+        (when (eq major-mode 'prodigy-mode)
+          (prodigy-refresh))))))
+
+(advice-add #'prodigy-maybe-refresh :override #'cunene/prodigy-refresh-all-buffers)
 #+end_src
 
 * Mongo

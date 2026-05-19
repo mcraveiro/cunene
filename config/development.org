@@ -239,7 +239,13 @@ uncommitted changes temporarily."
 #+end_src
 
 Start =pinentry= in order for Emacs to be able to prompt for passphrases when
-necessary.
+necessary. Requires =allow-emacs-pinentry= in =~/.gnupg/gpg-agent.conf=.
+
+#+begin_src emacs-lisp
+(use-package pinentry
+  :config
+  (pinentry-start))
+#+end_src
 
 Transient is the package behind the modal maps and prefixes depicted in Magit.
 It is currently used by Magit only in my configuration so it will stay in this
@@ -1283,27 +1289,16 @@ Uses `*compilation: <project-name>*` if in a project, otherwise `*compilation*`.
 (use-package ellama
   :init
   (setopt ellama-language "English")
-  (require 'llm-ollama)
+  (require 'llm-openai)
+  (setopt ellama-provider
+          (make-llm-openai-compatible
+           :url "http://127.0.0.1:8080/v1"
+           :chat-model "Qwen3.5-9B"))
   (setopt ellama-providers
-          '(("llama3" . (make-llm-ollama
-                         :chat-model "llama3" :embedding-model "llama3"))
-            ("phi4" . (make-llm-ollama
-                         :chat-model "phi3" :embedding-model "phi4"))
-            ("codellama" . (make-llm-ollama
-                            :chat-model "codellama:7b" :embedding-model "codellama:7b"))
-            ("codestral" . (make-llm-ollama
-                            :chat-model "codestral:latest" :embedding-model "codestral:latest"))
-            ("codeqwen" . (make-llm-ollama
-                           :chat-model "codeqwen:latest" :embedding-model "codeqwen:latest"))
-            ("gemma2" . (make-llm-ollama
-                         :chat-model "gemma2" :embedding-model ":gemma2"))
-            ("qwen2" . (make-llm-ollama
-                         :chat-model "qwen2:latest" :embedding-model ":qwen2"))
-            ("mistral" . (make-llm-ollama
-                          :chat-model "mistral:latest" :embedding-model ":mistral"))
-            ))
+          '(("qwen3.5-9b-llamacpp" . (make-llm-openai-compatible
+                                      :url "http://127.0.0.1:8080/v1"
+                                      :chat-model "Qwen3.5-9B"))))
   )
-
 
 (use-package claude-code
   :ensure (:fetcher github :repo "stevemolitor/claude-code.el")
