@@ -37,15 +37,16 @@
 (put 'scroll-left 'disabled nil)
 (put 'list-timers 'disabled nil)
 
-;; (set-frame-font "Inconsolata 11" nil t)
-;; (set-frame-font "Fira Mono 10" nil t)
+;; (set-frame-font "Consolas 9" nil t)
+;; (set-frame-font "Inconsolata 10" nil t)
+;; (set-frame-font "Fira Mono 9" nil t)
 ;; (set-frame-font "Hack 9" nil t)
 ;; (set-frame-font "JetBrainsMono Nerd Font 10" nil t)
 
 (setq-default
  default-frame-alist
  '(
-   ;; (font . "Consolas 10")                    ;; Font to use
+   (font . "Fira Mono 9")               ;; Font to use
    (fullscreen . fullboth)              ;; Maximize the window by default
    (horizontal-scroll-bars . nil)       ;; No horizontal scroll-bars
    (left-fringe . 8)                    ;; Thin left fringe

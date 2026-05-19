@@ -7,7 +7,11 @@
    '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8"
      "d97ac0baa0b67be4f7523795621ea5096939a47e8b46378f79e78846e0e4ad3d" default))
  '(org-agenda-files
-   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_11.org"
+   '("~/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_15.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_14.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_13.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_12.org"
+     "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_11.org"
      "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_10.org"
      "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_09.org"
      "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_08.org"
@@ -20,30 +24,35 @@
      "/home/marco/Development/Moimba/Karga.local1/Doc/Agile/sprint_backlog_01.org"
      "/home/marco/Development/OreStudio/OreStudio.local1/doc/agile/v0/sprint_backlog_02.org"))
  '(package-selected-packages
-   '(docker ztree yasnippet-snippets yaml-mode windswap vscode-icon
-            volatile-highlights vertico verb undo-tree treemacs-tab-bar
-            treemacs-projectile treemacs-persp treemacs-magit
-            treemacs-icons-dired terraform-mode super-save ssh sql-clickhouse
-            smartparens smart-hungry-delete sharper rg rainbow-mode
-            rainbow-delimiters protobuf-mode project-shells prodigy powershell
-            persistent-scratch pcmpl-args paimon org-roam-ui org-present
-            org-fancy-priorities orderless nerd-icons-corfu mustache-mode
-            mustache msgu mastodon markdown-mode marginalia logview llama-cpp
-            jump-tree json-mode jq-mode jq-format inf-mongo inf-clojure
-            imenu-list iedit ibuffer-vc ibuffer-sidebar ibuffer-projectile
-            ibuffer-project ibuffer-git hl-todo hide-mode-line helpful
-            haproxy-mode google-this git-timemachine git-modes git-messenger
-            git-gutter-fringe flyspell-correct flycheck-plantuml flycheck-eglot
-            eyebrowse expand-region evil eshell-git-prompt engine-mode
-            embark-consult ellama eldoc-box drag-stuff doom-themes doom-modeline
-            dockerfile-mode dired-sidebar dimmer diminish diff-at-point
-            define-word dashboard csv-mode csproj-mode crux corfu
-            consult-yasnippet consult-flyspell consult-flycheck consult-eglot
-            consult-dir company-posframe company-box color-identifiers-mode
-            cmake-mode citeproc-org chatgpt-shell cape browse-kill-ring bongo bm
-            beacon backup-walker anzu all-the-icons-nerd-fonts
-            all-the-icons-ibuffer all-the-icons-dired all-the-icons-completion
-            aggressive-indent))
+   '(aggressive-indent all-the-icons-completion all-the-icons-dired
+                       all-the-icons-ibuffer all-the-icons-nerd-fonts anzu
+                       backup-walker beacon bm bongo browse-kill-ring cape
+                       chatgpt-shell citeproc-org cmake-mode
+                       color-identifiers-mode company-box company-posframe
+                       consult-dir consult-eglot consult-flycheck
+                       consult-flyspell consult-yasnippet corfu crux csproj-mode
+                       csv-mode dashboard define-word diff-at-point diminish
+                       dimmer dired-sidebar docker dockerfile-mode doom-modeline
+                       doom-themes drag-stuff eldoc-box ellama embark-consult
+                       engine-mode eshell-git-prompt evil expand-region
+                       eyebrowse flycheck-eglot flycheck-plantuml
+                       flyspell-correct git-gutter-fringe git-messenger
+                       git-modes git-timemachine google-this haproxy-mode
+                       helpful hide-mode-line hl-todo ibuffer-git
+                       ibuffer-project ibuffer-projectile ibuffer-sidebar
+                       ibuffer-vc iedit imenu-list inf-clojure inf-mongo
+                       jq-format jq-mode json-mode jump-tree llama-cpp logview
+                       marginalia markdown-mode mastodon msgu mustache
+                       mustache-mode nerd-icons-corfu orderless
+                       org-fancy-priorities org-present org-roam-ui paimon
+                       pcmpl-args persistent-scratch pinentry powershell prodigy
+                       project-shells protobuf-mode rainbow-delimiters
+                       rainbow-mode rg sharper smart-hungry-delete smartparens
+                       sql-clickhouse ssh super-save terraform-mode
+                       treemacs-icons-dired treemacs-magit treemacs-persp
+                       treemacs-projectile treemacs-tab-bar undo-tree verb
+                       vertico volatile-highlights vscode-icon windswap
+                       yaml-mode yasnippet-snippets ztree))
  '(safe-local-variable-values
    '((eval setq-local org-roam-db-location
            (expand-file-name ".org-roam.db" org-roam-directory))

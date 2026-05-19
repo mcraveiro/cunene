@@ -291,15 +291,21 @@ surrounded by word boundaries."
                  (ibuffer-do-sort-by-filename/process))))
 
   (setq ibuffer-formats '((mark modified read-only locked
-                                " " (icon 2 2 :left :elide) (name 18 18 :left :elide)
+                                " " (icon 2 2 :left :elide) (name 40 40 :left :elide)
                                 " " (size 9 -1 :right)
                                 " " (mode 16 16 :left :elide) " " filename-and-process)
-                          (mark " " (name 16 -1) " " filename)))
+                          (mark " " (name 40 -1) " " filename)))
   (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
   (setq ibuffer-show-empty-filter-groups nil) ;; Remove empty groups
   (setq ibuffer-expert t) ;; Enable expert mode
   (setq ibuffer-saved-filter-groups ;; Group buffers
         (quote (("home"
+                 ("LLM agents" (or
+                                (name . "^\\*claude-code")
+                                (name . "^\\*claude-prompt-edit")
+                                (name . "^\\*gemini")
+                                (name . "^\\*qwen")
+                                (name . "^\\*chatgpt")))
                  ("c++" (mode . c++-mode))
                  ("images" (mode . image-mode))
                  ("python" (or
@@ -339,10 +345,16 @@ surrounded by word boundaries."
                  ("make" (or
                           (mode . cmake-mode)
                           (mode . makefile-mode)
-                          (mode . makefile-gmake-mode)))
+                          (mode . makefile-gmake-mode)
+                          (name . "^\\*cmake-build")))
                  ("t4" (name . ".tt$"))
                  ("bash" (mode . sh-mode))
                  ("awk" (mode . awk-mode))
+                 ("lisp" (or
+                          (mode . lisp-mode)
+                          (mode . slime-repl-mode)
+                          (name . "^\\*inferior-lisp")
+                          (name . "^\\*slime")))
                  ("clojure" (or
                              (mode . inf-clojure-mode)
                              (mode . clojure-mode)))
@@ -351,14 +363,16 @@ surrounded by word boundaries."
                            (name . ".tex$")
                            (name . ".texi$")
                            (mode . tex-mode)
-                           (mode . latex-mode)))
+                           (mode . latex-mode)
+                           (name . "^\\*Org PDF LaTeX")))
                  ("markdown" (or
                               (mode . markdown-mode)
                               (mode . gfm-mode)))
                  ("emacs-lisp" (or
                                 (mode . emacs-lisp-mode)
+                                (mode . inferior-emacs-lisp-mode)
                                 (name . "^\\*Async-native-compile-log\\*$")
-                                (name . "^\\*ielm\\*$")
+                                (name . "^\\*ielm")
                                 (name . "^\\*Compile-Log\\*$")))
                  ("powershell" (or
                                 (mode . powershell-mode)
@@ -374,11 +388,19 @@ surrounded by word boundaries."
                  ("irc" (or
                          (mode . erc-list-mode)
                          (mode . erc-mode)))
+                 ("testing" (or
+                             (name . "^\\*Catch2")
+                             (name . "^\\*catch2-")))
+                 ("compilation" (mode . compilation-mode))
+                 ("terminal" (or
+                              (mode . eat-mode)
+                              (name . "^\\*eat ")))
                  ("shell" (or
                            (name . "^\\*Shell Command Output\\*$")
                            (mode . shell-mode)
                            (mode . ssh-mode)
                            (mode . eshell-mode)
+                           (mode . comint-mode)
                            (name . "^\\*compilation\\*$")))
                  ("file management" (or
                                      (mode . dired-mode)
@@ -386,7 +408,6 @@ surrounded by word boundaries."
                  ("sidebars" (or
                               (mode . dired-sidebar-mode)
                               (mode . ibuffer-sidebar-mode)))
-                 ("org" (mode . org-mode-))
                  ("text files" (or
                                 (mode . conf-unix-mode)
                                 (mode . conf-space-mode)
@@ -441,7 +462,10 @@ surrounded by word boundaries."
                          (name . "^\\*company-")
                          (name . "^\\*omnisharp")
                          (name . "^\\*Ilist")
-                         (name . "^\\*lsp")))
+                         (name . "^\\*lsp")
+                         (name . "^\\*EGLOT")
+                         (name . "^\\*symbols-outline")
+                         (name . "^\\*Outline\\*$")))
                  ("system" (or
                             (name . "^\\*Packages\\*$")
                             (name . "^\\*helm M-x\\*$")
@@ -480,6 +504,10 @@ surrounded by word boundaries."
                             (name . "^\\*Backtrace\\*$")
                             (name . "^\\*dashboard\\*$")
                             (name . "^\\*timer-list\\*$")
+                            (name . "^\\*Eyebrowse")
+                            (name . "^\\*ORES")
+                            (mode . ibuffer-mode)
+                            (mode . authinfo-mode)
                             (name . "^\\*Messages\\*$")))
                  ("Treemacs" (or
                               (name . "^Treemacs Update")

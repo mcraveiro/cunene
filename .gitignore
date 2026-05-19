@@ -38,3 +38,5 @@ session.*
 ielm-history.eld
 elpaca
 init.el~
+.chatgpt-shell.el
+logview-cache.extmap
